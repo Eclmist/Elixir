@@ -1,35 +1,40 @@
 #include <iostream>
-
+#include <fstream>
+#include <string>
+#include <vector>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stbi_image_write.h"
 
+#define OUTPUT_WIDTH 800
+#define OUTPUT_HEIGHT 460
+#define NUM_CHANNELS 3
+
 int main()
 {
-    const int nx = 200;
-    const int ny = 100;
-    const unsigned int outputSize = nx * ny * 3;
+    // PPM Headers
+    std::string header = "P6\n" + std::to_string(OUTPUT_WIDTH) + " " + std::to_string(OUTPUT_HEIGHT) + "\n255\n";
+    
+    std::vector<unsigned char> buffer(header.begin(), header.end());
 
-    char output[outputSize];
-
-    for (int y = 0; y < ny; y++)
+    for (int y = 0; y < OUTPUT_HEIGHT; y++)
     {
-        for (int x = 0; x < nx; x++)
+        for (int x = 0; x < OUTPUT_WIDTH; x++)
         {
-            float r = float(x) / float(nx);
-            float g = float(y) / float(ny);
-            float b = 1.0f;
+            unsigned char r = static_cast<unsigned char>(x / 800.0f * 255);
+            unsigned char g = static_cast<unsigned char>(y / 460.0f * 255);
+            unsigned char b = static_cast<unsigned char>(100);
 
-            int ir = int(255.99 * r);
-            int ig = int(255.99 * g);
-            int ib = int(255.99 * b);
-
-            output[y * ny + (x * 3)] = ir;
-            output[y * ny + (x * 3 + 1)] = ir;
-            output[y * ny + (x * 3 + 2)] = ir;
+            buffer.push_back(r);
+            buffer.push_back(g);
+            buffer.push_back(b);
         }
     }
 
-    stbi_write_png("out.png", nx, ny, 3, output, nx * 3);
+    int x, y, n;
+    stbi_uc* output = stbi_load_from_memory(buffer.data(), static_cast<int>(buffer.size()), &x, &y, &n, 0);
+    stbi_write_png("output.png", OUTPUT_WIDTH, OUTPUT_HEIGHT, NUM_CHANNELS, output, OUTPUT_WIDTH * NUM_CHANNELS);
+    return 0;
 }
