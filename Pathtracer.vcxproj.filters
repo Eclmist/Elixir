@@ -13,18 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\src">
+      <UniqueIdentifier>{a9abd4ff-f293-4459-b5dc-5d8ddd249c21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\extern">
+      <UniqueIdentifier>{0a0bfcd0-a2eb-4313-84b4-35f734584763}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stbi_image_write.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\extern\stb\stbi_image_write.h">
+      <Filter>Source Files\extern</Filter>
     </ClInclude>
-    <ClInclude Include="stb_image.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\extern\stb\stb_image.h">
+      <Filter>Source Files\extern</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
