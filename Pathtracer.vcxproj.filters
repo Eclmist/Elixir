@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -16,8 +12,14 @@
     <Filter Include="Source Files\src">
       <UniqueIdentifier>{a9abd4ff-f293-4459-b5dc-5d8ddd249c21}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\extern">
+    <Filter Include="Source Files\src\math">
+      <UniqueIdentifier>{0d33eed6-40d4-4044-a155-9b187af8cd07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\include">
       <UniqueIdentifier>{0a0bfcd0-a2eb-4313-84b4-35f734584763}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\include\stb">
+      <UniqueIdentifier>{fa4c0e7b-b22d-407f-bcf7-b25573354a22}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -26,11 +28,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\extern\stb\stbi_image_write.h">
-      <Filter>Source Files\extern</Filter>
+    <ClInclude Include="include\stb\stbi_image_write.h">
+      <Filter>Source Files\include\stb</Filter>
     </ClInclude>
-    <ClInclude Include="src\extern\stb\stb_image.h">
-      <Filter>Source Files\extern</Filter>
+    <ClInclude Include="include\stb\stb_image.h">
+      <Filter>Source Files\include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\vector3.h">
+      <Filter>Source Files\src\math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
