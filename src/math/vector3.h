@@ -5,15 +5,15 @@
 #include <stdlib.h>
 #include <iostream>
 
-template<class T>
+template<class T = float>
 class Vector3
 {
 public:
-    Vector3() : x(0), y(0), z(0) {}
-    Vector3(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
-    Vector3(T t) : x(t), y(t), z(t) {}
-    Vector3(const Vector3<T>& copy) : x(copy.x), y(copy.y), z(copy.z) {}
-    Vector3(const T* const d) : x(d[0]), y(d[1]), z(d[2]) {}
+    Vector3<T>() : x(0), y(0), z(0) {}
+    Vector3<T>(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
+    Vector3<T>(T t) : x(t), y(t), z(t) {}
+    Vector3<T>(const Vector3<T>& copy) : x(copy.x), y(copy.y), z(copy.z) {}
+    Vector3<T>(const T* const d) : x(d[0]), y(d[1]), z(d[2]) {}
 
     inline const Vector3<T>& operator+() const { return *this; }
     inline Vector3<T> operator-() const { return Vector3<T>(-x, -y, -z); }
@@ -32,7 +32,10 @@ public:
     inline const float SquareMagnitude() const { return x * x + y * y + z * z; }
     inline const float Magnitude() const { return sqrt(SquareMagnitude()); }
 
-    inline Vector3<T> Normalized() const { return m_Data / Magnitude(); };
+    inline Vector3<T> Normalized() const { return *this / Magnitude(); };
+
+public:
+    static Vector3 Zero() { return Vector3(0.0f); }
 
 public:
     union
