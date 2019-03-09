@@ -5,7 +5,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <cstdlib>
 
 #include "stb/stb_image.h"
 #include "stb/stbi_image_write.h"
@@ -20,7 +19,8 @@
 #define OUTPUT_WIDTH 800
 #define OUTPUT_HEIGHT 400
 #define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 4
+#define NUM_SAMPLES_PER_PIXEL 16
+#define NUM_BOUNDCE_PER_RAY 16
 
 Vector3f SkyGradient(const Ray& r)
 {
@@ -33,14 +33,28 @@ Vector3f SkyGradient(const Ray& r)
     return LERP(white, skyBlue, t);
 }
 
-Vector3f ShadePixel(const Ray& viewRay, const Scene& scene)
+Vector3f RandomInUnitSphere()
+{
+    Vector3f p;
+
+    do {
+        p = 2.0f * Vector3f(RAND01(), RAND01(), RAND01()) - Vector3f(1.0f);
+    } while (p.SquareMagnitude() >= 1.0f);
+
+    return p;
+}
+
+Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int bounce)
 {
     RayHitRecord hit;
 
+    if (bounce == 0)
+        return SkyGradient(viewRay);
+
     if (scene.RaytraceScene(viewRay, hit))
     {
-        Vector3f normals = hit.normal;
-        return 0.5f * Vector3(normals.x + 1, normals.y + 1, normals.z + 1);
+        Vector3f target = hit.point + hit.normal + RandomInUnitSphere();
+        return 0.5f * ShadePixel(Ray(hit.point, target - hit.point), scene, bounce - 1);
     }
     else
     {
@@ -78,15 +92,16 @@ int main()
             // Get samples
             for (int i = 0; i < NUM_SAMPLES_PER_PIXEL; i++)
             {
-                float rand_u = (float)rand() / RAND_MAX;
-                float rand_v = (float)rand() / RAND_MAX;
-                float u = float(x + rand_u) / float(OUTPUT_WIDTH);
-                float v = float(y + rand_v) / float(OUTPUT_HEIGHT);
+                float u = float(x + RAND01()) / float(OUTPUT_WIDTH);
+                float v = float(y + RAND01()) / float(OUTPUT_HEIGHT);
                 Ray viewRay = camera.GetViewRay(u, v);
-                color += ShadePixel(viewRay, *scene);
+                color += ShadePixel(viewRay, *scene, NUM_BOUNDCE_PER_RAY);
             }
 
             color /= NUM_SAMPLES_PER_PIXEL;
+
+            // Correct gamma
+            color = Vector3f(sqrt(color.x), sqrt(color.y), sqrt(color.z));
 
             // Clamp color values for ppm
             color.x = SATURATE(color.x);
