@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <cstdlib>
 
 #include "stb/stb_image.h"
 #include "stb/stbi_image_write.h"
@@ -14,10 +15,12 @@
 #include "math/utils.h"
 #include "core/scene.h"
 #include "geometrics/sphere.h"
+#include "camera/camera.h"
 
 #define OUTPUT_WIDTH 800
-#define OUTPUT_HEIGHT 460
+#define OUTPUT_HEIGHT 400
 #define NUM_CHANNELS 3
+#define NUM_SAMPLES_PER_PIXEL 4
 
 Vector3f SkyGradient(const Ray& r)
 {
@@ -49,8 +52,8 @@ Scene* GenerateScene()
 {
     Scene* scene = new Scene();
 
-    scene->AddPrimitive(new Sphere(Vector3f(0.0f, 0.0f, 3.0f), 1.0f));
-    scene->AddPrimitive(new Sphere(Vector3f(0.0f, -100.5f, 1.0f), 100.0f));
+    scene->AddPrimitive(new Sphere(Vector3f(0.0f, 0.0f, -1.0f), 0.5f));
+    scene->AddPrimitive(new Sphere(Vector3f(0.0f, -100.5f, -1.0f), 100.0f));
 
     return scene;
 }
@@ -64,20 +67,26 @@ int main()
 
     const Vector3f resolution(OUTPUT_WIDTH, OUTPUT_HEIGHT, 0.0f);
     Scene* scene = GenerateScene();
+    Camera camera;
 
     for (int y = OUTPUT_HEIGHT - 1; y >= 0; y--)
     {
         for (int x = 0; x < OUTPUT_WIDTH; x++)
         {
-            const Vector3f fragCoord(float(x), float(y), 0.0f);
-            const Vector3f uv = (fragCoord - 0.5f * resolution) / resolution.y * 2.0f;
+            Vector3f color = Vector3f::Zero();
 
-            // View ray
-            const Vector3f origin = Vector3f::Zero();
-            const Vector3f direction = Vector3f(uv.x, uv.y, 1.0f).Normalized();
-            const Ray viewRay(origin, direction, 1000.0f);
+            // Get samples
+            for (int i = 0; i < NUM_SAMPLES_PER_PIXEL; i++)
+            {
+                float rand_u = (float)rand() / RAND_MAX;
+                float rand_v = (float)rand() / RAND_MAX;
+                float u = float(x + rand_u) / float(OUTPUT_WIDTH);
+                float v = float(y + rand_v) / float(OUTPUT_HEIGHT);
+                Ray viewRay = camera.GetViewRay(u, v);
+                color += ShadePixel(viewRay, *scene);
+            }
 
-            Vector3f color = ShadePixel(viewRay, *scene);
+            color /= NUM_SAMPLES_PER_PIXEL;
 
             // Clamp color values for ppm
             color.x = SATURATE(color.x);

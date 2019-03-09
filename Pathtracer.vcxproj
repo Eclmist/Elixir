@@ -27,6 +27,7 @@
   <ItemGroup>
     <ClInclude Include="include\stb\stbi_image_write.h" />
     <ClInclude Include="include\stb\stb_image.h" />
+    <ClInclude Include="src\camera\camera.h" />
     <ClInclude Include="src\core\scene.h" />
     <ClInclude Include="src\math\ray.h" />
     <ClInclude Include="src\math\utils.h" />
