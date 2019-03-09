@@ -6,57 +6,37 @@
 #include <string>
 #include <vector>
 
-#include "stb\stb_image.h"
-#include "stb\stbi_image_write.h"
+#include "stb/stb_image.h"
+#include "stb/stbi_image_write.h"
 
 #include "math/vector3.h"
 #include "math/ray.h"
 #include "math/utils.h"
+#include "core/scene.h"
+#include "geometrics/sphere.h"
 
 #define OUTPUT_WIDTH 800
 #define OUTPUT_HEIGHT 460
 #define NUM_CHANNELS 3
 
-// Temp objects until we set up proper scene management
 Vector3f SkyGradient(const Ray& r)
 {
     Vector3f skyBlue(0.5f, 0.7f, 1.0f);
     Vector3f white(1.0f);
-    Vector3f direction = r.GetDirection().Normalized();
+    Vector3f direction = r.m_Direction.Normalized();
 
     float t = 0.5f * direction.y + 1.0f;
 
     return LERP(white, skyBlue, t);
 }
 
-float RaycastSphere(const Ray& ray, const Vector3f& center, float radius)
+Vector3f ShadePixel(const Ray& viewRay, const Scene& scene)
 {
-    Vector3 oc = ray.GetOrigin() - center;
-    float a = Dot(ray.GetDirection(), ray.GetDirection());
-    float b = 2.0f * Dot(oc, ray.GetDirection());
-    float c = Dot(oc, oc) - radius * radius;
-    float discriminant = b * b - 4 * a * c;
+    RayHitRecord hit;
 
-    // solve quadratic equation to find t
-    if (discriminant < 0)
+    if (scene.RaytraceScene(viewRay, hit))
     {
-        // no real value, did not intersect sphere
-        return -1.0f;
-    }
-    else
-    {
-        return (-b - sqrt(discriminant) / (2.0f * a));
-    }
-}
-
-Vector3f ShadePixel(const Ray& viewRay)
-{
-    Vector3f spherePosition = Vector3f(0.0f, 0.0f, 3.0f);
-    float sphereIntersect = RaycastSphere(viewRay, spherePosition, 1.0f);
-
-    if (sphereIntersect > 0.0f)
-    {
-        Vector3f normals = (viewRay.Evaluate(sphereIntersect) - spherePosition).Normalized();
+        Vector3f normals = hit.normal;
         return 0.5f * Vector3(normals.x + 1, normals.y + 1, normals.z + 1);
     }
     else
@@ -65,7 +45,15 @@ Vector3f ShadePixel(const Ray& viewRay)
     }
 }
 
-// ! Temp object
+Scene* GenerateScene()
+{
+    Scene* scene = new Scene();
+
+    scene->AddPrimitive(new Sphere(Vector3f(0.0f, 0.0f, 3.0f), 1.0f));
+    scene->AddPrimitive(new Sphere(Vector3f(0.0f, -100.5f, 1.0f), 100.0f));
+
+    return scene;
+}
 
 int main()
 {
@@ -75,6 +63,7 @@ int main()
     std::vector<unsigned char> buffer(header.begin(), header.end());
 
     const Vector3f resolution(OUTPUT_WIDTH, OUTPUT_HEIGHT, 0.0f);
+    Scene* scene = GenerateScene();
 
     for (int y = OUTPUT_HEIGHT - 1; y >= 0; y--)
     {
@@ -88,7 +77,7 @@ int main()
             const Vector3f direction = Vector3f(uv.x, uv.y, 1.0f).Normalized();
             const Ray viewRay(origin, direction, 1000.0f);
 
-            Vector3f color = ShadePixel(viewRay);
+            Vector3f color = ShadePixel(viewRay, *scene);
 
             // Clamp color values for ppm
             color.x = SATURATE(color.x);

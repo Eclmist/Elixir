@@ -6,8 +6,14 @@
     <ClInclude Include="src\math\vector3.h" />
     <ClInclude Include="src\math\ray.h" />
     <ClInclude Include="src\math\utils.h" />
+    <ClInclude Include="src\geometrics\geometry.h" />
+    <ClInclude Include="src\geometrics\sphere.h" />
+    <ClInclude Include="src\core\scene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\core\scene.cpp" />
+    <ClCompile Include="src\math\ray.cpp" />
+    <ClCompile Include="src\geometrics\sphere.cpp" />
   </ItemGroup>
 </Project>
