@@ -17,6 +17,7 @@
 #define OUTPUT_HEIGHT 460
 #define NUM_CHANNELS 3
 
+// Temp objects until we set up proper scene management
 Vector3f SkyGradient(const Ray& r)
 {
     Vector3f skyBlue(0.5f, 0.7f, 1.0f);
@@ -27,6 +28,44 @@ Vector3f SkyGradient(const Ray& r)
 
     return LERP(white, skyBlue, t);
 }
+
+float RaycastSphere(const Ray& ray, const Vector3f& center, float radius)
+{
+    Vector3 oc = ray.GetOrigin() - center;
+    float a = Dot(ray.GetDirection(), ray.GetDirection());
+    float b = 2.0f * Dot(oc, ray.GetDirection());
+    float c = Dot(oc, oc) - radius * radius;
+    float discriminant = b * b - 4 * a * c;
+
+    // solve quadratic equation to find t
+    if (discriminant < 0)
+    {
+        // no real value, did not intersect sphere
+        return -1.0f;
+    }
+    else
+    {
+        return (-b - sqrt(discriminant) / (2.0f * a));
+    }
+}
+
+Vector3f ShadePixel(const Ray& viewRay)
+{
+    Vector3f spherePosition = Vector3f(0.0f, 0.0f, 3.0f);
+    float sphereIntersect = RaycastSphere(viewRay, spherePosition, 1.0f);
+
+    if (sphereIntersect > 0.0f)
+    {
+        Vector3f normals = (viewRay.Evaluate(sphereIntersect) - spherePosition).Normalized();
+        return 0.5f * Vector3(normals.x + 1, normals.y + 1, normals.z + 1);
+    }
+    else
+    {
+        return SkyGradient(viewRay);
+    }
+}
+
+// ! Temp object
 
 int main()
 {
@@ -42,15 +81,14 @@ int main()
         for (int x = 0; x < OUTPUT_WIDTH; x++)
         {
             const Vector3f fragCoord(float(x), float(y), 0.0f);
-            const Vector3f uv = (fragCoord - 0.5f * resolution) / resolution.y;
+            const Vector3f uv = (fragCoord - 0.5f * resolution) / resolution.y * 2.0f;
 
             // View ray
             const Vector3f origin = Vector3f::Zero();
             const Vector3f direction = Vector3f(uv.x, uv.y, 1.0f).Normalized();
             const Ray viewRay(origin, direction, 1000.0f);
 
-            Vector3f color = SkyGradient(viewRay);
-
+            Vector3f color = ShadePixel(viewRay);
 
             // Clamp color values for ppm
             color.x = SATURATE(color.x);
