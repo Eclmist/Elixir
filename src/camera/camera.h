@@ -6,11 +6,21 @@
 class Camera
 {
 public:
-    Camera() {
-        m_Position = Vector3f::Zero();
-        m_Min = Vector3f(-2.0f, -1.0f, -1.0f);
-        m_VerticalStep = Vector3f(0.0f, 2.0f, 0.0f);
-        m_HorizontalStep = Vector3f(4.0f, 0.0f, 0.0f);
+    Camera(Vector3f position, Vector3f lookat, Vector3f up, float vfov, float aspect) {
+        Vector3f u, v, w;
+
+        float theta = vfov * M_PI / 180.f;
+        float halfHeight = tan(theta / 2.0f);
+        float halfWidth = aspect * halfHeight;
+
+        m_Position = position;
+        w = (position - lookat).Normalized();
+        u = (Cross(w, up)).Normalized();
+        v = Cross(u, w);
+
+        m_Min = position - halfWidth * u - halfHeight * v - w;
+        m_HorizontalStep = 2.0f * halfWidth * u;
+        m_VerticalStep = 2.0f * halfHeight * v;
     }
 
     Ray GetViewRay(float u, float v) { return Ray(m_Position, m_Min + u * m_HorizontalStep + v * m_VerticalStep - m_Position); }

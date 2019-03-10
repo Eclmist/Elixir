@@ -35,7 +35,10 @@ public:
     inline Vector3<T> Normalized() const { return *this / Magnitude(); };
 
 public:
-    static Vector3 Zero() { return Vector3(0.0f); }
+    static Vector3<T> Zero() { return Vector3<T>(0.0f); }
+    static Vector3<T> Up() { return Vector3<T>(0.0f, 1.0f, 0.0f); }
+    static Vector3<T> Right() { return Vector3<T>(1.0f, 0.0f, 0.0f); }
+    static Vector3<T> Forward() { return Vector3<T>(0.0f, 0.0f, 1.0f); }
 
 public:
     union

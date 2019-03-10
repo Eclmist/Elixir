@@ -22,8 +22,8 @@
 #define OUTPUT_WIDTH 800
 #define OUTPUT_HEIGHT 400
 #define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 128
-#define NUM_BOUNDCE_PER_RAY 8
+#define NUM_SAMPLES_PER_PIXEL 16
+#define NUM_BOUNDCE_PER_RAY 4
 
 Vector3f SkyGradient(const Ray& r)
 {
@@ -70,9 +70,9 @@ Scene* GenerateScene()
 {
     Scene* scene = new Scene();
 
-    scene->AddPrimitive(new Sphere(Vector3f(0.0f, 0.0f, -1.0f), 0.5f, new Lambertian(Vector3f(0.8f, 0.3f, 0.3f))));
-    scene->AddPrimitive(new Sphere(Vector3f(1.0f, 0.0f, -1.0f), 0.4f, new Metallic(Vector3f(0.8f, 0.6f, 0.2f), 1.0f)));
-    scene->AddPrimitive(new Sphere(Vector3f(-1.0f, 0.0f, -1.0f), 0.4f, new Metallic(Vector3f(0.8f), 0.3f)));
+    scene->AddPrimitive(new Sphere(Vector3f(0.0f, 0.0f, 0.0f), 0.5f, new Lambertian(Vector3f(0.8f, 0.3f, 0.3f))));
+    scene->AddPrimitive(new Sphere(Vector3f(1.0f, 0.0f, 0.0f), 0.5f, new Metallic(Vector3f(0.8f, 0.6f, 0.2f), 0.3f)));
+    scene->AddPrimitive(new Sphere(Vector3f(-1.0f, 0.0f, 0.0f), 0.5f, new Metallic(Vector3f(0.8f), 0.0f)));
     scene->AddPrimitive(new Sphere(Vector3f(0.25f, 0.0f, -0.35f), 0.1f, new Dielectric(Vector3f(1.0f), 1.52f)));
     scene->AddPrimitive(new Sphere(Vector3f(-0.35f, -0.1f, -0.5f), 0.1f, new Dielectric(Vector3f(0.7f, 0.5f, 1.0f), 1.52f)));
 
@@ -91,7 +91,7 @@ int main()
 
     const Vector3f resolution(OUTPUT_WIDTH, OUTPUT_HEIGHT, 0.0f);
     Scene* scene = GenerateScene();
-    Camera camera;
+    Camera camera(Vector3f(-1.75f, 0.1f, -1.5f), Vector3f(0.0f, 0.0f, 0.0f), Vector3f::Up(), 70, float(OUTPUT_WIDTH) / float(OUTPUT_HEIGHT));
 
     for (int y = OUTPUT_HEIGHT - 1; y >= 0; y--)
     {
