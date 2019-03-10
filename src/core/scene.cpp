@@ -19,9 +19,9 @@ void Scene::AddPrimitive(Geometry* geometry)
     m_Primitives.push_back(geometry);
 }
 
-bool Scene::RaytraceScene(const Ray& viewRay, RayHitRecord& hitInfo) const
+bool Scene::RaytraceScene(const Ray& viewRay, GeometryHitInfo& hitInfo) const
 {
-    RayHitRecord tempHitInfo;
+    GeometryHitInfo tempHitInfo;
 
     bool hitAnything = false;
 

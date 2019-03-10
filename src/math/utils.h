@@ -12,4 +12,14 @@
 
 #define RAND01() (float)rand() / RAND_MAX
 
+Vector3f RandomInUnitSphere()
+{
+    Vector3f p;
+
+    do {
+        p = 2.0f * Vector3f(RAND01(), RAND01(), RAND01()) - Vector3f(1.0f);
+    } while (p.SquareMagnitude() >= 1.0f);
+
+    return p;
+}
 #endif // !__MATH_UTILS_H__

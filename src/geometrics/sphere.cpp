@@ -1,6 +1,6 @@
 #include "sphere.h"
 
-bool Sphere::Hit(const Ray & ray, RayHitRecord & hit) const
+bool Sphere::Hit(const Ray & ray, GeometryHitInfo & hit) const
 {
     Vector3f oc = ray.m_Origin - m_Center;
     float a = Dot(ray.m_Direction, ray.m_Direction);
@@ -19,6 +19,7 @@ bool Sphere::Hit(const Ray & ray, RayHitRecord & hit) const
             hit.t = hitPoint1;
             hit.point = ray(hit.t);
             hit.normal = (hit.point - m_Center) / m_Radius;
+            hit.pMaterial = m_pMaterial;
             return true;
         }
 
@@ -27,6 +28,7 @@ bool Sphere::Hit(const Ray & ray, RayHitRecord & hit) const
             hit.t = hitPoint2;
             hit.point = ray(hit.t);
             hit.normal = (hit.point - m_Center) / m_Radius;
+            hit.pMaterial = m_pMaterial;
             return true;
         }
     }

@@ -15,12 +15,14 @@
 #include "core/scene.h"
 #include "geometrics/sphere.h"
 #include "camera/camera.h"
+#include "material/lambertian.h"
+#include "material/metallic.h"
 
 #define OUTPUT_WIDTH 800
 #define OUTPUT_HEIGHT 400
 #define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 16
-#define NUM_BOUNDCE_PER_RAY 16
+#define NUM_SAMPLES_PER_PIXEL 64
+#define NUM_BOUNDCE_PER_RAY 4
 
 Vector3f SkyGradient(const Ray& r)
 {
@@ -33,28 +35,29 @@ Vector3f SkyGradient(const Ray& r)
     return LERP(white, skyBlue, t);
 }
 
-Vector3f RandomInUnitSphere()
+Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
 {
-    Vector3f p;
+    GeometryHitInfo hit;
 
-    do {
-        p = 2.0f * Vector3f(RAND01(), RAND01(), RAND01()) - Vector3f(1.0f);
-    } while (p.SquareMagnitude() >= 1.0f);
-
-    return p;
-}
-
-Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int bounce)
-{
-    RayHitRecord hit;
-
-    if (bounce == 0)
-        return SkyGradient(viewRay);
+    // max bounce reached
+    if (depth == 0)
+        return Vector3f(0.0f); // assume no light at all
 
     if (scene.RaytraceScene(viewRay, hit))
     {
-        Vector3f target = hit.point + hit.normal + RandomInUnitSphere();
-        return 0.5f * ShadePixel(Ray(hit.point, target - hit.point), scene, bounce - 1);
+        Ray scatteredRay;
+        Vector3f attenuation;
+
+        if (hit.pMaterial->Scatter(viewRay, hit, attenuation, scatteredRay))
+        {
+            // recursively collect color contribution
+            return attenuation * ShadePixel(scatteredRay, scene, depth - 1);
+        }
+        else
+        {
+            // If scattered ray did not intersec with any object, assume we hit sky
+            return SkyGradient(viewRay);
+        }
     }
     else
     {
@@ -66,8 +69,12 @@ Scene* GenerateScene()
 {
     Scene* scene = new Scene();
 
-    scene->AddPrimitive(new Sphere(Vector3f(0.0f, 0.0f, -1.0f), 0.5f));
-    scene->AddPrimitive(new Sphere(Vector3f(0.0f, -100.5f, -1.0f), 100.0f));
+    scene->AddPrimitive(new Sphere(Vector3f(0.0f, 0.0f, -1.0f), 0.5f, new Lambertian(Vector3f(0.8f, 0.3f, 0.3f))));
+    scene->AddPrimitive(new Sphere(Vector3f(1.0f, 0.0f, -1.0f), 0.4f, new Metallic(Vector3f(0.8f, 0.6f, 0.2f), 1.0f)));
+    scene->AddPrimitive(new Sphere(Vector3f(-1.0f, 0.0f, -1.0f), 0.4f, new Metallic(Vector3f(0.8f), 0.3f)));
+
+    // Floor
+    scene->AddPrimitive(new Sphere(Vector3f(0.0f, -100.5f, -1.0f), 100.0f, new Lambertian(Vector3f(0.8f, 0.8f, 0.3f))));
 
     return scene;
 }

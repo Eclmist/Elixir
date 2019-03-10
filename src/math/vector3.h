@@ -105,12 +105,6 @@ inline Vector3<T> operator/(const Vector3<T>& v, float t)
 }
 
 template<class T>
-inline void Normalize(const Vector3<T>& v)
-{
-    v = v.Normalized();
-}
-
-template<class T>
 inline float Dot(const Vector3<T>& v1, const Vector3<T>& v2)
 {
     return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
@@ -122,5 +116,11 @@ inline Vector3<T> Cross(const Vector3<T>& v1, const Vector3<T>& v2)
     return Vector3<T>((v1.y * v2.z - v1.z * v2.y),
                      -(v1.x * v2.z - v1.z * v2.x),
                       (v1.x * v2.y - v1.y * v2.x));
+}
+
+template<class T>
+inline Vector3<T> Reflect(const Vector3<T>& v, const Vector3<T>& n)
+{
+    return v - 2 * Dot(v, n) * n;
 }
 #endif // !__MATH_VECTOR3_H__

@@ -1,20 +1,23 @@
-#ifndef __CORE_GEOMETRY_H__
-#define __CORE_GEOMETRY_H__
+#ifndef __GEOMETRICS_GEOMETRY_H__
+#define __GEOMETRICS_GEOMETRY_H__
 
 #include "math/ray.h"
 
-struct RayHitRecord
+class Material;
+
+struct GeometryHitInfo
 {
     float t;
     Vector3f point;
     Vector3f normal;
+    Material* pMaterial;
 };
 
 class Geometry
 {
 public:
-    virtual bool Hit(const Ray& ray, RayHitRecord& hit) const = 0;
+    virtual bool Hit(const Ray& ray, GeometryHitInfo& hit) const = 0;
 };
 
-#endif // !__CORE_GEOMETRY_H__
+#endif // !__GEOMETRICS_GEOMETRY_H__
 

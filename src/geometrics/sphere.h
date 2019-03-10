@@ -7,9 +7,12 @@ class Sphere: public Geometry
 {
 public:
     Sphere() {}
-    Sphere(Vector3f center, float radius) : m_Center(center), m_Radius(radius) {};
+    Sphere(Vector3f center, float radius, Material* material) : m_Center(center), m_Radius(radius), m_pMaterial(material) {};
 
-    virtual bool Hit(const Ray& ray, RayHitRecord& hit) const;
+    virtual bool Hit(const Ray& ray, GeometryHitInfo& hit) const;
+
+public:
+    Material* m_pMaterial;
 
 public:
     Vector3f m_Center;

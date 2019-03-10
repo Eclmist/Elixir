@@ -13,7 +13,7 @@ public:
     
     void AddPrimitive(Geometry* geometry);
 
-    bool RaytraceScene(const Ray& viewRay, RayHitRecord& hitInfo) const;
+    bool RaytraceScene(const Ray& viewRay, GeometryHitInfo& hitInfo) const;
 
 private:
     std::vector<Geometry*> m_Primitives;
