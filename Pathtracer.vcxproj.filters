@@ -13,6 +13,7 @@
     <ClInclude Include="src\material\material.h" />
     <ClInclude Include="src\material\lambertian.h" />
     <ClInclude Include="src\material\metallic.h" />
+    <ClInclude Include="src\material\dielectric.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />

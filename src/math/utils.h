@@ -22,4 +22,11 @@ Vector3f RandomInUnitSphere()
 
     return p;
 }
+
+float SchlickFresnelApproximation(float cosine, float ior)
+{
+    float r0 = (1.0f - ior) / (1.0f + ior);
+    r0 = r0 * r0;
+    return r0 + (1.0f - r0) * pow((1.0f - cosine), 5);
+}
 #endif // !__MATH_UTILS_H__

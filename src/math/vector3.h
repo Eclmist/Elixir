@@ -123,4 +123,20 @@ inline Vector3<T> Reflect(const Vector3<T>& v, const Vector3<T>& n)
 {
     return v - 2 * Dot(v, n) * n;
 }
+
+template<class T>
+inline bool Refract(const Vector3<T>& v, const Vector3<T>& n, float ni_over_nt, Vector3<T>& refracted)
+{
+    Vector3<T> vNorm = v.Normalized();
+    float dt = Dot(vNorm, n);
+    float discriminant = 1.0f - ni_over_nt * ni_over_nt * (1.0f - dt * dt);
+
+    if (discriminant > 0)
+    {
+        refracted = ni_over_nt * (vNorm - n * dt) - n * sqrt(discriminant);
+        return true;
+    }
+
+    return false;
+}
 #endif // !__MATH_VECTOR3_H__

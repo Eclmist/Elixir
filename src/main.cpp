@@ -17,12 +17,13 @@
 #include "camera/camera.h"
 #include "material/lambertian.h"
 #include "material/metallic.h"
+#include "material/dielectric.h"
 
 #define OUTPUT_WIDTH 800
 #define OUTPUT_HEIGHT 400
 #define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 64
-#define NUM_BOUNDCE_PER_RAY 4
+#define NUM_SAMPLES_PER_PIXEL 16
+#define NUM_BOUNDCE_PER_RAY 32
 
 Vector3f SkyGradient(const Ray& r)
 {
@@ -55,7 +56,7 @@ Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
         }
         else
         {
-            // If scattered ray did not intersec with any object, assume we hit sky
+            // If scattered ray did not intersect with any object, assume we hit sky
             return SkyGradient(viewRay);
         }
     }
@@ -72,6 +73,8 @@ Scene* GenerateScene()
     scene->AddPrimitive(new Sphere(Vector3f(0.0f, 0.0f, -1.0f), 0.5f, new Lambertian(Vector3f(0.8f, 0.3f, 0.3f))));
     scene->AddPrimitive(new Sphere(Vector3f(1.0f, 0.0f, -1.0f), 0.4f, new Metallic(Vector3f(0.8f, 0.6f, 0.2f), 1.0f)));
     scene->AddPrimitive(new Sphere(Vector3f(-1.0f, 0.0f, -1.0f), 0.4f, new Metallic(Vector3f(0.8f), 0.3f)));
+    scene->AddPrimitive(new Sphere(Vector3f(0.25f, 0.0f, -0.5f), 0.2f, new Dielectric(Vector3f(1.0f), 1.333f)));
+    scene->AddPrimitive(new Sphere(Vector3f(-0.35f, -0.1f, -0.5f), 0.1f, new Dielectric(Vector3f(0.7f, 0.5f, 1.0f), 1.333f)));
 
     // Floor
     scene->AddPrimitive(new Sphere(Vector3f(0.0f, -100.5f, -1.0f), 100.0f, new Lambertian(Vector3f(0.8f, 0.8f, 0.3f))));
