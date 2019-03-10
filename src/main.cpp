@@ -20,7 +20,7 @@
 #include "material/dielectric.h"
 
 #define OUTPUT_WIDTH 800
-#define OUTPUT_HEIGHT 400
+#define OUTPUT_HEIGHT 480
 #define NUM_CHANNELS 3
 #define NUM_SAMPLES_PER_PIXEL 16
 #define NUM_BOUNDCE_PER_RAY 4
@@ -70,20 +70,56 @@ Scene* GenerateScene()
 {
     Scene* scene = new Scene();
 
-    scene->AddPrimitive(new Sphere(Vector3f(0.0f, 0.0f, 0.0f), 0.5f, new Lambertian(Vector3f(0.8f, 0.3f, 0.3f))));
-    scene->AddPrimitive(new Sphere(Vector3f(1.0f, 0.0f, 0.0f), 0.5f, new Metallic(Vector3f(0.8f, 0.6f, 0.2f), 0.3f)));
-    scene->AddPrimitive(new Sphere(Vector3f(-1.0f, 0.0f, 0.0f), 0.5f, new Metallic(Vector3f(0.8f), 0.0f)));
-    scene->AddPrimitive(new Sphere(Vector3f(0.25f, 0.0f, -0.35f), 0.1f, new Dielectric(Vector3f(1.0f), 1.52f)));
-    scene->AddPrimitive(new Sphere(Vector3f(-0.35f, -0.1f, -0.5f), 0.1f, new Dielectric(Vector3f(0.7f, 0.5f, 1.0f), 1.52f)));
+    for (int a = -9; a < 9; a++)
+    {
+        for (int b = -9; b < 9; b++)
+        {
+            float mat = RAND01();
+            Vector3f pos(a + 0.9f * RAND01(), 0.2f, b + 0.9f * RAND01());
+
+            if ((pos - Vector3f(4.0f, 0.2f, 0.0f)).Magnitude() > 0.9f)
+            {
+                // does not intersect center spheres
+                if (mat < 0.8f) // diffuse
+                {
+                    float rand_x = RAND01();
+                    float rand_y = RAND01();
+                    float rand_z = RAND01();
+                    scene->AddPrimitive(new Sphere(pos, 0.2f, new Lambertian(Vector3f(rand_x, rand_y, rand_z))));
+                }
+                else if (mat < 0.95f) // metallic
+                {
+                    float rand_x = 0.5f * (1.0f + RAND01());
+                    float rand_y = 0.5f * (1.0f + RAND01());
+                    float rand_z = 0.5f * (1.0f + RAND01());
+                    scene->AddPrimitive(new Sphere(pos, 0.2f, 
+                        new Metallic(Vector3f(rand_x, rand_y, rand_z), 0.5f * RAND01())));
+                }
+                else // glass
+                {
+                    float rand_x = 0.5f * (1.0f + RAND01());
+                    float rand_y = 0.5f * (1.0f + RAND01());
+                    float rand_z = 0.5f * (1.0f + RAND01());
+                    scene->AddPrimitive(new Sphere(pos, 0.2f, new Dielectric(Vector3f(rand_x, rand_y, rand_z), 1.52f)));
+                }
+            }
+        }
+    }
+
+
+    scene->AddPrimitive(new Sphere(Vector3f(0.0f, 1.0f, 0.0f), 1.0f, new Lambertian(Vector3f(0.8f, 0.3f, 0.3f))));
+    scene->AddPrimitive(new Sphere(Vector3f(4.0f, 1.0f, 0.0f), 1.0f, new Metallic(Vector3f(0.8f, 0.6f, 0.2f), 0.05f)));
+    scene->AddPrimitive(new Sphere(Vector3f(-4.0f, 1.0f, 0.0f), 1.0f, new Dielectric(Vector3f(0.8f, 0.7f, 1.0f), 1.52f)));
 
     // Floor
-    scene->AddPrimitive(new Sphere(Vector3f(0.0f, -100.5f, -1.0f), 100.0f, new Lambertian(Vector3f(0.8f, 0.8f, 0.3f))));
+    scene->AddPrimitive(new Sphere(Vector3f(0.0f, -1000.0f, 0.0f), 1000.0f, new Lambertian(Vector3f(0.5f))));
 
     return scene;
 }
 
 int main()
 {
+
     // PPM Headers
     std::string header = "P6\n" + std::to_string(OUTPUT_WIDTH) + " " + std::to_string(OUTPUT_HEIGHT) + "\n255\n";
     
@@ -91,7 +127,15 @@ int main()
 
     const Vector3f resolution(OUTPUT_WIDTH, OUTPUT_HEIGHT, 0.0f);
     Scene* scene = GenerateScene();
-    Camera camera(Vector3f(-1.75f, 0.1f, -1.5f), Vector3f(0.0f, 0.0f, 0.0f), Vector3f::Up(), 70, float(OUTPUT_WIDTH) / float(OUTPUT_HEIGHT));
+
+    // camera
+    Vector3f position(-9.75f, 1.5f, 2.5f);
+    Vector3f lookat(0.0f);
+    float fov = 30.0f;
+    float aspect = float(OUTPUT_WIDTH) / float(OUTPUT_HEIGHT);
+    float focusDist = (position - lookat).Magnitude();
+    float aperture = 0.02f;
+    Camera camera(position, lookat, Vector3f::Up(), fov, aspect, aperture, focusDist);
 
     for (int y = OUTPUT_HEIGHT - 1; y >= 0; y--)
     {
@@ -128,7 +172,10 @@ int main()
             buffer.push_back(r);
             buffer.push_back(g);
             buffer.push_back(b);
+
         }
+
+        std::cout << "Progress: " << 100.0f - (float(y) / OUTPUT_HEIGHT * 100.0f) << "%" << std::endl;
     }
 
     int x, y, n;

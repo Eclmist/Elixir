@@ -40,6 +40,17 @@ Vector3f RandomInUnitSphere()
     return p;
 }
 
+Vector3f RandomInUnitDisc()
+{
+    Vector3f p;
+
+    do {
+        p = 2.0f * Vector3f(RAND01(), RAND01(), 0.0f) - Vector3f(1.0f, 1.0f, 0.0f);
+    } while (Dot(p, p) >= 1.0f);
+
+    return p;
+}
+
 float SchlickFresnelApproximation(float cosine, float ior)
 {
     float r0 = (1.0f - ior) / (1.0f + ior);
