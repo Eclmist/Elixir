@@ -22,8 +22,8 @@
 #define OUTPUT_WIDTH 800
 #define OUTPUT_HEIGHT 400
 #define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 16
-#define NUM_BOUNDCE_PER_RAY 32
+#define NUM_SAMPLES_PER_PIXEL 128
+#define NUM_BOUNDCE_PER_RAY 8
 
 Vector3f SkyGradient(const Ray& r)
 {
@@ -44,7 +44,7 @@ Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
     if (depth == 0)
         return Vector3f(0.0f); // assume no light at all
 
-    if (scene.RaytraceScene(viewRay, hit))
+    if (scene.RaytraceScene(viewRay, 0.001f, viewRay.m_Distance, hit))
     {
         Ray scatteredRay;
         Vector3f attenuation;
@@ -73,8 +73,8 @@ Scene* GenerateScene()
     scene->AddPrimitive(new Sphere(Vector3f(0.0f, 0.0f, -1.0f), 0.5f, new Lambertian(Vector3f(0.8f, 0.3f, 0.3f))));
     scene->AddPrimitive(new Sphere(Vector3f(1.0f, 0.0f, -1.0f), 0.4f, new Metallic(Vector3f(0.8f, 0.6f, 0.2f), 1.0f)));
     scene->AddPrimitive(new Sphere(Vector3f(-1.0f, 0.0f, -1.0f), 0.4f, new Metallic(Vector3f(0.8f), 0.3f)));
-    scene->AddPrimitive(new Sphere(Vector3f(0.25f, 0.0f, -0.5f), 0.2f, new Dielectric(Vector3f(1.0f), 1.333f)));
-    scene->AddPrimitive(new Sphere(Vector3f(-0.35f, -0.1f, -0.5f), 0.1f, new Dielectric(Vector3f(0.7f, 0.5f, 1.0f), 1.333f)));
+    scene->AddPrimitive(new Sphere(Vector3f(0.25f, 0.0f, -0.35f), 0.1f, new Dielectric(Vector3f(1.0f), 1.52f)));
+    scene->AddPrimitive(new Sphere(Vector3f(-0.35f, -0.1f, -0.5f), 0.1f, new Dielectric(Vector3f(0.7f, 0.5f, 1.0f), 1.52f)));
 
     // Floor
     scene->AddPrimitive(new Sphere(Vector3f(0.0f, -100.5f, -1.0f), 100.0f, new Lambertian(Vector3f(0.8f, 0.8f, 0.3f))));

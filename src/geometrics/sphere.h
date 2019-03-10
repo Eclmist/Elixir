@@ -9,7 +9,7 @@ public:
     Sphere() {}
     Sphere(Vector3f center, float radius, Material* material) : m_Center(center), m_Radius(radius), m_pMaterial(material) {};
 
-    virtual bool Hit(const Ray& ray, GeometryHitInfo& hit) const;
+    virtual bool Hit(const Ray& ray, float tMin, float tMax, GeometryHitInfo& hit) const;
 
 public:
     Material* m_pMaterial;

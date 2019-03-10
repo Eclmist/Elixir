@@ -1,6 +1,6 @@
 #include "sphere.h"
 
-bool Sphere::Hit(const Ray & ray, GeometryHitInfo & hit) const
+bool Sphere::Hit(const Ray & ray, float tMin, float tMax, GeometryHitInfo & hit) const
 {
     Vector3f oc = ray.m_Origin - m_Center;
     float a = Dot(ray.m_Direction, ray.m_Direction);
@@ -14,7 +14,7 @@ bool Sphere::Hit(const Ray & ray, GeometryHitInfo & hit) const
         float hitPoint1 = (-b - sqrt(b * b - a * c)) / a;
         float hitPoint2 = (-b + sqrt(b * b - a * c)) / a;
 
-        if (hitPoint1 <= ray.m_tMax && hitPoint1 >= ray.m_tMin)
+        if (hitPoint1 <= tMax && hitPoint1 >= tMin)
         {
             hit.t = hitPoint1;
             hit.point = ray(hit.t);
@@ -23,7 +23,7 @@ bool Sphere::Hit(const Ray & ray, GeometryHitInfo & hit) const
             return true;
         }
 
-        if (hitPoint2 <= ray.m_tMax && hitPoint2 >= ray.m_tMin)
+        if (hitPoint2 <= tMax && hitPoint2 >= tMin)
         {
             hit.t = hitPoint2;
             hit.point = ray(hit.t);

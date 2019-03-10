@@ -16,7 +16,7 @@ struct GeometryHitInfo
 class Geometry
 {
 public:
-    virtual bool Hit(const Ray& ray, GeometryHitInfo& hit) const = 0;
+    virtual bool Hit(const Ray& ray, float tMin, float tMax, GeometryHitInfo& hit) const = 0;
 };
 
 #endif // !__GEOMETRICS_GEOMETRY_H__

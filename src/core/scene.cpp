@@ -19,17 +19,17 @@ void Scene::AddPrimitive(Geometry* geometry)
     m_Primitives.push_back(geometry);
 }
 
-bool Scene::RaytraceScene(const Ray& viewRay, GeometryHitInfo& hitInfo) const
+bool Scene::RaytraceScene(const Ray& viewRay, float tMin, float tMax, GeometryHitInfo& hitInfo) const
 {
     GeometryHitInfo tempHitInfo;
 
     bool hitAnything = false;
 
-    float nearestDist = viewRay.m_tMax;
+    float nearestDist = tMax;
 
     for (int i = 0; i < m_Primitives.size(); i++)
     {
-        if (m_Primitives[i]->Hit(viewRay, tempHitInfo) && tempHitInfo.t < nearestDist)
+        if (m_Primitives[i]->Hit(viewRay, tMin, nearestDist, tempHitInfo))
         {
             hitAnything = true;
             nearestDist = tempHitInfo.t;
