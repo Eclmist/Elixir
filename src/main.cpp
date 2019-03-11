@@ -22,8 +22,8 @@
 #define OUTPUT_WIDTH 800
 #define OUTPUT_HEIGHT 480
 #define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 16
-#define NUM_BOUNDCE_PER_RAY 4
+#define NUM_SAMPLES_PER_PIXEL 64
+#define NUM_BOUNDCE_PER_RAY 8
 
 Vector3f SkyGradient(const Ray& r)
 {
