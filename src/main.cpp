@@ -57,7 +57,7 @@ Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
         else
         {
             // If scattered ray did not intersect with any object, assume we hit sky
-            return SkyGradient(viewRay);
+            return Vector3f(0.0f);
         }
     }
     else
