@@ -18,7 +18,6 @@ public:
 
 public:
     Vector3f m_Albedo;
-
 };
 
 #endif // !__MATERIAL_LAMBERTIAN_H__

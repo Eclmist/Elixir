@@ -1,22 +1,8 @@
 #include "scene.h"
 
-Scene::Scene()
+void Scene::AddPrimitive(std::unique_ptr<Geometry> geometry)
 {
-}
-
-Scene::~Scene()
-{
-   for (std::vector<Geometry*>::iterator it = m_Primitives.begin() ; it != m_Primitives.end(); ++it)
-   {
-       delete (*it);
-   } 
-
-   m_Primitives.clear();
-}
-
-void Scene::AddPrimitive(Geometry* geometry)
-{
-    m_Primitives.push_back(geometry);
+    m_Primitives.push_back(std::move(geometry));
 }
 
 bool Scene::RaytraceScene(const Ray& viewRay, float tMin, float tMax, GeometryHitInfo& hitInfo) const

@@ -8,15 +8,11 @@
 class Scene
 {
 public:
-    Scene();
-    ~Scene();
-    
-    void AddPrimitive(Geometry* geometry);
-
+    void AddPrimitive(std::unique_ptr<Geometry> geometry);
     bool RaytraceScene(const Ray& viewRay, float tMin, float tMax, GeometryHitInfo& hitInfo) const;
 
 private:
-    std::vector<Geometry*> m_Primitives;
+    std::vector<std::unique_ptr<Geometry>> m_Primitives;
 };
 
 #endif // !__CORE_SCENE_H__

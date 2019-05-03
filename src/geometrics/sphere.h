@@ -6,13 +6,11 @@
 class Sphere: public Geometry
 {
 public:
-    Sphere() {}
-    Sphere(Vector3f center, float radius, Material* material) : m_Center(center), m_Radius(radius), m_pMaterial(material) {};
-
+    Sphere(Vector3f center, float radius, std::shared_ptr<Material> material) : m_Center(center), m_Radius(radius), m_Material(material) {};
     virtual bool Hit(const Ray& ray, float tMin, float tMax, GeometryHitInfo& hit) const;
 
 public:
-    Material* m_pMaterial;
+    const std::shared_ptr<Material> m_Material;
 
 public:
     Vector3f m_Center;

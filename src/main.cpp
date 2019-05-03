@@ -1,6 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
+#include <memory>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -19,11 +20,11 @@
 #include "material/metallic.h"
 #include "material/dielectric.h"
 
-#define OUTPUT_WIDTH 800
-#define OUTPUT_HEIGHT 480
+#define OUTPUT_WIDTH 400
+#define OUTPUT_HEIGHT 200
 #define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 64
-#define NUM_BOUNDCE_PER_RAY 8
+#define NUM_SAMPLES_PER_PIXEL 2
+#define NUM_BOUNDCE_PER_RAY 4
 
 Vector3f SkyGradient(const Ray& r)
 {
@@ -49,7 +50,7 @@ Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
         Ray scatteredRay;
         Vector3f attenuation;
 
-        if (hit.pMaterial->Scatter(viewRay, hit, attenuation, scatteredRay))
+        if (hit.material->Scatter(viewRay, hit, attenuation, scatteredRay))
         {
             // recursively collect color contribution
             return attenuation * ShadePixel(scatteredRay, scene, depth - 1);
@@ -66,9 +67,9 @@ Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
     }
 }
 
-Scene* GenerateScene()
+std::unique_ptr<Scene> GenerateScene()
 {
-    Scene* scene = new Scene();
+    std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
     for (int a = -9; a < 9; a++)
     {
@@ -85,34 +86,33 @@ Scene* GenerateScene()
                     float rand_x = RAND01();
                     float rand_y = RAND01();
                     float rand_z = RAND01();
-                    scene->AddPrimitive(new Sphere(pos, 0.2f, new Lambertian(Vector3f(rand_x, rand_y, rand_z))));
+                    scene->AddPrimitive(std::make_unique<Sphere>(pos, 0.2f, std::make_shared<Lambertian>(Vector3f(rand_x, rand_y, rand_z))));
                 }
                 else if (mat < 0.95f) // metallic
                 {
                     float rand_x = 0.5f * (1.0f + RAND01());
                     float rand_y = 0.5f * (1.0f + RAND01());
                     float rand_z = 0.5f * (1.0f + RAND01());
-                    scene->AddPrimitive(new Sphere(pos, 0.2f, 
-                        new Metallic(Vector3f(rand_x, rand_y, rand_z), 0.5f * RAND01())));
+                    scene->AddPrimitive(std::make_unique<Sphere>(pos, 0.2f, std::make_shared<Metallic>(Vector3f(rand_x, rand_y, rand_z), 0.5f * RAND01())));
                 }
                 else // glass
                 {
                     float rand_x = 0.5f * (1.0f + RAND01());
                     float rand_y = 0.5f * (1.0f + RAND01());
                     float rand_z = 0.5f * (1.0f + RAND01());
-                    scene->AddPrimitive(new Sphere(pos, 0.2f, new Dielectric(Vector3f(rand_x, rand_y, rand_z), 1.52f)));
+                    scene->AddPrimitive(std::make_unique<Sphere>(pos, 0.2f, std::make_shared<Dielectric>(Vector3f(rand_x, rand_y, rand_z), 1.52f)));
                 }
             }
         }
     }
 
 
-    scene->AddPrimitive(new Sphere(Vector3f(0.0f, 1.0f, 0.0f), 1.0f, new Lambertian(Vector3f(0.8f, 0.3f, 0.3f))));
-    scene->AddPrimitive(new Sphere(Vector3f(4.0f, 1.0f, 0.0f), 1.0f, new Metallic(Vector3f(0.8f, 0.6f, 0.2f), 0.05f)));
-    scene->AddPrimitive(new Sphere(Vector3f(-4.0f, 1.0f, 0.0f), 1.0f, new Dielectric(Vector3f(0.8f, 0.7f, 1.0f), 1.52f)));
+    scene->AddPrimitive(std::make_unique<Sphere>(Vector3f(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Lambertian>(Vector3f(0.8f, 0.3f, 0.3f))));
+    scene->AddPrimitive(std::make_unique<Sphere>(Vector3f(4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Metallic>(Vector3f(0.8f, 0.6f, 0.2f), 0.05f)));
+    scene->AddPrimitive(std::make_unique<Sphere>(Vector3f(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(Vector3f(0.8f, 0.7f, 1.0f), 1.52f)));
 
     // Floor
-    scene->AddPrimitive(new Sphere(Vector3f(0.0f, -1000.0f, 0.0f), 1000.0f, new Lambertian(Vector3f(0.5f))));
+    scene->AddPrimitive(std::make_unique<Sphere>(Vector3f(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(Vector3f(0.5f))));
 
     return scene;
 }
@@ -126,7 +126,7 @@ int main()
     std::vector<unsigned char> buffer(header.begin(), header.end());
 
     const Vector3f resolution(OUTPUT_WIDTH, OUTPUT_HEIGHT, 0.0f);
-    Scene* scene = GenerateScene();
+    std::unique_ptr<Scene> scene = GenerateScene();
 
     // camera
     Vector3f position(-9.75f, 1.5f, 2.5f);
