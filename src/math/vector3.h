@@ -43,20 +43,9 @@ public:
 public:
     union
     {
-        struct
-        {
-            T x, y, z;
-        };
-
-        struct
-        {
-            T r, g, b;
-        };
-
-        struct
-        {
-            T m_Data[3];
-        };
+        struct { T x, y, z; };
+        struct { T r, g, b; };
+        struct { T m_Data[3]; };
     };
 };
 
