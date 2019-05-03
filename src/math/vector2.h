@@ -17,6 +17,7 @@ public:
 
     inline const Vector2<T>& operator+() const { return *this; }
     inline Vector2<T> operator-() const { return Vector2<T>(-x, -y); }
+    inline void operator=(const Vector2<T>& v) { x = v.x; y = v.y; }
     inline T operator[](int i) const { return m_Data[i]; }
     inline T& operator[](int i) { return m_Data[i]; }
 

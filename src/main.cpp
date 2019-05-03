@@ -172,7 +172,6 @@ int main()
             buffer.push_back(r);
             buffer.push_back(g);
             buffer.push_back(b);
-
         }
 
         std::cout << "Progress: " << 100.0f - (float(y) / OUTPUT_HEIGHT * 100.0f) << "%" << std::endl;

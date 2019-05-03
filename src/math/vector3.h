@@ -17,6 +17,7 @@ public:
 
     inline const Vector3<T>& operator+() const { return *this; }
     inline Vector3<T> operator-() const { return Vector3<T>(-x, -y, -z); }
+    inline void operator=(const Vector3<T>& v) { x = v.x; y = v.y; z = v.z; }
     inline T operator[](int i) const { return m_Data[i]; }
     inline T& operator[](int i) { return m_Data[i]; }
 
