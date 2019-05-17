@@ -8,9 +8,9 @@ class Dielectric : public Material
 public:
     Dielectric(const Vector3f& a, float ior) : m_Albedo(a), m_RefractiveIndex(ior) {}
 
-    virtual bool Scatter(const Ray& incomingRay, const GeometryHitInfo& hitInfo, Vector3f& attenuation, Ray& scattered) const
+    virtual bool Scatter(const Ray& incomingRay, const PrimitiveHitInfo& hitInfo, Vector3f& attenuation, Ray& scattered) const
     {
-        Vector3f reflectedRay = Reflect(incomingRay.m_Direction, hitInfo.normal);
+        Vector3 reflectedRay = Reflect(incomingRay.m_Direction, hitInfo.normal);
 
         float ni_over_nt;
         attenuation = m_Albedo;

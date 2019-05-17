@@ -21,19 +21,19 @@ public:
     inline T operator[](int i) const { return m_Data[i]; }
     inline T& operator[](int i) { return m_Data[i]; }
 
-    inline Vector2<T>& operator+=(const Vector2<T>& v) { x += v.x; y += v.y; return *this; };
-    inline Vector2<T>& operator-=(const Vector2<T>& v) { x -= v.x; y -= v.y; return *this; };
-    inline Vector2<T>& operator*=(const Vector2<T>& v) { x *= v.x; y *= v.y; return *this; };
-    inline Vector2<T>& operator/=(const Vector2<T>& v) { x /= v.x; y /= v.y; return *this; };
-    inline Vector2<T>& operator*=(const float t) { x *= t; y *= t; return *this; };
-    inline Vector2<T>& operator/=(const float t) { x /= t; y /= t; return *this; };
+    inline Vector2<T>& operator+=(const Vector2<T>& v) { x += v.x; y += v.y; return *this; }
+    inline Vector2<T>& operator-=(const Vector2<T>& v) { x -= v.x; y -= v.y; return *this; }
+    inline Vector2<T>& operator*=(const Vector2<T>& v) { x *= v.x; y *= v.y; return *this; }
+    inline Vector2<T>& operator/=(const Vector2<T>& v) { x /= v.x; y /= v.y; return *this; }
+    inline Vector2<T>& operator*=(const float t) { x *= t; y *= t; return *this; }
+    inline Vector2<T>& operator/=(const float t) { x /= t; y /= t; return *this; }
     inline bool operator==(const Vector2<T>& v) { return (x == v.x) && (y == v.y); }
 
 public:
     inline const float SquareMagnitude() const { return x * x + y * y; }
     inline const float Magnitude() const { return sqrt(SquareMagnitude()); }
 
-    inline Vector2<T> Normalized() const { return *this / Magnitude(); };
+    inline Vector2<T> Normalized() const { return *this / Magnitude(); }
 
 public:
     static Vector2<T> Zero() { return Vector2<T>(0.0f); }

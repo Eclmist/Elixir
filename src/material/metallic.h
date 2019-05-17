@@ -8,7 +8,7 @@ class Metallic : public Material
 public:
     Metallic(const Vector3f& a, const Vector3f& r) : m_Albedo(a), m_Roughness(r) {}
 
-    virtual bool Scatter(const Ray& incomingRay, const GeometryHitInfo& hitInfo, Vector3f& attenuation, Ray& scattered) const
+    virtual bool Scatter(const Ray& incomingRay, const PrimitiveHitInfo& hitInfo, Vector3f& attenuation, Ray& scattered) const
     {
         Vector3f reflected = Reflect(incomingRay.m_Direction.Normalized(), hitInfo.normal);
         scattered = Ray(hitInfo.point, reflected + m_Roughness * RandomInUnitSphere());

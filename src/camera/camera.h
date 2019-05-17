@@ -6,7 +6,7 @@
 class Camera
 {
 public:
-    Camera(Vector3f position, Vector3f lookat, Vector3f up, float vfov, float aspect, float aperture, float focusDist) {
+    Camera(Point3f position, Point3f lookat, Vector3f up, float vfov, float aspect, float aperture, float focusDist) {
         // virtual lens to simulate defocus blur
         lensRadius = aperture / 2.0f;
                
@@ -31,8 +31,8 @@ public:
         return Ray(m_Position + offset, m_Min + s * m_HorizontalStep + t * m_VerticalStep - m_Position - offset); 
     }
 
-    Vector3f m_Position;
-    Vector3f m_Min;
+    Point3f m_Position;
+    Point3f m_Min;
     Vector3f m_HorizontalStep;
     Vector3f m_VerticalStep;
 

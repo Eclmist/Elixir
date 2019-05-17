@@ -21,12 +21,12 @@ public:
     inline T operator[](int i) const { return m_Data[i]; }
     inline T& operator[](int i) { return m_Data[i]; }
 
-    inline Vector3<T>& operator+=(const Vector3<T>& v) { x += v.x; y += v.y; z += v.z; return *this; };
-    inline Vector3<T>& operator-=(const Vector3<T>& v) { x -= v.x; y -= v.y; z -= v.z; return *this; };
-    inline Vector3<T>& operator*=(const Vector3<T>& v) { x *= v.x; y *= v.y; z *= v.z; return *this; };
-    inline Vector3<T>& operator/=(const Vector3<T>& v) { x /= v.x; y /= v.y; z /= v.z; return *this; };
-    inline Vector3<T>& operator*=(const float t) { x *= t; y *= t; z *= t; return *this; };
-    inline Vector3<T>& operator/=(const float t) { x /= t; y /= t; z /= t; return *this; };
+    inline Vector3<T>& operator+=(const Vector3<T>& v) { x += v.x; y += v.y; z += v.z; return *this; }
+    inline Vector3<T>& operator-=(const Vector3<T>& v) { x -= v.x; y -= v.y; z -= v.z; return *this; }
+    inline Vector3<T>& operator*=(const Vector3<T>& v) { x *= v.x; y *= v.y; z *= v.z; return *this; }
+    inline Vector3<T>& operator/=(const Vector3<T>& v) { x /= v.x; y /= v.y; z /= v.z; return *this; }
+    inline Vector3<T>& operator*=(const float t) { x *= t; y *= t; z *= t; return *this; }
+    inline Vector3<T>& operator/=(const float t) { x /= t; y /= t; z /= t; return *this; }
     inline bool operator==(const Vector3<T>& v) { return (x == v.x) && (y == v.y) && (z == v.z); }
 
 public:

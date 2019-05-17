@@ -20,17 +20,17 @@
 #include "material/metallic.h"
 #include "material/dielectric.h"
 
-#define OUTPUT_WIDTH 400
-#define OUTPUT_HEIGHT 200
+#define OUTPUT_WIDTH 800
+#define OUTPUT_HEIGHT 400
 #define NUM_CHANNELS 3
 #define NUM_SAMPLES_PER_PIXEL 2
 #define NUM_BOUNDCE_PER_RAY 4
 
 Vector3f SkyGradient(const Ray& r)
 {
-    Vector3f skyBlue(0.5f, 0.7f, 1.0f);
-    Vector3f white(1.0f);
-    Vector3f direction = r.m_Direction.Normalized();
+    Vector3 skyBlue(0.5f, 0.7f, 1.0f);
+    Vector3 white(1.0f);
+    Vector3 direction = r.m_Direction.Normalized();
 
     float t = 0.5f * direction.y + 1.0f;
 
@@ -39,11 +39,11 @@ Vector3f SkyGradient(const Ray& r)
 
 Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
 {
-    GeometryHitInfo hit;
+    PrimitiveHitInfo hit;
 
     // max bounce reached
     if (depth == 0)
-        return Vector3f(0.0f); // assume no light at all
+        return Vector3(0.0f); // assume no light at all
 
     if (scene.RaytraceScene(viewRay, 0.001f, viewRay.m_Distance, hit))
     {
@@ -58,7 +58,7 @@ Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
         else
         {
             // If scattered ray did not intersect with any object, assume we hit sky
-            return Vector3f(0.0f);
+            return Vector3(0.0f);
         }
     }
     else
@@ -71,14 +71,14 @@ std::unique_ptr<Scene> GenerateScene()
 {
     std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
-    for (int a = -9; a < 9; a++)
+    for (int a = -5; a < 5; a++)
     {
-        for (int b = -9; b < 9; b++)
+        for (int b = -5; b < 5; b++)
         {
             float mat = RAND01();
-            Vector3f pos(a + 0.9f * RAND01(), 0.2f, b + 0.9f * RAND01());
+            Point pos(a + 0.9f * RAND01(), 0.2f, b + 0.9f * RAND01());
 
-            if ((pos - Vector3f(4.0f, 0.2f, 0.0f)).Magnitude() > 0.9f)
+            if ((pos - Point(4.0f, 0.2f, 0.0f)).Magnitude() > 0.9f)
             {
                 // does not intersect center spheres
                 if (mat < 0.8f) // diffuse
@@ -86,39 +86,39 @@ std::unique_ptr<Scene> GenerateScene()
                     float rand_x = RAND01();
                     float rand_y = RAND01();
                     float rand_z = RAND01();
-                    scene->AddPrimitive(std::make_unique<Sphere>(pos, 0.2f, std::make_shared<Lambertian>(Vector3f(rand_x, rand_y, rand_z))));
+                    scene->AddPrimitive(std::make_unique<Sphere>(pos, 0.2f, std::make_shared<Lambertian>(Vector3(rand_x, rand_y, rand_z))));
                 }
                 else if (mat < 0.95f) // metallic
                 {
                     float rand_x = 0.5f * (1.0f + RAND01());
                     float rand_y = 0.5f * (1.0f + RAND01());
                     float rand_z = 0.5f * (1.0f + RAND01());
-                    scene->AddPrimitive(std::make_unique<Sphere>(pos, 0.2f, std::make_shared<Metallic>(Vector3f(rand_x, rand_y, rand_z), 0.5f * RAND01())));
+                    scene->AddPrimitive(std::make_unique<Sphere>(pos, 0.2f, std::make_shared<Metallic>(Vector3(rand_x, rand_y, rand_z), 0.5f * RAND01())));
                 }
                 else // glass
                 {
                     float rand_x = 0.5f * (1.0f + RAND01());
                     float rand_y = 0.5f * (1.0f + RAND01());
                     float rand_z = 0.5f * (1.0f + RAND01());
-                    scene->AddPrimitive(std::make_unique<Sphere>(pos, 0.2f, std::make_shared<Dielectric>(Vector3f(rand_x, rand_y, rand_z), 1.52f)));
+                    scene->AddPrimitive(std::make_unique<Sphere>(pos, 0.2f, std::make_shared<Dielectric>(Vector3(rand_x, rand_y, rand_z), 1.52f)));
                 }
             }
         }
     }
 
-
-    scene->AddPrimitive(std::make_unique<Sphere>(Vector3f(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Lambertian>(Vector3f(0.8f, 0.3f, 0.3f))));
-    scene->AddPrimitive(std::make_unique<Sphere>(Vector3f(4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Metallic>(Vector3f(0.8f, 0.6f, 0.2f), 0.05f)));
-    scene->AddPrimitive(std::make_unique<Sphere>(Vector3f(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(Vector3f(0.8f, 0.7f, 1.0f), 1.52f)));
+    scene->AddPrimitive(std::make_unique<Sphere>(Point(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Lambertian>(Vector3(0.8f, 0.3f, 0.3f))));
+    scene->AddPrimitive(std::make_unique<Sphere>(Point(4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Metallic>(Vector3(0.8f, 0.6f, 0.2f), 0.05f)));
+    scene->AddPrimitive(std::make_unique<Sphere>(Point(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(Vector3(1.0f, 1.0f, 1.0f), 1.52f)));
 
     // Floor
-    scene->AddPrimitive(std::make_unique<Sphere>(Vector3f(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(Vector3f(0.5f))));
+    scene->AddPrimitive(std::make_unique<Sphere>(Point(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(Vector3(0.5f))));
 
     return scene;
 }
 
 int main()
 {
+    SEEDRAND(10);
 
     // PPM Headers
     std::string header = "P6\n" + std::to_string(OUTPUT_WIDTH) + " " + std::to_string(OUTPUT_HEIGHT) + "\n255\n";
@@ -129,8 +129,8 @@ int main()
     std::unique_ptr<Scene> scene = GenerateScene();
 
     // camera
-    Vector3f position(-9.75f, 1.5f, 2.5f);
-    Vector3f lookat(0.0f);
+    Point position(-9.75f, 1.5f, 2.5f);
+    Point lookat(0.0f);
     float fov = 30.0f;
     float aspect = float(OUTPUT_WIDTH) / float(OUTPUT_HEIGHT);
     float focusDist = (position - lookat).Magnitude();
@@ -141,7 +141,7 @@ int main()
     {
         for (int x = 0; x < OUTPUT_WIDTH; x++)
         {
-            Vector3f color = Vector3f::Zero();
+            Vector3 color = Vector3f::Zero();
 
             // Get samples
             for (int i = 0; i < NUM_SAMPLES_PER_PIXEL; i++)
@@ -155,7 +155,7 @@ int main()
             color /= NUM_SAMPLES_PER_PIXEL;
 
             // Correct gamma
-            color = Vector3f(sqrt(color.x), sqrt(color.y), sqrt(color.z));
+            color = Vector3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
 
             // Clamp color values for ppm
             color.x = SATURATE(color.x);

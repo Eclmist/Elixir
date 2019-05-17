@@ -1,8 +1,8 @@
 #include "sphere.h"
 
-bool Sphere::Hit(const Ray & ray, float tMin, float tMax, GeometryHitInfo & hit) const
+bool Sphere::Hit(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hit) const
 {
-    Vector3f oc = ray.m_Origin - m_Center;
+    Vector3 oc = ray.m_Origin - m_Center;
     float a = Dot(ray.m_Direction, ray.m_Direction);
     float b = Dot(oc, ray.m_Direction);
     float c = Dot(oc, oc) - m_Radius * m_Radius;
@@ -35,4 +35,13 @@ bool Sphere::Hit(const Ray & ray, float tMin, float tMax, GeometryHitInfo & hit)
 
     // no real value, did not intersect sphere
     return false;
+}
+
+bool Sphere::ComputeBoundingVolume(float t0, float t1, BoundingVolume& bv) const
+{
+    Point min(m_Center.x - m_Radius, m_Center.y - m_Radius, m_Center.z - m_Radius);
+    Point max(m_Center.x - m_Radius, m_Center.y + m_Radius, m_Center.z + m_Radius);
+    bv = BoundingVolume(min, max);
+
+    return true;
 }

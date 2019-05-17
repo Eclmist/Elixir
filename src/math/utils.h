@@ -27,6 +27,7 @@
 #define LERP(a, b, t) ((1.0f - t) * a + t * b)
 #define SATURATE(x) std::max(0.0f, std::min(1.0f, x))
 
+#define SEEDRAND(a) srand(a);
 #define RAND01() (float)rand() / RAND_MAX
 
 Vector3f RandomInUnitSphere()

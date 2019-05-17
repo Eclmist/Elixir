@@ -15,13 +15,16 @@ public:
 
     inline const Point<T>& operator+() const { return *this; }
     inline Point<T> operator-() const { return Point<T>(-x, -y, -z); }
-    inline void operator=(Point<T>& p) const { x = p.x; y = p.y; z = p.z; }
+    inline void operator=(const Point<T>& p) { x = p.x; y = p.y; z = p.z; }
     inline T operator[](int i) const { return m_Data[i]; }
     inline T& operator[](int i) { return m_Data[i]; }
 
-    inline Point<T>& operator+=(const Vector3<T>& v) { x += v.x; y += v.y; z += v.z; return *this; };
-    inline Point<T>& operator-=(const Vector3<T>& v) { x -= v.x; y -= v.y; z -= v.z; return *this; };
+    inline Point<T>& operator+=(const Vector3<T>& v) { x += v.x; y += v.y; z += v.z; return *this; }
+    inline Point<T>& operator-=(const Vector3<T>& v) { x -= v.x; y -= v.y; z -= v.z; return *this; }
     inline bool operator==(const Point<T>& v) { return (x == v.x) && (y == v.y) && (z == v.z); }
+
+public:
+    static Point<T> Zero() { return Point<T>(0.0f); }
 
 public:
     union
@@ -52,7 +55,7 @@ inline Point<T> operator-(const Point<T>& p, const Vector3<T>& v)
 template<class T>
 inline Vector3<T> operator-(const Point<T>& p1, const Point<T>& p2)
 {
-    return Vector(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
+    return Vector3f(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
 }
 
 template<class T>

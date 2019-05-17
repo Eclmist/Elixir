@@ -1,24 +1,94 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="include\stb\stb_image.h" />
-    <ClInclude Include="include\stb\stbi_image_write.h" />
-    <ClInclude Include="src\math\vector3.h" />
-    <ClInclude Include="src\math\ray.h" />
-    <ClInclude Include="src\math\utils.h" />
-    <ClInclude Include="src\geometrics\geometry.h" />
-    <ClInclude Include="src\geometrics\sphere.h" />
-    <ClInclude Include="src\core\scene.h" />
-    <ClInclude Include="src\camera\camera.h" />
-    <ClInclude Include="src\material\material.h" />
-    <ClInclude Include="src\material\lambertian.h" />
-    <ClInclude Include="src\material\metallic.h" />
-    <ClInclude Include="src\material\dielectric.h" />
+    <ClInclude Include="include\stb\stb_image.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stbi_image_write.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="src\camera\camera.h">
+      <Filter>src\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\geometrics\sphere.h">
+      <Filter>src\geometrics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\vector3.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\vector2.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\scene.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\material\material.h">
+      <Filter>src\material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\material\metallic.h">
+      <Filter>src\material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\material\lambertian.h">
+      <Filter>src\material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\material\dielectric.h">
+      <Filter>src\material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\ray.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\utils.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\point.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\boundingvolume.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\geometrics\primitive.h">
+      <Filter>src\geometrics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\geometrics\sphere.cpp">
+      <Filter>src\geometrics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\scene.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\ray.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\core\scene.cpp" />
-    <ClCompile Include="src\math\ray.cpp" />
-    <ClCompile Include="src\geometrics\sphere.cpp" />
+    <ClCompile Include="src\math\boundingvolume.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{b1473805-af44-4336-a655-9041257f5b1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\stb">
+      <UniqueIdentifier>{79d25ba2-008d-4e27-8aea-027b0c6c822e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{1c345a48-8cd5-422c-b5d2-4eaa37658835}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\camera">
+      <UniqueIdentifier>{bc5eb998-5a84-42b2-9391-7b4a591ff5f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\core">
+      <UniqueIdentifier>{2fa08039-0e21-471c-b4bf-d1773ae19f8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\geometrics">
+      <UniqueIdentifier>{aabce800-e012-4679-8a9d-4a7460e8680c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\math">
+      <UniqueIdentifier>{1ca83a55-c3e3-4750-b60b-54bae4ae17fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\material">
+      <UniqueIdentifier>{b9bc16e2-5a7a-4180-8a79-fdad9aaa7988}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
