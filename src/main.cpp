@@ -22,7 +22,7 @@
 #include "material/metallic.h"
 #include "material/dielectric.h"
 
-#define QUALITY_SETTING_HIGH
+#define QUALITY_SETTING_ULTRA
 
 #ifdef QUALITY_SETTING_ULTRA
 #define OUTPUT_WIDTH 1000
@@ -117,9 +117,8 @@ std::unique_ptr<Scene> GenerateScene()
         for (int b = -SCENE_SIZE; b < SCENE_SIZE; b++)
         {
             float mat = Random::Random01();
-            // Point pos(a + 0.9f * Random::Random01(), 0.2f, b + 0.9f * Random::Random01());
-            Point pos(sin(float(a)) * 5.0f, 0.2f, sin(float(b)) * 5.0f);
-
+            Point pos(a + 0.9f * Random::Random01(), 0.2f, b + 0.9f * Random::Random01());
+            
             if ((pos - Point(4.0f, 0.2f, 0.0f)).Magnitude() > 0.9f)
             {
                 // does not intersect center spheres
@@ -148,9 +147,9 @@ std::unique_ptr<Scene> GenerateScene()
         }
     }
 
-    //scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Lambertian>(Vector3(0.8f, 0.3f, 0.3f))));
-    //scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, 1.1f, 0.0f), 1.0f, std::make_shared<Metallic>(Vector3(0.8f, 0.6f, 0.2f), 0.05f)));
-    //scene->AddPrimitive(std::make_shared<Sphere>(Point(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(Vector3(1.0f, 1.0f, 1.0f), 1.52f)));
+    scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Lambertian>(Vector3(0.8f, 0.3f, 0.3f))));
+    scene->AddPrimitive(std::make_shared<Sphere>(Point(4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Metallic>(Vector3(0.8f, 0.6f, 0.2f), 0.05f)));
+    scene->AddPrimitive(std::make_shared<Sphere>(Point(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(Vector3(1.0f, 1.0f, 1.0f), 1.52f)));
 
     // Floor
     scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(Vector3(0.5f))));
