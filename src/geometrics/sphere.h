@@ -27,7 +27,7 @@ public:
     //! @param hitInfo          Output struct that contains the hit information
     //! 
     //! @return                 True if the there is an intersection
-    virtual bool Hit(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const override;
+    virtual bool Intersect(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const override;
 
     //! @brief Computes a bounding volume
     //! 

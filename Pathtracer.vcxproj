@@ -28,6 +28,7 @@
     <ClCompile Include="src\geometrics\sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\timer.h" />
     <ClInclude Include="src\math\random.h" />
     <ClInclude Include="src\accelerator\bvh.h" />
     <ClInclude Include="src\math\boundingvolume.h" />

@@ -13,6 +13,14 @@
 class Scene
 {
 public:
+    Scene() {}
+
+    //! @brief Copy constructor
+    //! @param copy             The object to copy
+    Scene(const Scene& copy) : m_Primitives(copy.m_Primitives) {};
+
+    Scene operator=(const Scene& copy) { return Scene(copy); }
+
     //! @brief Adds a primitive to the scene
     //! 
     //! This function adds a new primitive to the scene's primitive collection
@@ -22,9 +30,8 @@ public:
 
     //! @brief Raytrace through the scene and returns the info of the nearest hit point
     //! 
-    //! This function iterates through every primitive in the scene and executes an intersection test
-    //! with the ray, returning true if there is at least one intersection. The info of the closest
-    //! intersection point is then stored in hitInfo.
+    //! This function and executes an intersection test with the scene objects
+    //! with the input ray.
     //! 
     //! @param ray              The ray to test against
     //! @param tMin             Min t value of ray to test
@@ -32,14 +39,22 @@ public:
     //! @param hitInfo          Output struct that contains the hit information of the nearest hit point
     //! 
     //! @return                 True if the there is at least one intersection
-    bool RaytraceScene(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo);
+    bool RaytraceScene(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const;
+
+    //! @brief Initializes the scene BVH if it has yet to be initialized or needs to be updated
+    void InitializeBvh();
+
+public:
+    //! @brief Returns the number of primitives in the scene
+    //! @return                 The number of primitives in the scene
+    inline size_t GetSceneSize() const { return m_Primitives.size(); }
 
 private:
     //! A collection of pointers that points to primitives in the scene
     std::vector<std::shared_ptr<Primitive>> m_Primitives;
 
     //! The bounding volume hierarchy that contains all the scene's primitives
-    std::unique_ptr<Bvh> m_Bvh;
+    std::unique_ptr<BVHAccelerator> m_Bvh;
 
     //! A flag that determines if the scene has changed since the last render
     bool m_IsDirty;

@@ -1,4 +1,5 @@
 #include "boundingvolume.h"
+#include "geometrics\primitive.h"
 
 bool BoundingVolume::Hit(const Ray& r, float tMin, float tMax) const
 {
@@ -33,4 +34,16 @@ BoundingVolume BoundingVolume::Combine(const BoundingVolume& bv1, const Bounding
     maxZ = fmax(bv1.Max().z, bv2.Max().z);
 
     return BoundingVolume(Point3f(minX, minY, minZ), Point3f(maxX, maxY, maxZ));
+}
+
+BoundingVolume BoundingVolume::ComputeBoundingVolume(const std::vector<std::shared_ptr<Primitive>>& primitives)
+{
+    BoundingVolume combinedBv(Point3f::Zero(), Point3f::Zero());
+
+    for (int i = 0; i < primitives.size(); i++)
+    {
+        combinedBv = Combine(combinedBv, *primitives[i]->GetBoundingVolume());
+    }
+
+    return combinedBv;
 }

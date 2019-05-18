@@ -1,6 +1,6 @@
 #include "sphere.h"
 
-bool Sphere::Hit(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hit) const
+bool Sphere::Intersect(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hit) const
 {
     Vector3 oc = ray.m_Origin - m_Center;
     float a = Dot(ray.m_Direction, ray.m_Direction);

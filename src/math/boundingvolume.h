@@ -1,8 +1,11 @@
 #ifndef __MATH_BOUNDING_VOLUME_H__
 #define __MATH_BOUNDING_VOLUME_H__
 
+#include <vector>
 #include "point.h"
 #include "ray.h"
+
+class Primitive;
 
 //! @brief A bounding volume that can be used in accelerators
 //!
@@ -30,6 +33,16 @@ public:
     //! @return                 The maximum extends of the bounding volume
     inline Point3f Max() const { return m_Max; }
 
+    //! @brief Returns the extents of the bounding volume in local space
+    //! @return                 The extents of the bounding volume
+    inline Vector3f GetExtents() const { return m_Max - m_Min; }
+
+    //! @brief Return the surface area of the bounding volume
+    //! @return                 The surface area of the bounding volume
+    inline float GetSurfaceArea() const { return (m_Max.x - m_Min.x) * (m_Max.y - m_Min.y) * 2 +
+                                                 (m_Max.y - m_Min.y) * (m_Max.z - m_Min.z) * 2 +
+                                                 (m_Max.x - m_Min.x) * (m_Max.z - m_Min.z) * 2; }
+
     //! @brief Sets the min extents of the bounding volume
     //! @param min              The minimum extends of the bounding volume
     inline void SetMin(Point3f min) { m_Min = min; }
@@ -54,7 +67,16 @@ public:
     //! @brief Combines two bounding volumes
     //!
     //! Computes a bounding volume that tightly encapsulates both input bounding volumes
+    //!
+    //! @return                 The combined bounding volume
     static BoundingVolume Combine(const BoundingVolume& bv1, const BoundingVolume& bv2);
+
+    //! @brief Combines two bounding volumes
+    //!
+    //! Computes a bounding volume that tightly encapsulates all input primitives
+    //!
+    //! @return                 The result bounding volume
+    static BoundingVolume ComputeBoundingVolume(const std::vector<std::shared_ptr<Primitive>>& primitives);
 
 private:
     Point3f m_Min;

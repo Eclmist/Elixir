@@ -51,6 +51,7 @@
     </ClInclude>
     <ClInclude Include="src\accelerator\bvh.h" />
     <ClInclude Include="src\math\random.h" />
+    <ClInclude Include="src\core\timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\geometrics\sphere.cpp">

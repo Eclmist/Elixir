@@ -15,17 +15,55 @@
 #include "math/random.h"
 #include "math/utils.h"
 #include "core/scene.h"
+#include "core/timer.h"
 #include "geometrics/sphere.h"
 #include "camera/camera.h"
 #include "material/lambertian.h"
 #include "material/metallic.h"
 #include "material/dielectric.h"
 
-#define OUTPUT_WIDTH 800
-#define OUTPUT_HEIGHT 400
+#define QUALITY_SETTING_HIGH
+
+#ifdef QUALITY_SETTING_ULTRA
+#define OUTPUT_WIDTH 1000
+#define OUTPUT_HEIGHT 600
+#define NUM_CHANNELS 3
+#define NUM_SAMPLES_PER_PIXEL 16
+#define NUM_BOUNDCE_PER_RAY 4
+#define SCENE_SIZE 9
+#endif
+#ifdef QUALITY_SETTING_HIGH
+#define OUTPUT_WIDTH 1000
+#define OUTPUT_HEIGHT 600
+#define NUM_CHANNELS 3
+#define NUM_SAMPLES_PER_PIXEL 8
+#define NUM_BOUNDCE_PER_RAY 4
+#define SCENE_SIZE 9
+#endif
+#ifdef QUALITY_SETTING_MEDIUM
+#define OUTPUT_WIDTH 500
+#define OUTPUT_HEIGHT 300
+#define NUM_CHANNELS 3
+#define NUM_SAMPLES_PER_PIXEL 4
+#define NUM_BOUNDCE_PER_RAY 4
+#define SCENE_SIZE 7
+#endif
+#ifdef QUALITY_SETTING_LOW
+#define OUTPUT_WIDTH 250
+#define OUTPUT_HEIGHT 150
 #define NUM_CHANNELS 3
 #define NUM_SAMPLES_PER_PIXEL 2
 #define NUM_BOUNDCE_PER_RAY 4
+#define SCENE_SIZE 7
+#endif
+#ifdef QUALITY_SETTING_PREVIEW
+#define OUTPUT_WIDTH 250
+#define OUTPUT_HEIGHT 150
+#define NUM_CHANNELS 3
+#define NUM_SAMPLES_PER_PIXEL 1
+#define NUM_BOUNDCE_PER_RAY 4
+#define SCENE_SIZE 7
+#endif
 
 Vector3f SkyGradient(const Ray& r)
 {
@@ -38,7 +76,7 @@ Vector3f SkyGradient(const Ray& r)
     return LERP(white, skyBlue, t);
 }
 
-Vector3f ShadePixel(const Ray& viewRay, Scene& scene, int depth)
+Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
 {
     PrimitiveHitInfo hit;
 
@@ -70,14 +108,17 @@ Vector3f ShadePixel(const Ray& viewRay, Scene& scene, int depth)
 
 std::unique_ptr<Scene> GenerateScene()
 {
+    TIMER_PROFILE_CPU("Generating Scene")
+
     std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
-    for (int a = -9; a < 9; a++)
+    for (int a = -SCENE_SIZE; a < SCENE_SIZE; a++)
     {
-        for (int b = -9; b < 9; b++)
+        for (int b = -SCENE_SIZE; b < SCENE_SIZE; b++)
         {
             float mat = Random::Random01();
-            Point pos(a + 0.9f * Random::Random01(), 0.2f, b + 0.9f * Random::Random01());
+            // Point pos(a + 0.9f * Random::Random01(), 0.2f, b + 0.9f * Random::Random01());
+            Point pos(sin(float(a)) * 5.0f, 0.2f, sin(float(b)) * 5.0f);
 
             if ((pos - Point(4.0f, 0.2f, 0.0f)).Magnitude() > 0.9f)
             {
@@ -107,19 +148,27 @@ std::unique_ptr<Scene> GenerateScene()
         }
     }
 
-    scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Lambertian>(Vector3(0.8f, 0.3f, 0.3f))));
-    scene->AddPrimitive(std::make_shared<Sphere>(Point(4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Metallic>(Vector3(0.8f, 0.6f, 0.2f), 0.05f)));
-    scene->AddPrimitive(std::make_shared<Sphere>(Point(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(Vector3(1.0f, 1.0f, 1.0f), 1.52f)));
+    //scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Lambertian>(Vector3(0.8f, 0.3f, 0.3f))));
+    //scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, 1.1f, 0.0f), 1.0f, std::make_shared<Metallic>(Vector3(0.8f, 0.6f, 0.2f), 0.05f)));
+    //scene->AddPrimitive(std::make_shared<Sphere>(Point(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(Vector3(1.0f, 1.0f, 1.0f), 1.52f)));
 
     // Floor
     scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(Vector3(0.5f))));
 
+
+    std::cout << "Scene initialized with " << scene->GetSceneSize() << " primitives " << std::endl;
+
+    TIMER_ENDPROFILE_CPU()
+
+    scene->InitializeBvh();
     return scene;
 }
 
 int main()
 {
-    Random::Seed(10);
+    std::cout << "Weekend Pathtracer Adventures vNaN.NaN.Nan" << std::endl;
+
+    Random::Seed(11);
 
     // PPM Headers
     std::string header = "P6\n" + std::to_string(OUTPUT_WIDTH) + " " + std::to_string(OUTPUT_HEIGHT) + "\n255\n";
@@ -129,13 +178,15 @@ int main()
     const Vector3f resolution(OUTPUT_WIDTH, OUTPUT_HEIGHT, 0.0f);
     std::unique_ptr<Scene> scene = GenerateScene();
 
+    TIMER_PROFILE_CPU("Raytracing Scene")
+
     // camera
     Point position(-9.75f, 1.5f, 2.5f);
     Point lookat(0.0f);
-    float fov = 30.0f;
+    float fov = 40.0f;
     float aspect = float(OUTPUT_WIDTH) / float(OUTPUT_HEIGHT);
     float focusDist = (position - lookat).Magnitude();
-    float aperture = 0.02f;
+    float aperture = 0.05f;
     Camera camera(position, lookat, Vector3f::Up(), fov, aspect, aperture, focusDist);
 
     for (int y = OUTPUT_HEIGHT - 1; y >= 0; y--)
@@ -150,6 +201,7 @@ int main()
                 float u = float(x + Random::Random01()) / float(OUTPUT_WIDTH);
                 float v = float(y + Random::Random01()) / float(OUTPUT_HEIGHT);
                 Ray viewRay = camera.GetViewRay(u, v);
+
                 color += ShadePixel(viewRay, *scene, NUM_BOUNDCE_PER_RAY);
             }
 
@@ -175,13 +227,30 @@ int main()
             buffer.push_back(b);
         }
 
-        std::cout << "Progress: " << 100.0f - (float(y) / OUTPUT_HEIGHT * 100.0f) << "%" << std::endl;
+        int progress = int(100.0f - (float(y) / OUTPUT_HEIGHT * 100.0f));
+
+        std::string progressBar = "[";
+        for (int i = 0; i < 100; i+= 3)
+        {
+            if (i < progress)
+                progressBar += "=";
+            else
+                progressBar += " ";
+        }
+        progressBar += "] ";
+        
+        std::cout << "Progress: " << progressBar << "\t" << progress << "%" << '\r';
     }
+    std::cout << std::endl;
+    TIMER_ENDPROFILE_CPU()
 
     int x, y, n;
     stbi_uc* output = stbi_load_from_memory(buffer.data(), static_cast<int>(buffer.size()), &x, &y, &n, 0);
     stbi_write_png("output.png", OUTPUT_WIDTH, OUTPUT_HEIGHT, NUM_CHANNELS, output, OUTPUT_WIDTH * NUM_CHANNELS);
 
     system("output.png");
+    
+    system("PAUSE");
+
     return 0;
 }
