@@ -1,25 +1,18 @@
 #include "scene.h"
 
-void Scene::AddPrimitive(std::unique_ptr<Primitive> geometry)
+void Scene::AddPrimitive(std::shared_ptr<Primitive> geometry)
 {
-    m_Primitives.push_back(std::move(geometry));
+    m_Primitives.push_back(geometry);
+    m_IsDirty = true;
 }
 
-bool Scene::RaytraceScene(const Ray& viewRay, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const
+bool Scene::RaytraceScene(const Ray& viewRay, float tMin, float tMax, PrimitiveHitInfo& hitInfo)
 {
-    PrimitiveHitInfo tempHitInfo;
-    bool hitAnything = false;
-    float nearestDist = tMax;
-
-    for (int i = 0; i < m_Primitives.size(); i++)
+    if (m_Bvh == nullptr || m_IsDirty)
     {
-        if (m_Primitives[i]->Hit(viewRay, tMin, nearestDist, tempHitInfo))
-        {
-            hitAnything = true;
-            nearestDist = tempHitInfo.t;
-            hitInfo = tempHitInfo;
-        }
+        m_Bvh = std::make_unique<Bvh>(m_Primitives);
+        m_IsDirty = false;
     }
 
-    return hitAnything;
+    return m_Bvh->Hit(viewRay, tMin, tMax, hitInfo);
 }

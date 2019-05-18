@@ -48,7 +48,7 @@ public:
         }
 
         // Reflection based on Fresnel approximation
-        if (RAND01() < reflectionProbability)
+        if (Random::Random01() < reflectionProbability)
         {
             scattered = Ray(hitInfo.point, reflectedRay);
         }

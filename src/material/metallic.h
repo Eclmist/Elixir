@@ -2,6 +2,7 @@
 #define __MATERIAL_METALLIC_H__
 
 #include "material.h"
+#include "math\random.h"
 
 class Metallic : public Material
 {
@@ -11,7 +12,7 @@ public:
     virtual bool Scatter(const Ray& incomingRay, const PrimitiveHitInfo& hitInfo, Vector3f& attenuation, Ray& scattered) const
     {
         Vector3f reflected = Reflect(incomingRay.m_Direction.Normalized(), hitInfo.normal);
-        scattered = Ray(hitInfo.point, reflected + m_Roughness * RandomInUnitSphere());
+        scattered = Ray(hitInfo.point, reflected + m_Roughness * Random::RandomInUnitSphere());
         attenuation = m_Albedo;
 
         return (Dot(scattered.m_Direction, hitInfo.normal) > 0);

@@ -1,0 +1,103 @@
+\hypertarget{class_ray}{}\section{Ray Class Reference}
+\label{class_ray}\index{Ray@{Ray}}
+
+
+A class that defines a mathematical ray.  
+
+
+
+
+{\ttfamily \#include $<$ray.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_ray_a2a7cfa3d7fc1cf6bb6365fb21b48a0b0}{Ray}} (const \mbox{\hyperlink{class_point}{Point3f}} \&origin=Point3f\+::\+Zero(), const \mbox{\hyperlink{class_vector3}{Vector3f}} \&direction=Vector3f\+::\+Zero(), float distance=1000.\+0f)
+\begin{DoxyCompactList}\small\item\em Constructs a ray with an origin, direction and distance. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_ray_a4b5f0e9f2876ee83f90059c657bf5fa8}{Ray}} (const \mbox{\hyperlink{class_ray}{Ray}} \&copy)
+\begin{DoxyCompactList}\small\item\em Copy constructor. Constructs a ray with the same origin, direction and distance from input. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_point}{Point3f}} \mbox{\hyperlink{class_ray_a89105097d4add5018efa0795ee9cfb44}{operator()}} (float t) const
+\begin{DoxyCompactList}\small\item\em Returns the point along the ray at distance t. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_ray_a78772e0d4e59fe43e56e468998462091}\label{class_ray_a78772e0d4e59fe43e56e468998462091}} 
+\mbox{\hyperlink{class_point}{Point3f}} \mbox{\hyperlink{class_ray_a78772e0d4e59fe43e56e468998462091}{m\+\_\+\+Origin}}
+\begin{DoxyCompactList}\small\item\em The origin of the ray in world space. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_ray_a1920e38e48d76676ff0f91b7f5b023f1}\label{class_ray_a1920e38e48d76676ff0f91b7f5b023f1}} 
+\mbox{\hyperlink{class_vector3}{Vector3f}} \mbox{\hyperlink{class_ray_a1920e38e48d76676ff0f91b7f5b023f1}{m\+\_\+\+Direction}}
+\begin{DoxyCompactList}\small\item\em The normalized direction of the ray. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_ray_a17641c10c1dd52c672ca2f744630274b}\label{class_ray_a17641c10c1dd52c672ca2f744630274b}} 
+float \mbox{\hyperlink{class_ray_a17641c10c1dd52c672ca2f744630274b}{m\+\_\+\+Distance}}
+\begin{DoxyCompactList}\small\item\em The maximum distance of the ray. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A class that defines a mathematical ray. 
+
+Defines a ray with a origin, direction and distance in the parametric form of p(t) = origin + t $\ast$ distance 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_ray_a2a7cfa3d7fc1cf6bb6365fb21b48a0b0}\label{class_ray_a2a7cfa3d7fc1cf6bb6365fb21b48a0b0}} 
+\index{Ray@{Ray}!Ray@{Ray}}
+\index{Ray@{Ray}!Ray@{Ray}}
+\subsubsection{\texorpdfstring{Ray()}{Ray()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Ray\+::\+Ray (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_point}{Point3f}} \&}]{origin = {\ttfamily Point3f\+:\+:Zero()},  }\item[{const \mbox{\hyperlink{class_vector3}{Vector3f}} \&}]{direction = {\ttfamily Vector3f\+:\+:Zero()},  }\item[{float}]{distance = {\ttfamily 1000.0f} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a ray with an origin, direction and distance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em origin} & The origin of the ray in world space \\
+\hline
+{\em direction} & The normalized direction of the ray \\
+\hline
+{\em distance} & The maximum ray distance \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_ray_a4b5f0e9f2876ee83f90059c657bf5fa8}\label{class_ray_a4b5f0e9f2876ee83f90059c657bf5fa8}} 
+\index{Ray@{Ray}!Ray@{Ray}}
+\index{Ray@{Ray}!Ray@{Ray}}
+\subsubsection{\texorpdfstring{Ray()}{Ray()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Ray\+::\+Ray (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_ray}{Ray}} \&}]{copy }\end{DoxyParamCaption})}
+
+
+
+Copy constructor. Constructs a ray with the same origin, direction and distance from input. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em copy} & The ray to copy \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_ray_a89105097d4add5018efa0795ee9cfb44}\label{class_ray_a89105097d4add5018efa0795ee9cfb44}} 
+\index{Ray@{Ray}!operator()@{operator()}}
+\index{operator()@{operator()}!Ray@{Ray}}
+\subsubsection{\texorpdfstring{operator()()}{operator()()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_point}{Point3f}} Ray\+::operator() (\begin{DoxyParamCaption}\item[{float}]{t }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the point along the ray at distance t. 
+
+Evaluates the ray with t and return the point on the ray such that point = origin + t $\ast$ direction
+
+
+\begin{DoxyParams}{Parameters}
+{\em t} & The t param in parametric ray equation\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The point along the ray at distance t 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/math/ray.\+h\item 
+src/math/ray.\+cpp\end{DoxyCompactItemize}

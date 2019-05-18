@@ -34,7 +34,8 @@ class Primitive
 public:
     //! @brief Constructs a primitive
     //! @param material         The material of the primitive
-    Primitive(std::shared_ptr<Material> material) : m_Material(material) {};
+    Primitive(std::shared_ptr<Material> material)
+        : m_Material(material), m_BoundingVolume(nullptr) {};
 
 public:
     //! @brief Test the geometry for intersections with a ray
@@ -50,6 +51,22 @@ public:
     //! @return                 True if the there is an intersection
     virtual bool Hit(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const = 0;
 
+public:
+    //! @brief Returns the bounding volume of the primitive
+    //! 
+    //! Returns the bounding volume of the primitive. If the bounding volume does not exist,
+    //! compute the bounding volume and return the result.
+    //!
+    //! @return                 A pointer to the bounding volume of the primitive
+    inline std::shared_ptr<BoundingVolume> GetBoundingVolume()
+    {
+        if (m_BoundingVolume.get() == nullptr)
+            ComputeBoundingVolume();
+
+        return m_BoundingVolume;
+    };
+
+protected :
     //! @brief Computes a bounding volume
     //! 
     //! Computes the a bounding volume that encapsulates the current geometry.
@@ -59,11 +76,14 @@ public:
     //! @param bv               The output bounding volume
     //!
     //! @return                 True if the bounding value can be computed with this geometry
-    virtual bool ComputeBoundingVolume(float t0, float t1, BoundingVolume& bv) const = 0;
+    virtual bool ComputeBoundingVolume() = 0;
 
-public:
-    //! A pointer to the material of the sphere
+protected:
+    //! A pointer to the material of the primitive
     const std::shared_ptr<Material> m_Material;
+    
+    //! A pointer to a bounding volume that contains the primitive;
+    std::shared_ptr<BoundingVolume> m_BoundingVolume;
 };
 
 #endif // !__GEOMETRICS_GEOMETRY_H__

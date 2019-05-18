@@ -15,7 +15,6 @@ public:
 
     inline const Point<T>& operator+() const { return *this; }
     inline Point<T> operator-() const { return Point<T>(-x, -y, -z); }
-    inline void operator=(const Point<T>& p) { x = p.x; y = p.y; z = p.z; }
     inline T operator[](int i) const { return m_Data[i]; }
     inline T& operator[](int i) { return m_Data[i]; }
 

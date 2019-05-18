@@ -49,6 +49,8 @@
     <ClInclude Include="src\geometrics\primitive.h">
       <Filter>src\geometrics</Filter>
     </ClInclude>
+    <ClInclude Include="src\accelerator\bvh.h" />
+    <ClInclude Include="src\math\random.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\geometrics\sphere.cpp">
@@ -64,6 +66,8 @@
     <ClCompile Include="src\math\boundingvolume.cpp">
       <Filter>src\math</Filter>
     </ClCompile>
+    <ClCompile Include="src\accelerator\bvh.cpp" />
+    <ClCompile Include="src\math\random.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">

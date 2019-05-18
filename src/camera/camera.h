@@ -2,6 +2,7 @@
 #define __CAMERA_H__
 
 #include "math\ray.h"
+#include "math\random.h"
 
 class Camera
 {
@@ -26,7 +27,7 @@ public:
 
     Ray GetViewRay(float s, float t) 
     { 
-        Vector3f rd = lensRadius * RandomInUnitDisc();
+        Vector3f rd = lensRadius * Random::RandomInUnitDisc();
         Vector3f offset = u * rd.x + v * rd.y;
         return Ray(m_Position + offset, m_Min + s * m_HorizontalStep + t * m_VerticalStep - m_Position - offset); 
     }

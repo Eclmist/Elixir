@@ -27,7 +27,7 @@ public:
     //! @param hitInfo          Output struct that contains the hit information
     //! 
     //! @return                 True if the there is an intersection
-    virtual bool Hit(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const;
+    virtual bool Hit(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const override;
 
     //! @brief Computes a bounding volume
     //! 
@@ -38,7 +38,7 @@ public:
     //! @param bv               The output bounding volume
     //!
     //! @return                 Always return true since bounding volumes can be created for spheres
-    virtual bool ComputeBoundingVolume(float t0, float t1, BoundingVolume& bv) const;
+    virtual bool ComputeBoundingVolume() override;
 
 public:
     //! The world space position of the center of the sphere

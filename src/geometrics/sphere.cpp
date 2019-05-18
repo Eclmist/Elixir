@@ -37,11 +37,10 @@ bool Sphere::Hit(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hit) 
     return false;
 }
 
-bool Sphere::ComputeBoundingVolume(float t0, float t1, BoundingVolume& bv) const
+bool Sphere::ComputeBoundingVolume()
 {
-    Point min(m_Center.x - m_Radius, m_Center.y - m_Radius, m_Center.z - m_Radius);
-    Point max(m_Center.x - m_Radius, m_Center.y + m_Radius, m_Center.z + m_Radius);
-    bv = BoundingVolume(min, max);
-
+    Point min = Point(m_Center.x - m_Radius, m_Center.y - m_Radius, m_Center.z - m_Radius);
+    Point max = Point(m_Center.x + m_Radius, m_Center.y + m_Radius, m_Center.z + m_Radius);
+    m_BoundingVolume = std::make_shared<BoundingVolume>(min, max);
     return true;
 }

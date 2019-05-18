@@ -2,6 +2,7 @@
 #define __MATERIAL_LAMBERTIAN_H__
 
 #include "material.h"
+#include "math\random.h"
 
 class Lambertian : public Material
 {
@@ -10,7 +11,7 @@ public:
 
     virtual bool Scatter(const Ray& incomingRay, const PrimitiveHitInfo& hitInfo, Vector3f& attenuation, Ray& scattered) const 
     {
-        Point3f target = hitInfo.point + hitInfo.normal + RandomInUnitSphere();
+        Point3f target = hitInfo.point + hitInfo.normal + Random::RandomInUnitSphere();
         scattered = Ray(hitInfo.point, target - hitInfo.point);
         attenuation = m_Albedo;
         return true;

@@ -27,31 +27,6 @@
 #define LERP(a, b, t) ((1.0f - t) * a + t * b)
 #define SATURATE(x) std::max(0.0f, std::min(1.0f, x))
 
-#define SEEDRAND(a) srand(a);
-#define RAND01() (float)rand() / RAND_MAX
-
-Vector3f RandomInUnitSphere()
-{
-    Vector3f p;
-
-    do {
-        p = 2.0f * Vector3f(RAND01(), RAND01(), RAND01()) - Vector3f(1.0f);
-    } while (p.SquareMagnitude() >= 1.0f);
-
-    return p;
-}
-
-Vector3f RandomInUnitDisc()
-{
-    Vector3f p;
-
-    do {
-        p = 2.0f * Vector3f(RAND01(), RAND01(), 0.0f) - Vector3f(1.0f, 1.0f, 0.0f);
-    } while (Dot(p, p) >= 1.0f);
-
-    return p;
-}
-
 float SchlickFresnelApproximation(float cosine, float ior)
 {
     float r0 = (1.0f - ior) / (1.0f + ior);

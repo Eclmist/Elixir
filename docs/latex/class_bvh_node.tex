@@ -1,0 +1,28 @@
+\hypertarget{class_bvh_node}{}\section{Bvh\+Node Class Reference}
+\label{class_bvh_node}\index{BvhNode@{BvhNode}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_bvh_node_a0be91539815ae1cfb78366bd9fa88a62}\label{class_bvh_node_a0be91539815ae1cfb78366bd9fa88a62}} 
+bool {\bfseries Hit} (const \mbox{\hyperlink{class_ray}{Ray}} \&ray, float t\+Min, float t\+Max, \mbox{\hyperlink{struct_primitive_hit_info}{Primitive\+Hit\+Info}} \&hit\+Info) const
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_bvh_node_a21bd95677768c8052c70c2fd62c8b6c4}\label{class_bvh_node_a21bd95677768c8052c70c2fd62c8b6c4}} 
+\mbox{\hyperlink{class_bounding_volume}{Bounding\+Volume}} {\bfseries m\+\_\+\+Bounding\+Volume}
+\item 
+\mbox{\Hypertarget{class_bvh_node_a243cdf77d3354ff7a377c3e0315375be}\label{class_bvh_node_a243cdf77d3354ff7a377c3e0315375be}} 
+std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{class_primitive}{Primitive}} $>$ {\bfseries m\+\_\+\+Primitive} = nullptr
+\item 
+\mbox{\Hypertarget{class_bvh_node_a8cb96fbcef603d08da93de03ac7b9bf7}\label{class_bvh_node_a8cb96fbcef603d08da93de03ac7b9bf7}} 
+std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{class_bvh_node}{Bvh\+Node}} $>$ {\bfseries m\+\_\+\+Left} = nullptr
+\item 
+\mbox{\Hypertarget{class_bvh_node_afc0cc1a05f0237c4c6a14c72c2d9ee0b}\label{class_bvh_node_afc0cc1a05f0237c4c6a14c72c2d9ee0b}} 
+std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{class_bvh_node}{Bvh\+Node}} $>$ {\bfseries m\+\_\+\+Right} = nullptr
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/accelerator/bvh.\+h\end{DoxyCompactItemize}

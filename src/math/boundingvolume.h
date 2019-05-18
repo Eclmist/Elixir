@@ -17,13 +17,26 @@ public:
     BoundingVolume(const Point3f& min = Point3f(-1.0f), const Point3f& max = Point3f(1.0f))
         : m_Min(min), m_Max(max) {};
 
+    //! @brief Copy Constructor
+    //! @param copy             The bounding volume to copy from
+    BoundingVolume(const BoundingVolume& copy)
+        : m_Min(copy.m_Min), m_Max(copy.m_Max) {};
+
     //! @brief Returns minimum extents of the bounding volume in world space
     //! @return                 The minimum extends of the bounding volume
-    Point3f Min() const { return m_Min; }
+    inline Point3f Min() const { return m_Min; }
 
     //! @brief Returns maximum extents of the bounding volume in world space
     //! @return                 The maximum extends of the bounding volume
-    Point3f Max() const { return m_Max; }
+    inline Point3f Max() const { return m_Max; }
+
+    //! @brief Sets the min extents of the bounding volume
+    //! @param min              The minimum extends of the bounding volume
+    inline void SetMin(Point3f min) { m_Min = min; }
+
+    //! @brief Sets the max extents of the bounding volume
+    //! @param max              The maximum extends of the bounding volume
+    inline void SetMax(Point3f max) { m_Max = max; }
 
     //! @brief Test the bounding volume for intersections with a ray
     //! 
@@ -35,7 +48,13 @@ public:
     //! @param tMax             Max t value of ray to test
     //! 
     //! @return                 True if the there is an intersection
-    bool Hit(const Ray& r, float tMin, float tMax);
+    bool Hit(const Ray& r, float tMin, float tMax) const;
+
+public:
+    //! @brief Combines two bounding volumes
+    //!
+    //! Computes a bounding volume that tightly encapsulates both input bounding volumes
+    static BoundingVolume Combine(const BoundingVolume& bv1, const BoundingVolume& bv2);
 
 private:
     Point3f m_Min;

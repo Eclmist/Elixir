@@ -1,0 +1,129 @@
+\hypertarget{class_sphere}{}\section{Sphere Class Reference}
+\label{class_sphere}\index{Sphere@{Sphere}}
+
+
+A class that defines a sphere primitive.  
+
+
+
+
+{\ttfamily \#include $<$sphere.\+h$>$}
+
+Inheritance diagram for Sphere\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_sphere}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_sphere_addbe505252c330f303acbaed75a44b35}{Sphere}} (\mbox{\hyperlink{class_point}{Point3f}} center, float radius, std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_material}{Material}} $>$ material)
+\begin{DoxyCompactList}\small\item\em Constructs a sphere with a center, radius and material. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_sphere_a0a807bf78883890821395968bc93abbc}{Hit}} (const \mbox{\hyperlink{class_ray}{Ray}} \&ray, float t\+Min, float t\+Max, \mbox{\hyperlink{struct_primitive_hit_info}{Primitive\+Hit\+Info}} \&hit\+Info) const override
+\begin{DoxyCompactList}\small\item\em Test the sphere for intersections with a ray. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_sphere_a2398bffc7779ee90c49eda65860a64ed}{Compute\+Bounding\+Volume}} (float t0, float t1, \mbox{\hyperlink{class_bounding_volume}{Bounding\+Volume}} \&bv) const override
+\begin{DoxyCompactList}\small\item\em Computes a bounding volume. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_sphere_a67a24eee9316de96160185cc024a952e}\label{class_sphere_a67a24eee9316de96160185cc024a952e}} 
+\mbox{\hyperlink{class_point}{Point3f}} \mbox{\hyperlink{class_sphere_a67a24eee9316de96160185cc024a952e}{m\+\_\+\+Center}}
+\begin{DoxyCompactList}\small\item\em The world space position of the center of the sphere. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_sphere_a013e6356f37b24bddda33ff36bfdcd76}\label{class_sphere_a013e6356f37b24bddda33ff36bfdcd76}} 
+float \mbox{\hyperlink{class_sphere_a013e6356f37b24bddda33ff36bfdcd76}{m\+\_\+\+Radius}}
+\begin{DoxyCompactList}\small\item\em The radius of the sphere. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A class that defines a sphere primitive. 
+
+A class that defines a sphere primitive and handles ray-\/sphere interactions 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_sphere_addbe505252c330f303acbaed75a44b35}\label{class_sphere_addbe505252c330f303acbaed75a44b35}} 
+\index{Sphere@{Sphere}!Sphere@{Sphere}}
+\index{Sphere@{Sphere}!Sphere@{Sphere}}
+\subsubsection{\texorpdfstring{Sphere()}{Sphere()}}
+{\footnotesize\ttfamily Sphere\+::\+Sphere (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_point}{Point3f}}}]{center,  }\item[{float}]{radius,  }\item[{std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_material}{Material}} $>$}]{material }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a sphere with a center, radius and material. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em center} & The origin of the sphere in world space \\
+\hline
+{\em radius} & The radius of the sphere \\
+\hline
+{\em material} & The material of the sphere \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_sphere_a2398bffc7779ee90c49eda65860a64ed}\label{class_sphere_a2398bffc7779ee90c49eda65860a64ed}} 
+\index{Sphere@{Sphere}!ComputeBoundingVolume@{ComputeBoundingVolume}}
+\index{ComputeBoundingVolume@{ComputeBoundingVolume}!Sphere@{Sphere}}
+\subsubsection{\texorpdfstring{ComputeBoundingVolume()}{ComputeBoundingVolume()}}
+{\footnotesize\ttfamily bool Sphere\+::\+Compute\+Bounding\+Volume (\begin{DoxyParamCaption}\item[{float}]{t0,  }\item[{float}]{t1,  }\item[{\mbox{\hyperlink{class_bounding_volume}{Bounding\+Volume}} \&}]{bv }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Computes a bounding volume. 
+
+Computes the a bounding volume that encapsulates the current sphere.
+
+
+\begin{DoxyParams}{Parameters}
+{\em t0} & Undocumented property \\
+\hline
+{\em t1} & Undocumented property \\
+\hline
+{\em bv} & The output bounding volume\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Always return true since bounding volumes can be created for spheres 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{class_primitive_aa69e801685785a9ffdb7653013bf2775}{Primitive}}.
+
+\mbox{\Hypertarget{class_sphere_a0a807bf78883890821395968bc93abbc}\label{class_sphere_a0a807bf78883890821395968bc93abbc}} 
+\index{Sphere@{Sphere}!Hit@{Hit}}
+\index{Hit@{Hit}!Sphere@{Sphere}}
+\subsubsection{\texorpdfstring{Hit()}{Hit()}}
+{\footnotesize\ttfamily bool Sphere\+::\+Hit (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_ray}{Ray}} \&}]{ray,  }\item[{float}]{t\+Min,  }\item[{float}]{t\+Max,  }\item[{\mbox{\hyperlink{struct_primitive_hit_info}{Primitive\+Hit\+Info}} \&}]{hit\+Info }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Test the sphere for intersections with a ray. 
+
+This function allows us to do intersection tests with a segment of a ray in the domain of t\+Min and t\+Max
+
+
+\begin{DoxyParams}{Parameters}
+{\em ray} & The ray to test against \\
+\hline
+{\em t\+Min} & Min t value of ray to test \\
+\hline
+{\em t\+Max} & Max t value of ray to test \\
+\hline
+{\em hit\+Info} & Output struct that contains the hit information\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the there is an intersection 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{class_primitive_a9a9dff3376d27201ee2fb984f03cb3bc}{Primitive}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/geometrics/sphere.\+h\item 
+src/geometrics/sphere.\+cpp\end{DoxyCompactItemize}

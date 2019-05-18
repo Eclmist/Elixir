@@ -4,6 +4,7 @@
 #include <vector>
 #include "geometrics/Primitive.h"
 #include "math/ray.h"
+#include "accelerator/bvh.h"
 
 //! @brief A scene object that owns primitives
 //! 
@@ -17,7 +18,7 @@ public:
     //! This function adds a new primitive to the scene's primitive collection
     //! 
     //! @param primitive         A pointer to the primitive
-    void AddPrimitive(std::unique_ptr<Primitive> primitive);
+    void AddPrimitive(std::shared_ptr<Primitive> primitive);
 
     //! @brief Raytrace through the scene and returns the info of the nearest hit point
     //! 
@@ -31,11 +32,17 @@ public:
     //! @param hitInfo          Output struct that contains the hit information of the nearest hit point
     //! 
     //! @return                 True if the there is at least one intersection
-    bool RaytraceScene(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const;
+    bool RaytraceScene(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo);
 
 private:
     //! A collection of pointers that points to primitives in the scene
-    std::vector<std::unique_ptr<Primitive>> m_Primitives;
+    std::vector<std::shared_ptr<Primitive>> m_Primitives;
+
+    //! The bounding volume hierarchy that contains all the scene's primitives
+    std::unique_ptr<Bvh> m_Bvh;
+
+    //! A flag that determines if the scene has changed since the last render
+    bool m_IsDirty;
 };
 
 #endif // !__CORE_SCENE_H__

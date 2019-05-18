@@ -1,0 +1,45 @@
+\hypertarget{class_bvh}{}\section{Bvh Class Reference}
+\label{class_bvh}\index{Bvh@{Bvh}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_bvh_a3bd0a63d8624c574d45661c7dc2bab88}\label{class_bvh_a3bd0a63d8624c574d45661c7dc2bab88}} 
+{\bfseries Bvh} (std\+::vector$<$ std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{class_primitive}{Primitive}} $>$$>$ primitives)
+\item 
+bool \mbox{\hyperlink{class_bvh_ae4e6221db6e1bb8682dbf9fca133e0e1}{Hit}} (const \mbox{\hyperlink{class_ray}{Ray}} \&ray, float t\+Min, float t\+Max, \mbox{\hyperlink{struct_primitive_hit_info}{Primitive\+Hit\+Info}} \&hit\+Info) const
+\begin{DoxyCompactList}\small\item\em Test the entire B\+VH for intersections with a ray. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_bvh_ae4e6221db6e1bb8682dbf9fca133e0e1}\label{class_bvh_ae4e6221db6e1bb8682dbf9fca133e0e1}} 
+\index{Bvh@{Bvh}!Hit@{Hit}}
+\index{Hit@{Hit}!Bvh@{Bvh}}
+\subsubsection{\texorpdfstring{Hit()}{Hit()}}
+{\footnotesize\ttfamily bool Bvh\+::\+Hit (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_ray}{Ray}} \&}]{ray,  }\item[{float}]{t\+Min,  }\item[{float}]{t\+Max,  }\item[{\mbox{\hyperlink{struct_primitive_hit_info}{Primitive\+Hit\+Info}} \&}]{hit\+Info }\end{DoxyParamCaption}) const}
+
+
+
+Test the entire B\+VH for intersections with a ray. 
+
+This function allows us to do intersection tests with a segment of a ray in the domain of t\+Min and t\+Max, against the bounding volume hierarchy.
+
+
+\begin{DoxyParams}{Parameters}
+{\em ray} & The ray to test against \\
+\hline
+{\em t\+Min} & Min t value of ray to test \\
+\hline
+{\em t\+Max} & Max t value of ray to test \\
+\hline
+{\em hit\+Info} & Output struct that contains the hit information\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the there is an intersection 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/accelerator/bvh.\+h\item 
+src/accelerator/bvh.\+cpp\end{DoxyCompactItemize}

@@ -12,6 +12,7 @@
 
 #include "math/vector3.h"
 #include "math/ray.h"
+#include "math/random.h"
 #include "math/utils.h"
 #include "core/scene.h"
 #include "geometrics/sphere.h"
@@ -37,7 +38,7 @@ Vector3f SkyGradient(const Ray& r)
     return LERP(white, skyBlue, t);
 }
 
-Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
+Vector3f ShadePixel(const Ray& viewRay, Scene& scene, int depth)
 {
     PrimitiveHitInfo hit;
 
@@ -71,54 +72,54 @@ std::unique_ptr<Scene> GenerateScene()
 {
     std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
-    for (int a = -5; a < 5; a++)
+    for (int a = -9; a < 9; a++)
     {
-        for (int b = -5; b < 5; b++)
+        for (int b = -9; b < 9; b++)
         {
-            float mat = RAND01();
-            Point pos(a + 0.9f * RAND01(), 0.2f, b + 0.9f * RAND01());
+            float mat = Random::Random01();
+            Point pos(a + 0.9f * Random::Random01(), 0.2f, b + 0.9f * Random::Random01());
 
             if ((pos - Point(4.0f, 0.2f, 0.0f)).Magnitude() > 0.9f)
             {
                 // does not intersect center spheres
                 if (mat < 0.8f) // diffuse
                 {
-                    float rand_x = RAND01();
-                    float rand_y = RAND01();
-                    float rand_z = RAND01();
-                    scene->AddPrimitive(std::make_unique<Sphere>(pos, 0.2f, std::make_shared<Lambertian>(Vector3(rand_x, rand_y, rand_z))));
+                    float rand_x = Random::Random01();
+                    float rand_y = Random::Random01();
+                    float rand_z = Random::Random01();
+                    scene->AddPrimitive(std::make_shared<Sphere>(pos, 0.2f, std::make_shared<Lambertian>(Vector3(rand_x, rand_y, rand_z))));
                 }
                 else if (mat < 0.95f) // metallic
                 {
-                    float rand_x = 0.5f * (1.0f + RAND01());
-                    float rand_y = 0.5f * (1.0f + RAND01());
-                    float rand_z = 0.5f * (1.0f + RAND01());
-                    scene->AddPrimitive(std::make_unique<Sphere>(pos, 0.2f, std::make_shared<Metallic>(Vector3(rand_x, rand_y, rand_z), 0.5f * RAND01())));
+                    float rand_x = 0.5f * (1.0f + Random::Random01());
+                    float rand_y = 0.5f * (1.0f + Random::Random01());
+                    float rand_z = 0.5f * (1.0f + Random::Random01());
+                    scene->AddPrimitive(std::make_shared<Sphere>(pos, 0.2f, std::make_shared<Metallic>(Vector3(rand_x, rand_y, rand_z), 0.5f * Random::Random01())));
                 }
                 else // glass
                 {
-                    float rand_x = 0.5f * (1.0f + RAND01());
-                    float rand_y = 0.5f * (1.0f + RAND01());
-                    float rand_z = 0.5f * (1.0f + RAND01());
-                    scene->AddPrimitive(std::make_unique<Sphere>(pos, 0.2f, std::make_shared<Dielectric>(Vector3(rand_x, rand_y, rand_z), 1.52f)));
+                    float rand_x = 0.5f * (1.0f + Random::Random01());
+                    float rand_y = 0.5f * (1.0f + Random::Random01());
+                    float rand_z = 0.5f * (1.0f + Random::Random01());
+                    scene->AddPrimitive(std::make_shared<Sphere>(pos, 0.2f, std::make_shared<Dielectric>(Vector3(rand_x, rand_y, rand_z), 1.52f)));
                 }
             }
         }
     }
 
-    scene->AddPrimitive(std::make_unique<Sphere>(Point(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Lambertian>(Vector3(0.8f, 0.3f, 0.3f))));
-    scene->AddPrimitive(std::make_unique<Sphere>(Point(4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Metallic>(Vector3(0.8f, 0.6f, 0.2f), 0.05f)));
-    scene->AddPrimitive(std::make_unique<Sphere>(Point(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(Vector3(1.0f, 1.0f, 1.0f), 1.52f)));
+    scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Lambertian>(Vector3(0.8f, 0.3f, 0.3f))));
+    scene->AddPrimitive(std::make_shared<Sphere>(Point(4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Metallic>(Vector3(0.8f, 0.6f, 0.2f), 0.05f)));
+    scene->AddPrimitive(std::make_shared<Sphere>(Point(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(Vector3(1.0f, 1.0f, 1.0f), 1.52f)));
 
     // Floor
-    scene->AddPrimitive(std::make_unique<Sphere>(Point(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(Vector3(0.5f))));
+    scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(Vector3(0.5f))));
 
     return scene;
 }
 
 int main()
 {
-    SEEDRAND(10);
+    Random::Seed(10);
 
     // PPM Headers
     std::string header = "P6\n" + std::to_string(OUTPUT_WIDTH) + " " + std::to_string(OUTPUT_HEIGHT) + "\n255\n";
@@ -146,8 +147,8 @@ int main()
             // Get samples
             for (int i = 0; i < NUM_SAMPLES_PER_PIXEL; i++)
             {
-                float u = float(x + RAND01()) / float(OUTPUT_WIDTH);
-                float v = float(y + RAND01()) / float(OUTPUT_HEIGHT);
+                float u = float(x + Random::Random01()) / float(OUTPUT_WIDTH);
+                float v = float(y + Random::Random01()) / float(OUTPUT_HEIGHT);
                 Ray viewRay = camera.GetViewRay(u, v);
                 color += ShadePixel(viewRay, *scene, NUM_BOUNDCE_PER_RAY);
             }
