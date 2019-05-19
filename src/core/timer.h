@@ -29,7 +29,7 @@ public:
         m_HasEarlyExit = true;
 
         std::clock_t endTime = std::clock();
-        clock_t timeElapsed = 1000.0 * (endTime - m_StartTime) / CLOCKS_PER_SEC;
+        clock_t timeElapsed = clock_t(1000) * (endTime - m_StartTime) / CLOCKS_PER_SEC;
 
         std::cout << m_ProcessName << " completed \t\t\t" << timeElapsed << " ms" << std::endl;
     }

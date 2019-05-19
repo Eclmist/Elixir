@@ -38,9 +38,15 @@ BoundingVolume BoundingVolume::Combine(const BoundingVolume& bv1, const Bounding
 
 BoundingVolume BoundingVolume::ComputeBoundingVolume(const std::vector<std::shared_ptr<Primitive>>& primitives)
 {
-    BoundingVolume combinedBv(Point3f::Zero(), Point3f::Zero());
+    // We CANNOT combine with Point(0) because that will make all bv extend to origin..
+    if (primitives.size() <= 0)
+    {
+        return BoundingVolume(Point3f::Zero(), Point3f::Zero());
+    }
 
-    for (int i = 0; i < primitives.size(); i++)
+    BoundingVolume combinedBv = *primitives[0]->GetBoundingVolume();
+
+    for (int i = 1; i < primitives.size(); i++)
     {
         combinedBv = Combine(combinedBv, *primitives[i]->GetBoundingVolume());
     }

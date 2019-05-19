@@ -18,7 +18,7 @@ void Scene::InitializeBvh()
     {
         TIMER_PROFILE_CPU("Building BVH Tree")
 
-        m_Bvh = std::make_unique<BVHAccelerator>(m_Primitives);
+        m_Bvh = std::make_unique<BVHAccelerator>(m_Primitives, BVHAccelerator::SplitMethod::SAH);
         m_IsDirty = false;
     }
 }

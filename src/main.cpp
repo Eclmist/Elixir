@@ -22,7 +22,7 @@
 #include "material/metallic.h"
 #include "material/dielectric.h"
 
-#define QUALITY_SETTING_ULTRA
+#define QUALITY_SETTING_HIGH
 
 #ifdef QUALITY_SETTING_ULTRA
 #define OUTPUT_WIDTH 1000
@@ -247,9 +247,7 @@ int main()
     stbi_uc* output = stbi_load_from_memory(buffer.data(), static_cast<int>(buffer.size()), &x, &y, &n, 0);
     stbi_write_png("output.png", OUTPUT_WIDTH, OUTPUT_HEIGHT, NUM_CHANNELS, output, OUTPUT_WIDTH * NUM_CHANNELS);
 
-    system("output.png");
-    
     system("PAUSE");
-
+    system("output.png");
     return 0;
 }
