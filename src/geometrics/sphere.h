@@ -13,7 +13,7 @@ public:
     //! @param center           The origin of the sphere in world space
     //! @param radius           The radius of the sphere
     //! @param material         The material of the sphere
-    Sphere(Point3f center, float radius, std::shared_ptr<Material> material) 
+    Sphere(const Point3f& center, float radius, std::shared_ptr<Material> material) 
         : Primitive(material), m_Center(center), m_Radius(radius) {};
 
     //! @brief Test the sphere for intersections with a ray
@@ -33,10 +33,6 @@ public:
     //! 
     //! Computes the a bounding volume that encapsulates the current sphere.
     //! 
-    //! @param t0               Undocumented property
-    //! @param t1               Undocumented property
-    //! @param bv               The output bounding volume
-    //!
     //! @return                 Always return true since bounding volumes can be created for spheres
     virtual bool ComputeBoundingVolume() override;
 

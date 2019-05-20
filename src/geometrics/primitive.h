@@ -70,12 +70,8 @@ protected :
     //! @brief Computes a bounding volume
     //! 
     //! Computes the a bounding volume that encapsulates the current geometry.
-    //! 
-    //! @param t0               Undocumented property
-    //! @param t1               Undocumented property
-    //! @param bv               The output bounding volume
     //!
-    //! @return                 True if the bounding value can be computed with this geometry
+    //! @return                 True if the bounding volume was successfully created
     virtual bool ComputeBoundingVolume() = 0;
 
 protected:

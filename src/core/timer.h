@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <ctime>
+#include <chrono>
 
 #define TIMER_PROFILE_CPU(a) Timer timer(a);
 #define TIMER_ENDPROFILE_CPU() timer.EndTimer();

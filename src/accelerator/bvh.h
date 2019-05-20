@@ -17,6 +17,7 @@ public:
 
     //! @brief Constructs a BVH with a collection of objects
     //! @param objects          A collection of objects
+    //! @param splitMethod      Splitting algorithm to use when building the BVH
     BVHAccelerator(const std::vector<std::shared_ptr<Primitive>>& objects, const SplitMethod splitMethod = SplitMethod::SAH);
 
     //! @brief Test the entire BVH for intersections with a ray
@@ -38,7 +39,7 @@ private:
     //! Split the objects into two equal subtrees on a random axis, such that
     //! the left subtree and the right subtree has the same number of elements  
     //!
-    //! @param object           The collection of objects
+    //! @param objects          The collection of objects
     //! @param leftBucket       The left subtree to populate
     //! @param rightBucket      The right subtree to populate
     static void EqualCountSplit(
@@ -50,7 +51,8 @@ private:
     //! 
     //! Computes the split based on Surface Area Heuristics
     //!
-    //! @param object           The collection of objects
+    //! @param objects          The collection of objects
+    //! @param boundingVolume   The bounding volume of the current level node
     //! @param leftBucket       The left subtree to populate
     //! @param rightBucket      The right subtree to populate
     static void SAHSplit(

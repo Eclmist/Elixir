@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\math\matrix4x4.cpp" />
+    <ClCompile Include="src\geometrics\box.cpp" />
     <ClCompile Include="src\math\random.cpp" />
     <ClCompile Include="src\accelerator\bvh.cpp" />
     <ClCompile Include="src\math\boundingvolume.cpp" />
@@ -28,7 +30,10 @@
     <ClCompile Include="src\geometrics\sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\math\matrix4x4.h" />
     <ClInclude Include="src\core\timer.h" />
+    <ClInclude Include="src\geometrics\box.h" />
+    <ClInclude Include="src\material\diffuselight.h" />
     <ClInclude Include="src\math\random.h" />
     <ClInclude Include="src\accelerator\bvh.h" />
     <ClInclude Include="src\math\boundingvolume.h" />
@@ -47,6 +52,9 @@
     <ClInclude Include="src\math\vector3.h" />
     <ClInclude Include="src\geometrics\primitive.h" />
     <ClInclude Include="src\geometrics\sphere.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="output.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

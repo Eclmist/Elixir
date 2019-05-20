@@ -35,7 +35,7 @@ BVHAccelerator::BVHAccelerator(const std::vector<std::shared_ptr<Primitive>>& ob
 bool BVHAccelerator::Intersect(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const
 {
     // If intersect bounding volume
-    if (m_BoundingVolume->Hit(ray, tMin, tMax))
+    if (m_BoundingVolume->Intersect(ray, tMin, tMax))
     {
         // reached the end of tree, return hit with primitive
         if (m_Left == nullptr || m_Right == nullptr)

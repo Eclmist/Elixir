@@ -1,3 +1,16 @@
+﻿/* ================================================================================================ /
+ ____    ____  ____   ____     ___  ____        ___   _____       _____ __ __   ____  ___ ___    ___
+|    \  /    ||    \ |    \   /  _]|    \      /   \ |     |     / ___/|  |  | /    ||   |   |  /  _]
+|  o  )|  o  ||  _  ||  _  | /  [_ |  D  )    |     ||   __|    (   \_ |  |  ||  o  || _   _ | /  [_
+|     ||     ||  |  ||  |  ||    _]|    /     |  O  ||  |_       \__  ||  _  ||     ||  \_/  ||    _]
+|  O  ||  _  ||  |  ||  |  ||   [_ |    \     |     ||   _]      /  \ ||  |  ||  _  ||   |   ||   [_
+|     ||  |  ||  |  ||  |  ||     ||  .  \    |     ||  |        \    ||  |  ||  |  ||   |   ||     |
+|_____||__|__||__|__||__|__||_____||__|\_|     \___/ |__|         \___||__|__||__|__||___|___||_____|
+
+                       This file is ghetto. Remove when no longer ghetto. 
+ ================================================================================================ */
+
+
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
@@ -6,6 +19,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <iomanip>
 
 #include "stb/stb_image.h"
 #include "stb/stbi_image_write.h"
@@ -21,23 +35,24 @@
 #include "material/lambertian.h"
 #include "material/metallic.h"
 #include "material/dielectric.h"
+#include "material/diffuselight.h"
 
-#define QUALITY_SETTING_HIGH
+#define QUALITY_SETTING_ULTRA
 
 #ifdef QUALITY_SETTING_ULTRA
 #define OUTPUT_WIDTH 1000
 #define OUTPUT_HEIGHT 600
 #define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 16
+#define NUM_SAMPLES_PER_PIXEL 512
 #define NUM_BOUNDCE_PER_RAY 4
-#define SCENE_SIZE 9
+#define SCENE_SIZE 1
 #endif
 #ifdef QUALITY_SETTING_HIGH
 #define OUTPUT_WIDTH 1000
 #define OUTPUT_HEIGHT 600
 #define NUM_CHANNELS 3
 #define NUM_SAMPLES_PER_PIXEL 8
-#define NUM_BOUNDCE_PER_RAY 4
+#define NUM_BOUNDCE_PER_RAY 4int
 #define SCENE_SIZE 9
 #endif
 #ifdef QUALITY_SETTING_MEDIUM
@@ -80,29 +95,27 @@ Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
 {
     PrimitiveHitInfo hit;
 
-    // max bounce reached
-    if (depth == 0)
-        return Vector3(0.0f); // assume no light at all
-
     if (scene.RaytraceScene(viewRay, 0.001f, viewRay.m_Distance, hit))
     {
+#include <time.h>
         Ray scatteredRay;
         Vector3f attenuation;
+        Vector3f emission = hit.material->Emit();
 
-        if (hit.material->Scatter(viewRay, hit, attenuation, scatteredRay))
+        if (depth > 0 && hit.material->Scatter(viewRay, hit, attenuation, scatteredRay))
         {
             // recursively collect color contribution
-            return attenuation * ShadePixel(scatteredRay, scene, depth - 1);
+            return emission + attenuation * ShadePixel(scatteredRay, scene, depth - 1);
         }
         else
         {
-            // If scattered ray did not intersect with any object, assume we hit sky
-            return Vector3(0.0f);
+            // If scattered ray did not intersect with any object, 
+            return emission;
         }
     }
     else
     {
-        return SkyGradient(viewRay);
+        return Vector3(0.0f); // SkyGradient(viewRay);
     }
 }
 
@@ -147,7 +160,7 @@ std::unique_ptr<Scene> GenerateScene()
         }
     }
 
-    scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Lambertian>(Vector3(0.8f, 0.3f, 0.3f))));
+    scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<DiffuseLight>(Vector3(20.0f, 5.3f, 0.3f))));
     scene->AddPrimitive(std::make_shared<Sphere>(Point(4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Metallic>(Vector3(0.8f, 0.6f, 0.2f), 0.05f)));
     scene->AddPrimitive(std::make_shared<Sphere>(Point(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(Vector3(1.0f, 1.0f, 1.0f), 1.52f)));
 
@@ -163,11 +176,35 @@ std::unique_ptr<Scene> GenerateScene()
     return scene;
 }
 
+unsigned long TimeSinceEpochMillisec() {
+    using namespace std::chrono;
+    return unsigned long(system_clock::now().time_since_epoch() / milliseconds(1));
+}
+
+void FormatTime(unsigned long time, std::string& hh, std::string& mm, std::string& ss)
+{
+    //3600000 milliseconds in an hour
+    long hr = time / 3600000;
+    time = time - 3600000 * hr;
+    //60000 milliseconds in a minute
+    long min = time / 60000;
+    time = time - 60000 * min;
+
+    //1000 milliseconds in a second
+    long sec = time / 1000;
+    time = time - 1000 * sec;
+
+    hh = std::string(hr < 10 ? 1 : 0, '0').append(std::to_string(hr));
+    mm = std::string(min < 10 ? 1 : 0, '0').append(std::to_string(min));
+    ss = std::string(sec < 10 ? 1 : 0, '0').append(std::to_string(sec));
+}
+
 int main()
 {
     std::cout << "Weekend Pathtracer Adventures vNaN.NaN.Nan" << std::endl;
 
     Random::Seed(11);
+#include <time.h>
 
     // PPM Headers
     std::string header = "P6\n" + std::to_string(OUTPUT_WIDTH) + " " + std::to_string(OUTPUT_HEIGHT) + "\n255\n";
@@ -188,6 +225,9 @@ int main()
     float aperture = 0.05f;
     Camera camera(position, lookat, Vector3f::Up(), fov, aspect, aperture, focusDist);
 
+    unsigned long lastTime = TimeSinceEpochMillisec();
+    unsigned long avgTimePerRow;
+
     for (int y = OUTPUT_HEIGHT - 1; y >= 0; y--)
     {
         for (int x = 0; x < OUTPUT_WIDTH; x++)
@@ -206,6 +246,7 @@ int main()
 
             color /= NUM_SAMPLES_PER_PIXEL;
 
+#include <time.h>
             // Correct gamma
             color = Vector3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
 
@@ -226,7 +267,15 @@ int main()
             buffer.push_back(b);
         }
 
-        int progress = int(100.0f - (float(y) / OUTPUT_HEIGHT * 100.0f));
+        float progress = 100.0f - (float(y) / OUTPUT_HEIGHT * 100.0f);
+        auto newTime = TimeSinceEpochMillisec();
+
+        if (y == OUTPUT_HEIGHT - 1)
+            avgTimePerRow = newTime - lastTime;
+
+        avgTimePerRow = (avgTimePerRow + (newTime - lastTime)) / 2;
+        unsigned long timeLeft = avgTimePerRow * size_t(y);
+        lastTime = newTime;
 
         std::string progressBar = "[";
         for (int i = 0; i < 100; i+= 3)
@@ -237,8 +286,10 @@ int main()
                 progressBar += " ";
         }
         progressBar += "] ";
-        
-        std::cout << "Progress: " << progressBar << "\t" << progress << "%" << '\r';
+
+        std::string hh, mm, ss;
+        FormatTime(timeLeft, hh, mm, ss);
+        std::cout << "Progress: " << progressBar << "\t" << int(progress) << "% ETA: " << hh << ":" << mm << ":" << ss << "            " << '\r';
     }
     std::cout << std::endl;
     TIMER_ENDPROFILE_CPU()

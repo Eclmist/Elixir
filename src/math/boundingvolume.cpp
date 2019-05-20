@@ -1,7 +1,7 @@
 #include "boundingvolume.h"
 #include "geometrics\primitive.h"
 
-bool BoundingVolume::Hit(const Ray& r, float tMin, float tMax) const
+bool BoundingVolume::Intersect(const Ray& r, float tMin, float tMax) const
 {
     for (int i = 0; i < 3; i++)
     {

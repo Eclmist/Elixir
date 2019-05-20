@@ -54,14 +54,14 @@ public:
     //! @brief Test the bounding volume for intersections with a ray
     //! 
     //! This function allows us to do intersection tests with a segment of a ray in the domain
-    //! of tMin and tMax
+    //! of tMin and tMax, using the slab method
     //! 
     //! @param ray              The ray to test against
     //! @param tMin             Min t value of ray to test
     //! @param tMax             Max t value of ray to test
     //! 
     //! @return                 True if the there is an intersection
-    bool Hit(const Ray& r, float tMin, float tMax) const;
+    bool Intersect(const Ray& ray, float tMin, float tMax) const;
 
 public:
     //! @brief Combines two bounding volumes

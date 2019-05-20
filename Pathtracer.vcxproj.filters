@@ -46,12 +46,15 @@
     <ClInclude Include="src\math\boundingvolume.h">
       <Filter>src\math</Filter>
     </ClInclude>
-    <ClInclude Include="src\geometrics\primitive.h">
-      <Filter>src\geometrics</Filter>
-    </ClInclude>
     <ClInclude Include="src\accelerator\bvh.h" />
     <ClInclude Include="src\math\random.h" />
     <ClInclude Include="src\core\timer.h" />
+    <ClInclude Include="src\material\diffuselight.h" />
+    <ClInclude Include="src\geometrics\box.h" />
+    <ClInclude Include="src\geometrics\primitive.h">
+      <Filter>src\geometrics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\matrix4x4.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\geometrics\sphere.cpp">
@@ -69,6 +72,8 @@
     </ClCompile>
     <ClCompile Include="src\accelerator\bvh.cpp" />
     <ClCompile Include="src\math\random.cpp" />
+    <ClCompile Include="src\geometrics\box.cpp" />
+    <ClCompile Include="src\math\matrix4x4.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -95,5 +100,8 @@
     <Filter Include="src\material">
       <UniqueIdentifier>{b9bc16e2-5a7a-4180-8a79-fdad9aaa7988}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="output.png" />
   </ItemGroup>
 </Project>
