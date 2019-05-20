@@ -1,5 +1,5 @@
 #include "boundingvolume.h"
-#include "geometrics\primitive.h"
+#include "geometry\primitive.h"
 
 bool BoundingVolume::Intersect(const Ray& r, float tMin, float tMax) const
 {

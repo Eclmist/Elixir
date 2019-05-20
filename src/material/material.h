@@ -1,7 +1,7 @@
 #ifndef __MATERIAL_H__
 #define __MATERIAL_H__
 
-#include "geometrics/Primitive.h"
+#include "geometry/primitive.h"
 #include "math/utils.h"
 
 class Material

@@ -1,5 +1,5 @@
-#ifndef __GEOMETRICS_SPHERE_H__
-#define __GEOMETRICS_SPHERE_H__
+#ifndef __GEOMETRY_SPHERE_H__
+#define __GEOMETRY_SPHERE_H__
 
 #include "primitive.h"
 

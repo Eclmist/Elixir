@@ -19,20 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\math\matrix4x4.cpp" />
-    <ClCompile Include="src\geometrics\box.cpp" />
     <ClCompile Include="src\math\random.cpp" />
     <ClCompile Include="src\accelerator\bvh.cpp" />
     <ClCompile Include="src\math\boundingvolume.cpp" />
     <ClCompile Include="src\core\scene.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\math\ray.cpp" />
-    <ClCompile Include="src\geometrics\sphere.cpp" />
+    <ClCompile Include="src\geometry\sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\math\matrix4x4.h" />
     <ClInclude Include="src\core\timer.h" />
-    <ClInclude Include="src\geometrics\box.h" />
     <ClInclude Include="src\material\diffuselight.h" />
     <ClInclude Include="src\math\random.h" />
     <ClInclude Include="src\accelerator\bvh.h" />
@@ -50,8 +46,8 @@
     <ClInclude Include="src\math\utils.h" />
     <ClInclude Include="src\math\vector2.h" />
     <ClInclude Include="src\math\vector3.h" />
-    <ClInclude Include="src\geometrics\primitive.h" />
-    <ClInclude Include="src\geometrics\sphere.h" />
+    <ClInclude Include="src\geometry\primitive.h" />
+    <ClInclude Include="src\geometry\sphere.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="output.png" />

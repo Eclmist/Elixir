@@ -30,7 +30,7 @@
 #include "math/utils.h"
 #include "core/scene.h"
 #include "core/timer.h"
-#include "geometrics/sphere.h"
+#include "geometry/sphere.h"
 #include "camera/camera.h"
 #include "material/lambertian.h"
 #include "material/metallic.h"
@@ -43,25 +43,25 @@
 #define OUTPUT_WIDTH 1000
 #define OUTPUT_HEIGHT 600
 #define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 512
+#define NUM_SAMPLES_PER_PIXEL 1024
 #define NUM_BOUNDCE_PER_RAY 4
-#define SCENE_SIZE 1
+#define SCENE_SIZE 9
 #endif
 #ifdef QUALITY_SETTING_HIGH
 #define OUTPUT_WIDTH 1000
 #define OUTPUT_HEIGHT 600
 #define NUM_CHANNELS 3
 #define NUM_SAMPLES_PER_PIXEL 8
-#define NUM_BOUNDCE_PER_RAY 4int
+#define NUM_BOUNDCE_PER_RAY 4
 #define SCENE_SIZE 9
 #endif
 #ifdef QUALITY_SETTING_MEDIUM
 #define OUTPUT_WIDTH 500
 #define OUTPUT_HEIGHT 300
 #define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 4
+#define NUM_SAMPLES_PER_PIXEL 1
 #define NUM_BOUNDCE_PER_RAY 4
-#define SCENE_SIZE 7
+#define SCENE_SIZE 3
 #endif
 #ifdef QUALITY_SETTING_LOW
 #define OUTPUT_WIDTH 250
@@ -69,7 +69,7 @@
 #define NUM_CHANNELS 3
 #define NUM_SAMPLES_PER_PIXEL 2
 #define NUM_BOUNDCE_PER_RAY 4
-#define SCENE_SIZE 7
+#define SCENE_SIZE 5
 #endif
 #ifdef QUALITY_SETTING_PREVIEW
 #define OUTPUT_WIDTH 250
@@ -77,18 +77,18 @@
 #define NUM_CHANNELS 3
 #define NUM_SAMPLES_PER_PIXEL 1
 #define NUM_BOUNDCE_PER_RAY 4
-#define SCENE_SIZE 7
+#define SCENE_SIZE 3
 #endif
 
 Vector3f SkyGradient(const Ray& r)
 {
-    Vector3 skyBlue(0.5f, 0.7f, 1.0f);
-    Vector3 white(1.0f);
+    Vector3 sunsetRed(0.725f, 0.268f, 0.152f);
+    Vector3 sunsetBlue(0.18f, 0.296f, 0.952f);
     Vector3 direction = r.m_Direction.Normalized();
 
-    float t = 0.5f * direction.y + 1.0f;
+    float t = (direction.y + 0.5f) / 1.2f;
 
-    return LERP(white, skyBlue, t);
+    return LERP(sunsetRed / 3.0f, sunsetBlue / 4.0f, SATURATE(t));
 }
 
 Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
@@ -97,7 +97,6 @@ Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
 
     if (scene.RaytraceScene(viewRay, 0.001f, viewRay.m_Distance, hit))
     {
-#include <time.h>
         Ray scatteredRay;
         Vector3f attenuation;
         Vector3f emission = hit.material->Emit();
@@ -115,7 +114,7 @@ Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
     }
     else
     {
-        return Vector3(0.0f); // SkyGradient(viewRay);
+        return SkyGradient(viewRay);
     }
 }
 

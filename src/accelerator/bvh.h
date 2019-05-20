@@ -1,8 +1,8 @@
-#ifndef __ACCELERATOR_BVH_H__
+#ifndef __ACCELERATORS_BVH_H__
 #define __ACCELERATOR_BVH_H__
 
 #include <vector>
-#include "geometrics/primitive.h"
+#include "geometry/primitive.h"
 
 //! @brief Defines a bounding volume hierarchy
 //!

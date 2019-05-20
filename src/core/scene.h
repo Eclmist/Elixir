@@ -2,7 +2,7 @@
 #define __CORE_SCENE_H__
 
 #include <vector>
-#include "geometrics/Primitive.h"
+#include "geometry/primitive.h"
 #include "math/ray.h"
 #include "accelerator/bvh.h"
 
