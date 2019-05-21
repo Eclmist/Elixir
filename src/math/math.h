@@ -23,6 +23,7 @@
 #define EXR_MIN_FLOAT           (-EXR_MAX_FLOAT)
 
 #define exrSaturate(x)          exrClamp(x, 0, 1)
+#define exrPow(x, n)            pow(x, n)
 
 exrBEGIN_NAMESPACE
 

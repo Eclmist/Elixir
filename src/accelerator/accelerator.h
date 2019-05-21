@@ -2,6 +2,7 @@
 #define __ACCELERATOR_H__
 
 #include <vector>
+#include "core/system/system.h"
 #include "geometry/primitive.h"
 
 exrBEGIN_NAMESPACE
@@ -23,7 +24,14 @@ public:
     //! @param hitInfo          Output struct that contains the hit information
     //! 
     //! @return                 True if the there are any intersections
-    virtual bool Intersect(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const = 0;
+    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const = 0;
+
+protected:
+    //! A pointer to the primitive. Will be null unless this is a leaf node.
+    Primitive* m_Primitive;
+
+    //! A bounding volume that contains all the objects below this node
+    BoundingVolume m_BoundingVolume;
 };
 
 exrEND_NAMESPACE

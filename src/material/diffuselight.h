@@ -8,21 +8,21 @@ exrBEGIN_NAMESPACE
 class DiffuseLight : public Material
 {
 public:
-    DiffuseLight(const Vector3f& e) : m_Emissive(e) {};
+    DiffuseLight(const exrVector3& e) : m_Emissive(e) {};
 
-    virtual bool Scatter(const Ray& in, const PrimitiveHitInfo& hitInfo, Vector3f& attenuation, Ray& scattered) const
+    virtual exrBool Scatter(const Ray& in, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const
     {
         // Assume light source does not scatter incoming ray
         return false;
     }
 
-    virtual Vector3f Emit() const
+    virtual exrVector3 Emit() const
     {
         return m_Emissive;
     }
 
 private:
-    Vector3f m_Emissive;
+    exrVector3 m_Emissive;
 };
 
 exrEND_NAMESPACE

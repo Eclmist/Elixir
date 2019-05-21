@@ -1,4 +1,3 @@
-#include "core/system/system.h"
 #include "ray.h"
 
 exrBEGIN_NAMESPACE

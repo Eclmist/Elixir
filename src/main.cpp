@@ -10,11 +10,10 @@
                         This file is ghetto. Remove when no longer ghetto. 
  ================================================================================================ */
 
-
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
-#define EXR_QUALITY_MEDIUM
+#define EXR_QUALITY_PREVIEW
 
 #include <memory>
 #include <iostream>
@@ -39,28 +38,28 @@
 #include "material/dielectric.h"
 #include "material/diffuselight.h"
 
-exrBEGIN_NAMESPACE
+using namespace elixir;
 
-Vector3f SkyGradient(const Ray& r)
+exrVector3 SkyGradient(const Ray& r)
 {
-    Vector3 sunsetRed(0.725f, 0.268f, 0.152f);
-    Vector3 sunsetBlue(0.18f, 0.296f, 0.952f);
-    Vector3 direction = r.m_Direction.Normalized();
+    exrVector3 sunsetRed(0.725f, 0.268f, 0.152f);
+    exrVector3 sunsetBlue(0.18f, 0.296f, 0.952f);
+    exrVector3 direction = r.m_Direction.Normalized();
 
-    float t = (direction.y + 0.5f) / 1.2f;
+    exrFloat t = (direction.y + 0.5f) / 1.2f;
 
     return exrLerp(sunsetRed / 3.0f, sunsetBlue / 4.0f, exrSaturate(t));
 }
 
-Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
+exrVector3 ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
 {
     PrimitiveHitInfo hit;
 
     if (scene.RaytraceScene(viewRay, 0.001f, viewRay.m_Distance, hit))
     {
         Ray scatteredRay;
-        Vector3f attenuation;
-        Vector3f emission = hit.material->Emit();
+        exrVector3 attenuation;
+        exrVector3 emission = hit.material->Emit();
 
         if (depth > 0 && hit.material->Scatter(viewRay, hit, attenuation, scatteredRay))
         {
@@ -89,7 +88,7 @@ std::unique_ptr<Scene> GenerateScene()
     {
         for (int b = -SCENE_SIZE; b < SCENE_SIZE; b++)
         {
-            float mat = Random::Random01();
+            exrFloat mat = Random::Random01();
             Point pos(a + 0.9f * Random::Random01(), 0.2f, b + 0.9f * Random::Random01());
             
             if ((pos - Point(4.0f, 0.2f, 0.0f)).Magnitude() > 0.9f)
@@ -97,35 +96,35 @@ std::unique_ptr<Scene> GenerateScene()
                 // does not intersect center spheres
                 if (mat < 0.8f) // diffuse
                 {
-                    float rand_x = Random::Random01();
-                    float rand_y = Random::Random01();
-                    float rand_z = Random::Random01();
-                    scene->AddPrimitive(std::make_shared<Sphere>(pos, 0.2f, std::make_shared<Lambertian>(Vector3(rand_x, rand_y, rand_z))));
+                    exrFloat rand_x = Random::Random01();
+                    exrFloat rand_y = Random::Random01();
+                    exrFloat rand_z = Random::Random01();
+                    scene->AddPrimitive(std::make_shared<Sphere>(pos, 0.2f, std::make_shared<Lambertian>(exrVector3(rand_x, rand_y, rand_z))));
                 }
                 else if (mat < 0.95f) // metallic
                 {
-                    float rand_x = 0.5f * (1.0f + Random::Random01());
-                    float rand_y = 0.5f * (1.0f + Random::Random01());
-                    float rand_z = 0.5f * (1.0f + Random::Random01());
-                    scene->AddPrimitive(std::make_shared<Sphere>(pos, 0.2f, std::make_shared<Metallic>(Vector3(rand_x, rand_y, rand_z), 0.5f * Random::Random01())));
+                    exrFloat rand_x = 0.5f * (1.0f + Random::Random01());
+                    exrFloat rand_y = 0.5f * (1.0f + Random::Random01());
+                    exrFloat rand_z = 0.5f * (1.0f + Random::Random01());
+                    scene->AddPrimitive(std::make_shared<Sphere>(pos, 0.2f, std::make_shared<Metallic>(exrVector3(rand_x, rand_y, rand_z), 0.5f * Random::Random01())));
                 }
                 else // glass
                 {
-                    float rand_x = 0.5f * (1.0f + Random::Random01());
-                    float rand_y = 0.5f * (1.0f + Random::Random01());
-                    float rand_z = 0.5f * (1.0f + Random::Random01());
-                    scene->AddPrimitive(std::make_shared<Sphere>(pos, 0.2f, std::make_shared<Dielectric>(Vector3(rand_x, rand_y, rand_z), 1.52f)));
+                    exrFloat rand_x = 0.5f * (1.0f + Random::Random01());
+                    exrFloat rand_y = 0.5f * (1.0f + Random::Random01());
+                    exrFloat rand_z = 0.5f * (1.0f + Random::Random01());
+                    scene->AddPrimitive(std::make_shared<Sphere>(pos, 0.2f, std::make_shared<Dielectric>(exrVector3(rand_x, rand_y, rand_z), 1.52f)));
                 }
             }
         }
     }
 
-    scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<DiffuseLight>(Vector3(20.0f, 5.3f, 0.3f))));
-    scene->AddPrimitive(std::make_shared<Sphere>(Point(4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Metallic>(Vector3(0.8f, 0.6f, 0.2f), 0.05f)));
-    scene->AddPrimitive(std::make_shared<Sphere>(Point(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(Vector3(1.0f, 1.0f, 1.0f), 1.52f)));
+    scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<DiffuseLight>(exrVector3(20.0f, 5.3f, 0.3f))));
+    scene->AddPrimitive(std::make_shared<Sphere>(Point(4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Metallic>(exrVector3(0.8f, 0.6f, 0.2f), 0.05f)));
+    scene->AddPrimitive(std::make_shared<Sphere>(Point(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(exrVector3(1.0f, 1.0f, 1.0f), 1.52f)));
 
     // Floor
-    scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(Vector3(0.5f))));
+    scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(exrVector3(0.5f))));
 
 
     std::cout << "Scene initialized with " << scene->GetSceneSize() << " primitives " << std::endl;
@@ -141,7 +140,7 @@ unsigned long TimeSinceEpochMillisec() {
     return unsigned long(system_clock::now().time_since_epoch() / milliseconds(1));
 }
 
-void FormatTime(unsigned long time, std::string& hh, std::string& mm, std::string& ss)
+void FormatTime(unsigned long time, exrString& hh, exrString& mm, exrString& ss)
 {
     //3600000 milliseconds in an hour
     long hr = time / 3600000;
@@ -154,9 +153,9 @@ void FormatTime(unsigned long time, std::string& hh, std::string& mm, std::strin
     long sec = time / 1000;
     time = time - 1000 * sec;
 
-    hh = std::string(hr < 10 ? 1 : 0, '0').append(std::to_string(hr));
-    mm = std::string(min < 10 ? 1 : 0, '0').append(std::to_string(min));
-    ss = std::string(sec < 10 ? 1 : 0, '0').append(std::to_string(sec));
+    hh = exrString(hr < 10 ? 1 : 0, '0').append(std::to_string(hr));
+    mm = exrString(min < 10 ? 1 : 0, '0').append(std::to_string(min));
+    ss = exrString(sec < 10 ? 1 : 0, '0').append(std::to_string(sec));
 }
 
 int main()
@@ -167,11 +166,11 @@ int main()
 #include <time.h>
 
     // PPM Headers
-    std::string header = "P6\n" + std::to_string(OUTPUT_WIDTH) + " " + std::to_string(OUTPUT_HEIGHT) + "\n255\n";
+    exrString header = "P6\n" + std::to_string(OUTPUT_WIDTH) + " " + std::to_string(OUTPUT_HEIGHT) + "\n255\n";
     
     std::vector<unsigned char> buffer(header.begin(), header.end());
 
-    const Vector3f resolution(OUTPUT_WIDTH, OUTPUT_HEIGHT, 0.0f);
+    const exrVector3 resolution(OUTPUT_WIDTH, OUTPUT_HEIGHT, 0.0f);
     std::unique_ptr<Scene> scene = GenerateScene();
 
     exrProfile("Raytracing Scene")
@@ -179,11 +178,11 @@ int main()
     // camera
     Point position(-9.75f, 1.5f, 2.5f);
     Point lookat(0.0f);
-    float fov = 40.0f;
-    float aspect = float(OUTPUT_WIDTH) / float(OUTPUT_HEIGHT);
-    float focusDist = (position - lookat).Magnitude();
-    float aperture = 0.05f;
-    Camera camera(position, lookat, Vector3f::Up(), fov, aspect, aperture, focusDist);
+    exrFloat fov = 40.0f;
+    exrFloat aspect = exrFloat(OUTPUT_WIDTH) / exrFloat(OUTPUT_HEIGHT);
+    exrFloat focusDist = (position - lookat).Magnitude();
+    exrFloat aperture = 0.05f;
+    Camera camera(position, lookat, exrVector3::Up(), fov, aspect, aperture, focusDist);
 
     unsigned long lastTime = TimeSinceEpochMillisec();
     unsigned long avgTimePerRow;
@@ -192,13 +191,13 @@ int main()
     {
         for (int x = 0; x < OUTPUT_WIDTH; x++)
         {
-            Vector3 color = Vector3f::Zero();
+            exrVector3 color = exrVector3::Zero();
 
             // Get samples
             for (int i = 0; i < NUM_SAMPLES_PER_PIXEL; i++)
             {
-                float u = float(x + Random::Random01()) / float(OUTPUT_WIDTH);
-                float v = float(y + Random::Random01()) / float(OUTPUT_HEIGHT);
+                exrFloat u = exrFloat(x + Random::Random01()) / exrFloat(OUTPUT_WIDTH);
+                exrFloat v = exrFloat(y + Random::Random01()) / exrFloat(OUTPUT_HEIGHT);
                 Ray viewRay = camera.GetViewRay(u, v);
 
                 color += ShadePixel(viewRay, *scene, NUM_BOUNDCE_PER_RAY);
@@ -206,9 +205,8 @@ int main()
 
             color /= NUM_SAMPLES_PER_PIXEL;
 
-#include <time.h>
             // Correct gamma
-            color = Vector3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
+            color = exrVector3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
 
             // Clamp color values for ppm
             color.x = exrSaturate(color.x);
@@ -227,7 +225,7 @@ int main()
             buffer.push_back(b);
         }
 
-        float progress = 100.0f - (float(y) / OUTPUT_HEIGHT * 100.0f);
+        exrFloat progress = 100.0f - (exrFloat(y) / OUTPUT_HEIGHT * 100.0f);
         auto newTime = TimeSinceEpochMillisec();
 
         if (y == OUTPUT_HEIGHT - 1)
@@ -237,7 +235,7 @@ int main()
         unsigned long timeLeft = avgTimePerRow * size_t(y);
         lastTime = newTime;
 
-        std::string progressBar = "[";
+        exrString progressBar = "[";
         for (int i = 0; i < 100; i+= 3)
         {
             if (i < progress)
@@ -247,7 +245,7 @@ int main()
         }
         progressBar += "] ";
 
-        std::string hh, mm, ss;
+        exrString hh, mm, ss;
         FormatTime(timeLeft, hh, mm, ss);
         exrInfo("Progress: " << progressBar << "\t" << int(progress) << "% ETA: " << hh << ":" << mm << ":" << ss << "            " << '\r');
     }
@@ -261,5 +259,3 @@ int main()
     system("output.png");
     return 0;
 }
-
-exrEND_NAMESPACE

@@ -6,14 +6,16 @@
 #include <ctime>
 #include <chrono>
 
+#include "core/system/system.h"
+
 exrBEGIN_NAMESPACE
 
 class Timer
 {
 public:
-    Timer(std::string processName = "Unnamed scope") : m_ProcessName(processName), m_StartTime(std::clock())
+    Timer(exrString processName = "Unnamed scope") : m_ProcessName(processName), m_StartTime(std::clock())
     {
-        std::cout << "\n" << processName << " " << std::endl;
+        exrInfoLine("\n" << processName);
     }
 
     ~Timer()
@@ -31,14 +33,35 @@ public:
         std::clock_t endTime = std::clock();
         clock_t timeElapsed = clock_t(1000) * (endTime - m_StartTime) / CLOCKS_PER_SEC;
 
-        std::cout << m_ProcessName << " completed \t\t\t" << timeElapsed << " ms" << std::endl;
+        exrString hh, mm, ss;
+        FormatTime(timeElapsed, hh, mm, ss);
+
+        exrInfoLine(m_ProcessName << " completed \t\t\t" << "Total elapsed time: " << hh << ":" << mm << ":" << ss);
     }
 
+    // Copy pasted from main for now
+    void FormatTime(exrU64 time, exrString& hh, exrString& mm, exrString& ss) const
+    {
+        //3600000 milliseconds in an hour
+        exrU64 hr = time / 3600000;
+        time = time - 3600000 * hr;
+        //60000 milliseconds in a minute
+        exrU64 min = time / 60000;
+        time = time - 60000 * min;
+
+        //1000 milliseconds in a second
+        exrU64 sec = time / 1000;
+        time = time - 1000 * sec;
+
+        hh = exrString(hr < 10 ? 1 : 0, '0').append(std::to_string(hr));
+        mm = exrString(min < 10 ? 1 : 0, '0').append(std::to_string(min));
+        ss = exrString(sec < 10 ? 1 : 0, '0').append(std::to_string(sec));
+    }
 private:
     std::clock_t m_StartTime;
-    std::string m_ProcessName;
+    exrString m_ProcessName;
 
-    bool m_HasEarlyExit = false;
+    exrBool m_HasEarlyExit = false;
 };
 
 exrEND_NAMESPACE

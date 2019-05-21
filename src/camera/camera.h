@@ -10,13 +10,13 @@ exrBEGIN_NAMESPACE
 class Camera
 {
 public:
-    Camera(Point3f position, Point3f lookat, Vector3f up, float vfov, float aspect, float aperture, float focusDist) {
+    Camera(exrPoint position, exrPoint lookat, exrVector3 up, exrFloat vfov, exrFloat aspect, exrFloat aperture, exrFloat focusDist) {
         // virtual lens to simulate defocus blur
         lensRadius = aperture / 2.0f;
                
-        float theta = vfov * float(M_PI) / 180.f;
-        float halfHeight = tan(theta / 2.0f);
-        float halfWidth = aspect * halfHeight;
+        exrFloat theta = vfov * exrFloat(M_PI) / 180.f;
+        exrFloat halfHeight = tan(theta / 2.0f);
+        exrFloat halfWidth = aspect * halfHeight;
 
         m_Position = position;
         w = (lookat - position).Normalized(); // look in positive -z axis, RH coordinate system
@@ -28,21 +28,21 @@ public:
         m_VerticalStep = 2.0f * halfHeight * focusDist * v;
     }
 
-    Ray GetViewRay(float s, float t) 
+    Ray GetViewRay(exrFloat s, exrFloat t) 
     { 
-        Vector3f rd = lensRadius * Random::RandomInUnitDisc();
-        Vector3f offset = u * rd.x + v * rd.y;
+        exrVector3 rd = lensRadius * Random::RandomInUnitDisc();
+        exrVector3 offset = u * rd.x + v * rd.y;
         return Ray(m_Position + offset, m_Min + s * m_HorizontalStep + t * m_VerticalStep - m_Position - offset); 
     }
 
-    Point3f m_Position;
-    Point3f m_Min;
-    Vector3f m_HorizontalStep;
-    Vector3f m_VerticalStep;
+    exrPoint m_Position;
+    exrPoint m_Min;
+    exrVector3 m_HorizontalStep;
+    exrVector3 m_VerticalStep;
 
-    Vector3f u, v, w;
+    exrVector3 u, v, w;
 
-    float lensRadius;
+    exrFloat lensRadius;
 };
 
 exrEND_NAMESPACE

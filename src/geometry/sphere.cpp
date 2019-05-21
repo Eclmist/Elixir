@@ -2,19 +2,19 @@
 
 exrBEGIN_NAMESPACE
 
-bool Sphere::Intersect(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hit) const
+bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hit) const
 {
-    Vector3 oc = ray.m_Origin - m_Center;
-    float a = Dot(ray.m_Direction, ray.m_Direction);
-    float b = Dot(oc, ray.m_Direction);
-    float c = Dot(oc, oc) - m_Radius * m_Radius;
-    float discriminant = b * b - a * c;
+    exrVector3 oc = ray.m_Origin - m_Center;
+    exrFloat a = Dot(ray.m_Direction, ray.m_Direction);
+    exrFloat b = Dot(oc, ray.m_Direction);
+    exrFloat c = Dot(oc, oc) - m_Radius * m_Radius;
+    exrFloat discriminant = b * b - a * c;
 
     // solve quadratic equation to find t
     if (discriminant > 0)
     {
-        float hitPoint1 = (-b - sqrt(b * b - a * c)) / a;
-        float hitPoint2 = (-b + sqrt(b * b - a * c)) / a;
+        exrFloat hitPoint1 = (-b - sqrt(b * b - a * c)) / a;
+        exrFloat hitPoint2 = (-b + sqrt(b * b - a * c)) / a;
 
         if (hitPoint1 <= tMax && hitPoint1 >= tMin)
         {
@@ -41,9 +41,9 @@ bool Sphere::Intersect(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo&
 
 bool Sphere::ComputeBoundingVolume()
 {
-    Point min = Point(m_Center.x - m_Radius, m_Center.y - m_Radius, m_Center.z - m_Radius);
-    Point max = Point(m_Center.x + m_Radius, m_Center.y + m_Radius, m_Center.z + m_Radius);
-    m_BoundingVolume = std::make_shared<BoundingVolume>(min, max);
+    exrPoint min = exrPoint(m_Center.x - m_Radius, m_Center.y - m_Radius, m_Center.z - m_Radius);
+    exrPoint max = exrPoint(m_Center.x + m_Radius, m_Center.y + m_Radius, m_Center.z + m_Radius);
+    m_BoundingVolume = BoundingVolume(min, max);
     return true;
 }
 

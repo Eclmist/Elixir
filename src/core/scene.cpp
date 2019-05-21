@@ -1,4 +1,5 @@
 #include "scene.h"
+#include "core/system/system.h"
 
 exrBEGIN_NAMESPACE
 
@@ -8,7 +9,7 @@ void Scene::AddPrimitive(std::shared_ptr<Primitive> geometry)
     m_IsDirty = true;
 }
 
-bool Scene::RaytraceScene(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const
+bool Scene::RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const
 {
     return m_Accelerator->Intersect(ray, tMin, tMax, hitInfo);
 }
@@ -23,5 +24,5 @@ void Scene::InitializeBvh()
         exrEndProfile()
     }
 }
- 
+
 exrEND_NAMESPACE

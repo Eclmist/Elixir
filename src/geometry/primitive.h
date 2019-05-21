@@ -38,7 +38,7 @@ public:
     //! @brief Constructs a primitive
     //! @param material         The material of the primitive
     Primitive(std::shared_ptr<Material> material)
-        : m_Material(material), m_BoundingVolume(nullptr) {};
+        : m_Material(material) {};
 
 public:
     //! @brief Test the geometry for intersections with a ray
@@ -56,16 +56,9 @@ public:
 
 public:
     //! @brief Returns the bounding volume of the primitive
-    //! 
-    //! Returns the bounding volume of the primitive. If the bounding volume does not exist,
-    //! compute the bounding volume and return the result.
-    //!
-    //! @return                 A pointer to the bounding volume of the primitive
-    inline std::shared_ptr<BoundingVolume> GetBoundingVolume()
+    //! @return                 A bounding volume of the primitive
+    inline BoundingVolume GetBoundingVolume()
     {
-        if (m_BoundingVolume.get() == nullptr)
-            ComputeBoundingVolume();
-
         return m_BoundingVolume;
     };
 
@@ -81,8 +74,8 @@ protected:
     //! A pointer to the material of the primitive
     const std::shared_ptr<Material> m_Material;
     
-    //! A pointer to a bounding volume that contains the primitive;
-    std::shared_ptr<BoundingVolume> m_BoundingVolume;
+    //! A bounding volume that contains the primitive;
+    BoundingVolume m_BoundingVolume;
 };
 
 exrEND_NAMESPACE

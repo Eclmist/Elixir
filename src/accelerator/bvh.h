@@ -1,7 +1,6 @@
 #ifndef __ACCELERATOR_BVH_H__
 #define __ACCELERATOR_BVH_H__
 
-#include "core/system/system.h"
 #include "accelerator.h"
 
 exrBEGIN_NAMESPACE
@@ -33,7 +32,7 @@ public:
     //! @param hitInfo          Output struct that contains the hit information
     //! 
     //! @return                 True if the there are any intersections
-    virtual bool Intersect(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const override;
+    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const override;
 
 private:
     //! @brief Splits objects into two equal subtrees
@@ -59,7 +58,7 @@ private:
     //! @param rightBucket      The right subtree to populate
     static void SAHSplit(
         const std::vector<std::shared_ptr<Primitive>>& objects,
-        const std::shared_ptr<BoundingVolume>& boundingVolume,
+        const BoundingVolume& boundingVolume,
         std::unique_ptr<BVHAccelerator>& leftBucket,
         std::unique_ptr<BVHAccelerator>& rightBucket);
 
@@ -69,12 +68,6 @@ private:
 
     //! A pointer to the right subtree of the BVH. Will be null if this is a leaf node.
     std::unique_ptr<BVHAccelerator> m_Right = nullptr;
-
-    //! A pointer to a bounding volume that contains all the objects below this node
-    std::shared_ptr<BoundingVolume> m_BoundingVolume;
-
-    //! A pointer to the primitive. Will be null unless this is a leaf node.
-    std::shared_ptr<Primitive> m_Primitive;
 };
 
 exrEND_NAMESPACE

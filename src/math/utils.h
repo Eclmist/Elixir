@@ -16,11 +16,11 @@
 
 exrBEGIN_NAMESPACE
 
-float SchlickFresnelApproximation(float cosine, float ior)
+exrFloat SchlickFresnelApproximation(exrFloat cosine, exrFloat ior)
 {
-    float r0 = (1.0f - ior) / (1.0f + ior);
+    exrFloat r0 = (1.0f - ior) / (1.0f + ior);
     r0 = r0 * r0;
-    return r0 + (1.0f - r0) * pow((1.0f - cosine), 5);
+    return r0 + (1.0f - r0) * exrPow((1.0f - cosine), 5);
 }
 
 exrEND_NAMESPACE

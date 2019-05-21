@@ -1,16 +1,17 @@
 #include "core/system/system.h"
+#include "math/math.h"
 #include "boundingvolume.h"
-#include "geometry\primitive.h"
+#include "geometry/primitive.h"
 
 exrBEGIN_NAMESPACE
 
-bool BoundingVolume::Intersect(const Ray& r, float tMin, float tMax) const
+exrBool BoundingVolume::Intersect(const Ray& r, exrFloat tMin, exrFloat tMax) const
 {
-    for (int i = 0; i < 3; i++)
+    for (exrU32 i = 0; i < 3; i++)
     {
-        float invD = 1.0f / r.m_Direction[i];
-        float t0 = (m_Min[i] - r.m_Origin[i]) * invD;
-        float t1 = (m_Max[i] - r.m_Origin[i]) * invD;
+        exrFloat invD = 1.0f / r.m_Direction[i];
+        exrFloat t0 = (m_Min[i] - r.m_Origin[i]) * invD;
+        exrFloat t1 = (m_Max[i] - r.m_Origin[i]) * invD;
         if (invD < 0.0f)
             std::swap(t0, t1);
         tMin = t0 > tMin ? t0 : tMin;
@@ -25,33 +26,33 @@ bool BoundingVolume::Intersect(const Ray& r, float tMin, float tMax) const
 
 BoundingVolume BoundingVolume::Combine(const BoundingVolume& bv1, const BoundingVolume& bv2)
 {
-    float minX, minY, minZ;
-    float maxX, maxY, maxZ;
+    exrFloat minX, minY, minZ;
+    exrFloat maxX, maxY, maxZ;
 
-    minX = fmin(bv1.Min().x, bv2.Min().x);
-    minY = fmin(bv1.Min().y, bv2.Min().y);
-    minZ = fmin(bv1.Min().z, bv2.Min().z);
+    minX = exrMin(bv1.Min().x, bv2.Min().x);
+    minY = exrMin(bv1.Min().y, bv2.Min().y);
+    minZ = exrMin(bv1.Min().z, bv2.Min().z);
 
-    maxX = fmax(bv1.Max().x, bv2.Max().x);
-    maxY = fmax(bv1.Max().y, bv2.Max().y);
-    maxZ = fmax(bv1.Max().z, bv2.Max().z);
+    maxX = exrMax(bv1.Max().x, bv2.Max().x);
+    maxY = exrMax(bv1.Max().y, bv2.Max().y);
+    maxZ = exrMax(bv1.Max().z, bv2.Max().z);
 
-    return BoundingVolume(Point3f(minX, minY, minZ), Point3f(maxX, maxY, maxZ));
+    return BoundingVolume(exrPoint(minX, minY, minZ), exrPoint(maxX, maxY, maxZ));
 }
 
 BoundingVolume BoundingVolume::ComputeBoundingVolume(const std::vector<std::shared_ptr<Primitive>>& primitives)
 {
-    // We CANNOT combine with Point(0) because that will make all bv extend to origin..
+    // We CANNOT combine with exrPoint(0) because that will make all bv extend to origin..
     if (primitives.size() <= 0)
     {
-        return BoundingVolume(Point3f::Zero(), Point3f::Zero());
+        return BoundingVolume(exrPoint::Zero(), exrPoint::Zero());
     }
 
-    BoundingVolume combinedBv = *primitives[0]->GetBoundingVolume();
+    BoundingVolume combinedBv = primitives[0]->GetBoundingVolume();
 
     for (int i = 1; i < primitives.size(); i++)
     {
-        combinedBv = Combine(combinedBv, *primitives[i]->GetBoundingVolume());
+        combinedBv = Combine(combinedBv, primitives[i]->GetBoundingVolume());
     }
 
     return combinedBv;

@@ -8,21 +8,21 @@ exrBEGIN_NAMESPACE
 class Dielectric : public Material
 {
 public:
-    Dielectric(const Vector3f& a, float ior) : m_Albedo(a), m_RefractiveIndex(ior) {}
+    Dielectric(const exrVector3& a, exrFloat ior) : m_Albedo(a), m_RefractiveIndex(ior) {}
 
-    virtual bool Scatter(const Ray& incomingRay, const PrimitiveHitInfo& hitInfo, Vector3f& attenuation, Ray& scattered) const
+    virtual exrBool Scatter(const Ray& incomingRay, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const
     {
-        Vector3 reflectedRay = Reflect(incomingRay.m_Direction, hitInfo.normal);
+        exrVector3 reflectedRay = Reflect(incomingRay.m_Direction, hitInfo.normal);
 
-        float ni_over_nt;
+        exrFloat ni_over_nt;
         attenuation = m_Albedo;
 
-        Vector3f outNormal;
-        Vector3f refractedRay;
+        exrVector3 outNormal;
+        exrVector3 refractedRay;
 
         // for Fresnel calculations
-        float cosine;
-        float reflectionProbability;
+        exrFloat cosine;
+        exrFloat reflectionProbability;
 
         // entering material
         if (Dot(incomingRay.m_Direction, hitInfo.normal) > 0.0f)
@@ -63,8 +63,8 @@ public:
     }
 
 public:
-    Vector3f m_Albedo;
-    float m_RefractiveIndex;
+    exrVector3 m_Albedo;
+    exrFloat m_RefractiveIndex;
 };
 
 exrEND_NAMESPACE

@@ -9,8 +9,8 @@ exrBEGIN_NAMESPACE
 class Material
 {
 public:
-    virtual bool Scatter(const Ray& in, const PrimitiveHitInfo& hitInfo, Vector3f& attenuation, Ray& scattered) const = 0;
-    virtual Vector3f Emit() const { return Vector3f::Zero(); }
+    virtual exrBool Scatter(const Ray& in, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const = 0;
+    virtual exrVector3 Emit() const { return exrVector3::Zero(); }
 };
 
 exrEND_NAMESPACE

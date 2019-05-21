@@ -1,7 +1,7 @@
 #ifndef __MATH_RAY_H__
 #define __MATH_RAY_H__
 
-#include <float.h>
+#include "core/system/system.h"
 #include "vector3.h"
 #include "point.h"
 
@@ -18,7 +18,7 @@ public:
     //! @param origin           The origin of the ray in world space
     //! @param direction        The normalized direction of the ray
     //! @param distance         The maximum ray distance
-    Ray(const Point3f& origin = Point3f::Zero(), const Vector3f& direction = Vector3f::Zero(), float distance = 1000.0f)
+    Ray(const exrPoint& origin = exrPoint::Zero(), const exrVector3& direction = exrVector3::Zero(), exrFloat distance = 1000.0f)
         : m_Origin(origin), m_Direction(direction), m_Distance(distance) {};
 
     //! @brief Copy constructor. Constructs a ray with the same origin, direction and distance from input
@@ -33,17 +33,17 @@ public:
     //! @param t                The t param in parametric ray equation
     //! 
     //! @return                 The point along the ray at distance t
-    inline Point3f operator()(float t) const { return m_Origin + t * m_Direction; }
+    inline exrPoint operator()(exrFloat t) const { return m_Origin + t * m_Direction; }
 
 public:
     //! The origin of the ray in world space
-    Point3f m_Origin;
+    exrPoint m_Origin;
 
     //! The normalized direction of the ray
-    Vector3f m_Direction;
+    exrVector3 m_Direction;
 
     //! The maximum distance of the ray
-    float m_Distance;
+    exrFloat m_Distance;
 };
 
 exrEND_NAMESPACE

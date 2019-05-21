@@ -19,7 +19,7 @@ public:
     //! @brief Constructor from two points
     //! @param min              The minimum extents of the bounding volume in world space
     //! @param max              The maximum extents of the bounding volume in world space
-    BoundingVolume(const Point3f& min = Point3f(-1.0f), const Point3f& max = Point3f(1.0f))
+    BoundingVolume(const exrPoint& min = exrPoint(-1.0f), const exrPoint& max = exrPoint(1.0f))
         : m_Min(min), m_Max(max) {};
 
     //! @brief Copy Constructor
@@ -29,29 +29,29 @@ public:
 
     //! @brief Returns minimum extents of the bounding volume in world space
     //! @return                 The minimum extends of the bounding volume
-    inline Point3f Min() const { return m_Min; }
+    inline exrPoint Min() const { return m_Min; }
 
     //! @brief Returns maximum extents of the bounding volume in world space
     //! @return                 The maximum extends of the bounding volume
-    inline Point3f Max() const { return m_Max; }
+    inline exrPoint Max() const { return m_Max; }
 
     //! @brief Returns the extents of the bounding volume in local space
     //! @return                 The extents of the bounding volume
-    inline Vector3f GetExtents() const { return m_Max - m_Min; }
+    inline exrVector3 GetExtents() const { return m_Max - m_Min; }
 
     //! @brief Return the surface area of the bounding volume
     //! @return                 The surface area of the bounding volume
-    inline float GetSurfaceArea() const { return (m_Max.x - m_Min.x) * (m_Max.y - m_Min.y) * 2 +
-                                                 (m_Max.y - m_Min.y) * (m_Max.z - m_Min.z) * 2 +
-                                                 (m_Max.x - m_Min.x) * (m_Max.z - m_Min.z) * 2; }
+    inline exrFloat GetSurfaceArea() const { return (m_Max.x - m_Min.x) * (m_Max.y - m_Min.y) * 2 +
+                                                    (m_Max.y - m_Min.y) * (m_Max.z - m_Min.z) * 2 +
+                                                    (m_Max.x - m_Min.x) * (m_Max.z - m_Min.z) * 2; }
 
     //! @brief Sets the min extents of the bounding volume
     //! @param min              The minimum extends of the bounding volume
-    inline void SetMin(Point3f min) { m_Min = min; }
+    inline void SetMin(exrPoint min) { m_Min = min; }
 
     //! @brief Sets the max extents of the bounding volume
     //! @param max              The maximum extends of the bounding volume
-    inline void SetMax(Point3f max) { m_Max = max; }
+    inline void SetMax(exrPoint max) { m_Max = max; }
 
     //! @brief Test the bounding volume for intersections with a ray
     //! 
@@ -63,7 +63,7 @@ public:
     //! @param tMax             Max t value of ray to test
     //! 
     //! @return                 True if the there is an intersection
-    bool Intersect(const Ray& ray, float tMin, float tMax) const;
+    exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax) const;
 
 public:
     //! @brief Combines two bounding volumes
@@ -81,8 +81,8 @@ public:
     static BoundingVolume ComputeBoundingVolume(const std::vector<std::shared_ptr<Primitive>>& primitives);
 
 private:
-    Point3f m_Min;
-    Point3f m_Max;
+    exrPoint m_Min;
+    exrPoint m_Max;
 };
 
 exrEND_NAMESPACE

@@ -18,7 +18,6 @@ ____    ____  ____   ____     ___  ____        ___   _____       _____ __ __   _
 
 #include "error.h"
 #include "utils.h"
-#include "profiling/profiler.h"
 
 #ifdef EXR_QUALITY_ULTRA
 #define OUTPUT_WIDTH 1000
@@ -62,12 +61,15 @@ ____    ____  ____   ____     ___  ____        ___   _____       _____ __ __   _
 #endif
 
 #include "math/vector3.h"
+#include "math/point.h"
 #include <string>
 
 exrBEGIN_NAMESPACE
 
-typedef std::string             extString;
+typedef std::string             exrString;
 typedef Vector3f                exrVector3;
+typedef Point3f                 exrPoint;
+typedef bool                    exrBool;
 typedef float                   exrFloat;
 typedef float                   exrF32;
 typedef double                  exrF64;
@@ -79,5 +81,7 @@ typedef unsigned long           exrU64;
 typedef long                    exrS64;
 
 exrEND_NAMESPACE
+
+#include "profiling/profiler.h"
 
 #endif // !__CORE_SYSTEM_H__

@@ -16,8 +16,11 @@ public:
     //! @param center           The origin of the sphere in world space
     //! @param radius           The radius of the sphere
     //! @param material         The material of the sphere
-    Sphere(const Point3f& center, float radius, std::shared_ptr<Material> material) 
-        : Primitive(material), m_Center(center), m_Radius(radius) {};
+    Sphere(const exrPoint& center, exrFloat radius, std::shared_ptr<Material> material) 
+        : Primitive(material), m_Center(center), m_Radius(radius)
+    {
+        ComputeBoundingVolume();
+    };
 
     //! @brief Test the sphere for intersections with a ray
     //! 
@@ -30,21 +33,21 @@ public:
     //! @param hitInfo          Output struct that contains the hit information
     //! 
     //! @return                 True if the there is an intersection
-    virtual bool Intersect(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const override;
+    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const override;
 
     //! @brief Computes a bounding volume
     //! 
     //! Computes the a bounding volume that encapsulates the current sphere.
     //! 
     //! @return                 Always return true since bounding volumes can be created for spheres
-    virtual bool ComputeBoundingVolume() override;
+    virtual exrBool ComputeBoundingVolume() override;
 
 public:
     //! The world space position of the center of the sphere
-    Point3f m_Center;
+    exrPoint m_Center;
 
     //! The radius of the sphere
-    float m_Radius;
+    exrFloat m_Radius;
 };
 
 exrEND_NAMESPACE

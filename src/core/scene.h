@@ -2,7 +2,6 @@
 #define __CORE_SCENE_H__
 
 #include <vector>
-#include "core/system/system.h"
 #include "geometry/primitive.h"
 #include "math/ray.h"
 #include "accelerator/bvh.h"
@@ -42,7 +41,7 @@ public:
     //! @param hitInfo          Output struct that contains the hit information of the nearest hit point
     //! 
     //! @return                 True if the there is at least one intersection
-    bool RaytraceScene(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const;
+    bool RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const;
 
     //! @brief Initializes the scene BVH if it has yet to be initialized or needs to be updated
     void InitializeBvh();
@@ -50,7 +49,7 @@ public:
 public:
     //! @brief Returns the number of primitives in the scene
     //! @return                 The number of primitives in the scene
-    inline size_t GetSceneSize() const { return m_Primitives.size(); }
+    inline exrU64 GetSceneSize() const { return static_cast<exrU64>(m_Primitives.size()); }
 
 private:
     //! A collection of pointers that points to primitives in the scene
@@ -60,7 +59,7 @@ private:
     std::unique_ptr<Accelerator> m_Accelerator;
 
     //! A flag that determines if the scene has changed since the last render
-    bool m_IsDirty;
+    exrBool m_IsDirty;
 };
 
 exrEND_NAMESPACE
