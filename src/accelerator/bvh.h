@@ -1,14 +1,16 @@
-#ifndef __ACCELERATORS_BVH_H__
+#ifndef __ACCELERATOR_BVH_H__
 #define __ACCELERATOR_BVH_H__
 
-#include <vector>
-#include "geometry/primitive.h"
+#include "core/system/system.h"
+#include "accelerator.h"
+
+exrBEGIN_NAMESPACE
 
 //! @brief Defines a bounding volume hierarchy
 //!
 //! A bounding volume hierarchy that recursively subdivides a list of objects into subgroups
 //! that can accelerate ray tracing through a large collection of objects
-class BVHAccelerator
+class BVHAccelerator : public Accelerator
 {
 public:
     //! Split Types
@@ -31,7 +33,7 @@ public:
     //! @param hitInfo          Output struct that contains the hit information
     //! 
     //! @return                 True if the there are any intersections
-    bool Intersect(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const;
+    virtual bool Intersect(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hitInfo) const override;
 
 private:
     //! @brief Splits objects into two equal subtrees
@@ -74,5 +76,7 @@ private:
     //! A pointer to the primitive. Will be null unless this is a leaf node.
     std::shared_ptr<Primitive> m_Primitive;
 };
+
+exrEND_NAMESPACE
 
 #endif // !__ACCELERATOR_BVH_H__

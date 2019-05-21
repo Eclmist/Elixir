@@ -5,6 +5,8 @@
 #include "point.h"
 #include "ray.h"
 
+exrBEGIN_NAMESPACE
+
 class Primitive;
 
 //! @brief A bounding volume that can be used in accelerators
@@ -82,5 +84,7 @@ private:
     Point3f m_Min;
     Point3f m_Max;
 };
+
+exrEND_NAMESPACE
 
 #endif // !__MATH_BOUNDING_VOLUME_H__

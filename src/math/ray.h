@@ -5,6 +5,8 @@
 #include "vector3.h"
 #include "point.h"
 
+exrBEGIN_NAMESPACE
+
 //! @brief A class that defines a mathematical ray
 //!
 //! Defines a ray with a origin, direction and distance in the parametric form of 
@@ -43,5 +45,8 @@ public:
     //! The maximum distance of the ray
     float m_Distance;
 };
+
+exrEND_NAMESPACE
+
 #endif // !__MATH_RAY_H__
 

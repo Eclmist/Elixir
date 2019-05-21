@@ -3,7 +3,9 @@
 
 #include "vector3.h"
 
-template<class T = float>
+exrBEGIN_NAMESPACE
+
+template <class T>
 class Point
 {
 public:
@@ -68,4 +70,7 @@ inline float Distance(const Point<T>& p1, const Point<T>& p2)
 {
     return (p2 - p1).Magnitude();
 }
+
+exrEND_NAMESPACE
+
 #endif // !__M_POINT_H__

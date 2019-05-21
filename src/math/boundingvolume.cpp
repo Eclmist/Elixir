@@ -1,5 +1,8 @@
+#include "core/system/system.h"
 #include "boundingvolume.h"
 #include "geometry\primitive.h"
+
+exrBEGIN_NAMESPACE
 
 bool BoundingVolume::Intersect(const Ray& r, float tMin, float tMax) const
 {
@@ -53,3 +56,5 @@ BoundingVolume BoundingVolume::ComputeBoundingVolume(const std::vector<std::shar
 
     return combinedBv;
 }
+
+exrEND_NAMESPACE

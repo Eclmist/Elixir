@@ -1,4 +1,7 @@
+#include "core/system/system.h"
 #include "ray.h"
+
+exrBEGIN_NAMESPACE
 
 Ray::Ray(const Ray& copy)
 {
@@ -6,3 +9,5 @@ Ray::Ray(const Ray& copy)
     m_Direction = copy.m_Direction;
     m_Distance = copy.m_Distance;
 }
+
+exrEND_NAMESPACE

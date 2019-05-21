@@ -3,6 +3,8 @@
 
 #include "material/material.h"
 
+exrBEGIN_NAMESPACE
+
 class DiffuseLight : public Material
 {
 public:
@@ -22,5 +24,7 @@ public:
 private:
     Vector3f m_Emissive;
 };
+
+exrEND_NAMESPACE
 
 #endif //! __MATERIAL_DIFFUSE_LIGHT_H__

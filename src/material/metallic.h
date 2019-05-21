@@ -2,7 +2,8 @@
 #define __MATERIAL_METALLIC_H__
 
 #include "material.h"
-#include "math\random.h"
+
+exrBEGIN_NAMESPACE
 
 class Metallic : public Material
 {
@@ -22,6 +23,8 @@ public:
     Vector3f m_Albedo;
     Vector3f m_Roughness;
 };
+
+exrEND_NAMESPACE
 
 #endif // !__MATERIAL_METALLIC_H__
 

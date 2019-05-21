@@ -1,7 +1,10 @@
 #ifndef __GEOMETRY_SPHERE_H__
 #define __GEOMETRY_SPHERE_H__
 
+#include "core/system/system.h"
 #include "primitive.h"
+
+exrBEGIN_NAMESPACE
 
 //! @brief A class that defines a sphere primitive.
 //! 
@@ -43,5 +46,8 @@ public:
     //! The radius of the sphere
     float m_Radius;
 };
+
+exrEND_NAMESPACE
+
 #endif // !__GEOMETRICS_SPHERE_H__
 

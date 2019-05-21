@@ -7,12 +7,14 @@
 |     ||  |  ||  |  ||  |  ||     ||  .  \    |     ||  |        \    ||  |  ||  |  ||   |   ||     |
 |_____||__|__||__|__||__|__||_____||__|\_|     \___/ |__|         \___||__|__||__|__||___|___||_____|
 
-                       This file is ghetto. Remove when no longer ghetto. 
+                        This file is ghetto. Remove when no longer ghetto. 
  ================================================================================================ */
 
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+
+#define EXR_QUALITY_MEDIUM
 
 #include <memory>
 #include <iostream>
@@ -24,12 +26,12 @@
 #include "stb/stb_image.h"
 #include "stb/stbi_image_write.h"
 
+#include "core/system/system.h"
+#include "core/scene.h"
 #include "math/vector3.h"
 #include "math/ray.h"
-#include "math/random.h"
+#include "math/math.h"
 #include "math/utils.h"
-#include "core/scene.h"
-#include "core/timer.h"
 #include "geometry/sphere.h"
 #include "camera/camera.h"
 #include "material/lambertian.h"
@@ -37,48 +39,7 @@
 #include "material/dielectric.h"
 #include "material/diffuselight.h"
 
-#define QUALITY_SETTING_ULTRA
-
-#ifdef QUALITY_SETTING_ULTRA
-#define OUTPUT_WIDTH 1000
-#define OUTPUT_HEIGHT 600
-#define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 1024
-#define NUM_BOUNDCE_PER_RAY 4
-#define SCENE_SIZE 9
-#endif
-#ifdef QUALITY_SETTING_HIGH
-#define OUTPUT_WIDTH 1000
-#define OUTPUT_HEIGHT 600
-#define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 8
-#define NUM_BOUNDCE_PER_RAY 4
-#define SCENE_SIZE 9
-#endif
-#ifdef QUALITY_SETTING_MEDIUM
-#define OUTPUT_WIDTH 500
-#define OUTPUT_HEIGHT 300
-#define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 1
-#define NUM_BOUNDCE_PER_RAY 4
-#define SCENE_SIZE 3
-#endif
-#ifdef QUALITY_SETTING_LOW
-#define OUTPUT_WIDTH 250
-#define OUTPUT_HEIGHT 150
-#define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 2
-#define NUM_BOUNDCE_PER_RAY 4
-#define SCENE_SIZE 5
-#endif
-#ifdef QUALITY_SETTING_PREVIEW
-#define OUTPUT_WIDTH 250
-#define OUTPUT_HEIGHT 150
-#define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 1
-#define NUM_BOUNDCE_PER_RAY 4
-#define SCENE_SIZE 3
-#endif
+exrBEGIN_NAMESPACE
 
 Vector3f SkyGradient(const Ray& r)
 {
@@ -88,7 +49,7 @@ Vector3f SkyGradient(const Ray& r)
 
     float t = (direction.y + 0.5f) / 1.2f;
 
-    return LERP(sunsetRed / 3.0f, sunsetBlue / 4.0f, SATURATE(t));
+    return exrLerp(sunsetRed / 3.0f, sunsetBlue / 4.0f, exrSaturate(t));
 }
 
 Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
@@ -120,7 +81,7 @@ Vector3f ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
 
 std::unique_ptr<Scene> GenerateScene()
 {
-    TIMER_PROFILE_CPU("Generating Scene")
+    exrProfile("Generating Scene")
 
     std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
@@ -169,7 +130,7 @@ std::unique_ptr<Scene> GenerateScene()
 
     std::cout << "Scene initialized with " << scene->GetSceneSize() << " primitives " << std::endl;
 
-    TIMER_ENDPROFILE_CPU()
+    exrEndProfile()
 
     scene->InitializeBvh();
     return scene;
@@ -213,7 +174,7 @@ int main()
     const Vector3f resolution(OUTPUT_WIDTH, OUTPUT_HEIGHT, 0.0f);
     std::unique_ptr<Scene> scene = GenerateScene();
 
-    TIMER_PROFILE_CPU("Raytracing Scene")
+    exrProfile("Raytracing Scene")
 
     // camera
     Point position(-9.75f, 1.5f, 2.5f);
@@ -250,9 +211,9 @@ int main()
             color = Vector3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
 
             // Clamp color values for ppm
-            color.x = SATURATE(color.x);
-            color.y = SATURATE(color.y);
-            color.z = SATURATE(color.z);
+            color.x = exrSaturate(color.x);
+            color.y = exrSaturate(color.y);
+            color.z = exrSaturate(color.z);
 
             // PPM takes values from 0-255;
             color *= 255.99f;
@@ -288,10 +249,9 @@ int main()
 
         std::string hh, mm, ss;
         FormatTime(timeLeft, hh, mm, ss);
-        std::cout << "Progress: " << progressBar << "\t" << int(progress) << "% ETA: " << hh << ":" << mm << ":" << ss << "            " << '\r';
+        exrInfo("Progress: " << progressBar << "\t" << int(progress) << "% ETA: " << hh << ":" << mm << ":" << ss << "            " << '\r');
     }
-    std::cout << std::endl;
-    TIMER_ENDPROFILE_CPU()
+    exrEndProfile()
 
     int x, y, n;
     stbi_uc* output = stbi_load_from_memory(buffer.data(), static_cast<int>(buffer.size()), &x, &y, &n, 0);
@@ -301,3 +261,5 @@ int main()
     system("output.png");
     return 0;
 }
+
+exrEND_NAMESPACE

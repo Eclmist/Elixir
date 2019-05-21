@@ -1,8 +1,11 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__
 
+#include "core\system\system.h"
 #include "math\ray.h"
 #include "math\random.h"
+
+exrBEGIN_NAMESPACE
 
 class Camera
 {
@@ -41,5 +44,7 @@ public:
 
     float lensRadius;
 };
-#endif // !__CAMERA_H__
 
+exrEND_NAMESPACE
+
+#endif // !__CAMERA_H__

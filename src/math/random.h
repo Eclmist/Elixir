@@ -2,8 +2,10 @@
 #define __MATH_RANDOM_H__
 
 #include "math/vector3.h"
-//! @brief A class that handles various pseudo random value generations
 
+exrBEGIN_NAMESPACE
+
+//! @brief A class that handles various pseudo random value generations
 class Random
 {
 public:
@@ -23,5 +25,7 @@ public:
     //! @return A random vector inside a unit disc
     static Vector3f RandomInUnitDisc();
 };
+
+exrEND_NAMESPACE
 
 #endif // !__MATH_RANDOM_H__

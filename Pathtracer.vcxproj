@@ -28,8 +28,11 @@
     <ClCompile Include="src\geometry\sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="accelerator.h" />
+    <ClInclude Include="error.h" />
     <ClInclude Include="src\core\timer.h" />
     <ClInclude Include="src\material\diffuselight.h" />
+    <ClInclude Include="src\math\math.h" />
     <ClInclude Include="src\math\random.h" />
     <ClInclude Include="src\accelerator\bvh.h" />
     <ClInclude Include="src\math\boundingvolume.h" />
@@ -48,6 +51,7 @@
     <ClInclude Include="src\math\vector3.h" />
     <ClInclude Include="src\geometry\primitive.h" />
     <ClInclude Include="src\geometry\sphere.h" />
+    <ClInclude Include="system.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="output.png" />
@@ -56,7 +60,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{2C5BCCED-90E6-45BE-B547-A2C44EEC1D4C}</ProjectGuid>
     <RootNamespace>Pathtracer</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -75,8 +79,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -138,6 +142,9 @@
       <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
+    <Link>
+      <EntryPointSymbol>main</EntryPointSymbol>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

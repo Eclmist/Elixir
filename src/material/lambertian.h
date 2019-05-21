@@ -2,7 +2,8 @@
 #define __MATERIAL_LAMBERTIAN_H__
 
 #include "material.h"
-#include "math\random.h"
+
+exrBEGIN_NAMESPACE
 
 class Lambertian : public Material
 {
@@ -20,6 +21,8 @@ public:
 public:
     Vector3f m_Albedo;
 };
+
+exrEND_NAMESPACE
 
 #endif // !__MATERIAL_LAMBERTIAN_H__
 

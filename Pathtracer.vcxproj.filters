@@ -43,7 +43,6 @@
     <ClInclude Include="src\math\boundingvolume.h">
       <Filter>src\math</Filter>
     </ClInclude>
-    <ClInclude Include="src\material\diffuselight.h" />
     <ClInclude Include="src\accelerator\bvh.h">
       <Filter>src\accelerator</Filter>
     </ClInclude>
@@ -62,6 +61,19 @@
     <ClInclude Include="src\material\diffuselight.h">
       <Filter>src\material</Filter>
     </ClInclude>
+    <ClInclude Include="accelerator.h">
+      <Filter>src\accelerator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\material\diffuselight.h">
+      <Filter>src\material</Filter>
+    </ClInclude>
+    <ClInclude Include="system.h">
+      <Filter>src\core\system</Filter>
+    </ClInclude>
+    <ClInclude Include="error.h">
+      <Filter>src\core\system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\math.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\scene.cpp">
@@ -111,6 +123,12 @@
     </Filter>
     <Filter Include="src\geometry">
       <UniqueIdentifier>{aabce800-e012-4679-8a9d-4a7460e8680c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\core\system">
+      <UniqueIdentifier>{b16ae41e-8f94-4c66-af91-2fa6e6cb81dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\core\system\profiling">
+      <UniqueIdentifier>{abe10e51-9225-41ab-a622-254fce4f6bdd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -1,10 +1,13 @@
-#ifndef __GEOMETRICS_GEOMETRY_H__
-#define __GEOMETRICS_GEOMETRY_H__
+#ifndef __GEOMETRICS_PRIMITIVE_H__
+#define __GEOMETRICS_PRIMITIVE_H__
 
 #include <memory>
+#include "core/system/system.h"
 #include "math/ray.h"
 #include "math/point.h"
 #include "math/boundingvolume.h"
+
+exrBEGIN_NAMESPACE
 
 class Material;
 
@@ -82,5 +85,7 @@ protected:
     std::shared_ptr<BoundingVolume> m_BoundingVolume;
 };
 
-#endif // !__GEOMETRICS_GEOMETRY_H__
+exrEND_NAMESPACE
+
+#endif // !__GEOMETRICS_PRIMITIVE_H__
 

@@ -3,6 +3,8 @@
 
 #include "material/material.h"
 
+exrBEGIN_NAMESPACE
+
 class Dielectric : public Material
 {
 public:
@@ -64,6 +66,8 @@ public:
     Vector3f m_Albedo;
     float m_RefractiveIndex;
 };
+
+exrEND_NAMESPACE
 
 #endif // !__MATERIAL_DIELECTRIC_H__
 

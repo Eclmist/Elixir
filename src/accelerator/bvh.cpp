@@ -1,13 +1,15 @@
 #include <algorithm>
-#include <cassert>
 
 #include "bvh.h"
-#include "math/random.h"
+#include "math/math.h"
+
+exrBEGIN_NAMESPACE
 
 BVHAccelerator::BVHAccelerator(const std::vector<std::shared_ptr<Primitive>>& objects, const SplitMethod splitMethod)
 {
     const size_t numObjects = objects.size();
-    assert(numObjects > 0);
+
+    exrAssert(numObjects > 0, "Attempting to create a BVH with zero objects! This is illegal.");
 
     m_BoundingVolume = std::make_shared<BoundingVolume>(BoundingVolume::ComputeBoundingVolume(objects));
 
@@ -163,3 +165,5 @@ void BVHAccelerator::SAHSplit(
     leftBucket = std::make_unique<BVHAccelerator>(bestBucketLeft, SplitMethod::SAH);
     rightBucket = std::make_unique<BVHAccelerator>(bestBucketRight, SplitMethod::SAH);;
 }
+
+exrEND_NAMESPACE

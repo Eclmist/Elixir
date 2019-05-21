@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include <iostream>
 
-template<class T = float>
+exrBEGIN_NAMESPACE
+
+template <class T>
 class Vector2
 {
 public:
@@ -123,4 +125,7 @@ inline bool Refract(const Vector2<T>& v, const Vector2<T>& n, float ni_over_nt, 
 
     return false;
 }
+
+exrEND_NAMESPACE
+
 #endif // !__MATH_VECTOR2_H__

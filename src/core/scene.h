@@ -2,9 +2,12 @@
 #define __CORE_SCENE_H__
 
 #include <vector>
+#include "core/system/system.h"
 #include "geometry/primitive.h"
 #include "math/ray.h"
 #include "accelerator/bvh.h"
+
+exrBEGIN_NAMESPACE
 
 //! @brief A scene object that owns primitives
 //! 
@@ -53,11 +56,13 @@ private:
     //! A collection of pointers that points to primitives in the scene
     std::vector<std::shared_ptr<Primitive>> m_Primitives;
 
-    //! The bounding volume hierarchy that contains all the scene's primitives
-    std::unique_ptr<BVHAccelerator> m_Bvh;
+    //! The accelerator to use
+    std::unique_ptr<Accelerator> m_Accelerator;
 
     //! A flag that determines if the scene has changed since the last render
     bool m_IsDirty;
 };
+
+exrEND_NAMESPACE
 
 #endif // !__CORE_SCENE_H__

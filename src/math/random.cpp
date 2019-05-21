@@ -1,4 +1,8 @@
+#include "core/system/system.h"
 #include "random.h"
+#include "math.h"
+
+exrBEGIN_NAMESPACE
 
 Vector3f Random::RandomInUnitSphere()
 {
@@ -21,3 +25,5 @@ Vector3f Random::RandomInUnitDisc()
 
     return p;
 }
+
+exrEND_NAMESPACE

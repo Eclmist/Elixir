@@ -4,8 +4,11 @@
 #include <math.h>
 #include <stdlib.h>
 #include <iostream>
+#include "core/system/system.h"
 
-template<class T = float>
+exrBEGIN_NAMESPACE
+
+template <class T>
 class Vector3
 {
 public:
@@ -132,4 +135,7 @@ inline bool Refract(const Vector3<T>& v, const Vector3<T>& n, float ni_over_nt, 
 
     return false;
 }
+
+exrEND_NAMESPACE
+
 #endif // !__MATH_VECTOR3_H__

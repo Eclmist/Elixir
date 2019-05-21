@@ -1,5 +1,7 @@
 #include "sphere.h"
 
+exrBEGIN_NAMESPACE
+
 bool Sphere::Intersect(const Ray& ray, float tMin, float tMax, PrimitiveHitInfo& hit) const
 {
     Vector3 oc = ray.m_Origin - m_Center;
@@ -44,3 +46,5 @@ bool Sphere::ComputeBoundingVolume()
     m_BoundingVolume = std::make_shared<BoundingVolume>(min, max);
     return true;
 }
+
+exrEND_NAMESPACE
