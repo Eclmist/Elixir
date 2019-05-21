@@ -3,6 +3,27 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Post CMake integration (No need project files anymore)
+*.sln
+*.vcxproj
+*.filters
+CMakeFiles/
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+# This one need to figure out how to ge
+*.dir/
+
+
 # User-specific files
 *.suo
 *.user

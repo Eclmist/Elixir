@@ -15,7 +15,7 @@ class Timer
 public:
     Timer(exrString processName = "Unnamed scope") : m_ProcessName(processName), m_StartTime(std::clock())
     {
-        exrInfoLine("\n" << processName);
+        exrInfoLine(processName);
     }
 
     ~Timer()

@@ -14,8 +14,7 @@ ____    ____  ____   ____     ___  ____        ___   _____       _____ __ __   _
 #ifndef __CORE_SYSTEM_H__
 #define __CORE_SYSTEM_H__
 
-#define EXR_USE_NAMESPACE
-
+#include "config.h"
 #include "error.h"
 #include "utils.h"
 

@@ -1,0 +1,18 @@
+/*
+	DO NOT EDIT: This is a CMake auto generated file
+	CMake configurations can be defined here, but all other changes may be lost!
+*/
+
+#define EXR_VERSION_MAJOR				@EXR_VERSION_MAJOR@
+#define EXR_VERSION_MINOR				@EXR_VERSION_MINOR@
+#define EXR_VERSION_PATCH				@EXR_VERSION_PATCH@
+#define EXR_PLATFORM_NAME				@EXR_PLATFORM_NAME@
+
+#cmakedefine EXR_PLATFORM_WIN
+#cmakedefine EXR_PLATFORM_MAC
+#cmakedefine EXR_PLATFORM_LINUX
+
+#cmakedefine EXR_ENABLE_LOGGING
+#cmakedefine EXR_ENABLE_ASSERTS
+
+#cmakedefine EXR_USE_NAMESPACE

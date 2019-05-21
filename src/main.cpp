@@ -127,7 +127,7 @@ std::unique_ptr<Scene> GenerateScene()
     scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(exrVector3(0.5f))));
 
 
-    std::cout << "Scene initialized with " << scene->GetSceneSize() << " primitives " << std::endl;
+    exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " primitives")
 
     exrEndProfile()
 
@@ -160,10 +160,9 @@ void FormatTime(unsigned long time, exrString& hh, exrString& mm, exrString& ss)
 
 int main()
 {
-    std::cout << "Weekend Pathtracer Adventures vNaN.NaN.Nan" << std::endl;
+    exrInfoLine("Weekend Pathtracer Adventures v" << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH)
 
     Random::Seed(11);
-#include <time.h>
 
     // PPM Headers
     exrString header = "P6\n" + std::to_string(OUTPUT_WIDTH) + " " + std::to_string(OUTPUT_HEIGHT) + "\n255\n";
