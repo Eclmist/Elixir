@@ -126,10 +126,8 @@ std::unique_ptr<Scene> GenerateScene()
     // Floor
     scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(exrVector3(0.5f))));
 
-
-    exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " primitives")
-
     exrEndProfile()
+    exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " primitives")
 
     scene->InitializeBvh();
     return scene;
@@ -254,7 +252,10 @@ int main()
     stbi_uc* output = stbi_load_from_memory(buffer.data(), static_cast<int>(buffer.size()), &x, &y, &n, 0);
     stbi_write_png("output.png", OUTPUT_WIDTH, OUTPUT_HEIGHT, NUM_CHANNELS, output, OUTPUT_WIDTH * NUM_CHANNELS);
 
+#ifdef EXR_PLATFORM_WIN
     system("PAUSE");
     system("output.png");
+#endif
+
     return 0;
 }

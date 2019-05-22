@@ -50,7 +50,7 @@ BoundingVolume BoundingVolume::ComputeBoundingVolume(const std::vector<std::shar
 
     BoundingVolume combinedBv = primitives[0]->GetBoundingVolume();
 
-    for (int i = 1; i < primitives.size(); i++)
+    for (exrU32 i = 1; i < primitives.size(); i++)
     {
         combinedBv = Combine(combinedBv, primitives[i]->GetBoundingVolume());
     }
