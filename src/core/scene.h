@@ -1,10 +1,14 @@
 #ifndef __CORE_SCENE_H__
 #define __CORE_SCENE_H__
 
+#include <memory>
 #include <vector>
-#include "geometry/primitive.h"
-#include "math/ray.h"
 #include "accelerator/bvh.h"
+#include "core/system/system.h"
+#include "geometry/primitive.h"
+
+class Ray;
+struct PrimitiveHitInfo;
 
 exrBEGIN_NAMESPACE
 
@@ -15,20 +19,12 @@ exrBEGIN_NAMESPACE
 class Scene
 {
 public:
-    Scene() {}
-
-    //! @brief Copy constructor
-    //! @param copy             The object to copy
-    Scene(const Scene& copy) : m_Primitives(copy.m_Primitives) {};
-
-    Scene operator=(const Scene& copy) { return Scene(copy); }
-
     //! @brief Adds a primitive to the scene
     //! 
     //! This function adds a new primitive to the scene's primitive collection
     //! 
     //! @param primitive         A pointer to the primitive
-    void AddPrimitive(std::shared_ptr<Primitive> primitive);
+    void AddPrimitive(std::unique_ptr<Primitive> primitive);
 
     //! @brief Raytrace through the scene and returns the info of the nearest hit point
     //! 
@@ -41,7 +37,7 @@ public:
     //! @param hitInfo          Output struct that contains the hit information of the nearest hit point
     //! 
     //! @return                 True if the there is at least one intersection
-    bool RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const;
+    exrBool RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const;
 
     //! @brief Initializes the scene BVH if it has yet to be initialized or needs to be updated
     void InitializeBvh();
@@ -53,7 +49,7 @@ public:
 
 private:
     //! A collection of pointers that points to primitives in the scene
-    std::vector<std::shared_ptr<Primitive>> m_Primitives;
+    std::vector<std::unique_ptr<Primitive>> m_Primitives;
 
     //! The accelerator to use
     std::unique_ptr<Accelerator> m_Accelerator;

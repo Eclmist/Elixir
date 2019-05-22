@@ -1,10 +1,8 @@
 #ifndef __MATH_VECTOR3_H__
 #define __MATH_VECTOR3_H__
 
-#include <math.h>
-#include <stdlib.h>
-#include <iostream>
 #include "core/system/system.h"
+#include <math.h>
 
 exrBEGIN_NAMESPACE
 
@@ -52,11 +50,6 @@ public:
         struct { T m_Data[3]; };
     };
 };
-
-typedef Vector3<float>		Vector3f;
-typedef Vector3<int>		Vector3i;
-typedef Vector3<unsigned>	Vector3u;
-typedef Vector3<double>		Vector3d;
 
 template<class T>
 inline Vector3<T> operator+(const Vector3<T>& v1, const Vector3<T>& v2)

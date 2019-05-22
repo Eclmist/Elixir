@@ -1,15 +1,11 @@
 #ifndef __GEOMETRICS_PRIMITIVE_H__
 #define __GEOMETRICS_PRIMITIVE_H__
 
-#include <memory>
 #include "core/system/system.h"
-#include "math/ray.h"
-#include "math/point.h"
+#include "material/material.h"
 #include "math/boundingvolume.h"
 
 exrBEGIN_NAMESPACE
-
-class Material;
 
 //! A struct that contains the surface data of an intersection point
 struct PrimitiveHitInfo
@@ -18,13 +14,13 @@ struct PrimitiveHitInfo
     float t;
 
     //! The point of intersection
-    Point3f point;
+    exrPoint point;
     
     //! The normal of the surface at the point of intersection
-    Vector3f normal;
+    exrVector3 normal;
 
     //! A pointer to the material of the surface at the point of intersection
-    std::shared_ptr<Material> material;
+    Material* material;
 };
 
 //! @brief A base class that all primitives should inherit from
@@ -37,8 +33,8 @@ class Primitive
 public:
     //! @brief Constructs a primitive
     //! @param material         The material of the primitive
-    Primitive(std::shared_ptr<Material> material)
-        : m_Material(material) {};
+    Primitive(std::unique_ptr<Material>& material)
+        : m_Material(std::move(material)) {};
 
 public:
     //! @brief Test the geometry for intersections with a ray
@@ -72,7 +68,7 @@ protected :
 
 protected:
     //! A pointer to the material of the primitive
-    const std::shared_ptr<Material> m_Material;
+    const std::unique_ptr<Material> m_Material;
     
     //! A bounding volume that contains the primitive;
     BoundingVolume m_BoundingVolume;

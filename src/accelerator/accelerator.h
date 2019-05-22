@@ -2,8 +2,10 @@
 #define __ACCELERATOR_H__
 
 #include <vector>
+
 #include "core/system/system.h"
 #include "geometry/primitive.h"
+#include "math/boundingvolume.h"
 
 exrBEGIN_NAMESPACE
 

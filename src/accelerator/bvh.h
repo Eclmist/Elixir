@@ -3,6 +3,8 @@
 
 #include "accelerator.h"
 
+struct PrimitiveHitInfo;
+
 exrBEGIN_NAMESPACE
 
 //! @brief Defines a bounding volume hierarchy
@@ -19,7 +21,7 @@ public:
     //! @brief Constructs a BVH with a collection of objects
     //! @param objects          A collection of objects
     //! @param splitMethod      Splitting algorithm to use when building the BVH
-    BVHAccelerator(const std::vector<std::shared_ptr<Primitive>>& objects, const SplitMethod splitMethod = SplitMethod::SAH);
+    BVHAccelerator(const std::vector<Primitive*>& objects, const SplitMethod splitMethod = SplitMethod::SAH);
 
     //! @brief Test the entire BVH for intersections with a ray
     //! 
@@ -44,7 +46,7 @@ private:
     //! @param leftBucket       The left subtree to populate
     //! @param rightBucket      The right subtree to populate
     static void EqualCountSplit(
-        const std::vector<std::shared_ptr<Primitive>>& objects,
+        const std::vector<Primitive*>& objects,
         std::unique_ptr<BVHAccelerator>& leftBucket,
         std::unique_ptr<BVHAccelerator>& rightBucket);
     
@@ -57,7 +59,7 @@ private:
     //! @param leftBucket       The left subtree to populate
     //! @param rightBucket      The right subtree to populate
     static void SAHSplit(
-        const std::vector<std::shared_ptr<Primitive>>& objects,
+        const std::vector<Primitive*>& objects,
         const BoundingVolume& boundingVolume,
         std::unique_ptr<BVHAccelerator>& leftBucket,
         std::unique_ptr<BVHAccelerator>& rightBucket);

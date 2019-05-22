@@ -1,8 +1,16 @@
 #ifndef __MATERIAL_H__
 #define __MATERIAL_H__
 
+#include <memory>
+
+#include "core/system/system.h"
+#include "math/vector3.h"
 #include "geometry/primitive.h"
-#include "math/math.h"
+#include "math/ray.h"
+#include "math/random.h"
+
+class Ray;
+struct PrimitiveHitInfo;
 
 exrBEGIN_NAMESPACE
 

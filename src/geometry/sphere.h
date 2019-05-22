@@ -1,7 +1,6 @@
 #ifndef __GEOMETRY_SPHERE_H__
 #define __GEOMETRY_SPHERE_H__
 
-#include "core/system/system.h"
 #include "primitive.h"
 
 exrBEGIN_NAMESPACE
@@ -16,7 +15,7 @@ public:
     //! @param center           The origin of the sphere in world space
     //! @param radius           The radius of the sphere
     //! @param material         The material of the sphere
-    Sphere(const exrPoint& center, exrFloat radius, std::shared_ptr<Material> material) 
+    Sphere(const exrPoint& center, exrFloat radius, std::unique_ptr<Material> material)
         : Primitive(material), m_Center(center), m_Radius(radius)
     {
         ComputeBoundingVolume();

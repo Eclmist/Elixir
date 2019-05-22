@@ -1,7 +1,7 @@
 #ifndef __MATH_RANDOM_H__
 #define __MATH_RANDOM_H__
 
-#include "math/vector3.h"
+#include "core/system/system.h"
 
 exrBEGIN_NAMESPACE
 

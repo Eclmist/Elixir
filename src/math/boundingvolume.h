@@ -2,12 +2,16 @@
 #define __MATH_BOUNDING_VOLUME_H__
 
 #include <vector>
-#include "point.h"
-#include "ray.h"
 
-exrBEGIN_NAMESPACE
+#include "core/system/system.h"
+#include "math/point.h"
+#include "math/vector3.h"
 
 class Primitive;
+class Ray;
+class vector;
+
+exrBEGIN_NAMESPACE
 
 //! @brief A bounding volume that can be used in accelerators
 //!
@@ -78,7 +82,7 @@ public:
     //! Computes a bounding volume that tightly encapsulates all input primitives
     //!
     //! @return                 The result bounding volume
-    static BoundingVolume ComputeBoundingVolume(const std::vector<std::shared_ptr<Primitive>>& primitives);
+    static BoundingVolume ComputeBoundingVolume(const std::vector<Primitive*>& primitives);
 
 private:
     exrPoint m_Min;

@@ -1,6 +1,5 @@
-#include "core/system/system.h"
 #include "random.h"
-#include "math.h"
+#include "vector3.h"
 
 exrBEGIN_NAMESPACE
 

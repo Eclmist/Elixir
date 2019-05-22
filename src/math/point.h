@@ -1,8 +1,6 @@
 #ifndef __MATH_POINT_H__
 #define __MATH_POINT_H__
 
-#include "vector3.h"
-
 exrBEGIN_NAMESPACE
 
 template <class T>
@@ -35,11 +33,6 @@ public:
         struct { T m_Data[3]; };
     };
 };
-
-typedef Point<float>		Point3f;
-typedef Point<int>		    Point3i;
-typedef Point<unsigned>     Point3u;
-typedef Point<double>		Point3d;
 
 template<class T>
 inline Point<T> operator+(const Point<T>& p, const Vector3<T>& v)

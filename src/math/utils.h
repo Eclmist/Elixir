@@ -12,7 +12,7 @@
 #ifndef __MATH_UTILS_H__
 #define __MATH_UTILS_H__
 
-#include "math.h"
+#include "core/system/system.h"
 
 exrBEGIN_NAMESPACE
 

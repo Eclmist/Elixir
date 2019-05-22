@@ -13,29 +13,25 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <iomanip>
+#include <chrono>
 
 #include "stb/stb_image.h"
 #include "stb/stbi_image_write.h"
 
 #include "core/system/system.h"
-#include "core/scene.h"
-#include "math/vector3.h"
 #include "math/ray.h"
-#include "math/math.h"
-#include "math/utils.h"
-#include "geometry/sphere.h"
+#include "geometry/primitive.h"
+#include "core/scene.h"
+#include "math/random.h"
+#include <memory>
 #include "camera/camera.h"
 #include "material/lambertian.h"
 #include "material/metallic.h"
 #include "material/dielectric.h"
 #include "material/diffuselight.h"
+#include "geometry/sphere.h"
 
-using namespace elixir;
+exrBEGIN_NAMESPACE
 
 exrVector3 SkyGradient(const Ray& r)
 {
@@ -96,32 +92,38 @@ std::unique_ptr<Scene> GenerateScene()
                     exrFloat rand_x = Random::Random01();
                     exrFloat rand_y = Random::Random01();
                     exrFloat rand_z = Random::Random01();
-                    scene->AddPrimitive(std::make_shared<Sphere>(pos, 0.2f, std::make_shared<Lambertian>(exrVector3(rand_x, rand_y, rand_z))));
+                    std::unique_ptr<Material> lambert = std::make_unique<Lambertian>(exrVector3(rand_x, rand_y, rand_z));
+                    std::unique_ptr<Primitive> shape = std::make_unique<Sphere>(pos, 0.2f, std::move(lambert));
+                    scene->AddPrimitive(std::move(shape));
                 }
                 else if (mat < 0.95f) // metallic
                 {
                     exrFloat rand_x = 0.5f * (1.0f + Random::Random01());
                     exrFloat rand_y = 0.5f * (1.0f + Random::Random01());
                     exrFloat rand_z = 0.5f * (1.0f + Random::Random01());
-                    scene->AddPrimitive(std::make_shared<Sphere>(pos, 0.2f, std::make_shared<Metallic>(exrVector3(rand_x, rand_y, rand_z), 0.5f * Random::Random01())));
+                    std::unique_ptr<Material> metallic = std::make_unique<Metallic>(exrVector3(rand_x, rand_y, rand_z), 0.5f * Random::Random01());
+                    std::unique_ptr<Primitive> shape = std::make_unique<Sphere>(pos, 0.2f, std::move(metallic));
+                    scene->AddPrimitive(std::move(shape));
                 }
                 else // glass
                 {
                     exrFloat rand_x = 0.5f * (1.0f + Random::Random01());
                     exrFloat rand_y = 0.5f * (1.0f + Random::Random01());
                     exrFloat rand_z = 0.5f * (1.0f + Random::Random01());
-                    scene->AddPrimitive(std::make_shared<Sphere>(pos, 0.2f, std::make_shared<Dielectric>(exrVector3(rand_x, rand_y, rand_z), 1.52f)));
+                    std::unique_ptr<Material> dielectric  = std::make_unique<Dielectric>(exrVector3(rand_x, rand_y, rand_z), 1.52f);
+                    std::unique_ptr<Primitive> shape = std::make_unique<Sphere>(pos, 0.2f, std::move(dielectric));
+                    scene->AddPrimitive(std::move(shape));
                 }
             }
         }
     }
 
-    scene->AddPrimitive(std::make_shared<Sphere>(exrPoint(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<DiffuseLight>(exrVector3(20.0f, 5.3f, 0.3f))));
-    scene->AddPrimitive(std::make_shared<Sphere>(exrPoint(4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Metallic>(exrVector3(0.8f, 0.6f, 0.2f), 0.05f)));
-    scene->AddPrimitive(std::make_shared<Sphere>(exrPoint(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(exrVector3(1.0f, 1.0f, 1.0f), 1.52f)));
+    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(0.0f, 1.0f, 0.0f), 1.0f, std::make_unique<DiffuseLight>(exrVector3(20.0f, 5.3f, 0.3f))));
+    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(4.0f, 1.0f, 0.0f), 1.0f, std::make_unique<Metallic>(exrVector3(0.8f, 0.6f, 0.2f), 0.05f)));
+    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(-4.0f, 1.0f, 0.0f), 1.0f, std::make_unique<Dielectric>(exrVector3(1.0f, 1.0f, 1.0f), 1.52f)));
 
     // Floor
-    scene->AddPrimitive(std::make_shared<Sphere>(exrPoint(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(exrVector3(0.5f))));
+    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_unique<Lambertian>(exrVector3(0.5f))));
 
     exrEndProfile()
     exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " primitives")
@@ -136,28 +138,8 @@ exrU64 TimeSinceEpochMillisec() {
     return time;
 }
 
-void FormatTime(unsigned long time, exrString& hh, exrString& mm, exrString& ss)
+void Render()
 {
-    //3600000 milliseconds in an hour
-    long hr = time / 3600000;
-    time = time - 3600000 * hr;
-    //60000 milliseconds in a minute
-    long min = time / 60000;
-    time = time - 60000 * min;
-
-    //1000 milliseconds in a second
-    long sec = time / 1000;
-    time = time - 1000 * sec;
-
-    hh = exrString(hr < 10 ? 1 : 0, '0').append(std::to_string(hr));
-    mm = exrString(min < 10 ? 1 : 0, '0').append(std::to_string(min));
-    ss = exrString(sec < 10 ? 1 : 0, '0').append(std::to_string(sec));
-}
-
-int main()
-{
-    exrInfoLine("Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH)
-
     Random::Seed(11);
 
     // PPM Headers
@@ -241,7 +223,7 @@ int main()
         progressBar += "] ";
 
         exrString hh, mm, ss;
-        FormatTime(timeLeft, hh, mm, ss);
+        Timer::FormatTime(timeLeft, hh, mm, ss);
         exrInfo("Progress: " << progressBar << "\t" << int(progress) << "% ETA: " << hh << ":" << mm << ":" << ss << "            " << '\r');
     }
     exrEndProfile()
@@ -249,6 +231,17 @@ int main()
     int x, y, n;
     stbi_uc* output = stbi_load_from_memory(buffer.data(), static_cast<int>(buffer.size()), &x, &y, &n, 0);
     stbi_write_png("output.png", OUTPUT_WIDTH, OUTPUT_HEIGHT, NUM_CHANNELS, output, OUTPUT_WIDTH * NUM_CHANNELS);
+
+}
+
+exrEND_NAMESPACE
+
+
+int main()
+{
+    exrInfoLine("Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH)
+
+    elixir::Render();
 
 #ifdef EXR_PLATFORM_WIN
     system("PAUSE");

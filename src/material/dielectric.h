@@ -2,13 +2,18 @@
 #define __MATERIAL_DIELECTRIC_H__
 
 #include "material/material.h"
+#include "math/utils.h"
 
 exrBEGIN_NAMESPACE
 
 class Dielectric : public Material
 {
 public:
-    Dielectric(const exrVector3& a, exrFloat ior) : m_Albedo(a), m_RefractiveIndex(ior) {}
+    Dielectric(const exrVector3& a, exrFloat ior) : m_Albedo(a), m_RefractiveIndex(ior) {};
+
+    Dielectric(const Dielectric& copy)
+        : m_Albedo(copy.m_Albedo)
+        , m_RefractiveIndex(copy.m_RefractiveIndex) {};
 
     virtual exrBool Scatter(const Ray& incomingRay, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const
     {
@@ -60,7 +65,7 @@ public:
         }
 
         return true;
-    }
+    };
 
 public:
     exrVector3 m_Albedo;

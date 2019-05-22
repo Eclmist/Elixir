@@ -1,67 +1,47 @@
 #ifndef __CORE_SYSTEM_PROFILING_TIMER_H__
 #define __CORE_SYSTEM_PROFILING_TIMER_H__
 
-#include <iostream>
-#include <string>
-#include <ctime>
-#include <chrono>
-
 #include "core/system/system.h"
 
 exrBEGIN_NAMESPACE
-
+//! @brief A simple code timer implemented with ctime
+//!
+//! A code timer that can measure and print the time taken from object declaration to 
+//! end of object scope
 class Timer
 {
 public:
-    Timer(exrString processName = "Unnamed scope") : m_ProcessName(processName), m_StartTime(std::clock())
-    {
-        exrInfoLine(processName);
-    }
+    //! @brief Create a timer with a name identifier
+    //! @param processName      The name of the process being timed
+    Timer(exrString processName = "Unamed Process");
 
-    ~Timer()
-    {
-        if (m_HasEarlyExit)
-            return;
+    //! @brief Destructor that stops the timer. This should not be explicitly called
+    ~Timer();
 
-        EndTimer();
-    }
+    //! @brief Stops the timer before the timer goes out of scope
+    //!
+    //! In the case that a process does not have its own scope or that it is beneficial to
+    //! not have its own scope, this function can be used to stop the timer before the scope
+    //! is closed.
+    void EndTimer();
 
-    void EndTimer()
-    {
-        m_HasEarlyExit = true;
+    //! @brief Formats a 64 bit time value into human readable time
+    //!
+    //! @param time             Input time to convert
+    //! @param hh               Zero padded output hour string (00 - 24)
+    //! @param mm               Zero padded output minute string (00 - 60)
+    //! @param ss               Zero padded output second string (00 - 60)
+    static void FormatTime(exrS64 time, exrString& hh, exrString& mm, exrString& ss);
 
-        std::clock_t endTime = std::clock();
-        clock_t timeElapsed = clock_t(1000) * (endTime - m_StartTime) / CLOCKS_PER_SEC;
-
-        exrString hh, mm, ss;
-        FormatTime(timeElapsed, hh, mm, ss);
-
-        exrInfoLine(m_ProcessName << " completed \t\t\t" << "Total elapsed time: " << hh << ":" << mm << ":" << ss);
-    }
-
-    // Copy pasted from main for now
-    void FormatTime(exrU64 time, exrString& hh, exrString& mm, exrString& ss) const
-    {
-        //3600000 milliseconds in an hour
-        exrU64 hr = time / 3600000;
-        time = time - 3600000 * hr;
-        //60000 milliseconds in a minute
-        exrU64 min = time / 60000;
-        time = time - 60000 * min;
-
-        //1000 milliseconds in a second
-        exrU64 sec = time / 1000;
-        time = time - 1000 * sec;
-
-        hh = exrString(hr < 10 ? 1 : 0, '0').append(std::to_string(hr));
-        mm = exrString(min < 10 ? 1 : 0, '0').append(std::to_string(min));
-        ss = exrString(sec < 10 ? 1 : 0, '0').append(std::to_string(sec));
-    }
 private:
-    std::clock_t m_StartTime;
+    //! Name of current process. Only used for logging.
     exrString m_ProcessName;
 
-    exrBool m_HasEarlyExit = false;
+    //! Time when the timer first began ticking
+    exrS64 m_StartTime;
+
+    //! A flag that will be set by EndTimer() to prevent destructor from logging again
+    exrBool m_HasEarlyExit;
 };
 
 exrEND_NAMESPACE

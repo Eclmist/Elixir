@@ -14,7 +14,7 @@ public:
         // virtual lens to simulate defocus blur
         lensRadius = aperture / 2.0f;
                
-        exrFloat theta = vfov * exrFloat(M_PI) / 180.f;
+        exrFloat theta = vfov * exrFloat(EXR_M_PI) / 180.f;
         exrFloat halfHeight = tan(theta / 2.0f);
         exrFloat halfWidth = aspect * halfHeight;
 

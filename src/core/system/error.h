@@ -2,6 +2,7 @@
 #define __CORE_SYSTEM_ERROR_H__
 
 #ifdef EXR_ENABLE_LOGGING
+#include <iostream>
 #define exrDebugLine(msg)                           std::cout << "[Debug] " << msg << '\n';
 #define exrDebug(msg)                               std::cout << "[Debug] " << msg;
 #define exrInfoLine(msg)                            std::cout << "[Info] " << msg << '\n';
@@ -13,8 +14,8 @@
 
 #ifdef EXR_ENABLE_ASSERTS
 #include <cassert>
-#define exrSoftAssert(condition, msg)               std::cerr << "Soft assert failed: " #condition << " " << msg << std::endl;
-#define exrAssert(condition, msg)                   assert((msg, condition))
+#define exrSoftAssert(condition, msg)               std::cerr << "Soft assert failed: " #condition << " " << msg << '\n';
+#define exrAssert(condition, msg)                   assert(condition && msg)
 #define exrStaticAssertMsg(condition, msg)          static_assert(condition, "static_assert: " msg)
 #else
 #define exrSoftAssert(condition, msg)               ((void)0)

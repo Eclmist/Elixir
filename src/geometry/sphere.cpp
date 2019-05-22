@@ -1,5 +1,8 @@
 #include "sphere.h"
 
+#include "material/material.h"
+#include "math/ray.h"
+
 exrBEGIN_NAMESPACE
 
 bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hit) const
@@ -21,7 +24,7 @@ bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHi
             hit.t = hitPoint1;
             hit.point = ray(hit.t);
             hit.normal = (hit.point - m_Center) / m_Radius;
-            hit.material = m_Material;
+            hit.material = m_Material.get();
             return true;
         }
 
@@ -30,7 +33,7 @@ bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHi
             hit.t = hitPoint2;
             hit.point = ray(hit.t);
             hit.normal = (hit.point - m_Center) / m_Radius;
-            hit.material = m_Material;
+            hit.material = m_Material.get();
             return true;
         }
     }

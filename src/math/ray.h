@@ -2,8 +2,8 @@
 #define __MATH_RAY_H__
 
 #include "core/system/system.h"
-#include "vector3.h"
 #include "point.h"
+#include "vector3.h"
 
 exrBEGIN_NAMESPACE
 

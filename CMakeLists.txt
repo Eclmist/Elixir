@@ -12,7 +12,6 @@ project ( Elixir )
 
 # Group cmake defined targets into CMakePredefinedTargets
 set(CMAKE_SUPPRESS_REGENERATION true)
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Set the project source directories. This is set when running the CMake GUI
 set ( EXR_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} )

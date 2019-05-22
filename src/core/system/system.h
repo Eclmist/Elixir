@@ -14,11 +14,12 @@ ____    ____  ____   ____     ___  ____        ___   _____       _____ __ __   _
 #ifndef __CORE_SYSTEM_H__
 #define __CORE_SYSTEM_H__
 
-#include <memory>
-
 #include "config.h"
 #include "error.h"
 #include "utils.h"
+#include "types.h"
+#include "profiling/profiler.h"
+#include "math/math.h"
 
 #define NUM_CHANNELS 3
 
@@ -31,31 +32,13 @@ ____    ____  ____   ____     ___  ____        ___   _____       _____ __ __   _
 #define SCENE_SIZE 10
 #endif
 
-#if EXR_QUALITY_LEVEL == 5
-#define OUTPUT_WIDTH 1000
-#define OUTPUT_HEIGHT 600
-#define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 1024
-#define NUM_BOUNDCE_PER_RAY 4
-#define SCENE_SIZE 9
-#endif
-
-#if EXR_QUALITY_LEVEL == 4
-#define OUTPUT_WIDTH 1000
-#define OUTPUT_HEIGHT 600
-#define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 8
-#define NUM_BOUNDCE_PER_RAY 4
-#define SCENE_SIZE 9
-#endif
-
-#if EXR_QUALITY_LEVEL == 3
+#if EXR_QUALITY_LEVEL == 1
 #define OUTPUT_WIDTH 500
 #define OUTPUT_HEIGHT 300
 #define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 3
+#define NUM_SAMPLES_PER_PIXEL 1
 #define NUM_BOUNDCE_PER_RAY 4
-#define SCENE_SIZE 7
+#define SCENE_SIZE 3
 #endif
 
 #if EXR_QUALITY_LEVEL == 2
@@ -67,37 +50,48 @@ ____    ____  ____   ____     ___  ____        ___   _____       _____ __ __   _
 #define SCENE_SIZE 5
 #endif
 
-#if EXR_QUALITY_LEVEL == 1
+#if EXR_QUALITY_LEVEL == 3
 #define OUTPUT_WIDTH 500
 #define OUTPUT_HEIGHT 300
 #define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 1
+#define NUM_SAMPLES_PER_PIXEL 3
 #define NUM_BOUNDCE_PER_RAY 4
-#define SCENE_SIZE 3
+#define SCENE_SIZE 7
 #endif
 
-#include "math/vector3.h"
-#include "math/point.h"
-#include <string>
+#if EXR_QUALITY_LEVEL == 4
+#define OUTPUT_WIDTH 1000
+#define OUTPUT_HEIGHT 600
+#define NUM_CHANNELS 3
+#define NUM_SAMPLES_PER_PIXEL 8
+#define NUM_BOUNDCE_PER_RAY 4
+#define SCENE_SIZE 9
+#endif
+
+#if EXR_QUALITY_LEVEL == 5
+#define OUTPUT_WIDTH 1000
+#define OUTPUT_HEIGHT 600
+#define NUM_CHANNELS 3
+#define NUM_SAMPLES_PER_PIXEL 1024
+#define NUM_BOUNDCE_PER_RAY 4
+#define SCENE_SIZE 9
+#endif
 
 exrBEGIN_NAMESPACE
-
-typedef std::string             exrString;
-typedef Vector3f                exrVector3;
-typedef Point3f                 exrPoint;
-typedef bool                    exrBool;
-typedef float                   exrFloat;
-typedef float                   exrF32;
-typedef double                  exrF64;
-typedef unsigned char           exrByte;
-typedef unsigned char           exrChar;
-typedef unsigned int            exrU32;
-typedef int                     exrS32;
-typedef unsigned long           exrU64;
-typedef long                    exrS64;
-
+class Accelerator;
+class BVHAccelerator;
+class Timer;
+class Dielectric;
+class DiffuseLight;
+class BoundingVolume;
+class Scene;
+class Primitive;
+class Sphere;
+class Ray;
+class Material;
+class Lambertian;
+class Metallic;
+struct PrimitiveHitInfo;
 exrEND_NAMESPACE
-
-#include "profiling/profiler.h"
 
 #endif // !__CORE_SYSTEM_H__

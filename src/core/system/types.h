@@ -1,0 +1,22 @@
+#include <string>
+
+exrBEGIN_NAMESPACE
+
+template <class T> class Vector3;
+template <class T> class Point;
+
+typedef std::string             exrString;
+typedef Vector3<float>          exrVector3;
+typedef Point<float>            exrPoint;
+typedef bool                    exrBool;
+typedef float                   exrFloat;
+typedef float                   exrF32;
+typedef double                  exrF64;
+typedef unsigned char           exrByte;
+typedef unsigned char           exrChar;
+typedef unsigned int            exrU32;
+typedef int                     exrS32;
+typedef unsigned long           exrU64;
+typedef long                    exrS64;
+
+exrEND_NAMESPACE

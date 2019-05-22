@@ -1,9 +1,8 @@
 #ifndef __MATH_VECTOR2_H__
 #define __MATH_VECTOR2_H__
 
+#include "core/system/system.h"
 #include <math.h>
-#include <stdlib.h>
-#include <iostream>
 
 exrBEGIN_NAMESPACE
 
@@ -50,11 +49,6 @@ public:
         struct { T m_Data[2]; };
     };
 };
-
-typedef Vector2<float>		Vector2f;
-typedef Vector2<int>		Vector2i;
-typedef Vector2<unsigned>	Vector2u;
-typedef Vector2<double>		Vector2d;
 
 template<class T>
 inline Vector2<T> operator+(const Vector2<T>& v1, const Vector2<T>& v2)

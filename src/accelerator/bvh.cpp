@@ -1,20 +1,26 @@
-#include <algorithm>
-
 #include "bvh.h"
-#include "math/math.h"
+
+#include <algorithm>
+#include <memory>
+#include <vector>
+
+#include "geometry/primitive.h"
+#include "math/random.h"
+#include "math/ray.h"
 
 exrBEGIN_NAMESPACE
 
-BVHAccelerator::BVHAccelerator(const std::vector<std::shared_ptr<Primitive>>& objects, const SplitMethod splitMethod)
+BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const SplitMethod splitMethod)
 {
     const auto numObjects = objects.size();
     exrAssert(numObjects > 0, "Attempting to create a BVH with zero objects! This is illegal.");
+
 
     m_BoundingVolume = BoundingVolume::ComputeBoundingVolume(objects);
 
     if (numObjects == 1)
     {
-        m_Primitive = objects[0].get();
+        m_Primitive = objects[0];
         return;
     }
     
@@ -33,7 +39,7 @@ BVHAccelerator::BVHAccelerator(const std::vector<std::shared_ptr<Primitive>>& ob
 
 }
 
-bool BVHAccelerator::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const
+exrBool BVHAccelerator::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const
 {
     // If intersect bounding volume
     if (m_BoundingVolume.Intersect(ray, tMin, tMax))
@@ -58,43 +64,43 @@ bool BVHAccelerator::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Pri
 }
 
 void BVHAccelerator::EqualCountSplit(
-    const std::vector<std::shared_ptr<Primitive>>& objects, 
-    std::unique_ptr<BVHAccelerator>& leftBucket, 
+    const std::vector<Primitive*>& objects,
+    std::unique_ptr<BVHAccelerator>& leftBucket,
     std::unique_ptr<BVHAccelerator>& rightBucket)
 {
     const exrU64 numObjects = static_cast<exrU64>(objects.size());
-    std::vector<std::shared_ptr<Primitive>> temp = objects;
+    std::vector<Primitive*> temp = objects;
 
     // Get a random axis to split objects
     switch (exrU32(Random::Random01() * 3))
     {
     case 0:
         // Split along x axis
-        sort(temp.begin(), temp.end(), [](const std::shared_ptr<Primitive> left, const std::shared_ptr<Primitive> right) {
+        sort(temp.begin(), temp.end(), [](Primitive* left, Primitive* right) {
             return left->GetBoundingVolume().Min().x < right->GetBoundingVolume().Min().x;
             });
         break;
     case 1:
         // Split along y axis
-        sort(temp.begin(), temp.end(), [](std::shared_ptr<Primitive> left, std::shared_ptr<Primitive> right) {
+        sort(temp.begin(), temp.end(), [](Primitive* left, Primitive* right) {
             return left->GetBoundingVolume().Min().y < right->GetBoundingVolume().Min().y;
             });
         break;
     default:
         // Split along z axis
-        sort(temp.begin(), temp.end(), [](std::shared_ptr<Primitive> left, std::shared_ptr<Primitive> right) {
+        sort(temp.begin(), temp.end(), [](Primitive* left, Primitive* right) {
             return left->GetBoundingVolume().Min().z < right->GetBoundingVolume().Min().z;
             });
         break;
     }
 
     exrS64 halfSize = numObjects / 2;
-    leftBucket = std::make_unique<BVHAccelerator>(std::vector<std::shared_ptr<Primitive>>(temp.begin(), temp.begin() + halfSize), SplitMethod::EqualCounts);
-    rightBucket = std::make_unique<BVHAccelerator>(std::vector<std::shared_ptr<Primitive>>(temp.begin() + halfSize, temp.end()), SplitMethod::EqualCounts);
+    leftBucket = std::make_unique<BVHAccelerator>(std::vector<Primitive*>(temp.begin(), temp.begin() + halfSize), SplitMethod::EqualCounts);
+    rightBucket = std::make_unique<BVHAccelerator>(std::vector<Primitive*>(temp.begin() + halfSize, temp.end()), SplitMethod::EqualCounts);
 }
 
 void BVHAccelerator::SAHSplit(
-    const std::vector<std::shared_ptr<Primitive>>& objects,
+    const std::vector<Primitive*>& objects,
     const BoundingVolume& boundingVolume,
     std::unique_ptr<BVHAccelerator>& leftBucket, 
     std::unique_ptr<BVHAccelerator>& rightBucket)
@@ -103,7 +109,7 @@ void BVHAccelerator::SAHSplit(
     const exrU32 splitsPerAxis = 32;
     exrFloat bestHeuristics = EXR_MAX_FLOAT;
 
-    std::vector<std::shared_ptr<Primitive>> bestBucketLeft, bestBucketRight;
+    std::vector<Primitive*> bestBucketLeft, bestBucketRight;
 
     // for each axis
     for (exrU32 axis = 0; axis < 3; axis++)
@@ -112,7 +118,7 @@ void BVHAccelerator::SAHSplit(
         {
             exrFloat splitValue = exrFloat(i) / exrFloat(splitsPerAxis);
 
-            std::vector<std::shared_ptr<Primitive>> leftObjects, rightObjects;
+            std::vector<Primitive*> leftObjects, rightObjects;
 
             for (exrU32 n = 0; n < numObjects; n++)
             {
