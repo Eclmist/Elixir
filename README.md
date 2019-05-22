@@ -1,5 +1,8 @@
-# Elixir Renderer
-An WIP offline raytracer based on Peter Shirley's Ray Tracing Minibooks, PBRT, and SORT
+# Elixir
+An WIP offline raytracer based on [PBRT](http://www.pbr-book.org/) and [SORT](https://github.com/JerryCao1985/SORT)
 
-## Latest render output:
+### Build Status
+[![CircleCI](https://circleci.com/gh/Eclmist/Elixir/tree/master.svg?style=shield)](https://circleci.com/gh/Eclmist/Elixir/tree/master)
+
+### Latest render output:
 ![output image](https://github.com/Eclmist/Pathtracing-Weekend-Adventures/blob/master/output.png)

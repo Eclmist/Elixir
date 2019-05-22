@@ -101,7 +101,7 @@ void BVHAccelerator::SAHSplit(
 {
     const auto numObjects = objects.size();
     const exrU32 splitsPerAxis = 32;
-    exrFloat bestHeuristics = FLT_MAX;
+    exrFloat bestHeuristics = EXR_MAX_FLOAT;
 
     std::vector<std::shared_ptr<Primitive>> bestBucketLeft, bestBucketRight;
 

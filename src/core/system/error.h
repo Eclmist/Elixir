@@ -22,5 +22,4 @@
 #define exrStaticAssertMsg(condition, msg)          ((void)0)
 #endif
 
-
 #endif // !__CORE_SYSTEM_ERROR_H__

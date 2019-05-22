@@ -2,7 +2,7 @@
 cmake_minimum_required (VERSION 3.6)
 
 # Sets the C++ versions
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -19,14 +19,17 @@ set ( EXR_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
 set ( EXR_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} )
 
 # Set the project version, semver style
-set ( EXR_VERSION_MAJOR 0 CACHE STRING "Elixir major version")
-set ( EXR_VERSION_MINOR 1 CACHE STRING "Elixir minor version")
-set ( EXR_VERSION_PATCH 32 CACHE STRING "Elixir patch version")
+set ( EXR_VERSION_MAJOR 0 CACHE STRING "Elixir major version" )
+set ( EXR_VERSION_MINOR 1 CACHE STRING "Elixir minor version" )
+set ( EXR_VERSION_PATCH 32 CACHE STRING "Elixir patch version" )
 
 # Setting on project generation
-SET( EXR_USE_NAMESPACE "YES" CACHE BOOL "Enable generating Elixir namespace. This is true by default." )
-SET( EXR_ENABLE_LOGGING "YES" CACHE BOOL "Enable logging. This is true by default." )
-SET( EXR_ENABLE_ASSERTS "YES" CACHE BOOL "Enable asserts. This is true by default." )
+SET ( EXR_USE_NAMESPACE "YES" CACHE BOOL "Enable generating Elixir namespace. This is true by default." )
+SET ( EXR_ENABLE_LOGGING "YES" CACHE BOOL "Enable logging. This is true by default." )
+SET ( EXR_ENABLE_ASSERTS "YES" CACHE BOOL "Enable asserts. This is true by default." )
+
+# Set default render quality - this is so we don't do too much on the CI
+SET ( EXR_QUALITY_LEVEL 0 CACHE STRING "Default quality level" )
 
 # Define platform
 if ( WIN32 )
@@ -100,9 +103,9 @@ file ( GLOB_RECURSE extern_ccs include/*.cc )
 
 set ( extern_files ${extern_headers} ${extern_cpps} ${extern_cs} ${extern_ccs} )
 
-set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${EXR_BINARY_DIR}/bin" )
-set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${EXR_BINARY_DIR}/bin/release" )
-set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${EXR_BINARY_DIR}/bin/debug" )
+set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${EXR_SOURCE_DIR}/bin" )
+set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${EXR_SOURCE_DIR}/bin/release" )
+set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${EXR_SOURCE_DIR}/bin/debug" )
 
 add_executable ( Elixir ${all_files} )
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT "Elixir")

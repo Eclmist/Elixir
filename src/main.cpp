@@ -13,9 +13,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
-#define EXR_QUALITY_PREVIEW
-
-#include <memory>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -89,9 +86,9 @@ std::unique_ptr<Scene> GenerateScene()
         for (int b = -SCENE_SIZE; b < SCENE_SIZE; b++)
         {
             exrFloat mat = Random::Random01();
-            Point pos(a + 0.9f * Random::Random01(), 0.2f, b + 0.9f * Random::Random01());
+            exrPoint pos(a + 0.9f * Random::Random01(), 0.2f, b + 0.9f * Random::Random01());
             
-            if ((pos - Point(4.0f, 0.2f, 0.0f)).Magnitude() > 0.9f)
+            if ((pos - exrPoint(4.0f, 0.2f, 0.0f)).Magnitude() > 0.9f)
             {
                 // does not intersect center spheres
                 if (mat < 0.8f) // diffuse
@@ -119,12 +116,12 @@ std::unique_ptr<Scene> GenerateScene()
         }
     }
 
-    scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<DiffuseLight>(exrVector3(20.0f, 5.3f, 0.3f))));
-    scene->AddPrimitive(std::make_shared<Sphere>(Point(4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Metallic>(exrVector3(0.8f, 0.6f, 0.2f), 0.05f)));
-    scene->AddPrimitive(std::make_shared<Sphere>(Point(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(exrVector3(1.0f, 1.0f, 1.0f), 1.52f)));
+    scene->AddPrimitive(std::make_shared<Sphere>(exrPoint(0.0f, 1.0f, 0.0f), 1.0f, std::make_shared<DiffuseLight>(exrVector3(20.0f, 5.3f, 0.3f))));
+    scene->AddPrimitive(std::make_shared<Sphere>(exrPoint(4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Metallic>(exrVector3(0.8f, 0.6f, 0.2f), 0.05f)));
+    scene->AddPrimitive(std::make_shared<Sphere>(exrPoint(-4.0f, 1.0f, 0.0f), 1.0f, std::make_shared<Dielectric>(exrVector3(1.0f, 1.0f, 1.0f), 1.52f)));
 
     // Floor
-    scene->AddPrimitive(std::make_shared<Sphere>(Point(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(exrVector3(0.5f))));
+    scene->AddPrimitive(std::make_shared<Sphere>(exrPoint(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(exrVector3(0.5f))));
 
     exrEndProfile()
     exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " primitives")
@@ -133,9 +130,10 @@ std::unique_ptr<Scene> GenerateScene()
     return scene;
 }
 
-unsigned long TimeSinceEpochMillisec() {
+exrU64 TimeSinceEpochMillisec() {
     using namespace std::chrono;
-    return unsigned long(system_clock::now().time_since_epoch() / milliseconds(1));
+    exrU64 time = static_cast<exrU64>(system_clock::now().time_since_epoch() / milliseconds(1));
+    return time;
 }
 
 void FormatTime(unsigned long time, exrString& hh, exrString& mm, exrString& ss)
@@ -158,7 +156,7 @@ void FormatTime(unsigned long time, exrString& hh, exrString& mm, exrString& ss)
 
 int main()
 {
-    exrInfoLine("Weekend Pathtracer Adventures v" << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH)
+    exrInfoLine("Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH)
 
     Random::Seed(11);
 
@@ -173,16 +171,16 @@ int main()
     exrProfile("Raytracing Scene")
 
     // camera
-    Point position(-9.75f, 1.5f, 2.5f);
-    Point lookat(0.0f);
+    exrPoint position(-9.75f, 1.5f, 2.5f);
+    exrPoint lookat(0.0f);
     exrFloat fov = 40.0f;
     exrFloat aspect = exrFloat(OUTPUT_WIDTH) / exrFloat(OUTPUT_HEIGHT);
     exrFloat focusDist = (position - lookat).Magnitude();
     exrFloat aperture = 0.05f;
     Camera camera(position, lookat, exrVector3::Up(), fov, aspect, aperture, focusDist);
 
-    unsigned long lastTime = TimeSinceEpochMillisec();
-    unsigned long avgTimePerRow;
+    exrU64 lastTime = TimeSinceEpochMillisec();
+    exrU64 avgTimePerRow;
 
     for (int y = OUTPUT_HEIGHT - 1; y >= 0; y--)
     {
@@ -229,7 +227,7 @@ int main()
             avgTimePerRow = newTime - lastTime;
 
         avgTimePerRow = (avgTimePerRow + (newTime - lastTime)) / 2;
-        unsigned long timeLeft = avgTimePerRow * size_t(y);
+        exrU64 timeLeft = avgTimePerRow * size_t(y);
         lastTime = newTime;
 
         exrString progressBar = "[";

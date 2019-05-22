@@ -8,6 +8,8 @@
 #define EXR_VERSION_PATCH				33
 #define EXR_PLATFORM_NAME				"Windows"
 
+#define EXR_QUALITY_LEVEL				0
+
 #define EXR_PLATFORM_WIN
 /* #undef EXR_PLATFORM_MAC */
 /* #undef EXR_PLATFORM_LINUX */

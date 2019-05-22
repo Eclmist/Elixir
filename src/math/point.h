@@ -56,7 +56,7 @@ inline Point<T> operator-(const Point<T>& p, const Vector3<T>& v)
 template<class T>
 inline Vector3<T> operator-(const Point<T>& p1, const Point<T>& p2)
 {
-    return Vector3(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
+    return Vector3<T>(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
 }
 
 template<class T>

@@ -4,6 +4,8 @@
 #include <math.h>
 #include "random.h"
 
+#ifndef _MATH_DEFINES_DEFINED
+#define _MATH_DEFINES_DEFINED
 #define M_E        2.71828182845904523536   // e
 #define M_LOG2E    1.44269504088896340736   // log2(e)
 #define M_LOG10E   0.434294481903251827651  // log10(e)
@@ -17,9 +19,10 @@
 #define M_2_SQRTPI 1.12837916709551257390   // 2/sqrt(pi)
 #define M_SQRT2    1.41421356237309504880   // sqrt(2)
 #define M_SQRT1_2  0.707106781186547524401  // 1/sqrt(2)
+#endif
 
 #define EXR_EPSILON             0.00001f
-#define EXR_MAX_FLOAT           (FLT_MAX)
+#define EXR_MAX_FLOAT           (3.402823466e+38F)
 #define EXR_MIN_FLOAT           (-EXR_MAX_FLOAT)
 
 #define exrSaturate(x)          exrClamp(x, 0, 1)
@@ -59,5 +62,5 @@ inline _Type1 exrLerp(_Type1 a, _Type1 b, _Type2 t)
 
 exrEND_NAMESPACE
 
-#endif __MATH_H__
+#endif // !__MATH_H__
 

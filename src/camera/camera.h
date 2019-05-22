@@ -1,9 +1,9 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__
 
-#include "core\system\system.h"
-#include "math\ray.h"
-#include "math\random.h"
+#include "core/system/system.h"
+#include "math/ray.h"
+#include "math/random.h"
 
 exrBEGIN_NAMESPACE
 

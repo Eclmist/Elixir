@@ -14,11 +14,24 @@ ____    ____  ____   ____     ___  ____        ___   _____       _____ __ __   _
 #ifndef __CORE_SYSTEM_H__
 #define __CORE_SYSTEM_H__
 
+#include <memory>
+
 #include "config.h"
 #include "error.h"
 #include "utils.h"
 
-#ifdef EXR_QUALITY_ULTRA
+#define NUM_CHANNELS 3
+
+// CI running binary automatically
+#if EXR_QUALITY_LEVEL == 0
+#define OUTPUT_WIDTH 2
+#define OUTPUT_HEIGHT 2
+#define NUM_SAMPLES_PER_PIXEL 4
+#define NUM_BOUNDCE_PER_RAY 4
+#define SCENE_SIZE 10
+#endif
+
+#if EXR_QUALITY_LEVEL == 5
 #define OUTPUT_WIDTH 1000
 #define OUTPUT_HEIGHT 600
 #define NUM_CHANNELS 3
@@ -26,7 +39,8 @@ ____    ____  ____   ____     ___  ____        ___   _____       _____ __ __   _
 #define NUM_BOUNDCE_PER_RAY 4
 #define SCENE_SIZE 9
 #endif
-#ifdef EXR_QUALITY_HIGH
+
+#if EXR_QUALITY_LEVEL == 4
 #define OUTPUT_WIDTH 1000
 #define OUTPUT_HEIGHT 600
 #define NUM_CHANNELS 3
@@ -34,7 +48,8 @@ ____    ____  ____   ____     ___  ____        ___   _____       _____ __ __   _
 #define NUM_BOUNDCE_PER_RAY 4
 #define SCENE_SIZE 9
 #endif
-#ifdef EXR_QUALITY_MEDIUM
+
+#if EXR_QUALITY_LEVEL == 3
 #define OUTPUT_WIDTH 500
 #define OUTPUT_HEIGHT 300
 #define NUM_CHANNELS 3
@@ -42,7 +57,8 @@ ____    ____  ____   ____     ___  ____        ___   _____       _____ __ __   _
 #define NUM_BOUNDCE_PER_RAY 4
 #define SCENE_SIZE 7
 #endif
-#ifdef EXR_QUALITY_LOW
+
+#if EXR_QUALITY_LEVEL == 2
 #define OUTPUT_WIDTH 250
 #define OUTPUT_HEIGHT 150
 #define NUM_CHANNELS 3
@@ -50,7 +66,8 @@ ____    ____  ____   ____     ___  ____        ___   _____       _____ __ __   _
 #define NUM_BOUNDCE_PER_RAY 4
 #define SCENE_SIZE 5
 #endif
-#ifdef EXR_QUALITY_PREVIEW
+
+#if EXR_QUALITY_LEVEL == 1
 #define OUTPUT_WIDTH 500
 #define OUTPUT_HEIGHT 300
 #define NUM_CHANNELS 3
