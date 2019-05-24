@@ -1,10 +1,10 @@
 #pragma once
 
 #include "accelerator.h"
+#include "math/boundingvolume.h"
 
 exrBEGIN_NAMESPACE
 
-class BoundingVolume;
 class Material;
 class Primitive;
 struct PrimitiveHitInfo;
@@ -16,6 +16,22 @@ struct PrimitiveHitInfo;
 class BVHAccelerator : public Accelerator
 {
 public:
+    //! @brief A single BVH Node
+    struct BVHNode
+    {
+        //! 
+        std::vector<Primitive*> Primitives;
+
+        //! A bounding volume that contains all the objects below this node
+        BoundingVolume BoundingVolume;
+
+        //! A pointer to the left subtree of the BVH. Will be null if this is a leaf node.
+        std::unique_ptr<BVHNode> LeftSubtree = nullptr;
+
+        //! A pointer to the right subtree of the BVH. Will be null if this is a leaf node.
+        std::unique_ptr<BVHNode> RightSubtree = nullptr;
+    };
+
     //! Split Types
     //! SAH seems to be the most effective while EqualCount is the simplest to implement
     enum class SplitMethod { SAH, EqualCounts /*, HLBVH, Middle*/ };
@@ -39,39 +55,44 @@ public:
     virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const override;
 
 private:
-    //! @brief Splits objects into two equal subtrees
+    //! @brief A recursive function to recursively traverse nodes and check for intersection
+    //!
+    //! @param node             The node to traverse down from
+    //! @param ray              The ray to test against
+    //! @param tMin             Min t value of ray to test
+    //! @param tMax             Max t value of ray to test
+    //! @param hitInfo          Output struct that contains the hit information
+    //!
+    //! @return                 True if the there are any intersections
+    static exrBool TraverseNode(const BVHNode& node, const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo);
+
+    //! @brief Recursively splits objects into equal subtrees
     //! 
     //! Split the objects into two equal subtrees on a random axis, such that
     //! the left subtree and the right subtree has the same number of elements  
     //!
-    //! @param objects          The collection of objects
-    //! @param leftBucket       The left subtree to populate
-    //! @param rightBucket      The right subtree to populate
-    static void EqualCountSplit(
-        const std::vector<Primitive*>& objects,
-        std::unique_ptr<BVHAccelerator>& leftBucket,
-        std::unique_ptr<BVHAccelerator>& rightBucket);
+    //! @param currentRoot      The current root node, whose left and right subtree we will populate
+    //! @param depth            The depth of the BVH tree, used to stop recursion when m_MaxNodeDepth is reached 
+    static void EqualCountSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 depth);
     
-    //! @brief Splits objects based on surface area heuristics
+    //! @brief Recursively splits objects based on surface area heuristics
     //! 
     //! Computes the split based on Surface Area Heuristics
     //!
-    //! @param objects          The collection of objects
-    //! @param boundingVolume   The bounding volume of the current level node
-    //! @param leftBucket       The left subtree to populate
-    //! @param rightBucket      The right subtree to populate
-    static void SAHSplit(
-        const std::vector<Primitive*>& objects,
-        const BoundingVolume& boundingVolume,
-        std::unique_ptr<BVHAccelerator>& leftBucket,
-        std::unique_ptr<BVHAccelerator>& rightBucket);
+    //! @param currentRoot      The current root node, whose left and right subtree we will populate
+    //! @param depth            The depth of the BVH tree, used to stop recursion when m_MaxNodeDepth is reached 
+    static void SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 depth);
 
 private:
-    //! A pointer to the left subtree of the BVH. Will be null if this is a leaf node.
-    std::unique_ptr<BVHAccelerator> m_Left = nullptr;
+    //! Maximum primitives in a leaf node
+    static const exrU16 m_MaxPrimitivePerNode = 8;
 
-    //! A pointer to the right subtree of the BVH. Will be null if this is a leaf node.
-    std::unique_ptr<BVHAccelerator> m_Right = nullptr;
+    //! Maximum depth of BVH tree
+    static const exrU16 m_MaxNodeDepth = 16; 
+
+private:
+    //! The root node of the BVH
+    std::unique_ptr<BVHNode> m_RootNode = nullptr;
 };
 
 exrEND_NAMESPACE

@@ -46,9 +46,9 @@ exrVector3 ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
     {
         Ray scatteredRay;
         exrVector3 attenuation;
-        exrVector3 emission = hit.material->Emit();
+        exrVector3 emission = hit.Material->Emit();
 
-        if (depth > 0 && hit.material->Scatter(viewRay, hit, attenuation, scatteredRay))
+        if (depth > 0 && hit.Material->Scatter(viewRay, hit, attenuation, scatteredRay))
         {
             // recursively collect color contribution
             return emission + attenuation * ShadePixel(scatteredRay, scene, depth - 1);

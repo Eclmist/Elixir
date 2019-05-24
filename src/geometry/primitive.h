@@ -10,16 +10,16 @@ exrBEGIN_NAMESPACE
 struct PrimitiveHitInfo
 {
     //! The ray's t value at the point of intersection
-    float t;
+    float T;
 
     //! The point of intersection
-    exrPoint point;
+    exrPoint Point;
     
     //! The normal of the surface at the point of intersection
-    exrVector3 normal;
+    exrVector3 Normal;
 
     //! A pointer to the material of the surface at the point of intersection
-    Material* material;
+    Material* Material;
 };
 
 //! @brief A base class that all primitives should inherit from

@@ -11,22 +11,18 @@ BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const Spl
     const auto numObjects = objects.size();
     exrAssert(numObjects > 0, "Attempting to create a BVH with zero objects! This is illegal.");
 
+    // Create root node
+    m_RootNode = std::make_unique<BVHNode>();
+    m_RootNode->Primitives = objects;
 
-    m_BoundingVolume = BoundingVolume::ComputeBoundingVolume(objects);
-
-    if (numObjects == 1)
-    {
-        m_Primitive = objects[0];
-        return;
-    }
-    
     switch (splitMethod)
     {
     case BVHAccelerator::SplitMethod::SAH:
-        SAHSplit(objects, m_BoundingVolume, m_Left, m_Right);
+        m_RootNode->BoundingVolume = BoundingVolume::ComputeBoundingVolume(objects);
+        SAHSplit(m_RootNode, m_MaxNodeDepth);
         break;
     case BVHAccelerator::SplitMethod::EqualCounts:
-        EqualCountSplit(objects, m_Left, m_Right);
+        EqualCountSplit(m_RootNode, m_MaxNodeDepth);
         break;
     default:
         throw "Selected split method is not implemented!";
@@ -37,35 +33,54 @@ BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const Spl
 
 exrBool BVHAccelerator::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const
 {
+    return TraverseNode(*m_RootNode, ray, tMin, tMax, hitInfo);
+}
+
+exrBool BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo)
+{
     // If intersect bounding volume
-    if (m_BoundingVolume.Intersect(ray, tMin, tMax))
+    if (node.BoundingVolume.Intersect(ray, tMin, tMax))
     {
         // reached the end of tree, return hit with primitive
-        if (m_Left == nullptr || m_Right == nullptr)
-            return m_Primitive->Intersect(ray, tMin, tMax, hitInfo);
+        if (node.LeftSubtree == nullptr || node.RightSubtree == nullptr)
+        {
+            exrBool hasHit = false;
+            // We may have a list of primitive, test all of them for intersection and return the closest hit
+            for (Primitive* node : node.Primitives)
+            {
+                if (node->Intersect(ray, tMin, tMax, hitInfo))
+                {
+                    hasHit = true;
+                    tMax = hitInfo.T;
+                }
+            }
+
+            return hasHit;
+        }
 
         // Check left and right node
-        if (m_Left->Intersect(ray, tMin, tMax, hitInfo))
+        if (TraverseNode(*node.LeftSubtree, ray, tMin, tMax, hitInfo))
         {
-            m_Right->Intersect(ray, tMin, hitInfo.t, hitInfo);
-            return true;
+            return TraverseNode(*node.RightSubtree, ray, tMin, tMax, hitInfo);
         }
         else
         {
-            return m_Right->Intersect(ray, tMin, tMax, hitInfo);
+            return TraverseNode(*node.RightSubtree, ray, tMin, tMax, hitInfo);
         }
     }
 
     return false;
 }
 
-void BVHAccelerator::EqualCountSplit(
-    const std::vector<Primitive*>& objects,
-    std::unique_ptr<BVHAccelerator>& leftBucket,
-    std::unique_ptr<BVHAccelerator>& rightBucket)
+void BVHAccelerator::EqualCountSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 depth)
 {
-    const exrU64 numObjects = static_cast<exrU64>(objects.size());
-    std::vector<Primitive*> temp = objects;
+    if (depth <= 0 || currentRoot->Primitives.size() <= m_MaxPrimitivePerNode)
+    {
+        return;
+    }
+
+    const exrU64 numObjects = static_cast<exrU64>(currentRoot->Primitives.size());
+    std::vector<Primitive*> temp = currentRoot->Primitives;
 
     // Get a random axis to split objects
     switch (exrU32(Random::Random01() * 3))
@@ -91,21 +106,32 @@ void BVHAccelerator::EqualCountSplit(
     }
 
     exrS64 halfSize = numObjects / 2;
-    leftBucket = std::make_unique<BVHAccelerator>(std::vector<Primitive*>(temp.begin(), temp.begin() + halfSize), SplitMethod::EqualCounts);
-    rightBucket = std::make_unique<BVHAccelerator>(std::vector<Primitive*>(temp.begin() + halfSize, temp.end()), SplitMethod::EqualCounts);
+    currentRoot->LeftSubtree = std::make_unique<BVHNode>();
+    currentRoot->LeftSubtree->Primitives = std::vector<Primitive*>(temp.begin(), temp.begin() + halfSize);
+
+    currentRoot->RightSubtree = std::make_unique<BVHNode>();
+    currentRoot->RightSubtree->Primitives = std::vector<Primitive*>(temp.begin() + halfSize, temp.end());
+
+    EqualCountSplit(currentRoot->LeftSubtree, depth - 1);
+    EqualCountSplit(currentRoot->RightSubtree, depth - 1);
+
+    currentRoot->BoundingVolume = BoundingVolume::ComputeBoundingVolume(currentRoot->Primitives);
 }
 
-void BVHAccelerator::SAHSplit(
-    const std::vector<Primitive*>& objects,
-    const BoundingVolume& boundingVolume,
-    std::unique_ptr<BVHAccelerator>& leftBucket, 
-    std::unique_ptr<BVHAccelerator>& rightBucket)
+void BVHAccelerator::SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 depth)
 {
-    const auto numObjects = objects.size();
+    const auto numObjects = currentRoot->Primitives.size();
+
+    if (depth <= 0 || numObjects <= m_MaxPrimitivePerNode)
+    {
+        return;
+    }
+
+    currentRoot->LeftSubtree = std::make_unique<BVHNode>();
+    currentRoot->RightSubtree = std::make_unique<BVHNode>();
+
     const exrU32 splitsPerAxis = 32;
     exrFloat bestHeuristics = EXR_MAX_FLOAT;
-
-    std::vector<Primitive*> bestBucketLeft, bestBucketRight;
 
     // for each axis
     for (exrU32 axis = 0; axis < 3; axis++)
@@ -118,13 +144,13 @@ void BVHAccelerator::SAHSplit(
 
             for (exrU32 n = 0; n < numObjects; n++)
             {
-                if ((objects[n]->GetBoundingVolume().Min()[axis] - boundingVolume.Min()[axis]) / boundingVolume.GetExtents()[axis] < splitValue)
+                if ((currentRoot->Primitives[n]->GetBoundingVolume().Min()[axis] - currentRoot->BoundingVolume.Min()[axis]) / currentRoot->BoundingVolume.GetExtents()[axis] < splitValue)
                 {
-                    leftObjects.push_back(objects[n]);
+                    leftObjects.push_back(currentRoot->Primitives[n]);
                 }
                 else
                 {
-                    rightObjects.push_back(objects[n]);
+                    rightObjects.push_back(currentRoot->Primitives[n]);
                 }
             }
 
@@ -132,23 +158,25 @@ void BVHAccelerator::SAHSplit(
             BoundingVolume rightBv = BoundingVolume::ComputeBoundingVolume(rightObjects);
 
             // Get score
-            exrFloat sc = boundingVolume.GetSurfaceArea();
+            exrFloat sc = currentRoot->BoundingVolume.GetSurfaceArea();
             exrFloat pa = leftBv.GetSurfaceArea() / sc;         // Probably of hitting A if hit parent
             exrFloat pb = rightBv.GetSurfaceArea() / sc;        // Probably of hitting B if hit parent
 
-            auto ia = leftObjects.size();                     // Cost of intersection test on A (we assume all primitives are the same cost, like PBRT)
-            auto ib = rightObjects.size();                    // Cost of intersection test on B (we assume all primitives are the same cost, like PBRT)
+            auto ia = leftObjects.size();                       // Cost of intersection test on A (we assume all primitives are the same cost, like PBRT)
+            auto ib = rightObjects.size();                      // Cost of intersection test on B (we assume all primitives are the same cost, like PBRT)
 
             exrFloat heuristics = 1 /*Ttrav*/ + pa * ia + pb * ib;
 
             if (heuristics < bestHeuristics)
             {
                 bestHeuristics = heuristics;
-                bestBucketRight = rightObjects;
-                bestBucketLeft = leftObjects;
+                currentRoot->LeftSubtree->Primitives = leftObjects;
+                currentRoot->LeftSubtree->BoundingVolume = leftBv;
+                currentRoot->RightSubtree->Primitives = rightObjects;
+                currentRoot->RightSubtree->BoundingVolume = rightBv;
             }
 
-            // if all objects already on left side, no need to keep increasing the split value
+            // if all objects already on left side, no need to continue testing bigger split values
             if (leftObjects.size() == numObjects)
             {
                 break;
@@ -156,15 +184,8 @@ void BVHAccelerator::SAHSplit(
         }
     }
 
-    if (bestBucketLeft.size() == 0 || bestBucketRight.size() == 0)
-    {
-        // Fallback to equal split
-        EqualCountSplit(objects, leftBucket, rightBucket);
-        return;
-    }
-
-    leftBucket = std::make_unique<BVHAccelerator>(bestBucketLeft, SplitMethod::SAH);
-    rightBucket = std::make_unique<BVHAccelerator>(bestBucketRight, SplitMethod::SAH);;
+    SAHSplit(currentRoot->LeftSubtree, depth - 1);
+    SAHSplit(currentRoot->RightSubtree, depth - 1);
 }
 
 exrEND_NAMESPACE

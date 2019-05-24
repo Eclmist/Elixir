@@ -1,7 +1,6 @@
 #pragma once
 
 #include "core/elixir.h"
-#include "math/boundingvolume.h"
 
 exrBEGIN_NAMESPACE
 
@@ -25,13 +24,6 @@ public:
     //! 
     //! @return                 True if the there are any intersections
     virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const = 0;
-
-protected:
-    //! A pointer to the primitive. Will be null unless this is a leaf node.
-    Primitive* m_Primitive;
-
-    //! A bounding volume that contains all the objects below this node
-    BoundingVolume m_BoundingVolume;
 };
 
 exrEND_NAMESPACE
