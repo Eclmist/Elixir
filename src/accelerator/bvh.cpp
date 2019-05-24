@@ -46,9 +46,9 @@ exrBool BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray, exrFlo
         {
             exrBool hasHit = false;
             // We may have a list of primitive, test all of them for intersection and return the closest hit
-            for (Primitive* node : node.Primitives)
+            for (Primitive* primitives : node.Primitives)
             {
-                if (node->Intersect(ray, tMin, tMax, hitInfo))
+                if (primitives->Intersect(ray, tMin, tMax, hitInfo))
                 {
                     hasHit = true;
                     tMax = hitInfo.T;
@@ -61,7 +61,8 @@ exrBool BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray, exrFlo
         // Check left and right node
         if (TraverseNode(*node.LeftSubtree, ray, tMin, tMax, hitInfo))
         {
-            return TraverseNode(*node.RightSubtree, ray, tMin, tMax, hitInfo);
+            TraverseNode(*node.RightSubtree, ray, tMin, hitInfo.T, hitInfo);
+            return true;
         }
         else
         {
@@ -74,6 +75,8 @@ exrBool BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray, exrFlo
 
 void BVHAccelerator::EqualCountSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 depth)
 {
+    currentRoot->BoundingVolume = BoundingVolume::ComputeBoundingVolume(currentRoot->Primitives);
+
     if (depth <= 0 || currentRoot->Primitives.size() <= m_MaxPrimitivePerNode)
     {
         return;
@@ -114,8 +117,6 @@ void BVHAccelerator::EqualCountSplit(std::unique_ptr<BVHNode>& currentRoot, exrU
 
     EqualCountSplit(currentRoot->LeftSubtree, depth - 1);
     EqualCountSplit(currentRoot->RightSubtree, depth - 1);
-
-    currentRoot->BoundingVolume = BoundingVolume::ComputeBoundingVolume(currentRoot->Primitives);
 }
 
 void BVHAccelerator::SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 depth)
