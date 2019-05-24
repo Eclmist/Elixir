@@ -13,8 +13,8 @@ public:
 
     virtual exrBool Scatter(const Ray& incomingRay, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const
     {
-        exrPoint target = hitInfo.Point + hitInfo.Normal + Random::RandomInUnitSphere();
-        scattered = Ray(hitInfo.Point, target - hitInfo.Point);
+        exrPoint target = hitInfo.m_Point + hitInfo.m_Normal + Random::RandomInUnitSphere();
+        scattered = Ray(hitInfo.m_Point, target - hitInfo.m_Point);
         attenuation = m_Albedo;
         return true;
     };

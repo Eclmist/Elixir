@@ -19,17 +19,17 @@ public:
     //! @brief A single BVH Node
     struct BVHNode
     {
-        //! 
-        std::vector<Primitive*> Primitives;
+        //! The list of primitive that this node contains
+        std::vector<Primitive*> m_Primitives;
 
         //! A bounding volume that contains all the objects below this node
-        BoundingVolume BoundingVolume;
+        BoundingVolume m_BoundingVolume;
 
         //! A pointer to the left subtree of the BVH. Will be null if this is a leaf node.
-        std::unique_ptr<BVHNode> LeftSubtree = nullptr;
+        std::unique_ptr<BVHNode> m_LeftSubtree = nullptr;
 
         //! A pointer to the right subtree of the BVH. Will be null if this is a leaf node.
-        std::unique_ptr<BVHNode> RightSubtree = nullptr;
+        std::unique_ptr<BVHNode> m_RightSubtree = nullptr;
     };
 
     //! Split Types

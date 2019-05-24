@@ -16,7 +16,7 @@ public:
 
     virtual exrBool Scatter(const Ray& incomingRay, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const
     {
-        exrVector3 reflectedRay = Reflect(incomingRay.m_Direction, hitInfo.Normal);
+        exrVector3 reflectedRay = Reflect(incomingRay.m_Direction, hitInfo.m_Normal);
 
         exrFloat ni_over_nt;
         attenuation = m_Albedo;
@@ -29,17 +29,17 @@ public:
         exrFloat reflectionProbability;
 
         // entering material
-        if (Dot(incomingRay.m_Direction, hitInfo.Normal) > 0.0f)
+        if (Dot(incomingRay.m_Direction, hitInfo.m_Normal) > 0.0f)
         {
-            outNormal = -hitInfo.Normal;
+            outNormal = -hitInfo.m_Normal;
             ni_over_nt = m_RefractiveIndex;
-            cosine = m_RefractiveIndex * Dot(incomingRay.m_Direction, hitInfo.Normal) / incomingRay.m_Direction.Magnitude();
+            cosine = m_RefractiveIndex * Dot(incomingRay.m_Direction, hitInfo.m_Normal) / incomingRay.m_Direction.Magnitude();
         }
         else // exiting material
         {
-            outNormal = hitInfo.Normal;
+            outNormal = hitInfo.m_Normal;
             ni_over_nt = 1.0f / m_RefractiveIndex;
-            cosine = -Dot(incomingRay.m_Direction, hitInfo.Normal) / incomingRay.m_Direction.Magnitude();
+            cosine = -Dot(incomingRay.m_Direction, hitInfo.m_Normal) / incomingRay.m_Direction.Magnitude();
         }
 
         if (Refract(incomingRay.m_Direction, outNormal, ni_over_nt, refractedRay))
@@ -56,11 +56,11 @@ public:
         // Reflection based on Fresnel approximation
         if (Random::Random01() < reflectionProbability)
         {
-            scattered = Ray(hitInfo.Point, reflectedRay);
+            scattered = Ray(hitInfo.m_Point, reflectedRay);
         }
         else
         {
-            scattered = Ray(hitInfo.Point, refractedRay);
+            scattered = Ray(hitInfo.m_Point, refractedRay);
         }
 
         return true;

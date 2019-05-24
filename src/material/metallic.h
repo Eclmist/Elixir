@@ -13,11 +13,11 @@ public:
 
     virtual exrBool Scatter(const Ray& incomingRay, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const
     {
-        exrVector3 reflected = Reflect(incomingRay.m_Direction.Normalized(), hitInfo.Normal);
-        scattered = Ray(hitInfo.Point, reflected + m_Roughness * Random::RandomInUnitSphere());
+        exrVector3 reflected = Reflect(incomingRay.m_Direction.Normalized(), hitInfo.m_Normal);
+        scattered = Ray(hitInfo.m_Point, reflected + m_Roughness * Random::RandomInUnitSphere());
         attenuation = m_Albedo;
 
-        return (Dot(scattered.m_Direction, hitInfo.Normal) > 0);
+        return (Dot(scattered.m_Direction, hitInfo.m_Normal) > 0);
     };
 
 public:

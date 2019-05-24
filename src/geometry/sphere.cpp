@@ -18,19 +18,19 @@ bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHi
 
         if (hitPoint1 <= tMax && hitPoint1 >= tMin)
         {
-            hit.T = hitPoint1;
-            hit.Point = ray(hit.T);
-            hit.Normal = (hit.Point - m_Center) / m_Radius;
-            hit.Material = m_Material.get();
+            hit.m_T = hitPoint1;
+            hit.m_Point = ray(hit.m_T);
+            hit.m_Normal = (hit.m_Point - m_Center) / m_Radius;
+            hit.m_Material = m_Material.get();
             return true;
         }
 
         if (hitPoint2 <= tMax && hitPoint2 >= tMin)
         {
-            hit.T = hitPoint2;
-            hit.Point = ray(hit.T);
-            hit.Normal = (hit.Point - m_Center) / m_Radius;
-            hit.Material = m_Material.get();
+            hit.m_T = hitPoint2;
+            hit.m_Point = ray(hit.m_T);
+            hit.m_Normal = (hit.m_Point - m_Center) / m_Radius;
+            hit.m_Material = m_Material.get();
             return true;
         }
     }
