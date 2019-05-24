@@ -1,5 +1,4 @@
-#ifndef __CORE_SYSTEM_PROFILING_TIMER_H__
-#define __CORE_SYSTEM_PROFILING_TIMER_H__
+#pragma once
 
 #include "core/elixir.h"
 
@@ -50,5 +49,3 @@ private:
 };
 
 exrEND_NAMESPACE
-
-#endif // !__CORE_SYSTEM_PROFILING_TIMER_H__

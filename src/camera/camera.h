@@ -1,5 +1,4 @@
-#ifndef __CAMERA_H__
-#define __CAMERA_H__
+#pragma once
 
 #include "core/elixir.h"
 
@@ -61,5 +60,3 @@ public:
 };
 
 exrEND_NAMESPACE
-
-#endif // !__CAMERA_H__

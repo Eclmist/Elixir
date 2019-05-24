@@ -1,5 +1,4 @@
-#ifndef __MATH_BOUNDING_VOLUME_H__
-#define __MATH_BOUNDING_VOLUME_H__
+#pragma once
 
 #include "core/elixir.h"
 
@@ -84,5 +83,3 @@ private:
 };
 
 exrEND_NAMESPACE
-
-#endif // !__MATH_BOUNDING_VOLUME_H__

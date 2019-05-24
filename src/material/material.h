@@ -1,5 +1,4 @@
-#ifndef __MATERIAL_H__
-#define __MATERIAL_H__
+#pragma once
 
 #include "core/elixir.h"
 
@@ -16,6 +15,3 @@ public:
 };
 
 exrEND_NAMESPACE
-
-#endif // !__MATERIAL_H__
-

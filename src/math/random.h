@@ -1,5 +1,4 @@
-#ifndef __MATH_RANDOM_H__
-#define __MATH_RANDOM_H__
+#pragma once
 
 #include "core/elixir.h"
 
@@ -27,5 +26,3 @@ public:
 };
 
 exrEND_NAMESPACE
-
-#endif // !__MATH_RANDOM_H__

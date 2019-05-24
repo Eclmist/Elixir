@@ -1,5 +1,4 @@
-#ifndef __MATH_RAY_H__
-#define __MATH_RAY_H__
+#pragma once
 
 #include "core/elixir.h"
 
@@ -45,6 +44,3 @@ public:
 };
 
 exrEND_NAMESPACE
-
-#endif // !__MATH_RAY_H__
-

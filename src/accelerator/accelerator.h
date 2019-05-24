@@ -1,5 +1,4 @@
-#ifndef __ACCELERATOR_H__
-#define __ACCELERATOR_H__
+#pragma once
 
 #include "core/elixir.h"
 #include "math/boundingvolume.h"
@@ -36,5 +35,3 @@ protected:
 };
 
 exrEND_NAMESPACE
-
-#endif // !__ACCELERATOR_H__

@@ -1,5 +1,4 @@
-#ifndef __GEOMETRY_SPHERE_H__
-#define __GEOMETRY_SPHERE_H__
+#pragma once
 
 #include "primitive.h"
 
@@ -50,6 +49,3 @@ public:
 };
 
 exrEND_NAMESPACE
-
-#endif // !__GEOMETRICS_SPHERE_H__
-

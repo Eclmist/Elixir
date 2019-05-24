@@ -1,5 +1,4 @@
-#ifndef __MATERIAL_LAMBERTIAN_H__
-#define __MATERIAL_LAMBERTIAN_H__
+#pragma once
 
 #include "material.h"
 
@@ -25,6 +24,3 @@ public:
 };
 
 exrEND_NAMESPACE
-
-#endif // !__MATERIAL_LAMBERTIAN_H__
-

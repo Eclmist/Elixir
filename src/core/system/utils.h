@@ -1,5 +1,4 @@
-#ifndef __CORE_SYSTEM_UTILS_H__
-#define __CORE_SYSTEM_UTILS_H__
+#pragma once
 
 // To detect multiple namespace opening which might be caused by using namespace elixir usage.
 // if you get an error similar to the one below, it probably means that a using namespace elixir; statement
@@ -18,5 +17,3 @@ namespace elixir { enum { InElixirNamespace = true }; }
 #endif
 
 #define exrTest                 {}
-
-#endif // !__CORE_SYSTEM_UTILS_H__

@@ -1,5 +1,4 @@
-#ifndef __ACCELERATOR_BVH_H__
-#define __ACCELERATOR_BVH_H__
+#pragma once
 
 #include "accelerator.h"
 
@@ -76,5 +75,3 @@ private:
 };
 
 exrEND_NAMESPACE
-
-#endif // !__ACCELERATOR_BVH_H__

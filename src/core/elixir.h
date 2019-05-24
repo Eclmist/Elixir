@@ -1,5 +1,4 @@
-#ifndef __CORE_ELIXIR_H__
-#define __CORE_ELIXIR_H__
+#pragma once
 
 #include <memory>
 #include <vector>
@@ -17,5 +16,3 @@
 #include "math/point.h"
 #include "math/ray.h"
 #include "math/random.h"
-
-#endif // !__CORE_ELIXIR_H__

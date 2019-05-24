@@ -1,5 +1,4 @@
-#ifndef __GEOMETRICS_PRIMITIVE_H__
-#define __GEOMETRICS_PRIMITIVE_H__
+#pragma once
 
 #include "core/elixir.h"
 #include "material/material.h"
@@ -75,6 +74,3 @@ protected:
 };
 
 exrEND_NAMESPACE
-
-#endif // !__GEOMETRICS_PRIMITIVE_H__
-

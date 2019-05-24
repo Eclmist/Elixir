@@ -1,5 +1,4 @@
-#ifndef __CORE_SCENE_H__
-#define __CORE_SCENE_H__
+#pragma once
 
 #include "core/elixir.h"
 #include "accelerator/accelerator.h"
@@ -57,5 +56,3 @@ private:
 };
 
 exrEND_NAMESPACE
-
-#endif // !__CORE_SCENE_H__

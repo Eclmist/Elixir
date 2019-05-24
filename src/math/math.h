@@ -1,5 +1,4 @@
-#ifndef __MATH_H__
-#define __MATH_H__
+#pragma once
 
 #define EXR_M_PI                3.141592653589793F
 #define EXR_EPSILON             0.00001f
@@ -42,6 +41,3 @@ inline _Type1 exrLerp(_Type1 a, _Type1 b, _Type2 t)
 }
 
 exrEND_NAMESPACE
-
-#endif // !__MATH_H__
-

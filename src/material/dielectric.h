@@ -1,5 +1,4 @@
-#ifndef __MATERIAL_DIELECTRIC_H__
-#define __MATERIAL_DIELECTRIC_H__
+#pragma once
 
 #include "material/material.h"
 #include "math/utils.h"
@@ -73,6 +72,3 @@ public:
 };
 
 exrEND_NAMESPACE
-
-#endif // !__MATERIAL_DIELECTRIC_H__
-

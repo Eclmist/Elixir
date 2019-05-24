@@ -11,9 +11,7 @@
  ================================================================================================ */
 
 // This file should probably be merged into math/math.h
-
-#ifndef __MATH_UTILS_H__
-#define __MATH_UTILS_H__
+#pragma once
 
 #include "core/elixir.h"
 
@@ -27,5 +25,3 @@ exrFloat SchlickFresnelApproximation(exrFloat cosine, exrFloat ior)
 }
 
 exrEND_NAMESPACE
-
-#endif // !__MATH_UTILS_H__

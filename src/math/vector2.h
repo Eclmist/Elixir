@@ -1,5 +1,4 @@
-#ifndef __MATH_VECTOR2_H__
-#define __MATH_VECTOR2_H__
+#pragma once
 
 #include "core/elixir.h"
 
@@ -120,5 +119,3 @@ inline bool Refract(const Vector2<T>& v, const Vector2<T>& n, float ni_over_nt, 
 }
 
 exrEND_NAMESPACE
-
-#endif // !__MATH_VECTOR2_H__

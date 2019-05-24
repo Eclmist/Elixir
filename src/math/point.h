@@ -1,5 +1,4 @@
-#ifndef __MATH_POINT_H__
-#define __MATH_POINT_H__
+#pragma once
 
 exrBEGIN_NAMESPACE
 
@@ -65,5 +64,3 @@ inline float Distance(const Point<T>& p1, const Point<T>& p2)
 }
 
 exrEND_NAMESPACE
-
-#endif // !__M_POINT_H__

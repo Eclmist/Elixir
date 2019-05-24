@@ -1,5 +1,4 @@
-#ifndef __MATERIAL_METALLIC_H__
-#define __MATERIAL_METALLIC_H__
+#pragma once
 
 #include "material.h"
 
@@ -27,6 +26,3 @@ public:
 };
 
 exrEND_NAMESPACE
-
-#endif // !__MATERIAL_METALLIC_H__
-

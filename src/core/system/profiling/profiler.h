@@ -1,5 +1,4 @@
-#ifndef __CORE_SYSTEM_PROFILING_PROFILER_H__
-#define __CORE_SYSTEM_PROFILING_PROFILER_H__
+#pragma once
 
 #include "timer.h"
 
@@ -9,5 +8,3 @@
 
 #define exrProfile(a)           Timer timer(a);
 #define exrEndProfile()         timer.EndTimer();
-
-#endif // !__CORE_SYSTEM_PROFILING_PROFILER_H__

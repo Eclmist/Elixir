@@ -1,5 +1,4 @@
-#ifndef __MATERIAL_DIFFUSE_LIGHT_H__
-#define __MATERIAL_DIFFUSE_LIGHT_H__
+#pragma once
 
 #include "material/material.h"
 
@@ -28,5 +27,3 @@ private:
 };
 
 exrEND_NAMESPACE
-
-#endif //! __MATERIAL_DIFFUSE_LIGHT_H__
