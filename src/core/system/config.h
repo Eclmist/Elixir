@@ -26,7 +26,7 @@
     if they have to. But if they are added below here, there's almost certainly a better place elsewhere
 */
 
-#define NUM_CHANNELS 3
+#define NUM_CHANNELS 5
 
 // CI running binary automatically
 #if EXR_QUALITY_LEVEL == 0
@@ -77,7 +77,7 @@
 #define OUTPUT_WIDTH 1000
 #define OUTPUT_HEIGHT 600
 #define NUM_CHANNELS 3
-#define NUM_SAMPLES_PER_PIXEL 1024
+#define NUM_SAMPLES_PER_PIXEL 4096
 #define NUM_BOUNDCE_PER_RAY 4
 #define SCENE_SIZE 9
 #endif
