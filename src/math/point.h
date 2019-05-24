@@ -14,6 +14,7 @@ public:
 
     inline const Point<T>& operator+() const { return *this; }
     inline Point<T> operator-() const { return Point<T>(-x, -y, -z); }
+    inline Point<T> operator/(float w) const { return Point<T>(x / w, y / w, z / w); }
     inline T operator[](int i) const { return m_Data[i]; }
     inline T& operator[](int i) { return m_Data[i]; }
 

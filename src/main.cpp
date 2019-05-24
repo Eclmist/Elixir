@@ -71,9 +71,9 @@ std::unique_ptr<Scene> GenerateScene()
 
     std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
-    for (int a = -SCENE_SIZE; a < SCENE_SIZE; a++)
+    for (exrU32 a = -SCENE_SIZE; a < SCENE_SIZE; a++)
     {
-        for (int b = -SCENE_SIZE; b < SCENE_SIZE; b++)
+        for (exrU32 b = -SCENE_SIZE; b < SCENE_SIZE; b++)
         {
             exrFloat mat = Random::Random01();
             exrPoint pos(a + 0.9f * Random::Random01(), 0.2f, b + 0.9f * Random::Random01());
@@ -126,10 +126,8 @@ std::unique_ptr<Scene> GenerateScene()
     return scene;
 }
 
-void Render()
+void TileRenderer()
 {
-    Random::Seed(11);
-
     // PPM Headers
     exrString header = "P6\n" + std::to_string(OUTPUT_WIDTH) + " " + std::to_string(OUTPUT_HEIGHT) + "\n255\n";
     
@@ -152,14 +150,14 @@ void Render()
     exrU64 lastTime = Timer::TimeSinceEpochMillisec();
     exrU64 avgTimePerRow;
 
-    for (int y = OUTPUT_HEIGHT - 1; y >= 0; y--)
+    for (; y ; y--)
     {
-        for (int x = 0; x < OUTPUT_WIDTH; x++)
+        for (exrU32 x = 0; x < OUTPUT_WIDTH; x++)
         {
             exrVector3 color = exrVector3::Zero();
 
             // Get samples
-            for (int i = 0; i < NUM_SAMPLES_PER_PIXEL; i++)
+            for (exrU32 i = 0; i < NUM_SAMPLES_PER_PIXEL; i++)
             {
                 exrFloat u = exrFloat(x + Random::Random01()) / exrFloat(OUTPUT_WIDTH);
                 exrFloat v = exrFloat(y + Random::Random01()) / exrFloat(OUTPUT_HEIGHT);
@@ -201,7 +199,7 @@ void Render()
         lastTime = newTime;
 
         exrString progressBar = "[";
-        for (int i = 0; i < 100; i+= 3)
+        for (exrU32 i = 0; i < 100; i+= 3)
         {
             if (i < progress)
                 progressBar += "=";
@@ -216,7 +214,7 @@ void Render()
     }
     exrEndProfile()
 
-    int x, y, n;
+    exrS32 x, y, n;
     stbi_uc* output = stbi_load_from_memory(buffer.data(), static_cast<int>(buffer.size()), &x, &y, &n, 0);
     stbi_write_png("output.png", OUTPUT_WIDTH, OUTPUT_HEIGHT, NUM_CHANNELS, output, OUTPUT_WIDTH * NUM_CHANNELS);
 
@@ -224,12 +222,11 @@ void Render()
 
 exrEND_NAMESPACE
 
-
 int main()
 {
     exrInfoLine("Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH)
-
-    elixir::Render();
+    elixir::Random::Seed(11);
+    elixir::TileRenderer();
 
 #ifdef EXR_PLATFORM_WIN
     system("PAUSE");

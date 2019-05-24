@@ -6,6 +6,7 @@ exrBEGIN_NAMESPACE
 
 template <class T> class Vector3;
 template <class T> class Point;
+class Matrix4x4;
 
 typedef std::string             exrString;
 typedef Vector3<float>          exrVector3;
