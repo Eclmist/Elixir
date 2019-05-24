@@ -1,7 +1,7 @@
 #ifndef __GEOMETRICS_PRIMITIVE_H__
 #define __GEOMETRICS_PRIMITIVE_H__
 
-#include "core/system/system.h"
+#include "core/elixir.h"
 #include "material/material.h"
 #include "math/boundingvolume.h"
 

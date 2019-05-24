@@ -13,17 +13,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
-#include <chrono>
-
 #include "stb/stb_image.h"
 #include "stb/stbi_image_write.h"
 
-#include "core/system/system.h"
-#include "math/ray.h"
-#include "geometry/primitive.h"
+#include "core/elixir.h"
 #include "core/scene.h"
-#include "math/random.h"
-#include <memory>
 #include "camera/camera.h"
 #include "material/lambertian.h"
 #include "material/metallic.h"
@@ -132,12 +126,6 @@ std::unique_ptr<Scene> GenerateScene()
     return scene;
 }
 
-exrU64 TimeSinceEpochMillisec() {
-    using namespace std::chrono;
-    exrU64 time = static_cast<exrU64>(system_clock::now().time_since_epoch() / milliseconds(1));
-    return time;
-}
-
 void Render()
 {
     Random::Seed(11);
@@ -161,7 +149,7 @@ void Render()
     exrFloat aperture = 0.05f;
     Camera camera(position, lookat, exrVector3::Up(), fov, aspect, aperture, focusDist);
 
-    exrU64 lastTime = TimeSinceEpochMillisec();
+    exrU64 lastTime = Timer::TimeSinceEpochMillisec();
     exrU64 avgTimePerRow;
 
     for (int y = OUTPUT_HEIGHT - 1; y >= 0; y--)
@@ -203,7 +191,7 @@ void Render()
         }
 
         exrFloat progress = 100.0f - (exrFloat(y) / OUTPUT_HEIGHT * 100.0f);
-        auto newTime = TimeSinceEpochMillisec();
+        auto newTime = Timer::TimeSinceEpochMillisec();
 
         if (y == OUTPUT_HEIGHT - 1)
             avgTimePerRow = newTime - lastTime;

@@ -1,7 +1,7 @@
 #ifndef __MATH_RANDOM_H__
 #define __MATH_RANDOM_H__
 
-#include "core/system/system.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 

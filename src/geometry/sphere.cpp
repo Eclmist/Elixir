@@ -1,8 +1,5 @@
 #include "sphere.h"
 
-#include "material/material.h"
-#include "math/ray.h"
-
 exrBEGIN_NAMESPACE
 
 bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hit) const

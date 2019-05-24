@@ -1,7 +1,5 @@
 #include "scene.h"
-
 #include "accelerator/bvh.h"
-#include "geometry/primitive.h"
 
 exrBEGIN_NAMESPACE
 

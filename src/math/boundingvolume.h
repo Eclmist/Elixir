@@ -1,17 +1,11 @@
 #ifndef __MATH_BOUNDING_VOLUME_H__
 #define __MATH_BOUNDING_VOLUME_H__
 
-#include <vector>
-
-#include "core/system/system.h"
-#include "math/point.h"
-#include "math/vector3.h"
-
-class Primitive;
-class Ray;
-class vector;
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
+
+class Primitive;
 
 //! @brief A bounding volume that can be used in accelerators
 //!

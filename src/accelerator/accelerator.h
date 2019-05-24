@@ -1,13 +1,12 @@
 #ifndef __ACCELERATOR_H__
 #define __ACCELERATOR_H__
 
-#include <vector>
-
-#include "core/system/system.h"
-#include "geometry/primitive.h"
+#include "core/elixir.h"
 #include "math/boundingvolume.h"
 
 exrBEGIN_NAMESPACE
+
+struct PrimitiveHitInfo;
 
 //! @brief Defines the base class for primitive and spacial accelerators
 //!

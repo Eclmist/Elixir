@@ -1,5 +1,4 @@
 #include "random.h"
-#include "vector3.h"
 
 exrBEGIN_NAMESPACE
 

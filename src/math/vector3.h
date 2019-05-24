@@ -1,8 +1,7 @@
 #ifndef __MATH_VECTOR3_H__
 #define __MATH_VECTOR3_H__
 
-#include "core/system/system.h"
-#include <math.h>
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 

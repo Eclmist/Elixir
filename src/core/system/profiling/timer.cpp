@@ -1,6 +1,6 @@
-#include "timer.h"
-
+#include <chrono>
 #include <ctime>
+#include "timer.h"
 
 exrBEGIN_NAMESPACE
 
@@ -38,6 +38,7 @@ void Timer::FormatTime(exrS64 time, exrString& hh, exrString& mm, exrString& ss)
     //3600000 milliseconds in an hour
     exrS64 hr = time / 3600000;
     time = time - 3600000 * hr;
+
     //60000 milliseconds in a minute
     exrS64 min = time / 60000;
     time = time - 60000 * min;
@@ -51,4 +52,11 @@ void Timer::FormatTime(exrS64 time, exrString& hh, exrString& mm, exrString& ss)
     ss = exrString(sec < 10 ? 1 : 0, '0').append(std::to_string(sec));
 }
 
+exrU64 Timer::TimeSinceEpochMillisec()
+{
+    using namespace std::chrono;
+    exrU64 time = static_cast<exrU64>(system_clock::now().time_since_epoch() / milliseconds(1));
+    return time;
+}
 exrEND_NAMESPACE
+

@@ -1,7 +1,7 @@
 #ifndef __CORE_SYSTEM_PROFILING_TIMER_H__
 #define __CORE_SYSTEM_PROFILING_TIMER_H__
 
-#include "core/system/system.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 //! @brief A simple code timer implemented with ctime
@@ -32,6 +32,11 @@ public:
     //! @param mm               Zero padded output minute string (00 - 60)
     //! @param ss               Zero padded output second string (00 - 60)
     static void FormatTime(exrS64 time, exrString& hh, exrString& mm, exrString& ss);
+
+    //! @brief Computes the number of milliseconds past since Epoch
+    //!
+    //! @return                 The number of milliseconds since 1970/01/01
+    static exrU64 TimeSinceEpochMillisec();
 
 private:
     //! Name of current process. Only used for logging.

@@ -1,13 +1,11 @@
 #ifndef __CORE_SCENE_H__
 #define __CORE_SCENE_H__
 
-#include <memory>
-#include <vector>
-#include "accelerator/bvh.h"
-#include "core/system/system.h"
+#include "core/elixir.h"
+#include "accelerator/accelerator.h"
 #include "geometry/primitive.h"
 
-class Ray;
+class Accelerator;
 struct PrimitiveHitInfo;
 
 exrBEGIN_NAMESPACE

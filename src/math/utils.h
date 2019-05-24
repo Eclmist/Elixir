@@ -9,10 +9,13 @@
 
                         This file is ghetto. Remove when no longer ghetto. 
  ================================================================================================ */
+
+// This file should probably be merged into math/math.h
+
 #ifndef __MATH_UTILS_H__
 #define __MATH_UTILS_H__
 
-#include "core/system/system.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 

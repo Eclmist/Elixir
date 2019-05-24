@@ -1,9 +1,7 @@
 #ifndef __MATH_RAY_H__
 #define __MATH_RAY_H__
 
-#include "core/system/system.h"
-#include "point.h"
-#include "vector3.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 

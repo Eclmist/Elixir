@@ -1,12 +1,8 @@
-#include "bvh.h"
-
 #include <algorithm>
-#include <memory>
-#include <vector>
 
+#include "bvh.h"
 #include "geometry/primitive.h"
-#include "math/random.h"
-#include "math/ray.h"
+#include "material/material.h"
 
 exrBEGIN_NAMESPACE
 

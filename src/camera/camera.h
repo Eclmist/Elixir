@@ -1,15 +1,27 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__
 
-#include "core/system/system.h"
-#include "math/ray.h"
-#include "math/random.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 
+//! @brief A simple look-at camera that handles view rays generatino
+//!
+//! The camera class can be positioned using an origin and a look at point. FOV, aperture, focus distance
+//! are some of the settings that can be adjusted such that the generated ray can be used in effects
+//! such as motion blur or defocus blur.
 class Camera
 {
 public:
+    //! @brief Creates a camera object
+    //!
+    //! @param position          The position of the camera
+    //! @param lookat            The look at point of the camera
+    //! @param up                The camera's up vector, used to adjust roll
+    //! @param vfov              The field of view in degrees
+    //! @param aspect            The aspect ratio of the expected output
+    //! @param aperture          The aperture of the camera
+    //! @param focusDist         The distance away from the camera's focus plane
     Camera(exrPoint position, exrPoint lookat, exrVector3 up, exrFloat vfov, exrFloat aspect, exrFloat aperture, exrFloat focusDist) {
         // virtual lens to simulate defocus blur
         lensRadius = aperture / 2.0f;
@@ -28,6 +40,10 @@ public:
         m_VerticalStep = 2.0f * halfHeight * focusDist * v;
     }
 
+    //! @brief Creates a view ray based from a uv coordinate
+    //!
+    //! @param s                The u coordinate of the ray in screen space
+    //! @param t                The v coordinate of the ray in screen space
     Ray GetViewRay(exrFloat s, exrFloat t) 
     { 
         exrVector3 rd = lensRadius * Random::RandomInUnitDisc();
@@ -41,7 +57,6 @@ public:
     exrVector3 m_VerticalStep;
 
     exrVector3 u, v, w;
-
     exrFloat lensRadius;
 };
 

@@ -3,9 +3,12 @@
 
 #include "accelerator.h"
 
-struct PrimitiveHitInfo;
-
 exrBEGIN_NAMESPACE
+
+class BoundingVolume;
+class Material;
+class Primitive;
+struct PrimitiveHitInfo;
 
 //! @brief Defines a bounding volume hierarchy
 //!

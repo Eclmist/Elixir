@@ -1,7 +1,5 @@
 #include "boundingvolume.h"
-
 #include "geometry/primitive.h"
-#include "math/ray.h"
 
 exrBEGIN_NAMESPACE
 
