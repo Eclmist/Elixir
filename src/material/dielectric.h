@@ -1,6 +1,6 @@
 #pragma once
 
-#include "material/material.h"
+#include "material.h"
 #include "math/utils.h"
 
 exrBEGIN_NAMESPACE

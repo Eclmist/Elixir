@@ -3,6 +3,8 @@
 	CMake configurations can be defined here, but all other changes may be lost!
 */
 
+#pragma once
+
 #define EXR_VERSION_MAJOR				0
 #define EXR_VERSION_MINOR				1
 #define EXR_VERSION_PATCH				32

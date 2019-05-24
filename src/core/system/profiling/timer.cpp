@@ -1,10 +1,11 @@
 #include <chrono>
 #include <ctime>
+
 #include "timer.h"
 
 exrBEGIN_NAMESPACE
 
-Timer::Timer(exrString processName /*= "Unamed Process" */)
+Timer::Timer(exrString processName)
     : m_ProcessName(processName)
     , m_StartTime(clock())
     , m_HasEarlyExit(false)
