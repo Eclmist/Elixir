@@ -1,17 +1,41 @@
-﻿/* ================================================================================================ /
- ____    ____  ____   ____     ___  ____        ___   _____       _____ __ __   ____  ___ ___    ___
-|    \  /    ||    \ |    \   /  _]|    \      /   \ |     |     / ___/|  |  | /    ||   |   |  /  _]
-|  o  )|  o  ||  _  ||  _  | /  [_ |  D  )    |     ||   __|    (   \_ |  |  ||  o  || _   _ | /  [_
-|     ||     ||  |  ||  |  ||    _]|    /     |  O  ||  |_       \__  ||  _  ||     ||  \_/  ||    _]
-|  O  ||  _  ||  |  ||  |  ||   [_ |    \     |     ||   _]      /  \ ||  |  ||  _  ||   |   ||   [_
-|     ||  |  ||  |  ||  |  ||     ||  .  \    |     ||  |        \    ||  |  ||  |  ||   |   ||     |
-|_____||__|__||__|__||__|__||_____||__|\_|     \___/ |__|         \___||__|__||__|__||___|___||_____|
+﻿/*
+    This file is part of Elixir, an open-source cross platform physically
+    based renderer.
 
-                        This file is ghetto. Remove when no longer ghetto. 
- ================================================================================================ */
+    Copyright (c) 2019 Samuel Van Allen - All rights reserved.
+
+    Elixir is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/* ========================================================================================== /
+
+         ######\  ##\      ########\  ######\  ##\   ##\       ##\      ##\ ########\
+        ##  __##\ ## |     ##  _____|##  __##\ ###\  ## |      ###\    ### |##  _____|
+        ## /  \__|## |     ## |      ## /  ## |####\ ## |      ####\  #### |## |
+        ## |      ## |     #####\    ######## |## ##\## |      ##\##\## ## |#####\
+        ## |      ## |     ##  __|   ##  __## |## \#### |      ## \###  ## |##  __|
+        ## |  ##\ ## |     ## |      ## |  ## |## |\### |      ## |\#  /## |## |
+        \######  |########\########\ ## |  ## |## | \## |      ## | \_/ ## |########\
+         \______/ \________\________|\__|  \__|\__|  \__|      \__|     \__|\________|
+
+             Banner of shame. Remove when this file is no longer ghetto. 
+ =========================================================================================== */
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+
+#define EXR_QUALITY_LEVEL				1
 
 #include "stb/stb_image.h"
 #include "stb/stbi_image_write.h"
@@ -224,12 +248,22 @@ void Render()
 
 exrEND_NAMESPACE
 
+using namespace elixir;
 
 int main()
 {
+
     exrInfoLine("Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH)
 
-    elixir::Render();
+    Render();
+
+    Ray ray = Ray(exrPoint(0, 0, 0), exrVector3(0, 0, 1));
+    Sphere sphere(exrPoint(0.0f, 0.0f, 2.0f), 0.5f, std::make_unique<DiffuseLight>(exrVector3(20.0f, 5.3f, 0.3f)));
+
+elixir::PrimitiveHitInfo hit;
+
+    exrAssert(sphere.Intersect(ray, 0.001f, 1000.0f, hit), "No hit when there should be hit");
+    
 
 #ifdef EXR_PLATFORM_WIN
     system("PAUSE");

@@ -1,12 +1,38 @@
+/*
+    This file is part of Elixir, an open-source cross platform physically
+    based renderer.
+
+    Copyright (c) 2019 Samuel Van Allen - All rights reserved.
+
+    Elixir is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "sphere.h"
 
 exrBEGIN_NAMESPACE
 
 bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hit) const
 {
-    exrVector3 oc = ray.m_Origin - m_Center;
-    exrFloat a = Dot(ray.m_Direction, ray.m_Direction);
-    exrFloat b = Dot(oc, ray.m_Direction);
+    Ray transformedRay = ray;
+
+    // Transform ray into local space
+    transformedRay.m_Origin = m_Transform.GetInverseMatrix() * ray.m_Origin;
+    transformedRay.m_Direction = (m_Transform.GetInverseMatrix() * ray.m_Direction).Normalized();
+
+    exrVector3 oc = transformedRay.m_Origin - exrPoint::Zero();
+    exrFloat a = Dot(transformedRay.m_Direction, transformedRay.m_Direction);
+    exrFloat b = Dot(oc, transformedRay.m_Direction);
     exrFloat c = Dot(oc, oc) - m_Radius * m_Radius;
     exrFloat discriminant = b * b - a * c;
 
@@ -19,8 +45,8 @@ bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHi
         if (hitPoint1 <= tMax && hitPoint1 >= tMin)
         {
             hit.m_T = hitPoint1;
-            hit.m_Point = ray(hit.m_T);
-            hit.m_Normal = (hit.m_Point - m_Center) / m_Radius;
+            hit.m_Point = m_Transform.GetMatrix() * transformedRay(hitPoint1);
+            hit.m_Normal = m_Transform.GetInverseMatrix().Transposed() * ((transformedRay(hitPoint1) - exrPoint::Zero()) / m_Radius);
             hit.m_Material = m_Material.get();
             return true;
         }
@@ -28,8 +54,8 @@ bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHi
         if (hitPoint2 <= tMax && hitPoint2 >= tMin)
         {
             hit.m_T = hitPoint2;
-            hit.m_Point = ray(hit.m_T);
-            hit.m_Normal = (hit.m_Point - m_Center) / m_Radius;
+            hit.m_Point = m_Transform.GetMatrix() * transformedRay(hitPoint2);
+            hit.m_Normal = m_Transform.GetInverseMatrix().Transposed() * ((transformedRay(hitPoint2) - exrPoint::Zero()) / m_Radius);
             hit.m_Material = m_Material.get();
             return true;
         }
@@ -41,8 +67,9 @@ bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHi
 
 bool Sphere::ComputeBoundingVolume()
 {
-    exrPoint min = exrPoint(m_Center.x - m_Radius, m_Center.y - m_Radius, m_Center.z - m_Radius);
-    exrPoint max = exrPoint(m_Center.x + m_Radius, m_Center.y + m_Radius, m_Center.z + m_Radius);
+    exrPoint min = m_Transform.GetMatrix() * exrPoint(-m_Radius);
+    exrPoint max = m_Transform.GetMatrix() * exrPoint(m_Radius);
+
     m_BoundingVolume = BoundingVolume(min, max);
     return true;
 }

@@ -1,3 +1,23 @@
+/*
+    This file is part of Elixir, an open-source cross platform physically
+    based renderer.
+
+    Copyright (c) 2019 Samuel Van Allen - All rights reserved.
+
+    Elixir is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #pragma once
 
 #include "primitive.h"
@@ -15,8 +35,9 @@ public:
     //! @param radius           The radius of the sphere
     //! @param material         The material of the sphere
     Sphere(const exrPoint& center, exrFloat radius, std::unique_ptr<Material> material)
-        : Primitive(material), m_Center(center), m_Radius(radius)
+        : Primitive(material), m_Radius(radius)
     {
+        m_Transform.SetTranslation(exrVector3(center.x, center.y, center.z));
         ComputeBoundingVolume();
     };
 
@@ -41,9 +62,6 @@ public:
     virtual exrBool ComputeBoundingVolume() override;
 
 public:
-    //! The world space position of the center of the sphere
-    exrPoint m_Center;
-
     //! The radius of the sphere
     exrFloat m_Radius;
 };

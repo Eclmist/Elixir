@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Elixir specific
+src/core/system/config.h
+
 # Post CMake integration (No need project files anymore)
 *.sln
 *.vcxproj

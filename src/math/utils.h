@@ -1,14 +1,38 @@
-/* ================================================================================================ /
- ____    ____  ____   ____     ___  ____        ___   _____       _____ __ __   ____  ___ ___    ___
-|    \  /    ||    \ |    \   /  _]|    \      /   \ |     |     / ___/|  |  | /    ||   |   |  /  _]
-|  o  )|  o  ||  _  ||  _  | /  [_ |  D  )    |     ||   __|    (   \_ |  |  ||  o  || _   _ | /  [_
-|     ||     ||  |  ||  |  ||    _]|    /     |  O  ||  |_       \__  ||  _  ||     ||  \_/  ||    _]
-|  O  ||  _  ||  |  ||  |  ||   [_ |    \     |     ||   _]      /  \ ||  |  ||  _  ||   |   ||   [_
-|     ||  |  ||  |  ||  |  ||     ||  .  \    |     ||  |        \    ||  |  ||  |  ||   |   ||     |
-|_____||__|__||__|__||__|__||_____||__|\_|     \___/ |__|         \___||__|__||__|__||___|___||_____|
+/*
+    This file is part of Elixir, an open-source cross platform physically
+    based renderer.
 
-                        This file is ghetto. Remove when no longer ghetto. 
- ================================================================================================ */
+    Copyright (c) 2019 Samuel Van Allen - All rights reserved.
+
+    Elixir is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+/* ========================================================================================== /
+
+         ######\  ##\      ########\  ######\  ##\   ##\       ##\      ##\ ########\
+        ##  __##\ ## |     ##  _____|##  __##\ ###\  ## |      ###\    ### |##  _____|
+        ## /  \__|## |     ## |      ## /  ## |####\ ## |      ####\  #### |## |
+        ## |      ## |     #####\    ######## |## ##\## |      ##\##\## ## |#####\
+        ## |      ## |     ##  __|   ##  __## |## \#### |      ## \###  ## |##  __|
+        ## |  ##\ ## |     ## |      ## |  ## |## |\### |      ## |\#  /## |## |
+        \######  |########\########\ ## |  ## |## | \## |      ## | \_/ ## |########\
+         \______/ \________\________|\__|  \__|\__|  \__|      \__|     \__|\________|
+
+             Banner of shame. Remove when this file is no longer ghetto.
+ =========================================================================================== */
+
 
 // This file should probably be merged into math/math.h
 #pragma once
