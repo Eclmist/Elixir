@@ -71,6 +71,15 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/src/core/system/config.h"
 )
 
+# Enable multi-thread compiling on Windows.
+if (EXR_PLATFORM_WIN)
+    include(ProcessorCount)
+    ProcessorCount(N)
+    SET(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} /MP${N}")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N}")
+endif (EXR_PLATFORM_WIN)
+
+
 # Include directories
 # In GCC, this will invoke the "-I" command
 include_directories ( include )
