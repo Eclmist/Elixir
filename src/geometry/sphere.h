@@ -32,13 +32,13 @@ class Sphere: public Primitive
 public:
     //! @brief Constructs a sphere with a center, scale and material
     //! @param center           The origin of the sphere in world space
-    //! @param scale            The scale of the sphere
+    //! @param radius           The radius of the sphere
     //! @param material         The material of the sphere
-    Sphere(const exrPoint& center, exrVector3 scale, std::unique_ptr<Material> material)
+    Sphere(const exrPoint& center, exrFloat radius, std::unique_ptr<Material> material)
         : Primitive(material)
     {
         m_Transform.Translate(exrVector3(center.x, center.y, center.z));
-        m_Transform.Scale(exrVector3(scale));
+        m_Transform.Scale(radius);
         ComputeBoundingVolume();
     };
 

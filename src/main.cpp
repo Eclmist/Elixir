@@ -37,6 +37,7 @@
 
 #define EXR_QUALITY_LEVEL				3
 
+#include <thread>
 #include "stb/stb_image.h"
 #include "stb/stbi_image_write.h"
 
@@ -86,8 +87,8 @@ exrVector3 ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
     }
     else
     {
-        //return exrVector3::Zero();
-        return SkyGradient(viewRay);
+        return exrVector3::Zero();
+        //return SkyGradient(viewRay);
     }
 }
 
@@ -97,22 +98,21 @@ std::unique_ptr<Scene> GenerateScene()
 
     std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
+    // left
+    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(-2.5f, 2.5f, 0.0f), exrVector2(5.0f), exrVector3(0, exrDegToRad(90.0f), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 0.0f, 0.0f))));
+    // right
+    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(2.5f, 2.5f, 0.0f), exrVector2(5.0f), exrVector3(0, exrDegToRad(-90.0f), 0), std::make_unique<Lambertian>(exrVector3(0.0f, 0.5f, 1.0f))));
+    // back
+    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 2.5f, -2.5f), exrVector2(5.0f), exrVector3(0.0f), std::make_unique<Lambertian>(exrVector3(1.0f))));
     // floor
-    //scene->AddPrimitive(std::make_unique<Box>(exrPoint(0.0f, -0.5f, 0.0f), exrVector3(10.0f, 1.0f, 10.0f), std::make_unique<DiffuseLight>(exrVector3(1.0f))));
-    //// back
-    //scene->AddPrimitive(std::make_unique<Box>(exrPoint(0.0f, 5.0f, -10.5f), exrVector3(10.0f, 10.0f, 1.0f), std::make_unique<DiffuseLight>(exrVector3(1.0f))));
-    //// left
-    //scene->AddPrimitive(std::make_unique<Box>(exrPoint(-5.5f, 5.0f, -5.0f), exrVector3(1.0f, 10.0f, 10.0f), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.0f, 0.0f))));
-    //// right
-    //scene->AddPrimitive(std::make_unique<Box>(exrPoint(5.5f, 5.0f, -5.0f), exrVector3(1.0f, 10.0f, 10.0f), std::make_unique<DiffuseLight>(exrVector3(0.0f, 1.0f, 0.0f))));
-    //// ceiling
-    //scene->AddPrimitive(std::make_unique<Box>(exrPoint(0.0f, 10.5f, 0.0f), exrVector3(10.0f, 1.0f, 10.0f), std::make_unique<DiffuseLight>(exrVector3(1.0f))));
-    //// light
-    //scene->AddPrimitive(std::make_unique<Box>(exrPoint(0.0f, 10.5f, 0.0f), exrVector3(1.0f, 1.0f, 1.0f), std::make_unique<DiffuseLight>(exrVector3(1.0f))));
-    
-    //scene->AddPrimitive(std::make_unique<Box>(exrPoint(-10.0f, 5.0f, 0.0f), exrVector3(1.0f, 10.0f, 1.0f), std::make_unique<DiffuseLight>(exrVector3(1.0f))));
-    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 5.0f, 0.0f), exrVector2(5.0f, 5.0f), std::make_unique<Lambertian>(exrVector3(1.0f))));
-    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(0.0f, 5.0f, 0.0f), exrVector3(1.0f, 2.0f, 1.0f), std::make_unique<DiffuseLight>(exrVector3(1.0f, 1.0f, 1.0f))));
+    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f), exrVector2(5.0f), exrVector3(exrDegToRad(-90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    // ceiling
+    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 5.0f, 0.0f), exrVector2(5.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    // light
+    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 5.0f, 0.0f), exrVector2(1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.9f, 0.7f) * 15.0f)));
+
+    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(0.0f, 2.5f, 0.0f), 1.0f, std::make_unique<Dielectric>(exrVector3(1.0f, 1.0f, 1.0f), 1.5f)));
+    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(-1.0f, 0.6f, 0.0f), 1.4f, std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
     exrEndProfile()
     exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " primitives")
 
@@ -129,14 +129,18 @@ stbi_uc* Render()
     
     std::vector<unsigned char> buffer(header.begin(), header.end());
 
+    const auto data_offset = buffer.size();
+    buffer.resize(buffer.size() + OUTPUT_HEIGHT * OUTPUT_WIDTH * sizeof(unsigned char) * 3);
+    memcpy(buffer.data(), header.c_str(), strlen(header.c_str()));
+
     const exrVector3 resolution(OUTPUT_WIDTH, OUTPUT_HEIGHT, 0.0f);
     std::unique_ptr<Scene> scene = GenerateScene();
 
     exrProfile("Raytracing Scene")
 
     // camera
-    exrPoint position(0.0f, 5.0f, 20.0f);
-    exrPoint lookat(0.0f, 5.0f, 0.0f);
+    exrPoint position(0.0f, 2.5f, 9.0f);
+    exrPoint lookat(0.0f, 2.5f, 0.0f);
     exrFloat fov = 40.0f;
     exrFloat aspect = exrFloat(OUTPUT_WIDTH) / exrFloat(OUTPUT_HEIGHT);
     exrFloat focusDist = (position - lookat).Magnitude();
@@ -145,43 +149,67 @@ stbi_uc* Render()
 
     exrU64 lastTime = Timer::TimeSinceEpochMillisec();
     exrU64 avgTimePerRow;
+
+    auto shade_pixel = [&](int x, int y){
+        exrVector3 color = exrVector3::Zero();
+        // Get samples
+        for (int i = 0; i < NUM_SAMPLES_PER_PIXEL; i++)
+        {
+            exrFloat u = exrFloat(x + Random::Random01()) / exrFloat(OUTPUT_WIDTH);
+            exrFloat v = exrFloat(y + Random::Random01()) / exrFloat(OUTPUT_HEIGHT);
+            Ray viewRay = camera.GetViewRay(u, v);
+
+            color += ShadePixel(viewRay, *scene, NUM_BOUNDCE_PER_RAY);
+        }
+
+        color /= NUM_SAMPLES_PER_PIXEL;
+
+        // Correct gamma
+        color = exrVector3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
+
+        // Clamp color values for ppm
+        color.x = exrSaturate(color.x);
+        color.y = exrSaturate(color.y);
+        color.z = exrSaturate(color.z);
+
+        // PPM takes values from 0-255;
+        color *= 255.99f;
+
+        unsigned char r = static_cast<unsigned char>(color.r);
+        unsigned char g = static_cast<unsigned char>(color.g);
+        unsigned char b = static_cast<unsigned char>(color.b);
+
+        const auto offset = 3 * ((OUTPUT_HEIGHT - 1 - y)* OUTPUT_WIDTH + x) + data_offset;
+        buffer[offset] = r;
+        buffer[offset + 1] = g;
+        buffer[offset + 2] = b;
+    };
+
+    constexpr unsigned THREAD_COUNT = 12;
+    auto rendering_trunk = [&](int tid){
+        const unsigned TRUNK_SIZE = (OUTPUT_HEIGHT + THREAD_COUNT - 1) / THREAD_COUNT;
+        const unsigned trunk_end = OUTPUT_HEIGHT < (tid + 1) * TRUNK_SIZE ? OUTPUT_HEIGHT : (tid + 1) * TRUNK_SIZE;
+        for( unsigned y = tid * TRUNK_SIZE ; y < trunk_end ; ++y )
+            for (int x = 0; x < OUTPUT_WIDTH; x++)
+                shade_pixel(x, y);
+    };
+
+    std::thread rendering_threads[THREAD_COUNT];
+    for (int i = 0; i < THREAD_COUNT; ++i)
+        rendering_threads[i] = std::thread(rendering_trunk, i);
+    
+    for (int i = 0; i < THREAD_COUNT; ++i)
+        rendering_threads[i].join();
+
+    /*
     for (int y = OUTPUT_HEIGHT - 1; y >= 0; y--)
     {
         for (int x = 0; x < OUTPUT_WIDTH; x++)
         {
-            exrVector3 color = exrVector3::Zero();
-            // Get samples
-            for (int i = 0; i < NUM_SAMPLES_PER_PIXEL; i++)
-            {
-                exrFloat u = exrFloat(x + Random::Random01()) / exrFloat(OUTPUT_WIDTH);
-                exrFloat v = exrFloat(y + Random::Random01()) / exrFloat(OUTPUT_HEIGHT);
-                Ray viewRay = camera.GetViewRay(u, v);
-
-                color += ShadePixel(viewRay, *scene, NUM_BOUNDCE_PER_RAY);
-            }
-
-            color /= NUM_SAMPLES_PER_PIXEL;
-
-            // Correct gamma
-            color = exrVector3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
-
-            // Clamp color values for ppm
-            color.x = exrSaturate(color.x);
-            color.y = exrSaturate(color.y);
-            color.z = exrSaturate(color.z);
-
-            // PPM takes values from 0-255;
-            color *= 255.99f;
-            
-            unsigned char r = static_cast<unsigned char>(color.r);
-            unsigned char g = static_cast<unsigned char>(color.g);
-            unsigned char b = static_cast<unsigned char>(color.b);
-
-            buffer.push_back(r);
-            buffer.push_back(g);
-            buffer.push_back(b);
+            shade_pixel(x, y);
         }
 
+        /*
         exrFloat progress = 100.0f - (exrFloat(y) / OUTPUT_HEIGHT * 100.0f);
         auto newTime = Timer::TimeSinceEpochMillisec();
 
@@ -206,6 +234,7 @@ stbi_uc* Render()
         Timer::FormatTime(timeLeft, hh, mm, ss);
         exrInfo("Progress: " << progressBar << "\t" << int(progress) << "% ETA: " << hh << ":" << mm << ":" << ss << "            " << '\r');
     }
+    */
     exrEndProfile()
 
     int x, y, n;
@@ -218,15 +247,9 @@ using namespace elixir;
 
 int main()
 {
-   exrInfoLine("Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH)
+    exrInfoLine("Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH)
 
-       stbi_uc* output = Render();
-
-   //    Ray ray = Ray(exrPoint(0, 0, 0), exrVector3(0.2f, 0, 1));
-   //Sphere sphere(exrPoint(0.0f, 0.0f, 2.0f), exrVector3(20.0f), std::make_unique<DiffuseLight>(exrVector3(20.0f, 5.3f, 0.3f)));
-
-   //elixir::PrimitiveHitInfo hit;
-   //exrAssert(sphere.Intersect(ray, 0.001f, 1000.0f, hit), "No hit when there should be hit");
+    stbi_uc* output = Render();
 
     exrString fileName = "output_" + std::to_string(Timer::TimeSinceEpochMillisec()) + "_" + std::to_string(NUM_SAMPLES_PER_PIXEL) + "spp_" + std::to_string(NUM_BOUNDCE_PER_RAY) + "b.png";
     stbi_write_png(fileName.c_str(), OUTPUT_WIDTH, OUTPUT_HEIGHT, NUM_CHANNELS, output, OUTPUT_WIDTH * NUM_CHANNELS);

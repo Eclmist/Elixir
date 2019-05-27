@@ -41,7 +41,7 @@ public:
     //! @param delta            The translation vector
     void Translate(const exrVector3& delta);
 
-    //! @brief Sets the transform to a translation matrix
+    //! @brief Sets the translation of the current transform
     //! @param translation      The translation vector
     void SetTranslation(const exrVector3& translation);
 
@@ -50,18 +50,22 @@ public:
 
     //! @brief Scales the current transform
     //! @param scale            The scale amount
-    void Scale(const exrVector3& scale);
+    void Scale(const exrFloat scale);
 
-    //! @brief Sets the scale the current transform
-    //! @param scale            The scale vector
-    void SetScale(const exrVector3& scale);
+    //! @brief Sets the scale of the current transform
+    //! @param scale            The scale amount
+    void SetScale(const exrFloat scale);
 
     //! @brief Returns the scale of the current transform
-    exrVector3 GetScale() const;
+    exrFloat GetScale() const;
 
     //! @brief Rotates the current transform
-    //! @param rotation         ??????????????????????
-    void Rotate(const exrVector3& scale);
+    //! @param rotation         The Euler rotation vector
+    void Rotate(const exrVector3& rotation);
+    
+    //! @brief Sets the rotation of the current transform
+    //! @param rotation         The Euler rotation vector
+    void SetRotation(const exrVector3& rotation);
 
 public:
     //! @brief Returns the current local matrix
@@ -76,10 +80,15 @@ private:
 private:
     //! The translation matrix
     Matrix4x4 m_TranslationMatrix;
+
     //! The scale matrix
     Matrix4x4 m_ScaleMatrix;
-    //! The rotation matrix
-    Matrix4x4 m_RotationMatrix;
+
+    //! The rotation matrices
+    Matrix4x4 m_RotationMatrixX;
+    Matrix4x4 m_RotationMatrixY;
+    Matrix4x4 m_RotationMatrixZ;
+    exrVector3 m_EulerAngles;
 
     //! The global matrix
     Matrix4x4 m_GlobalMatrix;

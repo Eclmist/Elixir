@@ -35,15 +35,14 @@ public:
     //! @param scale            The scale of the quad
     //! @param rotation         The rotation of the quad
     //! @param material         The material of the quad
-    Quad(const exrPoint& position, const exrVector2& scale, /*const exrVector3& rotation, */std::unique_ptr<Material> material)
+    Quad(const exrPoint& position, const exrVector2& scale, const exrVector3& rotation, std::unique_ptr<Material> material)
         : Primitive(material)
     {
         m_Transform.SetTranslation(exrVector3(position.x, position.y, position.z));
-        m_Transform.SetScale(exrVector3(scale.x, scale.y, 1.0f));
-        // m_Transform.SetRotation(rotation);
+        m_Transform.SetRotation(rotation);
 
-        m_LocalMin = exrPoint::Zero() + exrVector3(-0.5f, -0.5f, -EXR_EPSILON);
-        m_LocalMax = exrPoint::Zero() + exrVector3(0.5f, 0.5f, EXR_EPSILON);
+        m_LocalMin = exrPoint::Zero() + exrVector3(-0.5f * scale.x, -0.5f * scale.y, -EXR_EPSILON);
+        m_LocalMax = exrPoint::Zero() + exrVector3(0.5f * scale.x, 0.5f * scale.y, EXR_EPSILON);
 
         ComputeBoundingVolume();
     };

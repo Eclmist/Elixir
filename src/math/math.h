@@ -27,6 +27,7 @@
 
 #define exrSaturate(x)          exrClamp(x, 0, 1)
 #define exrPow(x, n)            pow(x, n)
+#define exrDegToRad(x)          x * (EXR_M_PI / 180.0f)
 
 exrBEGIN_NAMESPACE
 

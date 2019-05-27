@@ -49,6 +49,9 @@ public:
     inline bool operator==(const Vector2<T>& v) { return (x == v.x) && (y == v.y); }
 
 public:
+    inline explicit operator Point<T>() const { return Point<T>(x, y, 0); }
+
+public:
     inline const float SquareMagnitude() const { return x * x + y * y; }
     inline const float Magnitude() const { return sqrt(SquareMagnitude()); }
 

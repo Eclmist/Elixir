@@ -45,6 +45,9 @@ public:
     inline bool operator==(const Point<T>& v) { return (x == v.x) && (y == v.y) && (z == v.z); }
 
 public:
+    inline explicit operator Vector3<T>() const { return Vector3<T>(x, y, z); }
+
+public:
     static Point<T> Zero() { return Point<T>(0.0f); }
 
 public:

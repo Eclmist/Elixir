@@ -38,18 +38,16 @@ bool Quad::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitI
 
     hit.m_T = t;
     hit.m_Point = m_Transform.GetMatrix() * transformedRay(t);
-    hit.m_Normal = m_Transform.GetInverseMatrix().Transposed() * exrVector3::Forward();
+    hit.m_Normal = m_Transform.GetMatrix() * exrVector3::Forward();
     hit.m_Material = m_Material.get();
     return true;
 }
 
 bool Quad::ComputeBoundingVolume()
 {
-    // hack for now, no scaling the bv
-    exrPoint min = m_Transform.GetMatrix() * exrPoint(-0.5f, -0.5f, -EXR_EPSILON);
-    exrPoint max = m_Transform.GetMatrix() * exrPoint(0.5f, 0.5f, EXR_EPSILON);
-
-    m_BoundingVolume = BoundingVolume(min, max);
+    exrPoint globalMin = m_Transform.GetMatrix() * m_LocalMin;
+    exrPoint globalMax = m_Transform.GetMatrix() * m_LocalMax;
+    m_BoundingVolume = BoundingVolume(globalMin, globalMax);
     return true;
 }
 

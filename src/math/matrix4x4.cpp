@@ -67,11 +67,11 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4& m) const
 
     for (exrU32 i = 0; i < 4; i++) {
         for (exrU32 j = 0; j < 4; j++) {
-            exrFloat num = 0;
+            exrFloat val = 0;
             for (exrU32 k = 0; k < 4; k++) {
-                num += m_Data2D[i][k] * m.m_Data2D[k][j];
+                val += m_Data2D[i][k] * m.m_Data2D[k][j];
             }
-            data[i][j] = num;
+            data[i][j] = val;
         }
     }
 
@@ -80,10 +80,10 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4& m) const
 
 exrPoint Matrix4x4::operator*(const exrPoint& p) const
 {
-    exrFloat x = m_Data[3] + p.x;
-    exrFloat y = m_Data[7] + p.y;
-    exrFloat z = m_Data[11] + p.z;
-    exrFloat w = m_Data[15];
+    exrFloat x = p.x * m_Data[0] + p.y * m_Data[1] + p.z * m_Data[2] + m_Data[3];
+    exrFloat y = p.x * m_Data[4] + p.y * m_Data[5] + p.z * m_Data[6] + m_Data[7];
+    exrFloat z = p.x * m_Data[8] + p.y * m_Data[9] + p.z * m_Data[10] + m_Data[11];
+    exrFloat w = p.x * m_Data[12] + p.y * m_Data[13] + p.z * m_Data[14] + m_Data[15];
 
     // if w is one, just return the point
     if (w == 1.0f)

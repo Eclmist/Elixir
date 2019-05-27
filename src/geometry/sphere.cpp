@@ -41,7 +41,7 @@ bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHi
         {
             hit.m_T = hitPoint1;
             hit.m_Point = m_Transform.GetMatrix() * transformedRay(hitPoint1);
-            hit.m_Normal = m_Transform.GetInverseMatrix().Transposed() * ((transformedRay(hitPoint1) - exrPoint::Zero()) / 0.5f);
+            hit.m_Normal = (m_Transform.GetMatrix() * (transformedRay(hitPoint1) - exrPoint::Zero())).Normalized();
             hit.m_Material = m_Material.get();
             return true;
         }
@@ -50,7 +50,7 @@ bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHi
         {
             hit.m_T = hitPoint2;
             hit.m_Point = m_Transform.GetMatrix() * transformedRay(hitPoint2);
-            hit.m_Normal = m_Transform.GetInverseMatrix().Transposed() * ((transformedRay(hitPoint2) - exrPoint::Zero()) / 0.5f);
+            hit.m_Normal = (m_Transform.GetMatrix() * (transformedRay(hitPoint2) - exrPoint::Zero())).Normalized();
             hit.m_Material = m_Material.get();
             return true;
         }
@@ -64,7 +64,6 @@ bool Sphere::ComputeBoundingVolume()
 {
     exrPoint min = m_Transform.GetMatrix() * exrPoint(-0.5f);
     exrPoint max = m_Transform.GetMatrix() * exrPoint(0.5f);
-
     m_BoundingVolume = BoundingVolume(min, max);
     return true;
 }
