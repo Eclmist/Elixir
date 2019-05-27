@@ -33,6 +33,11 @@ exrVector3 Random::RandomInUnitSphere()
     return p;
 }
 
+exrVector3 Random::RandomOnUnitSphere()
+{
+    return RandomInUnitSphere().Normalized();
+}
+
 exrVector3 Random::RandomInUnitDisc()
 {
     exrVector3 p;

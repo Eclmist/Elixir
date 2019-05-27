@@ -47,9 +47,6 @@ SET ( EXR_USE_NAMESPACE "YES" CACHE BOOL "Enable generating Elixir namespace. Th
 SET ( EXR_ENABLE_LOGGING "YES" CACHE BOOL "Enable logging. This is true by default." )
 SET ( EXR_ENABLE_ASSERTS "YES" CACHE BOOL "Enable asserts. This is true by default." )
 
-# Set default render quality - this is so we don't do too much on the CI
-SET ( EXR_QUALITY_LEVEL 0 CACHE STRING "Default quality level" )
-
 # Define platform
 if ( WIN32 )
     set ( EXR_PLATFORM_WIN true ) 

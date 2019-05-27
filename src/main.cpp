@@ -35,7 +35,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
-#define EXR_QUALITY_LEVEL				1
+#define EXR_QUALITY_LEVEL				3
 
 #include "stb/stb_image.h"
 #include "stb/stbi_image_write.h"
@@ -48,6 +48,7 @@
 #include "material/dielectric.h"
 #include "material/diffuselight.h"
 #include "geometry/sphere.h"
+#include "geometry/quad.h"
 
 exrBEGIN_NAMESPACE
 
@@ -59,7 +60,7 @@ exrVector3 SkyGradient(const Ray& r)
 
     exrFloat t = (direction.y + 0.5f) / 1.2f;
 
-    return exrLerp(sunsetRed / 3.0f, sunsetBlue / 4.0f, exrSaturate(t));
+    return exrLerp(sunsetRed, sunsetBlue, exrSaturate(t));
 }
 
 exrVector3 ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
@@ -85,6 +86,7 @@ exrVector3 ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
     }
     else
     {
+        //return exrVector3::Zero();
         return SkyGradient(viewRay);
     }
 }
@@ -95,54 +97,22 @@ std::unique_ptr<Scene> GenerateScene()
 
     std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
-    for (int a = -SCENE_SIZE; a < SCENE_SIZE; a++)
-    {
-        for (int b = -SCENE_SIZE; b < SCENE_SIZE; b++)
-        {
-            exrFloat mat = Random::Random01();
-            exrPoint pos(a + 0.9f * Random::Random01(), 0.2f, b + 0.9f * Random::Random01());
-            
-            if ((pos - exrPoint(4.0f, 0.2f, 0.0f)).Magnitude() > 0.9f)
-            {
-                // does not intersect center spheres
-                if (mat < 0.8f) // diffuse
-                {
-                    exrFloat rand_x = Random::Random01();
-                    exrFloat rand_y = Random::Random01();
-                    exrFloat rand_z = Random::Random01();
-                    std::unique_ptr<Material> lambert = std::make_unique<Lambertian>(exrVector3(rand_x, rand_y, rand_z));
-                    std::unique_ptr<Primitive> shape = std::make_unique<Sphere>(pos, 0.2f, std::move(lambert));
-                    scene->AddPrimitive(std::move(shape));
-                }
-                else if (mat < 0.95f) // metallic
-                {
-                    exrFloat rand_x = 0.5f * (1.0f + Random::Random01());
-                    exrFloat rand_y = 0.5f * (1.0f + Random::Random01());
-                    exrFloat rand_z = 0.5f * (1.0f + Random::Random01());
-                    std::unique_ptr<Material> metallic = std::make_unique<Metallic>(exrVector3(rand_x, rand_y, rand_z), 0.5f * Random::Random01());
-                    std::unique_ptr<Primitive> shape = std::make_unique<Sphere>(pos, 0.2f, std::move(metallic));
-                    scene->AddPrimitive(std::move(shape));
-                }
-                else // glass
-                {
-                    exrFloat rand_x = 0.5f * (1.0f + Random::Random01());
-                    exrFloat rand_y = 0.5f * (1.0f + Random::Random01());
-                    exrFloat rand_z = 0.5f * (1.0f + Random::Random01());
-                    std::unique_ptr<Material> dielectric  = std::make_unique<Dielectric>(exrVector3(rand_x, rand_y, rand_z), 1.52f);
-                    std::unique_ptr<Primitive> shape = std::make_unique<Sphere>(pos, 0.2f, std::move(dielectric));
-                    scene->AddPrimitive(std::move(shape));
-                }
-            }
-        }
-    }
-
-    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(0.0f, 1.0f, 0.0f), 1.0f, std::make_unique<DiffuseLight>(exrVector3(20.0f, 5.3f, 0.3f))));
-    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(4.0f, 1.0f, 0.0f), 1.0f, std::make_unique<Metallic>(exrVector3(0.8f, 0.6f, 0.2f), 0.05f)));
-    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(-4.0f, 1.0f, 0.0f), 1.0f, std::make_unique<Dielectric>(exrVector3(1.0f, 1.0f, 1.0f), 1.52f)));
-
-    // Floor
-    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_unique<Lambertian>(exrVector3(0.5f))));
-
+    // floor
+    //scene->AddPrimitive(std::make_unique<Box>(exrPoint(0.0f, -0.5f, 0.0f), exrVector3(10.0f, 1.0f, 10.0f), std::make_unique<DiffuseLight>(exrVector3(1.0f))));
+    //// back
+    //scene->AddPrimitive(std::make_unique<Box>(exrPoint(0.0f, 5.0f, -10.5f), exrVector3(10.0f, 10.0f, 1.0f), std::make_unique<DiffuseLight>(exrVector3(1.0f))));
+    //// left
+    //scene->AddPrimitive(std::make_unique<Box>(exrPoint(-5.5f, 5.0f, -5.0f), exrVector3(1.0f, 10.0f, 10.0f), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.0f, 0.0f))));
+    //// right
+    //scene->AddPrimitive(std::make_unique<Box>(exrPoint(5.5f, 5.0f, -5.0f), exrVector3(1.0f, 10.0f, 10.0f), std::make_unique<DiffuseLight>(exrVector3(0.0f, 1.0f, 0.0f))));
+    //// ceiling
+    //scene->AddPrimitive(std::make_unique<Box>(exrPoint(0.0f, 10.5f, 0.0f), exrVector3(10.0f, 1.0f, 10.0f), std::make_unique<DiffuseLight>(exrVector3(1.0f))));
+    //// light
+    //scene->AddPrimitive(std::make_unique<Box>(exrPoint(0.0f, 10.5f, 0.0f), exrVector3(1.0f, 1.0f, 1.0f), std::make_unique<DiffuseLight>(exrVector3(1.0f))));
+    
+    //scene->AddPrimitive(std::make_unique<Box>(exrPoint(-10.0f, 5.0f, 0.0f), exrVector3(1.0f, 10.0f, 1.0f), std::make_unique<DiffuseLight>(exrVector3(1.0f))));
+    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 5.0f, 0.0f), exrVector2(5.0f, 5.0f), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(0.0f, 5.0f, 0.0f), exrVector3(1.0f, 2.0f, 1.0f), std::make_unique<DiffuseLight>(exrVector3(1.0f, 1.0f, 1.0f))));
     exrEndProfile()
     exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " primitives")
 
@@ -150,7 +120,7 @@ std::unique_ptr<Scene> GenerateScene()
     return scene;
 }
 
-void Render()
+stbi_uc* Render()
 {
     Random::Seed(11);
 
@@ -165,8 +135,8 @@ void Render()
     exrProfile("Raytracing Scene")
 
     // camera
-    exrPoint position(-9.75f, 1.5f, 2.5f);
-    exrPoint lookat(0.0f);
+    exrPoint position(0.0f, 5.0f, 20.0f);
+    exrPoint lookat(0.0f, 5.0f, 0.0f);
     exrFloat fov = 40.0f;
     exrFloat aspect = exrFloat(OUTPUT_WIDTH) / exrFloat(OUTPUT_HEIGHT);
     exrFloat focusDist = (position - lookat).Magnitude();
@@ -175,13 +145,11 @@ void Render()
 
     exrU64 lastTime = Timer::TimeSinceEpochMillisec();
     exrU64 avgTimePerRow;
-
     for (int y = OUTPUT_HEIGHT - 1; y >= 0; y--)
     {
         for (int x = 0; x < OUTPUT_WIDTH; x++)
         {
             exrVector3 color = exrVector3::Zero();
-
             // Get samples
             for (int i = 0; i < NUM_SAMPLES_PER_PIXEL; i++)
             {
@@ -241,9 +209,7 @@ void Render()
     exrEndProfile()
 
     int x, y, n;
-    stbi_uc* output = stbi_load_from_memory(buffer.data(), static_cast<int>(buffer.size()), &x, &y, &n, 0);
-    stbi_write_png("output.png", OUTPUT_WIDTH, OUTPUT_HEIGHT, NUM_CHANNELS, output, OUTPUT_WIDTH * NUM_CHANNELS);
-
+    return stbi_load_from_memory(buffer.data(), static_cast<int>(buffer.size()), &x, &y, &n, 0);
 }
 
 exrEND_NAMESPACE
@@ -252,22 +218,22 @@ using namespace elixir;
 
 int main()
 {
+   exrInfoLine("Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH)
 
-    exrInfoLine("Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH)
+       stbi_uc* output = Render();
 
-    Render();
+   //    Ray ray = Ray(exrPoint(0, 0, 0), exrVector3(0.2f, 0, 1));
+   //Sphere sphere(exrPoint(0.0f, 0.0f, 2.0f), exrVector3(20.0f), std::make_unique<DiffuseLight>(exrVector3(20.0f, 5.3f, 0.3f)));
 
-    Ray ray = Ray(exrPoint(0, 0, 0), exrVector3(0, 0, 1));
-    Sphere sphere(exrPoint(0.0f, 0.0f, 2.0f), 0.5f, std::make_unique<DiffuseLight>(exrVector3(20.0f, 5.3f, 0.3f)));
+   //elixir::PrimitiveHitInfo hit;
+   //exrAssert(sphere.Intersect(ray, 0.001f, 1000.0f, hit), "No hit when there should be hit");
 
-elixir::PrimitiveHitInfo hit;
-
-    exrAssert(sphere.Intersect(ray, 0.001f, 1000.0f, hit), "No hit when there should be hit");
-    
+    exrString fileName = "output_" + std::to_string(Timer::TimeSinceEpochMillisec()) + "_" + std::to_string(NUM_SAMPLES_PER_PIXEL) + "spp_" + std::to_string(NUM_BOUNDCE_PER_RAY) + "b.png";
+    stbi_write_png(fileName.c_str(), OUTPUT_WIDTH, OUTPUT_HEIGHT, NUM_CHANNELS, output, OUTPUT_WIDTH * NUM_CHANNELS);
 
 #ifdef EXR_PLATFORM_WIN
     system("PAUSE");
-    system("output.png");
+    system(fileName.c_str());
 #endif
 
     return 0;

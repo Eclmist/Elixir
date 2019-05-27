@@ -50,18 +50,28 @@ Matrix4x4::Matrix4x4(
     m_Data[12] = _41; m_Data[13] = _42; m_Data[14] = _43; m_Data[15] = _44;
 }
 
+Matrix4x4::Matrix4x4(const exrFloat data[4][4])
+{
+    for (exrU32 s = 0; s < 4; s++)
+    {
+        for (exrU32 t = 0; t < 4; t++)
+        {
+            m_Data2D[s][t] = data[s][t];
+        }
+    }
+}
+
 Matrix4x4 Matrix4x4::operator*(const Matrix4x4& m) const
 {
-    exrFloat data[16];
-    for (exrU32 i = 0; i < 4; i++)
-    {
-        for (exrU32 j = 0; j < 4; j++)
-        {
-            exrU32 offset = i * 4 + j;
-            data[offset] = 0.0f;
+    exrFloat data[4][4];
 
-            for (exrU32 k = 0; k < 4; k++)
-                data[offset] += m[i * 4 + k] * m.m_Data[k * 4 + j];
+    for (exrU32 i = 0; i < 4; i++) {
+        for (exrU32 j = 0; j < 4; j++) {
+            exrFloat num = 0;
+            for (exrU32 k = 0; k < 4; k++) {
+                num += m_Data2D[i][k] * m.m_Data2D[k][j];
+            }
+            data[i][j] = num;
         }
     }
 
@@ -70,17 +80,21 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4& m) const
 
 exrPoint Matrix4x4::operator*(const exrPoint& p) const
 {
-    exrFloat x = p.x * m_Data[0]  + p.y * m_Data[1]  + p.z * m_Data[2]  + m_Data[3];
-    exrFloat y = p.x * m_Data[4]  + p.y * m_Data[5]  + p.z * m_Data[6]  + m_Data[7];
-    exrFloat z = p.x * m_Data[8]  + p.y * m_Data[9]  + p.z * m_Data[10] + m_Data[11];
-    exrFloat w = p.x * m_Data[12] + p.y * m_Data[13] + p.z * m_Data[14] + m_Data[15];
+    exrFloat x = m_Data[3] + p.x;
+    exrFloat y = m_Data[7] + p.y;
+    exrFloat z = m_Data[11] + p.z;
+    exrFloat w = m_Data[15];
 
-    // if w is one , just return the point
-    // note it is very common that w is one
+    // if w is one, just return the point
     if (w == 1.0f)
         return exrPoint(x, y, z);
 
     return exrPoint(x, y, z) / w;
+}
+
+exrPoint Matrix4x4::operator()(const exrPoint& p) const
+{
+    return operator*(p);
 }
 
 exrVector3 Matrix4x4::operator*(const exrVector3& v) const
@@ -88,9 +102,23 @@ exrVector3 Matrix4x4::operator*(const exrVector3& v) const
     exrFloat _x = v.x * m_Data[0] + v.y * m_Data[1] + v.z * m_Data[2];
     exrFloat _y = v.x * m_Data[4] + v.y * m_Data[5] + v.z * m_Data[6];
     exrFloat _z = v.x * m_Data[8] + v.y * m_Data[9] + v.z * m_Data[10];
-
     // return the result
     return exrVector3(_x, _y, _z);
+}
+
+exrVector3 Matrix4x4::operator()(const exrVector3& v) const
+{
+    return operator*(v);
+}
+
+Ray Matrix4x4::operator*(const Ray& r) const
+{
+    return Ray(operator*(r.m_Origin), operator*(r.m_Direction), r.m_Distance);
+}
+
+Ray Matrix4x4::operator()(const Ray& r) const
+{
+    return operator*(r);
 }
 
 Matrix4x4 Matrix4x4::Transposed() const

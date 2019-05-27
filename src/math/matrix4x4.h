@@ -35,6 +35,10 @@ public:
     //! @param data             An array of 16 floats
     Matrix4x4(const exrFloat* data);
 
+    //! @brief Constructs a matrix with a 2d float array
+    //! @param data             An 2d array of 4 floats each
+    Matrix4x4(const exrFloat data[4][4]);
+
     //! @brief Constructs a matrix with 16 floats
     Matrix4x4(const exrFloat _11, const exrFloat _12, const exrFloat _13, const exrFloat _14,
               const exrFloat _21, const exrFloat _22, const exrFloat _23, const exrFloat _24,
@@ -54,7 +58,7 @@ public:
     //! @brief Transforms a point by the current matrix
     //! @param p                The point to transform
     //! @return                 The transformed point p'
-    exrPoint operator()(const exrPoint& p) const { return operator*(p); };
+    exrPoint operator()(const exrPoint& p) const;
 
     //! @brief Transforms a vector by the current matrix
     //! @param v                The vector to transform
@@ -64,7 +68,17 @@ public:
     //! @brief Transforms a vector by the current matrix
     //! @param v                The vector to transform
     //! @return                 The transformed vector v'
-    exrVector3 operator()(const exrVector3& v) const { return operator*(v); };
+    exrVector3 operator()(const exrVector3& v) const;
+
+    //! @brief Transforms a ray by the current matrix
+    //! @param r                The ray to transform
+    //! @return                 The transformed ray r'
+    Ray operator*(const Ray& r) const;
+
+    //! @brief Transforms a ray by the current matrix
+    //! @param r                The ray to transform
+    //! @return                 The transformed ray r'
+    Ray operator()(const Ray& v) const;
 
     //! @brief Shortcut to access the data with the [] operator directly
     exrFloat operator[](const exrU32& i) const { return m_Data[i]; }
@@ -86,6 +100,7 @@ public:
     union 
     {
         struct { exrFloat m_Data[16]; };
+        struct { exrFloat m_Data2D[4][4]; };
         struct
         {
             exrFloat m_11, m_12, m_13, m_14;

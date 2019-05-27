@@ -21,7 +21,7 @@
 #pragma once
 
 #define EXR_M_PI                3.141592653589793F
-#define EXR_EPSILON             0.00001f
+#define EXR_EPSILON             0.0001f
 #define EXR_MAX_FLOAT           (3.402823466e+38F)
 #define EXR_MIN_FLOAT           (-EXR_MAX_FLOAT)
 

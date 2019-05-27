@@ -30,14 +30,15 @@ exrBEGIN_NAMESPACE
 class Sphere: public Primitive
 {
 public:
-    //! @brief Constructs a sphere with a center, radius and material
+    //! @brief Constructs a sphere with a center, scale and material
     //! @param center           The origin of the sphere in world space
-    //! @param radius           The radius of the sphere
+    //! @param scale            The scale of the sphere
     //! @param material         The material of the sphere
-    Sphere(const exrPoint& center, exrFloat radius, std::unique_ptr<Material> material)
-        : Primitive(material), m_Radius(radius)
+    Sphere(const exrPoint& center, exrVector3 scale, std::unique_ptr<Material> material)
+        : Primitive(material)
     {
-        m_Transform.SetTranslation(exrVector3(center.x, center.y, center.z));
+        m_Transform.Translate(exrVector3(center.x, center.y, center.z));
+        m_Transform.Scale(exrVector3(scale));
         ComputeBoundingVolume();
     };
 
@@ -60,10 +61,6 @@ public:
     //! 
     //! @return                 Always return true since bounding volumes can be created for spheres
     virtual exrBool ComputeBoundingVolume() override;
-
-public:
-    //! The radius of the sphere
-    exrFloat m_Radius;
 };
 
 exrEND_NAMESPACE

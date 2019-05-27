@@ -40,6 +40,10 @@ public:
     //! @return A random vector inside a unit sphere
     static exrVector3 RandomInUnitSphere();
 
+    //! @brief Generates a vector on the surface of a unit sphere
+    //! @return A random vector on the surface of a unit sphere
+    static exrVector3 RandomOnUnitSphere();
+
     //! @brief Generates a vector between length 0 - 1 in a random direction
     //! @return A random vector inside a unit disc
     static exrVector3 RandomInUnitDisc();

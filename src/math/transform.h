@@ -34,24 +34,14 @@ public:
     
     //! @brief Creates a transform with identity matrices
     Transform()
-        : m_LocalMatrix(Matrix4x4::Identity())
-        , m_InvLocalMatrix(Matrix4x4::Identity()) {};
-
-    //! @brief Creates a transform with a local matrix, and contructs an inverse matrix
-    Transform(const Matrix4x4& matrix)
-        : m_LocalMatrix(matrix)
-        , m_InvLocalMatrix(matrix.Inversed()) {};
-
-    //! @brief Creates a transform with a local matrix and a inverse local matrix
-    Transform(const Matrix4x4& matrix, const Matrix4x4& inverseMatrix)
-        : m_LocalMatrix(matrix)
-        , m_InvLocalMatrix(inverseMatrix) {};
+        : m_GlobalMatrix(Matrix4x4::Identity())
+        , m_InvGlobalMatrix(Matrix4x4::Identity()) {};
 
     //! @brief Translate the current transform
     //! @param delta            The translation vector
     void Translate(const exrVector3& delta);
 
-    //! @brief Sets the translation the current transform
+    //! @brief Sets the transform to a translation matrix
     //! @param translation      The translation vector
     void SetTranslation(const exrVector3& translation);
 
@@ -75,17 +65,26 @@ public:
 
 public:
     //! @brief Returns the current local matrix
-    const Matrix4x4& GetMatrix() const { return m_LocalMatrix; }
+    const Matrix4x4& GetMatrix() const { return m_GlobalMatrix; }
 
     //! @brief Returns the inverse of the current local matrix
-    const Matrix4x4& GetInverseMatrix() const { return m_InvLocalMatrix; }
+    const Matrix4x4& GetInverseMatrix() const { return m_InvGlobalMatrix; }
 
 private:
-    //! The local matrix
-    Matrix4x4 m_LocalMatrix;
+    void RecomputeGlobalMatrix();
 
-    //! The inverse local matrix
-    Matrix4x4 m_InvLocalMatrix;
+private:
+    //! The translation matrix
+    Matrix4x4 m_TranslationMatrix;
+    //! The scale matrix
+    Matrix4x4 m_ScaleMatrix;
+    //! The rotation matrix
+    Matrix4x4 m_RotationMatrix;
+
+    //! The global matrix
+    Matrix4x4 m_GlobalMatrix;
+    //! The inverse global matrix
+    Matrix4x4 m_InvGlobalMatrix;
 };
 
 exrEND_NAMESPACE
