@@ -26,7 +26,7 @@ bool Quad::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitI
 {
     Ray transformedRay = m_Transform.GetInverseMatrix() * ray;
 
-    exrFloat t = (m_LocalMin.z - transformedRay.m_Origin.z) / transformedRay.m_Direction.z;
+    exrFloat t = (-transformedRay.m_Origin.z) / transformedRay.m_Direction.z;
     if (t < tMin || t > tMax)
         return false;
 
@@ -47,7 +47,12 @@ bool Quad::ComputeBoundingVolume()
 {
     exrPoint globalMin = m_Transform.GetMatrix() * m_LocalMin;
     exrPoint globalMax = m_Transform.GetMatrix() * m_LocalMax;
-    m_BoundingVolume = BoundingVolume(globalMin, globalMax);
+
+    // Swap ensure min is min and max is actually max, since we may have rotated the points above
+    exrPoint realMin = exrPoint(exrMin(globalMin.x, globalMax.x), exrMin(globalMin.y, globalMax.y), exrMin(globalMin.z, globalMax.z));
+    exrPoint realMax = exrPoint(exrMax(globalMin.x, globalMax.x), exrMax(globalMin.y, globalMax.y), exrMax(globalMin.z, globalMax.z));
+
+    m_BoundingVolume = BoundingVolume(realMin, realMax);
     return true;
 }
 

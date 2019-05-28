@@ -41,7 +41,7 @@ public:
         m_Transform.SetTranslation(exrVector3(position.x, position.y, position.z));
         m_Transform.SetRotation(rotation);
 
-        m_LocalMin = exrPoint::Zero() + exrVector3(-0.5f * scale.x, -0.5f * scale.y, -EXR_EPSILON);
+        m_LocalMin = exrPoint::Zero() - exrVector3(0.5f * scale.x, 0.5f * scale.y, EXR_EPSILON);
         m_LocalMax = exrPoint::Zero() + exrVector3(0.5f * scale.x, 0.5f * scale.y, EXR_EPSILON);
 
         ComputeBoundingVolume();

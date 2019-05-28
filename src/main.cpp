@@ -111,8 +111,9 @@ std::unique_ptr<Scene> GenerateScene()
     // light
     scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 5.0f, 0.0f), exrVector2(1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.9f, 0.7f) * 15.0f)));
 
-    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(0.0f, 2.5f, 0.0f), 1.0f, std::make_unique<Dielectric>(exrVector3(1.0f, 1.0f, 1.0f), 1.5f)));
-    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(-1.0f, 0.6f, 0.0f), 1.4f, std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
+    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(0.0f, 2.5f, 0.0f), 1.2f, std::make_unique<Dielectric>(exrVector3(1.0f, 1.0f, 1.0f), 1.5f)));
+    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(-1.2f, 0.6f, 0.5f), 1.4f, std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
+    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(1.5f, 1.0f, -1.5f), 2.0f, std::make_unique<Metallic>(exrVector3(0.1f, 1.0f, 0.4f), 0.5f)));
     exrEndProfile()
     exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " primitives")
 
