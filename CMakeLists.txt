@@ -72,13 +72,12 @@ configure_file (
 )
 
 # Enable multi-thread compiling on Windows.
-if (EXR_PLATFORM_WIN)
-    include(ProcessorCount)
-    ProcessorCount(N)
-    SET(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} /MP${N}")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N}")
-endif (EXR_PLATFORM_WIN)
-
+if ( EXR_PLATFORM_WIN )
+    include( ProcessorCount )
+    ProcessorCount( N )
+    SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP${N}" )
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N}" )
+endif ( EXR_PLATFORM_WIN )
 
 # Include directories
 # In GCC, this will invoke the "-I" command
@@ -120,6 +119,10 @@ file ( GLOB_RECURSE project_ccs src/*.cc )
 
 set ( all_files ${project_headers} ${project_cpps} ${project_cs} ${project_ccs} )
 source_group_by_dir( all_files )
+if( SORT_PLATFORM_MAC OR SORT_PLATFORM_LINUX )
+	set_source_files_properties(${all_files} PROPERTIES COMPILE_FLAGS -w)
+	set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -pthread")
+endif()
 
 file ( GLOB_RECURSE extern_headers include/*.h )
 file ( GLOB_RECURSE extern_cpps include/*.cpp )
