@@ -119,7 +119,7 @@ file ( GLOB_RECURSE project_ccs src/*.cc )
 
 set ( all_files ${project_headers} ${project_cpps} ${project_cs} ${project_ccs} )
 source_group_by_dir( all_files )
-if( SORT_PLATFORM_MAC OR SORT_PLATFORM_LINUX )
+if( EXR_PLATFORM_MAC OR EXR_PLATFORM_LINUX )
 	set_source_files_properties(${all_files} PROPERTIES COMPILE_FLAGS -w)
 	set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -pthread")
 endif()
