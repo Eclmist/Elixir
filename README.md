@@ -27,14 +27,30 @@
   </h7>
 </div>
 
-### Introduction
-Elixir is a cross-platform raytracing renderer written in C++, meant be used as a standalone program or used in 3D packages such as Blender and Cauldron as a renderer plugin. 
+## Introduction
+
+Elixir is a cross-platform raytracing renderer written in C++, meant be used as a standalone program or used in 3D packages such as [Blender](https://www.blender.org/) and Cauldron as a renderer plugin. 
 
 Inspired by previous works such as [PBRT](http://www.pbr-book.org/) and [SORT](https://github.com/JerryCao1985/SORT), Elixir is physically based and implements similar features such as path tracing, special acceleration structures, and various BXDFs. The project is still in its early stages and currently under development.
 
 Elixir is open-sourced, licensed under the [GNU General Public License v3](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
-### Screenshots
+## Getting Started
+
+> Note: Elixir is currently a WIP and is considered unstable. Proceed with caution at your own risk.
+
+Elixir uses CMake to build it's binaries. Run the following CMake commands to generate projects and build using CMake.
+
+
+
+```shell
+$ cmake -B build -S . -DCMAKE_CONFIGURATION_TYPES:STRING="Debug;Release;"
+$ cmake --build .
+```
+
+This will generate OS specific project in the `/build/` folder, and will build the Elixir binaries into `/bin/`.
+
+## Screenshots
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Eclmist/Elixir/master/docs/output1.png" width=700>
