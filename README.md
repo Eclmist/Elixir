@@ -21,7 +21,7 @@
       Website
     </a>
     <span> | </span>
-    <a href="https://elixir.moe/docs">
+    <a href="https://docs.elixir.moe">
       Documentation
     </a>
   </h7>
