@@ -148,7 +148,7 @@ stbi_uc* Render()
     Camera camera(position, lookat, exrVector3::Up(), fov, aspect, aperture, focusDist);
 
     exrU64 lastTime = Timer::TimeSinceEpochMillisec();
-    exrU64 avgTimePerRow;
+    //exrU64 avgTimePerRow;
 
     auto shade_pixel = [&](int x, int y){
         exrVector3 color = exrVector3::Zero();
@@ -201,7 +201,7 @@ stbi_uc* Render()
     for (int i = 0; i < THREAD_COUNT; ++i)
         rendering_threads[i].join();
 
-    /*
+    /*(
     for (int y = OUTPUT_HEIGHT - 1; y >= 0; y--)
     {
         for (int x = 0; x < OUTPUT_WIDTH; x++)
@@ -233,8 +233,8 @@ stbi_uc* Render()
         exrString hh, mm, ss;
         Timer::FormatTime(timeLeft, hh, mm, ss);
         exrInfo("Progress: " << progressBar << "\t" << int(progress) << "% ETA: " << hh << ":" << mm << ":" << ss << "            " << '\r');
-    }
-    */
+        
+    }*/
     exrEndProfile()
 
     int x, y, n;

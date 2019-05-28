@@ -1,9 +1,44 @@
-# Elixir
-An offline raytracer based on [PBRT](http://www.pbr-book.org/) and [SORT](https://github.com/JerryCao1985/SORT).
+<h1 align="center">
+  <br>
+  <a href="https://elixir.moe/"><img src="https://raw.githubusercontent.com/eclmist/elixir/master/docs/elixir.png" alt="Elixir-Logo" width="200"></a>
+  <br>
+</h1>
+<h4 align="center">A (WIP) physically based raytracing renderer based on <a href="http://www.pbr-book.org/" target="_blank">PBRT</a> and <a href="https://github.com/JerryCao1985/SORT" target="_blank">SORT</a>.</h4>
 
-### Build Status
-[![Build Status](https://travis-ci.com/Eclmist/Elixir.svg?branch=master)](https://travis-ci.com/Eclmist/Elixir)
+<p align="center">
+  <a href="https://travis-ci.com/Eclmist/Elixir">
+    <img src="https://travis-ci.com/Eclmist/Elixir.svg?branch=master" alt="Travis Build Status">
+  </a>
+  <img src="https://img.shields.io/badge/stability-experimental-orange.svg">
+  <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">
+    <img src="https://img.shields.io/badge/license-GPL3--or--later-blue.svg">
+  </a>
+</p>
+
+<div align="center">
+  <h7>
+    <a href="https://elixir.moe">
+      Website
+    </a>
+    <span> | </span>
+    <a href="https://elixir.moe/docs">
+      Documentation
+    </a>
+  </h7>
+</div>
+
+### Introduction
+Elixir is a cross-platform raytracing renderer written in C++, meant be used as a standalone program or used in 3D packages such as Blender and Cauldron as a renderer plugin. 
+
+Inspired by previous works such as [PBRT](http://www.pbr-book.org/) and [SORT](https://github.com/JerryCao1985/SORT), Elixir is physically based and implements similar features such as path tracing, special acceleration structures, and various BXDFs. The project is still in its early stages and currently under development.
+
+Elixir is open-sourced, licensed under the [GNU General Public License v3](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
 ### Screenshots
-![output image](https://github.com/Eclmist/Elixir/blob/master/docs/output1.png)
-![output image](https://github.com/Eclmist/Elixir/blob/master/docs/output2.png)
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Eclmist/Elixir/master/docs/output1.png" width=700>
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Eclmist/Elixir/master/docs/output2.png" width=700>
+</p>
