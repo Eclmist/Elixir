@@ -5,6 +5,7 @@
 
 # Elixir specific
 src/core/system/config.h
+GenerateProjects.*
 
 # Post CMake integration (No need project files anymore)
 *.sln
