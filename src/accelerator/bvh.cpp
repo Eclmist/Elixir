@@ -26,6 +26,12 @@
 
 exrBEGIN_NAMESPACE
 
+//! Maximum primitives in a leaf node
+static constexpr exrU16 MaxPrimitivePerNode = 8;
+
+//! Maximum depth of BVH tree
+static constexpr exrU16 MaxNodeDepth = 16;
+
 BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const SplitMethod splitMethod)
 {
     const auto numObjects = objects.size();
@@ -39,10 +45,10 @@ BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const Spl
     {
     case BVHAccelerator::SplitMethod::SAH:
         m_RootNode->m_BoundingVolume = BoundingVolume::ComputeBoundingVolume(objects);
-        SAHSplit(m_RootNode, m_MaxNodeDepth);
+        SAHSplit(m_RootNode, MaxNodeDepth);
         break;
     case BVHAccelerator::SplitMethod::EqualCounts:
-        EqualCountSplit(m_RootNode, m_MaxNodeDepth);
+        EqualCountSplit(m_RootNode, MaxNodeDepth);
         break;
     default:
         throw "Selected split method is not implemented!";
@@ -97,7 +103,7 @@ void BVHAccelerator::EqualCountSplit(std::unique_ptr<BVHNode>& currentRoot, exrU
 {
     currentRoot->m_BoundingVolume = BoundingVolume::ComputeBoundingVolume(currentRoot->m_Primitives);
 
-    if (depth <= 0 || currentRoot->m_Primitives.size() <= m_MaxPrimitivePerNode)
+    if (depth <= 0 || currentRoot->m_Primitives.size() <= MaxPrimitivePerNode)
     {
         return;
     }
@@ -143,7 +149,7 @@ void BVHAccelerator::SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 dept
 {
     const auto numObjects = currentRoot->m_Primitives.size();
 
-    if (depth <= 0 || numObjects <= m_MaxPrimitivePerNode)
+    if (depth <= 0 || numObjects <= MaxPrimitivePerNode)
     {
         return;
     }

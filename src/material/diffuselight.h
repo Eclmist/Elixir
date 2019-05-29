@@ -37,9 +37,12 @@ public:
         return false;
     };
 
-    virtual exrVector3 Emit() const
+    virtual exrVector3 Emit(const Ray& in, const PrimitiveHitInfo& hitInfo) const
     {
-        return m_Emissive;
+        if (Dot(in.m_Direction, hitInfo.m_Normal) < 0)
+            return m_Emissive;
+        else
+            return 0.0f;
     };
 
 private:

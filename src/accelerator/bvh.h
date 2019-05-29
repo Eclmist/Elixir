@@ -104,13 +104,6 @@ private:
     static void SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 depth);
 
 private:
-    //! Maximum primitives in a leaf node
-    static const exrU16 m_MaxPrimitivePerNode = 8;
-
-    //! Maximum depth of BVH tree
-    static const exrU16 m_MaxNodeDepth = 16; 
-
-private:
     //! The root node of the BVH
     std::unique_ptr<BVHNode> m_RootNode = nullptr;
 };

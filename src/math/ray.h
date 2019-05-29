@@ -35,7 +35,7 @@ public:
     //! @param origin           The origin of the ray in world space
     //! @param direction        The normalized direction of the ray
     //! @param distance         The maximum ray distance
-    Ray(const exrPoint& origin = exrPoint::Zero(), const exrVector3& direction = exrVector3::Zero(), exrFloat distance = 1000.0f)
+    Ray(const exrPoint& origin = 0.0f, const exrVector3& direction = 0.0f, exrFloat distance = 1000.0f)
         : m_Origin(origin), m_Direction(direction.Normalized()), m_Distance(distance) {};
 
     //! @brief Copy constructor. Constructs a ray with the same origin, direction and distance from input

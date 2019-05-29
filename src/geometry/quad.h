@@ -24,17 +24,17 @@
 
 exrBEGIN_NAMESPACE
 
-//! @brief A class that defines a quad primitive.
+//! @brief A class that defines a box primitive.
 //! 
-//! A class that defines a quad primitive and handles ray-quad interactions
+//! A class that defines a box primitive and handles ray-box interactions
 class Quad : public Primitive
 {
 public:
-    //! @brief Constructs a quad with a position and a scale
-    //! @param position         The origin of the quad in world space
-    //! @param scale            The scale of the quad
-    //! @param rotation         The rotation of the quad
-    //! @param material         The material of the quad
+    //! @brief Constructs a box with a position and a scale
+    //! @param position         The origin of the box in world space
+    //! @param scale            The scale of the box
+    //! @param rotation         The rotation of the box
+    //! @param material         The material of the box
     Quad(const exrPoint& position, const exrVector2& scale, const exrVector3& rotation, std::unique_ptr<Material> material)
         : Primitive(material)
     {
@@ -47,7 +47,7 @@ public:
         ComputeBoundingVolume();
     };
 
-    //! @brief Test the quad for intersections with a ray
+    //! @brief Test the box for intersections with a ray
     //! 
     //! This function allows us to do intersection tests with a segment of a ray in the domain
     //! of tMin and tMax
@@ -62,7 +62,7 @@ public:
 
     //! @brief Computes a bounding volume
     //! 
-    //! Computes the a bounding volume that encapsulates the current quad.
+    //! Computes the a bounding volume that encapsulates the current box.
     //! 
     //! @return                 Always return true since bounding volumes can be created for quads
     virtual exrBool ComputeBoundingVolume() override;
