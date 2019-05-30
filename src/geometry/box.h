@@ -38,6 +38,9 @@ public:
     Box(const exrPoint& position, const exrVector3& scale, const exrVector3& rotation, std::unique_ptr<Material> material)
         : Primitive(material)
     {
+        m_Transform.SetTranslation(exrVector3(position.x, position.y, position.z));
+        m_Transform.SetRotation(rotation);
+
         // front
         m_Sides[0] = std::make_unique<Quad>(
             exrPoint(0, 0, scale.z / 2.0f), 
@@ -85,9 +88,6 @@ public:
             exrVector3(exrDegToRad(-90), 0, 0), 
             std::make_unique<Material>());
         m_Normals[5] = m_Transform.GetMatrix() * -exrVector3::Up();
-
-        m_Transform.SetTranslation(exrVector3(position.x, position.y, position.z));
-        m_Transform.SetRotation(rotation);
 
         m_LocalMin = exrPoint::Zero() - scale / 0.5f;
         m_LocalMax = exrPoint::Zero() + scale / 0.5f;

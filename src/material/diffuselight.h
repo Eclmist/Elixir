@@ -31,13 +31,13 @@ public:
 
     DiffuseLight(const DiffuseLight& copy) : m_Emissive(copy.m_Emissive) {};
 
-    virtual exrBool Scatter(const Ray& in, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const
+    virtual exrBool Scatter(const Ray& in, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const override
     {
         // Assume light source does not scatter incoming ray
         return false;
     };
 
-    virtual exrVector3 Emit(const Ray& in, const PrimitiveHitInfo& hitInfo) const
+    virtual exrVector3 Emit(const Ray& in, const PrimitiveHitInfo& hitInfo) const override
     {
         if (Dot(in.m_Direction, hitInfo.m_Normal) < 0)
             return m_Emissive;

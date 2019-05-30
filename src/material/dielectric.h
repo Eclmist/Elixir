@@ -34,7 +34,7 @@ public:
         : m_Albedo(copy.m_Albedo)
         , m_RefractiveIndex(copy.m_RefractiveIndex) {};
 
-    virtual exrBool Scatter(const Ray& incomingRay, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const
+    virtual exrBool Scatter(const Ray& incomingRay, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const override
     {
         exrVector3 reflectedRay = Reflect(incomingRay.m_Direction, hitInfo.m_Normal);
 

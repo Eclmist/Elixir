@@ -23,6 +23,9 @@
 #include <memory>
 #include <vector>
 #include <math.h>
+#include <atomic>
+#include <condition_variable>
+#include <mutex>
 
 #include "system/config.h"
 #include "system/error.h"
@@ -37,3 +40,6 @@
 #include "math/ray.h"
 #include "math/random.h"
 #include "math/matrix4x4.h"
+
+//#include "queue.h"
+//#include "threadpool.h"

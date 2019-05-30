@@ -99,7 +99,7 @@ std::unique_ptr<Scene> GenerateScene()
     std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
     // left
-    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(-2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(90.0f), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 0.0f, 0.0f))));
+    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(-2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(90), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 0.0f, 0.0f))));
     // right
     scene->AddPrimitive(std::make_unique<Quad>(exrPoint(2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(-90.0f), 0), std::make_unique<Lambertian>(exrVector3(0.0f, 1.0f, 0.0f))));
     // back
@@ -109,10 +109,10 @@ std::unique_ptr<Scene> GenerateScene()
     // ceiling
     scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 5.5f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
     // light
-    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 5.5f, 0.0f), exrVector2(1.3f, 1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.75f, 0.35f) * 7.5f)));
+    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 5.5f, 0.0f), exrVector2(1.3f, 1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.77f, 0.4f) * 7.0f)));
 
     //scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(0.0f, 2.5f, 0.0f), 1.2f, std::make_unique<Dielectric>(exrVector3(1.0f, 1.0f, 1.0f), 1.5f)));
-    //scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(1.5f, 1.0f, -1.5f), 2.0f, std::make_unique<Metallic>(exrVector3(0.1f, 1.0f, 0.4f), 0.5f)));
+    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(1.5f, 1.0f, -1.5f), 2.0f, std::make_unique<Metallic>(exrVector3(0.1f, 1.0f, 0.4f), 0.5f)));
     scene->AddPrimitive(std::make_unique<Box>(exrPoint(-0.9f, 1.8f, -1.0f), exrVector3(1.6f, 3.6f, 1.6f), exrVector3(0, exrDegToRad(110), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
     scene->AddPrimitive(std::make_unique<Box>(exrPoint(0.9f, 0.8f, 1.0f), exrVector3(1.6f, 1.6f, 1.6f), exrVector3(0, exrDegToRad(-20), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
 
@@ -167,13 +167,13 @@ stbi_uc* Render()
 
         color /= NUM_SAMPLES_PER_PIXEL;
 
-        // Correct gamma
-        color = exrVector3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
-
         // Clamp color values for ppm
         color.x = exrSaturate(color.x);
         color.y = exrSaturate(color.y);
         color.z = exrSaturate(color.z);
+
+        // Correct gamma
+        color = exrVector3(sqrt(color.x), sqrt(color.y), sqrt(color.z));
 
         // PPM takes values from 0-255;
         color *= 255.0f;

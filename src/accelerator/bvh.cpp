@@ -27,7 +27,7 @@
 exrBEGIN_NAMESPACE
 
 //! Maximum primitives in a leaf node
-static constexpr exrU16 MaxPrimitivePerNode = 8;
+static constexpr exrU16 MaxPrimitivePerNode = 1;
 
 //! Maximum depth of BVH tree
 static constexpr exrU16 MaxNodeDepth = 16;
