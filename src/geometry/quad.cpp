@@ -24,20 +24,20 @@ exrBEGIN_NAMESPACE
 
 bool Quad::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hit) const
 {
-    Ray transformedRay = m_Transform.GetInverseMatrix() * ray;
+    Ray localRay = m_Transform.GetInverseMatrix() * ray;
 
-    exrFloat t = (-transformedRay.m_Origin.z) / transformedRay.m_Direction.z;
+    exrFloat t = (-localRay.m_Origin.z) / localRay.m_Direction.z;
     if (t < tMin || t > tMax)
         return false;
 
-    float x = transformedRay(t).x;
-    float y = transformedRay(t).y;
+    float x = localRay(t).x;
+    float y = localRay(t).y;
 
     if (x < m_LocalMin.x || x > m_LocalMax.x || y < m_LocalMin.y || y > m_LocalMax.y)
         return false;
 
     hit.m_T = t;
-    hit.m_Point = m_Transform.GetMatrix() * transformedRay(t);
+    hit.m_Point = m_Transform.GetMatrix() * localRay(t);
     hit.m_Normal = m_Transform.GetMatrix() * exrVector3::Forward();
     hit.m_Material = m_Material.get();
     return true;

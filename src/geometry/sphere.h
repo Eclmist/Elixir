@@ -35,10 +35,9 @@ public:
     //! @param radius           The radius of the sphere
     //! @param material         The material of the sphere
     Sphere(const exrPoint& center, exrFloat radius, std::unique_ptr<Material> material)
-        : Primitive(material)
+        : Primitive(material), m_Radius(radius)
     {
         m_Transform.Translate(exrVector3(center.x, center.y, center.z));
-        m_Transform.Scale(radius);
         ComputeBoundingVolume();
     };
 
@@ -61,6 +60,10 @@ public:
     //! 
     //! @return                 Always return true since bounding volumes can be created for spheres
     virtual exrBool ComputeBoundingVolume() override;
+
+private:
+    //! The radius of the sphere
+    exrFloat m_Radius;
 };
 
 exrEND_NAMESPACE

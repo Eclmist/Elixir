@@ -25,16 +25,16 @@ exrBEGIN_NAMESPACE
 bool Box::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hit) const
 {
     exrBool hasIntersect = false;
-    Ray transformedRay = m_Transform.GetInverseMatrix() * ray;
+    Ray localRay = m_Transform.GetInverseMatrix() * ray;
 
     for (exrU32 i = 0; i < 6; i++)
     {
-        if (m_Sides[i]->Intersect(transformedRay, tMin, tMax, hit))
+        if (m_Sides[i]->Intersect(localRay, tMin, tMax, hit))
         {
             tMax = hit.m_T;
             hasIntersect = true;
             hit.m_Normal = m_Normals[i];
-            hit.m_Point = m_Transform.GetMatrix() * transformedRay(hit.m_T);
+            hit.m_Point = m_Transform.GetMatrix() * localRay(hit.m_T);
             hit.m_Material = m_Material.get();
         }
     }
@@ -44,14 +44,17 @@ bool Box::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitIn
 
 bool Box::ComputeBoundingVolume()
 {
-    exrPoint globalMin = m_Transform.GetMatrix() * m_LocalMin;
-    exrPoint globalMax = m_Transform.GetMatrix() * m_LocalMax;
+    exrPoint realMin(EXR_MAX_FLOAT);
+    exrPoint realMax(EXR_MIN_FLOAT);
 
-    // Swap ensure min is min and max is actually max, since we may have rotated the points above
-    exrPoint realMin = exrPoint(exrMin(globalMin.x, globalMax.x), exrMin(globalMin.y, globalMax.y), exrMin(globalMin.z, globalMax.z));
-    exrPoint realMax = exrPoint(exrMax(globalMin.x, globalMax.x), exrMax(globalMin.y, globalMax.y), exrMax(globalMin.z, globalMax.z));
+    for (exrU32 i = 0; i < 8; i++)
+    {
+        realMin = exrPoint(exrMin(realMin.x, m_LocalCorners[i].x), exrMin(realMin.y, m_LocalCorners[i].y), exrMin(realMin.z, m_LocalCorners[i].z));
+        realMax = exrPoint(exrMax(realMax.x, m_LocalCorners[i].x), exrMax(realMax.y, m_LocalCorners[i].y), exrMax(realMax.z, m_LocalCorners[i].z));
+    }
 
     m_BoundingVolume = BoundingVolume(realMin, realMax);
+
     return true;
 }
 

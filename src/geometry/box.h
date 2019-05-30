@@ -43,7 +43,7 @@ public:
 
         // front
         m_Sides[0] = std::make_unique<Quad>(
-            exrPoint(0, 0, scale.z / 2.0f), 
+            exrPoint(0, 0, scale.z * 0.5f), 
             exrVector2(scale.x, scale.y), 
             0.0f, 
             std::make_unique<Material>());
@@ -51,7 +51,7 @@ public:
 
         // back
         m_Sides[1] = std::make_unique<Quad>(
-            exrPoint(0, 0, -scale.z / 2.0f), 
+            exrPoint(0, 0, -scale.z * 0.5f), 
             exrVector2(scale.x, scale.y), 
             exrVector3(0, exrDegToRad(180), 0), 
             std::make_unique<Material>());
@@ -59,7 +59,7 @@ public:
 
         // left
         m_Sides[2] = std::make_unique<Quad>(
-            exrPoint(-scale.x / 2.0f, 0, 0), 
+            exrPoint(-scale.x * 0.5f, 0, 0), 
             exrVector2(scale.z, scale.y), 
             exrVector3(0, exrDegToRad(90), 0), 
             std::make_unique<Material>());
@@ -67,7 +67,7 @@ public:
 
         // right
         m_Sides[3] = std::make_unique<Quad>(
-            exrPoint(+ scale.x / 2.0f, 0, 0), 
+            exrPoint(+ scale.x * 0.5f, 0, 0), 
             exrVector2(scale.z, scale.y), 
             exrVector3(0, exrDegToRad(-90), 0), 
             std::make_unique<Material>());
@@ -75,7 +75,7 @@ public:
 
         // top
         m_Sides[4] = std::make_unique<Quad>(
-            exrPoint(0, scale.y / 2.0f, 0), 
+            exrPoint(0, scale.y * 0.5f, 0), 
             exrVector2(scale.x, scale.z), 
             exrVector3(exrDegToRad(90), 0, 0), 
             std::make_unique<Material>());
@@ -83,14 +83,22 @@ public:
 
         // bottom
         m_Sides[5] = std::make_unique<Quad>(
-            exrPoint(0, -scale.y / 2.0f, 0), 
+            exrPoint(0, -scale.y * 0.5f, 0), 
             exrVector2(scale.x, scale.z), 
             exrVector3(exrDegToRad(-90), 0, 0), 
             std::make_unique<Material>());
         m_Normals[5] = m_Transform.GetMatrix() * -exrVector3::Up();
 
-        m_LocalMin = exrPoint::Zero() - scale / 0.5f;
-        m_LocalMax = exrPoint::Zero() + scale / 0.5f;
+
+        exrVector3 halfExtent = scale / 2;
+        m_LocalCorners[0] = m_Transform.GetMatrix() * exrPoint(-halfExtent.x, -halfExtent.y, -halfExtent.z);
+        m_LocalCorners[1] = m_Transform.GetMatrix() * exrPoint(halfExtent.x, -halfExtent.y, -halfExtent.z);
+        m_LocalCorners[2] = m_Transform.GetMatrix() * exrPoint(-halfExtent.x, halfExtent.y, -halfExtent.z);
+        m_LocalCorners[3] = m_Transform.GetMatrix() * exrPoint(halfExtent.x, halfExtent.y, -halfExtent.z);
+        m_LocalCorners[4] = m_Transform.GetMatrix() * exrPoint(-halfExtent.x, -halfExtent.y, halfExtent.z);
+        m_LocalCorners[5] = m_Transform.GetMatrix() * exrPoint(halfExtent.x, -halfExtent.y, halfExtent.z);
+        m_LocalCorners[6] = m_Transform.GetMatrix() * exrPoint(-halfExtent.x, halfExtent.y, halfExtent.z);
+        m_LocalCorners[7] = m_Transform.GetMatrix() * exrPoint(halfExtent.x, halfExtent.y, halfExtent.z);
 
         ComputeBoundingVolume();
     };
@@ -119,14 +127,11 @@ public:
     //! Sides of the boxes, internally handled as quads
     std::unique_ptr<Quad> m_Sides[6];
 
-    //! Local space min point for bounding volume
-    exrPoint m_LocalMin;
-
-    //! Local space max point for bounding volume
-    exrPoint m_LocalMax;
-
     //! Normal vectors that corresponds with the side quads
     exrVector3 m_Normals[6];    
+
+    //! Local space min point for bounding volume
+    exrPoint m_LocalCorners[8];
 };
 
 exrEND_NAMESPACE

@@ -68,7 +68,7 @@ exrVector3 ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
 {
     PrimitiveHitInfo hit;
 
-    if (scene.RaytraceScene(viewRay, 0.001f, viewRay.m_Distance, hit))
+    if (scene.RaytraceScene(viewRay, EXR_EPSILON, viewRay.m_Distance, hit))
     {
         Ray scatteredRay;
         exrVector3 attenuation;
@@ -111,8 +111,8 @@ std::unique_ptr<Scene> GenerateScene()
     // light
     scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 5.5f, 0.0f), exrVector2(1.3f, 1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.77f, 0.4f) * 7.0f)));
 
-    //scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(0.0f, 2.5f, 0.0f), 1.2f, std::make_unique<Dielectric>(exrVector3(1.0f, 1.0f, 1.0f), 1.5f)));
-    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(1.5f, 1.0f, -1.5f), 2.0f, std::make_unique<Metallic>(exrVector3(0.1f, 1.0f, 0.4f), 0.5f)));
+    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(0, 2.5f, 0), 1.0f, std::make_unique<Dielectric>(exrVector3(1.0f, 1.0f, 1.0f), 1.5f)));
+    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(1.5f, 1.0f, -1.5f), 1.0f, std::make_unique<Metallic>(exrVector3(0.1f, 1.0f, 0.4f), 0.5f)));
     scene->AddPrimitive(std::make_unique<Box>(exrPoint(-0.9f, 1.8f, -1.0f), exrVector3(1.6f, 3.6f, 1.6f), exrVector3(0, exrDegToRad(110), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
     scene->AddPrimitive(std::make_unique<Box>(exrPoint(0.9f, 0.8f, 1.0f), exrVector3(1.6f, 1.6f, 1.6f), exrVector3(0, exrDegToRad(-20), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
 

@@ -44,7 +44,7 @@ BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const Spl
     switch (splitMethod)
     {
     case BVHAccelerator::SplitMethod::SAH:
-        m_RootNode->m_BoundingVolume = BoundingVolume::ComputeBoundingVolume(objects);
+        m_RootNode->m_BoundingVolume = BoundingVolume::BoundPrimitives(objects);
         SAHSplit(m_RootNode, MaxNodeDepth);
         break;
     case BVHAccelerator::SplitMethod::EqualCounts:
@@ -101,7 +101,7 @@ exrBool BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray, exrFlo
 
 void BVHAccelerator::EqualCountSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 depth)
 {
-    currentRoot->m_BoundingVolume = BoundingVolume::ComputeBoundingVolume(currentRoot->m_Primitives);
+    currentRoot->m_BoundingVolume = BoundingVolume::BoundPrimitives(currentRoot->m_Primitives);
 
     if (depth <= 0 || currentRoot->m_Primitives.size() <= MaxPrimitivePerNode)
     {
@@ -181,8 +181,8 @@ void BVHAccelerator::SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 dept
                 }
             }
 
-            BoundingVolume leftBv = BoundingVolume::ComputeBoundingVolume(leftObjects);
-            BoundingVolume rightBv = BoundingVolume::ComputeBoundingVolume(rightObjects);
+            BoundingVolume leftBv = BoundingVolume::BoundPrimitives(leftObjects);
+            BoundingVolume rightBv = BoundingVolume::BoundPrimitives(rightObjects);
 
             // Get score
             exrFloat sc = currentRoot->m_BoundingVolume.GetSurfaceArea();

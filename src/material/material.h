@@ -32,12 +32,11 @@ class Material
 public:
     virtual exrBool Scatter(const Ray& in, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const
     {
-        // Error material
         attenuation = exrVector3(1.0f, 0.0f, 1.0f);
         return true;
     };
 
-    virtual exrVector3 Emit(const Ray& in, const PrimitiveHitInfo& hitInfo) const { return 0.0f; }
+    virtual exrVector3 Emit(const Ray& in, const PrimitiveHitInfo& hitInfo) const { return 0.0f; };
 };
 
 exrEND_NAMESPACE

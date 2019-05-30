@@ -61,4 +61,21 @@ inline _Type1 exrLerp(_Type1 a, _Type1 b, _Type2 t)
     return ((static_cast<_Type2>(1) - t) * a + t * b);
 }
 
+inline exrBool exrQuadratic(exrFloat a, exrFloat b, exrFloat c, exrFloat* t0, exrFloat* t1)
+{
+    exrFloat discriminator = b * b - 4 * a * c;
+
+    if (discriminator < 0)
+        return false;
+
+    exrFloat droot = sqrt(discriminator);
+
+    // Compute quadratic values
+    *t0 = -0.5f * a * (b - droot);
+    *t1 = -0.5f * a * (b + droot);
+
+    if (*t0 > * t1) std::swap(*t0, *t1);
+    return true;
+}
+
 exrEND_NAMESPACE

@@ -24,46 +24,35 @@ exrBEGIN_NAMESPACE
 
 bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hit) const
 {
-    Ray transformedRay = m_Transform.GetInverseMatrix() * ray;
-    exrVector3 r0 = transformedRay.m_Origin - exrPoint::Zero();
-    exrFloat a = Dot(transformedRay.m_Direction, transformedRay.m_Direction);
-    exrFloat b = Dot(r0, transformedRay.m_Direction);
-    exrFloat c = Dot(r0, r0) - (0.25f);
-    exrFloat discriminant = b * b - a * c;
+    Ray localRay = m_Transform.GetInverseMatrix() * ray;
+    exrVector3 r0 = localRay.m_Origin - exrPoint::Zero();
+    exrFloat a = Dot(localRay.m_Direction, localRay.m_Direction);
+    exrFloat b = 2 * Dot(r0, localRay.m_Direction);
+    exrFloat c = Dot(r0, r0) - (m_Radius * m_Radius);
 
     // solve quadratic equation to find t
-    if (discriminant > 0)
-    {
-        exrFloat hitPoint1 = (-b - sqrt(b * b - a * c)) / a;
-        exrFloat hitPoint2 = (-b + sqrt(b * b - a * c)) / a;
+    exrFloat t0, t1;
+    if (!exrQuadratic(a, b, c, &t0, &t1))
+        return false;
 
-        if (hitPoint1 <= tMax && hitPoint1 >= tMin)
-        {
-            hit.m_T = hitPoint1;
-            hit.m_Point = m_Transform.GetMatrix() * transformedRay(hitPoint1);
-            hit.m_Normal = (m_Transform.GetMatrix() * (transformedRay(hitPoint1) - exrPoint::Zero())).Normalized();
-            hit.m_Material = m_Material.get();
-            return true;
-        }
+    if (t0 > tMax || t1 <= tMin)
+        return false;
 
-        if (hitPoint2 <= tMax && hitPoint2 >= tMin)
-        {
-            hit.m_T = hitPoint2;
-            hit.m_Point = m_Transform.GetMatrix() * transformedRay(hitPoint2);
-            hit.m_Normal = (m_Transform.GetMatrix() * (transformedRay(hitPoint2) - exrPoint::Zero())).Normalized();
-            hit.m_Material = m_Material.get();
-            return true;
-        }
-    }
+    if (t0 <= tMin)
+        t0 = t1;
 
-    // no real value, did not intersect sphere
-    return false;
+    hit.m_T = t0;
+    hit.m_Point = m_Transform.GetMatrix() * localRay(t0);
+    hit.m_Normal = static_cast<exrVector3>(localRay(t0)) / m_Radius;
+    hit.m_Material = m_Material.get();
+
+    return true;
 }
 
 bool Sphere::ComputeBoundingVolume()
 {
-    exrPoint min = m_Transform.GetMatrix() * exrPoint(-0.5f);
-    exrPoint max = m_Transform.GetMatrix() * exrPoint(0.5f);
+    exrPoint min = m_Transform.GetMatrix() * exrPoint(-m_Radius);
+    exrPoint max = m_Transform.GetMatrix() * exrPoint(m_Radius);
     m_BoundingVolume = BoundingVolume(min, max);
     return true;
 }

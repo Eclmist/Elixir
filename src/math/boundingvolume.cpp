@@ -58,7 +58,7 @@ BoundingVolume BoundingVolume::Combine(const BoundingVolume& bv1, const Bounding
     return BoundingVolume(exrPoint(minX, minY, minZ), exrPoint(maxX, maxY, maxZ));
 }
 
-BoundingVolume BoundingVolume::ComputeBoundingVolume(const std::vector<Primitive*>& primitives)
+BoundingVolume BoundingVolume::BoundPrimitives(const std::vector<Primitive*>& primitives)
 {
     // We CANNOT combine with exrPoint(0) because that will make all bv extend to origin..
     if (primitives.size() <= 0)

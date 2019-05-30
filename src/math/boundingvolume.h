@@ -95,7 +95,7 @@ public:
     //! Computes a bounding volume that tightly encapsulates all input primitives
     //!
     //! @return                 The result bounding volume
-    static BoundingVolume ComputeBoundingVolume(const std::vector<Primitive*>& primitives);
+    static BoundingVolume BoundPrimitives(const std::vector<Primitive*>& primitives);
 
 private:
     exrPoint m_Min;
