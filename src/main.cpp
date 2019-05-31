@@ -35,7 +35,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
-#define EXR_QUALITY_LEVEL				3
+#define OUTPUT_WIDTH 500
+#define OUTPUT_HEIGHT 500
+#define NUM_SAMPLES_PER_PIXEL 32
+#define NUM_BOUNDCE_PER_RAY 4
 
 #include <thread>
 #include "stb/stb_image.h"
@@ -105,7 +108,6 @@ std::unique_ptr<Scene> GenerateScene()
     // back
     scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 2.75f, -2.80f), exrVector2(5.5f), exrVector3(0.0f), std::make_unique<Lambertian>(exrVector3(1.0f))));
     // floor
-    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(-90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
     // ceiling
     scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 5.5f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
     // light
@@ -255,7 +257,7 @@ int main()
     stbi_uc* output = Render();
 
     exrString fileName = "output_" + std::to_string(Timer::TimeSinceEpochMillisec()) + "_" + std::to_string(NUM_SAMPLES_PER_PIXEL) + "spp_" + std::to_string(NUM_BOUNDCE_PER_RAY) + "b.png";
-    stbi_write_png(fileName.c_str(), OUTPUT_WIDTH, OUTPUT_HEIGHT, NUM_CHANNELS, output, OUTPUT_WIDTH * NUM_CHANNELS);
+    stbi_write_png(fileName.c_str(), OUTPUT_WIDTH, OUTPUT_HEIGHT, 3, output, OUTPUT_WIDTH * 3);
 
 #ifdef EXR_PLATFORM_WIN
     system("PAUSE");
