@@ -25,7 +25,7 @@ exrBEGIN_NAMESPACE
 bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hit) const
 {
     Ray localRay = m_Transform.GetInverseMatrix() * ray;
-    exrVector3 r0 = localRay.m_Origin - exrPoint::Zero();
+    exrVector3 r0 = localRay.m_Origin - exrPoint3::Zero();
     exrFloat a = Dot(localRay.m_Direction, localRay.m_Direction);
     exrFloat b = 2 * Dot(r0, localRay.m_Direction);
     exrFloat c = Dot(r0, r0) - (m_Radius * m_Radius);
@@ -50,8 +50,8 @@ bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction
 }
 bool Sphere::ComputeBoundingVolume()
 {
-    exrPoint min = m_Transform.GetMatrix() * exrPoint(-m_Radius);
-    exrPoint max = m_Transform.GetMatrix() * exrPoint(m_Radius);
+    exrPoint3 min = m_Transform.GetMatrix() * exrPoint3(-m_Radius);
+    exrPoint3 max = m_Transform.GetMatrix() * exrPoint3(m_Radius);
     m_BoundingVolume = AABB(min, max);
     return true;
 }

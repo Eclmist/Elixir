@@ -35,14 +35,14 @@ public:
     //! @param scale            The scale of the box
     //! @param rotation         The rotation of the box
     //! @param material         The material of the box
-    Quad(const exrPoint& position, const exrVector2& scale, const exrVector3& rotation, std::unique_ptr<Material> material)
+    Quad(const exrPoint3& position, const exrVector2& scale, const exrVector3& rotation, std::unique_ptr<Material> material)
         : Shape(material)
     {
         m_Transform.SetTranslation(exrVector3(position.x, position.y, position.z));
         m_Transform.SetRotation(rotation);
 
-        m_LocalMin = exrPoint::Zero() - exrVector3(0.5f * scale.x, 0.5f * scale.y, EXR_EPSILON);
-        m_LocalMax = exrPoint::Zero() + exrVector3(0.5f * scale.x, 0.5f * scale.y, EXR_EPSILON);
+        m_LocalMin = exrPoint3::Zero() - exrVector3(0.5f * scale.x, 0.5f * scale.y, EXR_EPSILON);
+        m_LocalMax = exrPoint3::Zero() + exrVector3(0.5f * scale.x, 0.5f * scale.y, EXR_EPSILON);
 
         ComputeBoundingVolume();
     };
@@ -68,8 +68,8 @@ public:
     virtual exrBool ComputeBoundingVolume() override;
 
 public:
-    exrPoint m_LocalMin;
-    exrPoint m_LocalMax;
+    exrPoint3 m_LocalMin;
+    exrPoint3 m_LocalMax;
 };
 
 exrEND_NAMESPACE

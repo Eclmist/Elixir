@@ -66,7 +66,6 @@ public:
     union
     {
         struct { T x, y; };
-        struct { T r, g; };
         struct { T m_Data[2]; };
     };
 };

@@ -33,7 +33,7 @@ struct Interaction
     Interaction() 
         : m_Time(0) {};
 
-    Interaction(const exrPoint& point, const exrVector3& normal, const exrVector3& wo, Material* material, float time)
+    Interaction(const exrPoint3& point, const exrVector3& normal, const exrVector3& wo, Material* material, float time)
         : m_Point(point)
         , m_Normal(normal)
         , m_RadianceDirection(wo)
@@ -44,7 +44,7 @@ struct Interaction
     float m_Time;
 
     //! The point of intersection
-    exrPoint m_Point;
+    exrPoint3 m_Point;
 
     //! The negative ray direction, Wo
     exrVector3 m_RadianceDirection;

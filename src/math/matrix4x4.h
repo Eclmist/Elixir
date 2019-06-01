@@ -53,12 +53,12 @@ public:
     //! @brief Transforms a point by the current matrix
     //! @param p                The point to transform
     //! @return                 The transformed point p'
-    exrPoint operator*(const exrPoint& p) const;
+    exrPoint3 operator*(const exrPoint3& p) const;
 
     //! @brief Transforms a point by the current matrix
     //! @param p                The point to transform
     //! @return                 The transformed point p'
-    exrPoint operator()(const exrPoint& p) const;
+    exrPoint3 operator()(const exrPoint3& p) const;
 
     //! @brief Transforms a vector by the current matrix
     //! @param v                The vector to transform

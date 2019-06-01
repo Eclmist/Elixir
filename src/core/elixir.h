@@ -36,6 +36,7 @@
 #include "math/math.h"
 #include "math/vector2.h"
 #include "math/vector3.h"
+#include "math/point2.h"
 #include "math/point3.h"
 #include "math/random.h"
 #include "math/matrix4x4.h"

@@ -45,12 +45,12 @@ bool Quad::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& 
 
 bool Quad::ComputeBoundingVolume()
 {
-    exrPoint globalMin = m_Transform.GetMatrix() * m_LocalMin;
-    exrPoint globalMax = m_Transform.GetMatrix() * m_LocalMax;
+    exrPoint3 globalMin = m_Transform.GetMatrix() * m_LocalMin;
+    exrPoint3 globalMax = m_Transform.GetMatrix() * m_LocalMax;
 
     // Swap ensure min is min and max is actually max, since we may have rotated the points above
-    exrPoint realMin = exrPoint(exrMin(globalMin.x, globalMax.x), exrMin(globalMin.y, globalMax.y), exrMin(globalMin.z, globalMax.z));
-    exrPoint realMax = exrPoint(exrMax(globalMin.x, globalMax.x), exrMax(globalMin.y, globalMax.y), exrMax(globalMin.z, globalMax.z));
+    exrPoint3 realMin = exrPoint3(exrMin(globalMin.x, globalMax.x), exrMin(globalMin.y, globalMax.y), exrMin(globalMin.z, globalMax.z));
+    exrPoint3 realMax = exrPoint3(exrMax(globalMin.x, globalMax.x), exrMax(globalMin.y, globalMax.y), exrMax(globalMin.z, globalMax.z));
 
     m_BoundingVolume = AABB(realMin, realMax);
     return true;

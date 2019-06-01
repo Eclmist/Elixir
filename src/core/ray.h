@@ -35,7 +35,7 @@ public:
     //! @param origin           The origin of the ray in world space
     //! @param direction        The normalized direction of the ray
     //! @param distance         The maximum ray distance
-    Ray(const exrPoint& origin = 0.0f, const exrVector3& direction = 0.0f, exrFloat distance = 1000.0f)
+    Ray(const exrPoint3& origin = 0.0f, const exrVector3& direction = 0.0f, exrFloat distance = 1000.0f)
         : m_Origin(origin)
         , m_Direction(direction.Normalized())
         , m_Distance(distance) {};
@@ -52,11 +52,11 @@ public:
     //! @param t                The t param in parametric ray equation
     //! 
     //! @return                 The point along the ray at distance t
-    inline exrPoint operator()(exrFloat t) const { return m_Origin + t * m_Direction; }
+    inline exrPoint3 operator()(exrFloat t) const { return m_Origin + t * m_Direction; }
 
 public:
     //! The origin of the ray in world space
-    exrPoint m_Origin;
+    exrPoint3 m_Origin;
 
     //! The normalized direction of the ray
     exrVector3 m_Direction;

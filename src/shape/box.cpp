@@ -44,13 +44,13 @@ bool Box::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& i
 
 bool Box::ComputeBoundingVolume()
 {
-    exrPoint realMin(EXR_MAX_FLOAT);
-    exrPoint realMax(EXR_MIN_FLOAT);
+    exrPoint3 realMin(EXR_MAX_FLOAT);
+    exrPoint3 realMax(EXR_MIN_FLOAT);
 
     for (exrU32 i = 0; i < 8; i++)
     {
-        realMin = exrPoint(exrMin(realMin.x, m_LocalCorners[i].x), exrMin(realMin.y, m_LocalCorners[i].y), exrMin(realMin.z, m_LocalCorners[i].z));
-        realMax = exrPoint(exrMax(realMax.x, m_LocalCorners[i].x), exrMax(realMax.y, m_LocalCorners[i].y), exrMax(realMax.z, m_LocalCorners[i].z));
+        realMin = exrPoint3(exrMin(realMin.x, m_LocalCorners[i].x), exrMin(realMin.y, m_LocalCorners[i].y), exrMin(realMin.z, m_LocalCorners[i].z));
+        realMax = exrPoint3(exrMax(realMax.x, m_LocalCorners[i].x), exrMax(realMax.y, m_LocalCorners[i].y), exrMax(realMax.z, m_LocalCorners[i].z));
     }
 
     m_BoundingVolume = AABB(realMin, realMax);

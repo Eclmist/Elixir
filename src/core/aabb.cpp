@@ -55,15 +55,15 @@ AABB AABB::Combine(const AABB& bv1, const AABB& bv2)
     maxY = exrMax(bv1.Max().y, bv2.Max().y);
     maxZ = exrMax(bv1.Max().z, bv2.Max().z);
 
-    return AABB(exrPoint(minX, minY, minZ), exrPoint(maxX, maxY, maxZ));
+    return AABB(exrPoint3(minX, minY, minZ), exrPoint3(maxX, maxY, maxZ));
 }
 
 AABB AABB::BoundShapes(const std::vector<Shape*>& shapes)
 {
-    // We CANNOT combine with exrPoint(0) because that will make all bv extend to origin..
+    // We CANNOT combine with exrPoint3(0) because that will make all bv extend to origin..
     if (shapes.size() <= 0)
     {
-        return AABB(exrPoint::Zero(), exrPoint::Zero());
+        return AABB(exrPoint3::Zero(), exrPoint3::Zero());
     }
 
     AABB combinedBv = shapes[0]->GetBoundingVolume();

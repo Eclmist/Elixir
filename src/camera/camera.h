@@ -41,7 +41,7 @@ public:
     //! @param aspect            The aspect ratio of the expected output
     //! @param aperture          The aperture of the camera
     //! @param focusDist         The distance away from the camera's focus plane
-    Camera(exrPoint position, exrPoint lookat, exrVector3 up, exrFloat vfov, exrFloat aspect, exrFloat aperture, exrFloat focusDist) {
+    Camera(exrPoint3 position, exrPoint3 lookat, exrVector3 up, exrFloat vfov, exrFloat aspect, exrFloat aperture, exrFloat focusDist) {
         // virtual lens to simulate defocus blur
         lensRadius = aperture / 2.0f;
                
@@ -70,8 +70,8 @@ public:
         return Ray(m_Position + offset, m_Min + s * m_HorizontalStep + t * m_VerticalStep - m_Position - offset); 
     }
 
-    exrPoint m_Position;
-    exrPoint m_Min;
+    exrPoint3 m_Position;
+    exrPoint3 m_Min;
     exrVector3 m_HorizontalStep;
     exrVector3 m_VerticalStep;
 

@@ -35,7 +35,7 @@ public:
 
     virtual exrBool Scatter(const Ray& incomingRay, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered, exrFloat& pdf) const override
     {
-        exrPoint target = hitInfo.m_Point + hitInfo.m_Normal + Random::RandomInUnitSphere();
+        exrPoint3 target = hitInfo.m_Point + hitInfo.m_Normal + Random::RandomInUnitSphere();
         scattered = Ray(hitInfo.m_Point, target - hitInfo.m_Point);
         attenuation = m_Albedo;
         return true;

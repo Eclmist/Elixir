@@ -52,7 +52,7 @@ public:
     //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there is an intersection
-    virtual bool Intersect(const Ray& ray, float tMin, float tMax, Interaction& interaction) const = 0;
+    virtual exrBool Intersect(const Ray& ray, float tMin, float tMax, Interaction& interaction) const = 0;
 
 public:
     //! @brief Returns the bounding volume of the shape

@@ -36,7 +36,7 @@ public:
     //! @brief Constructor from two points
     //! @param min              The minimum extents of the bounding volume in world space
     //! @param max              The maximum extents of the bounding volume in world space
-    AABB(const exrPoint& min = exrPoint(-1.0f), const exrPoint& max = exrPoint(1.0f))
+    AABB(const exrPoint3& min = exrPoint3(-1.0f), const exrPoint3& max = exrPoint3(1.0f))
         : m_Min(min)
         , m_Max(max) {};
 
@@ -48,11 +48,11 @@ public:
 
     //! @brief Returns minimum extents of the bounding volume in world space
     //! @return                 The minimum extends of the bounding volume
-    inline exrPoint Min() const { return m_Min; }
+    inline exrPoint3 Min() const { return m_Min; }
 
     //! @brief Returns maximum extents of the bounding volume in world space
     //! @return                 The maximum extends of the bounding volume
-    inline exrPoint Max() const { return m_Max; }
+    inline exrPoint3 Max() const { return m_Max; }
 
     //! @brief Returns the extents of the bounding volume in local space
     //! @return                 The extents of the bounding volume
@@ -66,11 +66,11 @@ public:
 
     //! @brief Sets the min extents of the bounding volume
     //! @param min              The minimum extends of the bounding volume
-    inline void SetMin(exrPoint min) { m_Min = min; }
+    inline void SetMin(exrPoint3 min) { m_Min = min; }
 
     //! @brief Sets the max extents of the bounding volume
     //! @param max              The maximum extends of the bounding volume
-    inline void SetMax(exrPoint max) { m_Max = max; }
+    inline void SetMax(exrPoint3 max) { m_Max = max; }
 
     //! @brief Test the bounding volume for intersections with a ray
     //! 
@@ -100,8 +100,8 @@ public:
     static AABB BoundShapes(const std::vector<Shape*>& shapes);
 
 private:
-    exrPoint m_Min;
-    exrPoint m_Max;
+    exrPoint3 m_Min;
+    exrPoint3 m_Max;
 };
 
 exrEND_NAMESPACE

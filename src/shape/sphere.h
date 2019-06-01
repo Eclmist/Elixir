@@ -34,7 +34,7 @@ public:
     //! @param center           The origin of the sphere in world space
     //! @param radius           The radius of the sphere
     //! @param material         The material of the sphere
-    Sphere(const exrPoint& center, exrFloat radius, std::unique_ptr<Material> material)
+    Sphere(const exrPoint3& center, exrFloat radius, std::unique_ptr<Material> material)
         : Shape(material)
         , m_Radius(radius)
     {

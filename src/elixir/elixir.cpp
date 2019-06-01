@@ -103,18 +103,18 @@ std::unique_ptr<Scene> GenerateScene()
     std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
     // Lights
-    scene->AddShape(std::make_unique<Sphere>(exrPoint(3.0f, 5.75f, -2.80f), 0.5f, std::make_unique<DiffuseLight>(exrVector3(0, 0.8f, 0.9f))));
-    scene->AddShape(std::make_unique<Sphere>(exrPoint(1.0f, 5.75f, -2.80f), 0.3f, std::make_unique<DiffuseLight>(exrVector3(0, 0.8f, 0.5f))));
-    scene->AddShape(std::make_unique<Sphere>(exrPoint(-1.0f, 5.75f, -2.80f), 0.1f, std::make_unique<DiffuseLight>(exrVector3(0.9f, 0.9f, 0.5f))));
-    scene->AddShape(std::make_unique<Sphere>(exrPoint(-3.0f, 5.75f, -2.80f), 0.05f, std::make_unique<DiffuseLight>(exrVector3(0.9f, 0.9f, 0.9f))));
+    scene->AddShape(std::make_unique<Sphere>(exrPoint3(3.0f, 5.75f, -2.80f), 0.5f, std::make_unique<DiffuseLight>(exrVector3(0, 0.8f, 0.9f))));
+    scene->AddShape(std::make_unique<Sphere>(exrPoint3(1.0f, 5.75f, -2.80f), 0.3f, std::make_unique<DiffuseLight>(exrVector3(0, 0.8f, 0.5f))));
+    scene->AddShape(std::make_unique<Sphere>(exrPoint3(-1.0f, 5.75f, -2.80f), 0.1f, std::make_unique<DiffuseLight>(exrVector3(0.9f, 0.9f, 0.5f))));
+    scene->AddShape(std::make_unique<Sphere>(exrPoint3(-3.0f, 5.75f, -2.80f), 0.05f, std::make_unique<DiffuseLight>(exrVector3(0.9f, 0.9f, 0.9f))));
 
     // back
-    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 3.5f, -3.5f), exrVector2(7.5f, 1.5f), exrVector3(exrDegToRad(-35), 0.0f, 0.0f), std::make_unique<Metallic>(exrVector3(1.0f), 0.0f)));
-    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 2.3f, -2.30f), exrVector2(7.5f, 1.5f), exrVector3(exrDegToRad(-50), 0.0f, 0.0f), std::make_unique<Metallic>(exrVector3(1.0f), 0.05f)));
-    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 1.4f, -0.8f), exrVector2(7.5f, 1.5f), exrVector3(exrDegToRad(-62), 0.0f, 0.0f), std::make_unique<Metallic>(exrVector3(1.0f), 0.1f)));
-    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 0.8f, 1.1f), exrVector2(7.5f, 1.5f), exrVector3(exrDegToRad(-70), 0.0f, 0.0f), std::make_unique<Metallic>(exrVector3(1.0f), 0.15f)));
+    scene->AddShape(std::make_unique<Quad>(exrPoint3(0.0f, 3.5f, -3.5f), exrVector2(7.5f, 1.5f), exrVector3(exrDegToRad(-35), 0.0f, 0.0f), std::make_unique<Metallic>(exrVector3(1.0f), 0.0f)));
+    scene->AddShape(std::make_unique<Quad>(exrPoint3(0.0f, 2.3f, -2.30f), exrVector2(7.5f, 1.5f), exrVector3(exrDegToRad(-50), 0.0f, 0.0f), std::make_unique<Metallic>(exrVector3(1.0f), 0.05f)));
+    scene->AddShape(std::make_unique<Quad>(exrPoint3(0.0f, 1.4f, -0.8f), exrVector2(7.5f, 1.5f), exrVector3(exrDegToRad(-62), 0.0f, 0.0f), std::make_unique<Metallic>(exrVector3(1.0f), 0.1f)));
+    scene->AddShape(std::make_unique<Quad>(exrPoint3(0.0f, 0.8f, 1.1f), exrVector2(7.5f, 1.5f), exrVector3(exrDegToRad(-70), 0.0f, 0.0f), std::make_unique<Metallic>(exrVector3(1.0f), 0.15f)));
 
-    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 0.0f, 0.0f), exrVector2(10000.0f), exrVector3(exrDegToRad(-90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    scene->AddShape(std::make_unique<Quad>(exrPoint3(0.0f, 0.0f, 0.0f), exrVector2(10000.0f), exrVector3(exrDegToRad(-90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
 
     exrEndProfile()
     exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " shapes")
@@ -129,17 +129,17 @@ std::unique_ptr<Scene> GenerateScene2()
         std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
     // left
-    scene->AddShape(std::make_unique<Quad>(exrPoint(-2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(90), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 0.0f, 0.0f))));
+    scene->AddShape(std::make_unique<Quad>(exrPoint3(-2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(90), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 0.0f, 0.0f))));
     // right
-    scene->AddShape(std::make_unique<Quad>(exrPoint(2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(-90.0f), 0), std::make_unique<Lambertian>(exrVector3(0.0f, 1.0f, 0.0f))));
+    scene->AddShape(std::make_unique<Quad>(exrPoint3(2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(-90.0f), 0), std::make_unique<Lambertian>(exrVector3(0.0f, 1.0f, 0.0f))));
     // back
-    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 2.75f, -2.80f), exrVector2(5.5f), exrVector3(0.0f), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    scene->AddShape(std::make_unique<Quad>(exrPoint3(0.0f, 2.75f, -2.80f), exrVector2(5.5f), exrVector3(0.0f), std::make_unique<Lambertian>(exrVector3(1.0f))));
     // floor
-    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 0.0f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(-90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    scene->AddShape(std::make_unique<Quad>(exrPoint3(0.0f, 0.0f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(-90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
     // ceiling
-    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 5.5f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    scene->AddShape(std::make_unique<Quad>(exrPoint3(0.0f, 5.5f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
     // light
-    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 5.5f, 0.0f), exrVector2(1.3f, 1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.77f, 0.4f) * 7.0f)));
+    scene->AddShape(std::make_unique<Quad>(exrPoint3(0.0f, 5.5f, 0.0f), exrVector2(1.3f, 1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.77f, 0.4f) * 7.0f)));
 
     exrEndProfile()
         exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " shapes")
@@ -167,8 +167,8 @@ stbi_uc* Render()
     exrProfile("Raytracing Scene")
 
     // camera
-    exrPoint position(0.0f, 2.75f, 10.0f);
-    exrPoint lookat(0.0f, 2.75f, 0.0f);
+    exrPoint3 position(0.0f, 2.75f, 10.0f);
+    exrPoint3 lookat(0.0f, 2.75f, 0.0f);
     exrFloat fov = 40.0f;
     exrFloat aspect = exrFloat(OUTPUT_WIDTH) / exrFloat(OUTPUT_HEIGHT);
     exrFloat focusDist = (position - lookat).Magnitude();

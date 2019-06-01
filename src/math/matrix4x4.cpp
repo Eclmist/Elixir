@@ -78,7 +78,7 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4& m) const
     return Matrix4x4(data);
 }
 
-exrPoint Matrix4x4::operator*(const exrPoint& p) const
+exrPoint3 Matrix4x4::operator*(const exrPoint3& p) const
 {
     exrFloat x = p.x * m_Data[0] + p.y * m_Data[1] + p.z * m_Data[2] + m_Data[3];
     exrFloat y = p.x * m_Data[4] + p.y * m_Data[5] + p.z * m_Data[6] + m_Data[7];
@@ -87,12 +87,12 @@ exrPoint Matrix4x4::operator*(const exrPoint& p) const
 
     // if w is one, just return the point
     if (w == 1.0f)
-        return exrPoint(x, y, z);
+        return exrPoint3(x, y, z);
 
-    return exrPoint(x, y, z) / w;
+    return exrPoint3(x, y, z) / w;
 }
 
-exrPoint Matrix4x4::operator()(const exrPoint& p) const
+exrPoint3 Matrix4x4::operator()(const exrPoint3& p) const
 {
     return operator*(p);
 }

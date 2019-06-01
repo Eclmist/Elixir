@@ -24,8 +24,9 @@
 
 exrBEGIN_NAMESPACE
 
-template <class T> class Vector3;
 template <class T> class Vector2;
+template <class T> class Vector3;
+template <class T> class Point2;
 template <class T> class Point3;
 class Ray;
 class Matrix4x4;
@@ -33,7 +34,8 @@ class Matrix4x4;
 typedef std::string             exrString;
 typedef Vector2<float>          exrVector2;
 typedef Vector3<float>          exrVector3;
-typedef Point3<float>            exrPoint;
+typedef Point2<float>           exrPoint2;
+typedef Point3<float>           exrPoint3;
 typedef bool                    exrBool;
 typedef float                   exrFloat;
 typedef float                   exrF32;
