@@ -24,9 +24,9 @@
 
 exrBEGIN_NAMESPACE
 
-//! @brief A class that defines a sphere primitive.
+//! @brief A class that defines a sphere shape.
 //! 
-//! A class that defines a sphere primitive and handles ray-sphere interactions
+//! A class that defines a sphere shape and handles ray-sphere interactions
 class Sphere: public Shape
 {
 public:
@@ -50,10 +50,10 @@ public:
     //! @param ray              The ray to test against
     //! @param tMin             Min t value of ray to test
     //! @param tMax             Max t value of ray to test
-    //! @param hitInfo          Output struct that contains the hit information
+    //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo) const override;
+    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const override;
 
     //! @brief Computes a bounding volume
     //! 

@@ -69,10 +69,10 @@ public:
     //! @param ray              The ray to test against
     //! @param tMin             Min t value of ray to test
     //! @param tMax             Max t value of ray to test
-    //! @param hitInfo          Output struct that contains the hit information
+    //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there are any intersections
-    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo) const override;
+    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const override;
 
 private:
     //! @brief A recursive function to recursively traverse nodes and check for intersection
@@ -81,10 +81,10 @@ private:
     //! @param ray              The ray to test against
     //! @param tMin             Min t value of ray to test
     //! @param tMax             Max t value of ray to test
-    //! @param hitInfo          Output struct that contains the hit information
+    //! @param interaction      Output struct that contains the interaction information
     //!
     //! @return                 True if the there are any intersections
-    static exrBool TraverseNode(const BVHNode& node, const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo);
+    static exrBool TraverseNode(const BVHNode& node, const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction);
 
     //! @brief Recursively splits objects into equal subtrees
     //! 

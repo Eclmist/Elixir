@@ -27,16 +27,16 @@
 
 exrBEGIN_NAMESPACE
 
-//! @brief A base class that all primitives should inherit from
+//! @brief A base class that all shapes should inherit from
 //! 
-//! A base class that all primitive shapes such as triangles and spheres should inherit from.
-//! Contains various pure virtual functions that should be overridden by individual primitives,
+//! A base class that all shape shapes such as triangles and spheres should inherit from.
+//! Contains various pure virtual functions that should be overridden by individual shapes,
 //! such as for computing its bounding volume and handling ray intersections
 class Shape
 {
 public:
-    //! @brief Constructs a primitive
-    //! @param material         The material of the primitive
+    //! @brief Constructs a shape
+    //! @param material         The material of the shape
     Shape(std::unique_ptr<Material>& material)
         : m_Material(std::move(material)) {};
 
@@ -49,14 +49,14 @@ public:
     //! @param ray              The ray to test against
     //! @param tMin             Min t value of ray to test
     //! @param tMax             Max t value of ray to test
-    //! @param hitInfo          Output struct that contains the hit information
+    //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there is an intersection
-    virtual bool Intersect(const Ray& ray, float tMin, float tMax, Interaction& hitInfo) const = 0;
+    virtual bool Intersect(const Ray& ray, float tMin, float tMax, Interaction& interaction) const = 0;
 
 public:
-    //! @brief Returns the bounding volume of the primitive
-    //! @return                 A bounding volume of the primitive
+    //! @brief Returns the bounding volume of the shape
+    //! @return                 A bounding volume of the shape
     inline AABB GetBoundingVolume()
     {
         return m_BoundingVolume;
@@ -71,13 +71,13 @@ protected :
     virtual bool ComputeBoundingVolume() = 0;
 
 protected:
-    //! A pointer to the material of the primitive
+    //! A pointer to the material of the shape
     const std::unique_ptr<Material> m_Material;
     
-    //! A bounding volume that contains the primitive;
+    //! A bounding volume that contains the shape;
     AABB m_BoundingVolume;
 
-    //! The transform of the primitive
+    //! The transform of the shape
     Transform m_Transform;
 };
 

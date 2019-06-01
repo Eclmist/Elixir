@@ -24,9 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 exrBEGIN_NAMESPACE
 
-//! @brief A class that defines a box primitive.
+//! @brief A class that defines a box shape.
 //! 
-//! A class that defines a box primitive and handles ray-box interactions
+//! A class that defines a box shape and handles ray-box interactions
 class Box : public Shape
 {
 public:
@@ -111,10 +111,10 @@ public:
     //! @param ray              The ray to test against
     //! @param tMin             Min t value of ray to test
     //! @param tMax             Max t value of ray to test
-    //! @param hitInfo          Output struct that contains the hit information
+    //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo) const override;
+    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const override;
 
     //! @brief Computes a bounding volume
     //! 

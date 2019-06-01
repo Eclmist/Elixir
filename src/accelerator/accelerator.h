@@ -26,7 +26,7 @@ exrBEGIN_NAMESPACE
 
 struct Interaction;
 
-//! @brief Defines the base class for primitive and spacial accelerators
+//! @brief Defines the base class for shape and spacial accelerators
 //!
 //! TODO: Add description
 class Accelerator
@@ -40,10 +40,10 @@ public:
     //! @param ray              The ray to test against
     //! @param tMin             Min t value of ray to test
     //! @param tMax             Max t value of ray to test
-    //! @param hitInfo          Output struct that contains the hit information
+    //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there are any intersections
-    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo) const = 0;
+    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const = 0;
 };
 
 exrEND_NAMESPACE

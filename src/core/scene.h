@@ -43,7 +43,7 @@ public:
     //! @param shape           A pointer to the shape
     void AddShape(std::unique_ptr<Shape> shape);
 
-    //! @brief Raytrace through the scene and returns the info of the nearest hit point
+    //! @brief Raytrace through the scene and returns the info of the nearest interaction point
     //! 
     //! This function and executes an intersection test with the scene objects
     //! with the input ray.
@@ -51,10 +51,10 @@ public:
     //! @param ray              The ray to test against
     //! @param tMin             Min t value of ray to test
     //! @param tMax             Max t value of ray to test
-    //! @param hitInfo          Output struct that contains the hit information of the nearest hit point
+    //! @param interaction      Output struct that contains the interaction information of the nearest interaction point
     //! 
     //! @return                 True if the there is at least one intersection
-    exrBool RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo) const;
+    exrBool RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const;
 
     //! @brief Initializes the scene BVH if it has yet to be initialized or needs to be updated
     void InitializeBvh();

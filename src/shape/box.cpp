@@ -22,20 +22,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 exrBEGIN_NAMESPACE
 
-bool Box::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hit) const
+bool Box::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const
 {
     exrBool hasIntersect = false;
     Ray localRay = m_Transform.GetInverseMatrix() * ray;
 
     for (exrU32 i = 0; i < 6; i++)
     {
-        if (m_Sides[i]->Intersect(localRay, tMin, tMax, hit))
+        if (m_Sides[i]->Intersect(localRay, tMin, tMax, interaction))
         {
-            tMax = hit.m_Time;
+            tMax = interaction.m_Time;
+            interaction.m_Normal = m_Normals[i];
+            interaction.m_Point = m_Transform.GetMatrix() * localRay(interaction.m_Time);
+            interaction.m_Material = m_Material.get();
             hasIntersect = true;
-            hit.m_Normal = m_Normals[i];
-            hit.m_Point = m_Transform.GetMatrix() * localRay(hit.m_Time);
-            hit.m_Material = m_Material.get();
         }
     }
     
