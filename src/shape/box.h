@@ -27,7 +27,7 @@ exrBEGIN_NAMESPACE
 //! @brief A class that defines a box primitive.
 //! 
 //! A class that defines a box primitive and handles ray-box interactions
-class Box : public Primitive
+class Box : public Shape
 {
 public:
     //! @brief Constructs a box with a position and a scale
@@ -36,7 +36,7 @@ public:
     //! @param rotation         The rotation of the box
     //! @param material         The material of the box
     Box(const exrPoint& position, const exrVector3& scale, const exrVector3& rotation, std::unique_ptr<Material> material)
-        : Primitive(material)
+        : Shape(material)
     {
         m_Transform.SetTranslation(exrVector3(position.x, position.y, position.z));
         m_Transform.SetRotation(rotation);
@@ -114,7 +114,7 @@ public:
     //! @param hitInfo          Output struct that contains the hit information
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const override;
+    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo) const override;
 
     //! @brief Computes a bounding volume
     //! 

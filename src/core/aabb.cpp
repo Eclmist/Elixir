@@ -18,12 +18,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "boundingvolume.h"
-#include "geometry/primitive.h"
+#include "aabb.h"
+#include "shape/shape.h"
 
 exrBEGIN_NAMESPACE
 
-exrBool BoundingVolume::Intersect(const Ray& r, exrFloat tMin, exrFloat tMax) const
+exrBool AABB::Intersect(const Ray& r, exrFloat tMin, exrFloat tMax) const
 {
     for (exrU32 i = 0; i < 3; i++)
     {
@@ -42,7 +42,7 @@ exrBool BoundingVolume::Intersect(const Ray& r, exrFloat tMin, exrFloat tMax) co
     return true;
 }
 
-BoundingVolume BoundingVolume::Combine(const BoundingVolume& bv1, const BoundingVolume& bv2)
+AABB AABB::Combine(const AABB& bv1, const AABB& bv2)
 {
     exrFloat minX, minY, minZ;
     exrFloat maxX, maxY, maxZ;
@@ -55,22 +55,22 @@ BoundingVolume BoundingVolume::Combine(const BoundingVolume& bv1, const Bounding
     maxY = exrMax(bv1.Max().y, bv2.Max().y);
     maxZ = exrMax(bv1.Max().z, bv2.Max().z);
 
-    return BoundingVolume(exrPoint(minX, minY, minZ), exrPoint(maxX, maxY, maxZ));
+    return AABB(exrPoint(minX, minY, minZ), exrPoint(maxX, maxY, maxZ));
 }
 
-BoundingVolume BoundingVolume::BoundPrimitives(const std::vector<Primitive*>& primitives)
+AABB AABB::BoundShapes(const std::vector<Shape*>& shapes)
 {
     // We CANNOT combine with exrPoint(0) because that will make all bv extend to origin..
-    if (primitives.size() <= 0)
+    if (shapes.size() <= 0)
     {
-        return BoundingVolume(exrPoint::Zero(), exrPoint::Zero());
+        return AABB(exrPoint::Zero(), exrPoint::Zero());
     }
 
-    BoundingVolume combinedBv = primitives[0]->GetBoundingVolume();
+    AABB combinedBv = shapes[0]->GetBoundingVolume();
 
-    for (exrU32 i = 1; i < primitives.size(); i++)
+    for (exrU32 i = 1; i < shapes.size(); i++)
     {
-        combinedBv = Combine(combinedBv, primitives[i]->GetBoundingVolume());
+        combinedBv = Combine(combinedBv, shapes[i]->GetBoundingVolume());
     }
 
     return combinedBv;

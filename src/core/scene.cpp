@@ -23,13 +23,13 @@
 
 exrBEGIN_NAMESPACE
 
-void Scene::AddPrimitive(std::unique_ptr<Primitive> primitive) 
+void Scene::AddShape(std::unique_ptr<Shape> shape) 
 {
-    m_Primitives.push_back(std::move(primitive));
+    m_Shapes.push_back(std::move(shape));
     m_IsDirty = true;
 }
 
-bool Scene::RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const
+bool Scene::RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo) const
 {
     return m_Accelerator->Intersect(ray, tMin, tMax, hitInfo);
 }
@@ -40,15 +40,15 @@ void Scene::InitializeBvh()
     {
         exrProfile("Building BVH Tree")
 
-        std::vector<Primitive*> primitivePtrs;
+        std::vector<Shape*> shapePtrs;
 
         // shallow copy pointer values to be used by bvh accel
-        for (exrU32 i = 0; i < m_Primitives.size(); i++)
+        for (exrU32 i = 0; i < m_Shapes.size(); i++)
         {
-            primitivePtrs.push_back(m_Primitives[i].get());
+            shapePtrs.push_back(m_Shapes[i].get());
         }
 
-        m_Accelerator = std::make_unique<BVHAccelerator>(primitivePtrs);
+        m_Accelerator = std::make_unique<BVHAccelerator>(shapePtrs);
         m_IsDirty = false;
         exrEndProfile()
     }

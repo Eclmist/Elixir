@@ -21,13 +21,13 @@
 #pragma once
 
 #include "accelerator.h"
-#include "math/boundingvolume.h"
+#include "core/aabb.h"
 
 exrBEGIN_NAMESPACE
 
 class Material;
-class Primitive;
-struct PrimitiveHitInfo;
+class Shape;
+struct Interaction;
 
 //! @brief Defines a bounding volume hierarchy
 //!
@@ -39,11 +39,11 @@ public:
     //! @brief A single BVH Node
     struct BVHNode
     {
-        //! The list of primitive that this node contains
-        std::vector<Primitive*> m_Primitives;
+        //! The list of shapes that this node contains
+        std::vector<Shape*> m_Shapes;
 
         //! A bounding volume that contains all the objects below this node
-        BoundingVolume m_BoundingVolume;
+        AABB m_BoundingVolume;
 
         //! A pointer to the left subtree of the BVH. Will be null if this is a leaf node.
         std::unique_ptr<BVHNode> m_LeftSubtree = nullptr;
@@ -59,7 +59,7 @@ public:
     //! @brief Constructs a BVH with a collection of objects
     //! @param objects          A collection of objects
     //! @param splitMethod      Splitting algorithm to use when building the BVH
-    BVHAccelerator(const std::vector<Primitive*>& objects, const SplitMethod splitMethod = SplitMethod::SAH);
+    BVHAccelerator(const std::vector<Shape*>& objects, const SplitMethod splitMethod = SplitMethod::SAH);
 
     //! @brief Test the entire BVH for intersections with a ray
     //! 
@@ -72,7 +72,7 @@ public:
     //! @param hitInfo          Output struct that contains the hit information
     //! 
     //! @return                 True if the there are any intersections
-    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const override;
+    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo) const override;
 
 private:
     //! @brief A recursive function to recursively traverse nodes and check for intersection
@@ -84,7 +84,7 @@ private:
     //! @param hitInfo          Output struct that contains the hit information
     //!
     //! @return                 True if the there are any intersections
-    static exrBool TraverseNode(const BVHNode& node, const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo);
+    static exrBool TraverseNode(const BVHNode& node, const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo);
 
     //! @brief Recursively splits objects into equal subtrees
     //! 

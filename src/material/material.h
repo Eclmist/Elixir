@@ -25,18 +25,25 @@
 exrBEGIN_NAMESPACE
 
 class Ray;
-struct PrimitiveHitInfo;
+struct Interaction;
 
 class Material
 {
 public:
-    virtual exrBool Scatter(const Ray& in, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const
+    virtual exrBool Scatter(const Ray& in, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered, exrFloat& pdf) const
     {
-        attenuation = exrVector3(1.0f, 0.0f, 1.0f);
-        return true;
+        return false;
     };
 
-    virtual exrVector3 Emit(const Ray& in, const PrimitiveHitInfo& hitInfo) const { return 0.0f; };
+    virtual exrFloat ScatterPDF(const Ray& in, const Interaction& hitInfo, const Ray& scattered) const
+    {
+        return false;
+    };
+
+    virtual exrVector3 Emit(const Ray& in, const Interaction& hitInfo) const
+    {
+        return 0.0f;
+    };
 };
 
 exrEND_NAMESPACE

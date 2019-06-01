@@ -22,26 +22,26 @@
 
 #include "core/elixir.h"
 #include "accelerator/accelerator.h"
-#include "geometry/primitive.h"
+#include "shape/shape.h"
 
 class Accelerator;
-struct PrimitiveHitInfo;
+struct Interaction;
 
 exrBEGIN_NAMESPACE
 
-//! @brief A scene object that owns primitives
+//! @brief A scene object that owns a collection of shapes
 //! 
-//! A scene class that contains a collection of primitives and various helper functions
+//! A scene class that contains a collection of shapes and various helper functions
 //! to interact with the collection.
 class Scene
 {
 public:
-    //! @brief Adds a primitive to the scene
+    //! @brief Adds a shape to the scene
     //! 
-    //! This function adds a new primitive to the scene's primitive collection
+    //! This function adds a new shape to the scene's shape collection
     //! 
-    //! @param primitive         A pointer to the primitive
-    void AddPrimitive(std::unique_ptr<Primitive> primitive);
+    //! @param shape           A pointer to the shape
+    void AddShape(std::unique_ptr<Shape> shape);
 
     //! @brief Raytrace through the scene and returns the info of the nearest hit point
     //! 
@@ -54,19 +54,19 @@ public:
     //! @param hitInfo          Output struct that contains the hit information of the nearest hit point
     //! 
     //! @return                 True if the there is at least one intersection
-    exrBool RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const;
+    exrBool RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo) const;
 
     //! @brief Initializes the scene BVH if it has yet to be initialized or needs to be updated
     void InitializeBvh();
 
 public:
-    //! @brief Returns the number of primitives in the scene
-    //! @return                 The number of primitives in the scene
-    inline exrU64 GetSceneSize() const { return static_cast<exrU64>(m_Primitives.size()); }
+    //! @brief Returns the number of shape in the scene
+    //! @return                 The number of shapes in the scene
+    inline exrU64 GetSceneSize() const { return static_cast<exrU64>(m_Shapes.size()); }
 
 private:
-    //! A collection of pointers that points to primitives in the scene
-    std::vector<std::unique_ptr<Primitive>> m_Primitives;
+    //! A collection of pointers that points to shapes in the scene
+    std::vector<std::unique_ptr<Shape>> m_Shapes;
 
     //! The accelerator to use
     std::unique_ptr<Accelerator> m_Accelerator;

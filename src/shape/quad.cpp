@@ -22,7 +22,7 @@
 
 exrBEGIN_NAMESPACE
 
-bool Quad::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hit) const
+bool Quad::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hit) const
 {
     Ray localRay = m_Transform.GetInverseMatrix() * ray;
 
@@ -36,7 +36,7 @@ bool Quad::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitI
     if (x < m_LocalMin.x || x > m_LocalMax.x || y < m_LocalMin.y || y > m_LocalMax.y)
         return false;
 
-    hit.m_T = t;
+    hit.m_Time = t;
     hit.m_Point = m_Transform.GetMatrix() * localRay(t);
     hit.m_Normal = m_Transform.GetMatrix() * exrVector3::Forward();
     hit.m_Material = m_Material.get();
@@ -52,7 +52,7 @@ bool Quad::ComputeBoundingVolume()
     exrPoint realMin = exrPoint(exrMin(globalMin.x, globalMax.x), exrMin(globalMin.y, globalMax.y), exrMin(globalMin.z, globalMax.z));
     exrPoint realMax = exrPoint(exrMax(globalMin.x, globalMax.x), exrMax(globalMin.y, globalMax.y), exrMax(globalMin.z, globalMax.z));
 
-    m_BoundingVolume = BoundingVolume(realMin, realMax);
+    m_BoundingVolume = AABB(realMin, realMax);
     return true;
 }
 

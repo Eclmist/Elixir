@@ -22,7 +22,7 @@
 
 exrBEGIN_NAMESPACE
 
-bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hit) const
+bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hit) const
 {
     Ray localRay = m_Transform.GetInverseMatrix() * ray;
     exrVector3 r0 = localRay.m_Origin - exrPoint::Zero();
@@ -41,19 +41,18 @@ bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHi
     if (t0 <= tMin)
         t0 = t1;
 
-    hit.m_T = t0;
+    hit.m_Time = t0;
     hit.m_Point = m_Transform.GetMatrix() * localRay(t0);
     hit.m_Normal = static_cast<exrVector3>(localRay(t0)) / m_Radius;
     hit.m_Material = m_Material.get();
 
     return true;
 }
-
 bool Sphere::ComputeBoundingVolume()
 {
     exrPoint min = m_Transform.GetMatrix() * exrPoint(-m_Radius);
     exrPoint max = m_Transform.GetMatrix() * exrPoint(m_Radius);
-    m_BoundingVolume = BoundingVolume(min, max);
+    m_BoundingVolume = AABB(min, max);
     return true;
 }
 

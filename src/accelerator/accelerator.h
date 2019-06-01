@@ -24,7 +24,7 @@
 
 exrBEGIN_NAMESPACE
 
-struct PrimitiveHitInfo;
+struct Interaction;
 
 //! @brief Defines the base class for primitive and spacial accelerators
 //!
@@ -43,7 +43,7 @@ public:
     //! @param hitInfo          Output struct that contains the hit information
     //! 
     //! @return                 True if the there are any intersections
-    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const = 0;
+    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo) const = 0;
 };
 
 exrEND_NAMESPACE

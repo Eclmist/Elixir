@@ -27,11 +27,15 @@ exrBEGIN_NAMESPACE
 class Metallic : public Material
 {
 public:
-    Metallic(const exrVector3& a, const exrVector3& r) : m_Albedo(a), m_Roughness(r) {};
+    Metallic(const exrVector3& a, const exrVector3& r)
+        : m_Albedo(a)
+        , m_Roughness(r) {};
 
-    Metallic(const Metallic& copy) : m_Albedo(copy.m_Albedo), m_Roughness(copy.m_Roughness) {};
+    Metallic(const Metallic& copy)
+        : m_Albedo(copy.m_Albedo)
+        , m_Roughness(copy.m_Roughness) {};
 
-    virtual exrBool Scatter(const Ray& incomingRay, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const override
+    virtual exrBool Scatter(const Ray& incomingRay, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered, exrFloat& pdf) const override
     {
         exrVector3 reflected = Reflect(incomingRay.m_Direction.Normalized(), hitInfo.m_Normal);
         scattered = Ray(hitInfo.m_Point, reflected + m_Roughness * Random::RandomInUnitSphere());

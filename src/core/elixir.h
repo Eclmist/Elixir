@@ -36,10 +36,11 @@
 #include "math/math.h"
 #include "math/vector2.h"
 #include "math/vector3.h"
-#include "math/point.h"
-#include "math/ray.h"
+#include "math/point3.h"
 #include "math/random.h"
 #include "math/matrix4x4.h"
 
+#include "ray.h"
+#include "interaction.h"
 //#include "queue.h"
 //#include "threadpool.h"

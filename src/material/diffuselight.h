@@ -27,17 +27,19 @@ exrBEGIN_NAMESPACE
 class DiffuseLight : public Material
 {
 public:
-    DiffuseLight(const exrVector3& e) : m_Emissive(e) {};
+    DiffuseLight(const exrVector3& e)
+        : m_Emissive(e) {};
 
-    DiffuseLight(const DiffuseLight& copy) : m_Emissive(copy.m_Emissive) {};
+    DiffuseLight(const DiffuseLight& copy)
+        : m_Emissive(copy.m_Emissive) {};
 
-    virtual exrBool Scatter(const Ray& in, const PrimitiveHitInfo& hitInfo, exrVector3& attenuation, Ray& scattered) const override
+    virtual exrBool Scatter(const Ray& in, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered, exrFloat& pdf) const override
     {
         // Assume light source does not scatter incoming ray
         return false;
     };
 
-    virtual exrVector3 Emit(const Ray& in, const PrimitiveHitInfo& hitInfo) const override
+    virtual exrVector3 Emit(const Ray& in, const Interaction& hitInfo) const override
     {
         if (Dot(in.m_Direction, hitInfo.m_Normal) < 0)
             return m_Emissive;

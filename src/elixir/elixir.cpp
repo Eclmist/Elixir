@@ -37,7 +37,7 @@
 
 #define OUTPUT_WIDTH 500
 #define OUTPUT_HEIGHT 500
-#define NUM_SAMPLES_PER_PIXEL 32
+#define NUM_SAMPLES_PER_PIXEL 1
 #define NUM_BOUNDCE_PER_RAY 4
 
 #include <thread>
@@ -51,8 +51,8 @@
 #include "material/metallic.h"
 #include "material/dielectric.h"
 #include "material/diffuselight.h"
-#include "geometry/sphere.h"
-#include "geometry/box.h"
+#include "shape/sphere.h"
+#include "shape/box.h"
 
 exrBEGIN_NAMESPACE
 
@@ -69,18 +69,19 @@ exrVector3 SkyGradient(const Ray& r)
 
 exrVector3 ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
 {
-    PrimitiveHitInfo hit;
+    Interaction hit;
 
     if (scene.RaytraceScene(viewRay, EXR_EPSILON, viewRay.m_Distance, hit))
     {
         Ray scatteredRay;
+        exrFloat pdf;
         exrVector3 attenuation;
         exrVector3 emission = hit.m_Material->Emit(viewRay, hit);
 
-        if (depth > 0 && hit.m_Material->Scatter(viewRay, hit, attenuation, scatteredRay))
+        if (depth > 0 && hit.m_Material->Scatter(viewRay, hit, attenuation, scatteredRay, pdf))
         {
-            // recursively collect color contribution
-            return emission + attenuation * ShadePixel(scatteredRay, scene, depth - 1);
+            // recursively collect color contribution 
+            return emission + (ShadePixel(scatteredRay, scene, depth - 1)) * (attenuation * CosAngle(scatteredRay.m_Direction, hit.m_Normal));
         }
         else
         {
@@ -90,8 +91,8 @@ exrVector3 ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
     }
     else
     {
-        return exrVector3::Zero();
-        //return SkyGradient(viewRay);
+        return exrVector3(0.01f);
+        return SkyGradient(viewRay);
     }
 }
 
@@ -101,27 +102,49 @@ std::unique_ptr<Scene> GenerateScene()
 
     std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
-    // left
-    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(-2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(90), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 0.0f, 0.0f))));
-    // right
-    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(-90.0f), 0), std::make_unique<Lambertian>(exrVector3(0.0f, 1.0f, 0.0f))));
-    // back
-    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 2.75f, -2.80f), exrVector2(5.5f), exrVector3(0.0f), std::make_unique<Lambertian>(exrVector3(1.0f))));
-    // floor
-    // ceiling
-    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 5.5f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
-    // light
-    scene->AddPrimitive(std::make_unique<Quad>(exrPoint(0.0f, 5.5f, 0.0f), exrVector2(1.3f, 1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.77f, 0.4f) * 7.0f)));
+    // Lights
+    scene->AddShape(std::make_unique<Sphere>(exrPoint(3.0f, 5.75f, -2.80f), 0.5f, std::make_unique<DiffuseLight>(exrVector3(0, 0.8f, 0.9f))));
+    scene->AddShape(std::make_unique<Sphere>(exrPoint(1.0f, 5.75f, -2.80f), 0.3f, std::make_unique<DiffuseLight>(exrVector3(0, 0.8f, 0.5f))));
+    scene->AddShape(std::make_unique<Sphere>(exrPoint(-1.0f, 5.75f, -2.80f), 0.1f, std::make_unique<DiffuseLight>(exrVector3(0.9f, 0.9f, 0.5f))));
+    scene->AddShape(std::make_unique<Sphere>(exrPoint(-3.0f, 5.75f, -2.80f), 0.05f, std::make_unique<DiffuseLight>(exrVector3(0.9f, 0.9f, 0.9f))));
 
-    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(0, 2.5f, 0), 1.0f, std::make_unique<Dielectric>(exrVector3(1.0f, 1.0f, 1.0f), 1.5f)));
-    scene->AddPrimitive(std::make_unique<Sphere>(exrPoint(1.5f, 1.0f, -1.5f), 1.0f, std::make_unique<Metallic>(exrVector3(0.1f, 1.0f, 0.4f), 0.5f)));
-    scene->AddPrimitive(std::make_unique<Box>(exrPoint(-0.9f, 1.8f, -1.0f), exrVector3(1.6f, 3.6f, 1.6f), exrVector3(0, exrDegToRad(110), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
-    scene->AddPrimitive(std::make_unique<Box>(exrPoint(0.9f, 0.8f, 1.0f), exrVector3(1.6f, 1.6f, 1.6f), exrVector3(0, exrDegToRad(-20), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
+    // back
+    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 3.5f, -3.5f), exrVector2(7.5f, 1.5f), exrVector3(exrDegToRad(-35), 0.0f, 0.0f), std::make_unique<Metallic>(exrVector3(1.0f), 0.0f)));
+    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 2.3f, -2.30f), exrVector2(7.5f, 1.5f), exrVector3(exrDegToRad(-50), 0.0f, 0.0f), std::make_unique<Metallic>(exrVector3(1.0f), 0.05f)));
+    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 1.4f, -0.8f), exrVector2(7.5f, 1.5f), exrVector3(exrDegToRad(-62), 0.0f, 0.0f), std::make_unique<Metallic>(exrVector3(1.0f), 0.1f)));
+    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 0.8f, 1.1f), exrVector2(7.5f, 1.5f), exrVector3(exrDegToRad(-70), 0.0f, 0.0f), std::make_unique<Metallic>(exrVector3(1.0f), 0.15f)));
+
+    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 0.0f, 0.0f), exrVector2(10000.0f), exrVector3(exrDegToRad(-90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
 
     exrEndProfile()
-    exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " primitives")
+    exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " shapes")
 
     scene->InitializeBvh();
+    return scene;
+}
+std::unique_ptr<Scene> GenerateScene2()
+{
+    exrProfile("Generating Importance Sampling Scene")
+
+        std::unique_ptr<Scene> scene = std::make_unique<Scene>();
+
+    // left
+    scene->AddShape(std::make_unique<Quad>(exrPoint(-2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(90), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 0.0f, 0.0f))));
+    // right
+    scene->AddShape(std::make_unique<Quad>(exrPoint(2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(-90.0f), 0), std::make_unique<Lambertian>(exrVector3(0.0f, 1.0f, 0.0f))));
+    // back
+    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 2.75f, -2.80f), exrVector2(5.5f), exrVector3(0.0f), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    // floor
+    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 0.0f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(-90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    // ceiling
+    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 5.5f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    // light
+    scene->AddShape(std::make_unique<Quad>(exrPoint(0.0f, 5.5f, 0.0f), exrVector2(1.3f, 1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.77f, 0.4f) * 7.0f)));
+
+    exrEndProfile()
+        exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " shapes")
+
+        scene->InitializeBvh();
     return scene;
 }
 

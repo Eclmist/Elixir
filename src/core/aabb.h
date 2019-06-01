@@ -20,29 +20,31 @@
 
 #pragma once
 
-#include "core/elixir.h"
+#include "elixir.h"
 
 exrBEGIN_NAMESPACE
 
-class Primitive;
+class Shape;
 
 //! @brief A bounding volume that can be used in accelerators
 //!
 //! An axis aligned bounding volume that can be used to accelerate intersection test
 //! with more complex geometry.
-class BoundingVolume
+class AABB
 {
 public:
     //! @brief Constructor from two points
     //! @param min              The minimum extents of the bounding volume in world space
     //! @param max              The maximum extents of the bounding volume in world space
-    BoundingVolume(const exrPoint& min = exrPoint(-1.0f), const exrPoint& max = exrPoint(1.0f))
-        : m_Min(min), m_Max(max) {};
+    AABB(const exrPoint& min = exrPoint(-1.0f), const exrPoint& max = exrPoint(1.0f))
+        : m_Min(min)
+        , m_Max(max) {};
 
     //! @brief Copy Constructor
     //! @param copy             The bounding volume to copy from
-    BoundingVolume(const BoundingVolume& copy)
-        : m_Min(copy.m_Min), m_Max(copy.m_Max) {};
+    AABB(const AABB& copy)
+        : m_Min(copy.m_Min)
+        , m_Max(copy.m_Max) {};
 
     //! @brief Returns minimum extents of the bounding volume in world space
     //! @return                 The minimum extends of the bounding volume
@@ -88,14 +90,14 @@ public:
     //! Computes a bounding volume that tightly encapsulates both input bounding volumes
     //!
     //! @return                 The combined bounding volume
-    static BoundingVolume Combine(const BoundingVolume& bv1, const BoundingVolume& bv2);
+    static AABB Combine(const AABB& bv1, const AABB& bv2);
 
     //! @brief Combines two bounding volumes
     //!
-    //! Computes a bounding volume that tightly encapsulates all input primitives
+    //! Computes a bounding volume that tightly encapsulates all input shapes
     //!
     //! @return                 The result bounding volume
-    static BoundingVolume BoundPrimitives(const std::vector<Primitive*>& primitives);
+    static AABB BoundShapes(const std::vector<Shape*>& shapes);
 
 private:
     exrPoint m_Min;

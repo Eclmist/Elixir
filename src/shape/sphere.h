@@ -20,14 +20,14 @@
 
 #pragma once
 
-#include "primitive.h"
+#include "shape.h"
 
 exrBEGIN_NAMESPACE
 
 //! @brief A class that defines a sphere primitive.
 //! 
 //! A class that defines a sphere primitive and handles ray-sphere interactions
-class Sphere: public Primitive
+class Sphere: public Shape
 {
 public:
     //! @brief Constructs a sphere with a center, scale and material
@@ -35,7 +35,8 @@ public:
     //! @param radius           The radius of the sphere
     //! @param material         The material of the sphere
     Sphere(const exrPoint& center, exrFloat radius, std::unique_ptr<Material> material)
-        : Primitive(material), m_Radius(radius)
+        : Shape(material)
+        , m_Radius(radius)
     {
         m_Transform.Translate(exrVector3(center.x, center.y, center.z));
         ComputeBoundingVolume();
@@ -52,7 +53,7 @@ public:
     //! @param hitInfo          Output struct that contains the hit information
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hitInfo) const override;
+    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo) const override;
 
     //! @brief Computes a bounding volume
     //! 

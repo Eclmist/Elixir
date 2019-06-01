@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "core/elixir.h"
+#include "elixir.h"
 
 exrBEGIN_NAMESPACE
 
@@ -36,7 +36,9 @@ public:
     //! @param direction        The normalized direction of the ray
     //! @param distance         The maximum ray distance
     Ray(const exrPoint& origin = 0.0f, const exrVector3& direction = 0.0f, exrFloat distance = 1000.0f)
-        : m_Origin(origin), m_Direction(direction.Normalized()), m_Distance(distance) {};
+        : m_Origin(origin)
+        , m_Direction(direction.Normalized())
+        , m_Distance(distance) {};
 
     //! @brief Copy constructor. Constructs a ray with the same origin, direction and distance from input
     //! @param copy             The ray to copy

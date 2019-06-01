@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 exrBEGIN_NAMESPACE
 
-bool Box::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitInfo& hit) const
+bool Box::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hit) const
 {
     exrBool hasIntersect = false;
     Ray localRay = m_Transform.GetInverseMatrix() * ray;
@@ -31,10 +31,10 @@ bool Box::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, PrimitiveHitIn
     {
         if (m_Sides[i]->Intersect(localRay, tMin, tMax, hit))
         {
-            tMax = hit.m_T;
+            tMax = hit.m_Time;
             hasIntersect = true;
             hit.m_Normal = m_Normals[i];
-            hit.m_Point = m_Transform.GetMatrix() * localRay(hit.m_T);
+            hit.m_Point = m_Transform.GetMatrix() * localRay(hit.m_Time);
             hit.m_Material = m_Material.get();
         }
     }
@@ -53,7 +53,7 @@ bool Box::ComputeBoundingVolume()
         realMax = exrPoint(exrMax(realMax.x, m_LocalCorners[i].x), exrMax(realMax.y, m_LocalCorners[i].y), exrMax(realMax.z, m_LocalCorners[i].z));
     }
 
-    m_BoundingVolume = BoundingVolume(realMin, realMax);
+    m_BoundingVolume = AABB(realMin, realMax);
 
     return true;
 }
