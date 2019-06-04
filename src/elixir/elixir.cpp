@@ -35,9 +35,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
-#define OUTPUT_WIDTH 500
-#define OUTPUT_HEIGHT 500
-#define NUM_SAMPLES_PER_PIXEL 1
+#define OUTPUT_WIDTH 512
+#define OUTPUT_HEIGHT 512
+#define NUM_SAMPLES_PER_PIXEL 128
 #define NUM_BOUNDCE_PER_RAY 4
 
 #include <thread>
@@ -91,7 +91,7 @@ exrVector3 ShadePixel(const Ray& viewRay, const Scene& scene, int depth)
     }
     else
     {
-        return exrVector3(0.01f);
+        //return exrVector3(0.01f);
         return SkyGradient(viewRay);
     }
 }
@@ -119,14 +119,14 @@ std::unique_ptr<Scene> GenerateScene()
     exrEndProfile()
     exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " shapes")
 
-    scene->InitializeBvh();
+    scene->InitAccelerator();
     return scene;
 }
 std::unique_ptr<Scene> GenerateScene2()
 {
     exrProfile("Generating Importance Sampling Scene")
 
-        std::unique_ptr<Scene> scene = std::make_unique<Scene>();
+    std::unique_ptr<Scene> scene = std::make_unique<Scene>();
 
     // left
     scene->AddShape(std::make_unique<Quad>(exrPoint3(-2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(90), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 0.0f, 0.0f))));
@@ -139,12 +139,15 @@ std::unique_ptr<Scene> GenerateScene2()
     // ceiling
     scene->AddShape(std::make_unique<Quad>(exrPoint3(0.0f, 5.5f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
     // light
-    scene->AddShape(std::make_unique<Quad>(exrPoint3(0.0f, 5.5f, 0.0f), exrVector2(1.3f, 1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.77f, 0.4f) * 7.0f)));
+    scene->AddShape(std::make_unique<Quad>(exrPoint3(0.0f, 5.5f, 0.0f), exrVector2(1.3f, 1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.70f, 0.4f) * 7.0f)));
+   
+    scene->AddShape(std::make_unique<Box>(exrPoint3(-0.9f, 1.8f, -1.0f), exrVector3(1.6f, 3.6f, 1.6f), exrVector3(0, exrDegToRad(110), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
+    scene->AddShape(std::make_unique<Box>(exrPoint3(0.9f, 0.8f, 1.0f), exrVector3(1.6f, 1.6f, 1.6f), exrVector3(0, exrDegToRad(-20), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
 
     exrEndProfile()
         exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " shapes")
 
-        scene->InitializeBvh();
+    scene->InitAccelerator();
     return scene;
 }
 
@@ -162,7 +165,7 @@ stbi_uc* Render()
     memcpy(buffer.data(), header.c_str(), strlen(header.c_str()));
 
     const exrVector3 resolution(OUTPUT_WIDTH, OUTPUT_HEIGHT, 0.0f);
-    std::unique_ptr<Scene> scene = GenerateScene();
+    std::unique_ptr<Scene> scene = GenerateScene2();
 
     exrProfile("Raytracing Scene")
 

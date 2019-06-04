@@ -56,8 +56,8 @@ public:
     //! @return                 True if the there is at least one intersection
     exrBool RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const;
 
-    //! @brief Initializes the scene BVH if it has yet to be initialized or needs to be updated
-    void InitializeBvh();
+    //! @brief Initializes the scene's accelerator if it has yet to be initialized or needs to be updated
+    void InitAccelerator();
 
 public:
     //! @brief Returns the number of shape in the scene

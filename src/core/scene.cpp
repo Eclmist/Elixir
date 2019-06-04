@@ -34,7 +34,7 @@ bool Scene::RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, Interact
     return m_Accelerator->Intersect(ray, tMin, tMax, hitInfo);
 }
 
-void Scene::InitializeBvh()
+void Scene::InitAccelerator()
 {
     if (m_Accelerator == nullptr || m_IsDirty)
     {
