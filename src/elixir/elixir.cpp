@@ -35,9 +35,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
-#define OUTPUT_WIDTH 500
-#define OUTPUT_HEIGHT 500
-#define NUM_SAMPLES_PER_PIXEL 32
+#define OUTPUT_WIDTH 512
+#define OUTPUT_HEIGHT 512
+#define NUM_SAMPLES_PER_PIXEL 128
 #define NUM_BOUNDCE_PER_RAY 4
 #define NUM_THREADS 8
 
@@ -117,7 +117,7 @@ std::unique_ptr<Scene> GenerateScene()
     exrEndProfile()
     exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " shapes")
 
-    scene->InitializeBvh();
+    scene->InitAccelerator();
     return scene;
 }
 
@@ -129,7 +129,6 @@ std::unique_ptr<Scene> StandardCornellBoxScene()
 
     // light
     scene->AddEmissiveShape(std::make_unique<Quad>(exrPoint3(0.0f, 5.5f, 0.0f), exrVector2(1.3f, 1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.77f, 0.4f) * 7.0f)));
-
     // left
     scene->AddShape(std::make_unique<Quad>(exrPoint3(-2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(90), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 0.0f, 0.0f))));
     // right
@@ -140,14 +139,14 @@ std::unique_ptr<Scene> StandardCornellBoxScene()
     scene->AddShape(std::make_unique<Quad>(exrPoint3(0.0f, 0.0f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(-90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
     // ceiling
     scene->AddShape(std::make_unique<Quad>(exrPoint3(0.0f, 5.5f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
-
+   
     scene->AddShape(std::make_unique<Box>(exrPoint3(-0.9f, 1.8f, -1.0f), exrVector3(1.6f, 3.6f, 1.6f), exrVector3(0, exrDegToRad(110), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
     scene->AddShape(std::make_unique<Box>(exrPoint3(0.9f, 0.8f, 1.0f), exrVector3(1.6f, 1.6f, 1.6f), exrVector3(0, exrDegToRad(-20), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
 
     exrEndProfile()
     exrInfoLine("Scene initialized with " << scene->GetSceneSize() << " shapes")
 
-    scene->InitializeBvh();
+    scene->InitAccelerator();
     return scene;
 }
 
@@ -160,7 +159,7 @@ std::unique_ptr<Scene> EmptySphere()
 
     exrEndProfile()
 
-    scene->InitializeBvh();
+    scene->InitAccelerator();
     return scene;
 }
 
