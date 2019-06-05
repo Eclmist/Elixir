@@ -35,9 +35,8 @@ public:
 
     virtual exrBool Scatter(const Ray& incomingRay, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const override
     {
-        exrVector3 cosDir = Random::CosineSampleHemisphere(Random::Uniform01Point2());
-        exrVector3 refNormal = exrVector3::Up();
-        exrPoint3 target = hitInfo.m_Point + hitInfo.m_Normal + (cosDir - refNormal);
+        // This implicitly samples a cosine weighted hemisphere around the normals
+        exrPoint3 target = hitInfo.m_Point + hitInfo.m_Normal + Random::UniformSampleSphere(Random::Uniform01Point2());
         scattered = Ray(hitInfo.m_Point, target - hitInfo.m_Point);
         attenuation = m_Albedo;
         return true;
