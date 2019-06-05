@@ -41,7 +41,7 @@ typedef float                   exrFloat;
 typedef float                   exrF32;
 typedef double                  exrF64;
 typedef unsigned char           exrByte;
-typedef unsigned char           exrChar;
+typedef char                    exrChar;
 typedef unsigned short          exrU16;
 typedef short                   exrS16;
 typedef unsigned int            exrU32;

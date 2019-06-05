@@ -70,20 +70,20 @@ public:
 public:
     //! @brief Returns the number of shape in the scene
     //! @return                 The number of shapes in the scene
-    inline exrU64 GetSceneSize() const { return static_cast<exrU64>(m_Shapes.size() + m_EmissiveShapes.size()); }
+    inline exrU64 GetSceneSize() const { return static_cast<exrU64>(m_Shapes.size()); }
 
 private:
     //! A collection of pointers that points to shapes in the scene
     std::vector<std::unique_ptr<Shape>> m_Shapes;
-
-    //! A collection of pointers that points to emissive shapes in the scene
-    std::vector<std::unique_ptr<Shape>> m_EmissiveShapes;
 
     //! The accelerator to use
     std::unique_ptr<Accelerator> m_Accelerator;
 
     //! A flag that determines if the scene has changed since the last render
     exrBool m_IsDirty;
+
+    //! The bounding volume that completely encapsulates the scene
+    AABB m_WorldBound;
 };
 
 exrEND_NAMESPACE

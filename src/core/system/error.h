@@ -31,6 +31,13 @@
 #define exrInfo(msg)                                ((void)0)
 #endif
 
+#ifdef EXR_ENABLE_ERRORS
+#include <iostream>
+#define exrError(msg)                               std::cout << "[Error] " << msg << '\n';
+#else
+#define exrError(msg)                               ((void)0)
+#endif
+
 #ifdef EXR_ENABLE_ASSERTS
 #include <cassert>
 #define exrAssert(condition, msg)                   assert(condition && msg)

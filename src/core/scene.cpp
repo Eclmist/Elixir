@@ -29,12 +29,6 @@ void Scene::AddShape(std::unique_ptr<Shape> shape)
     m_IsDirty = true;
 }
 
-void Scene::AddEmissiveShape(std::unique_ptr<Shape> emissiveShape)
-{
-    m_EmissiveShapes.push_back(std::move(emissiveShape));
-    m_IsDirty = true;
-}
-
 exrBool Scene::RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo) const
 {
     return m_Accelerator->Intersect(ray, tMin, tMax, hitInfo);
@@ -52,11 +46,6 @@ void Scene::InitAccelerator()
         for (exrU32 i = 0; i < m_Shapes.size(); i++)
         {
             shapePtrs.push_back(m_Shapes[i].get());
-        }
-
-        for (exrU32 i = 0; i < m_EmissiveShapes.size(); i++)
-        {
-            shapePtrs.push_back(m_EmissiveShapes[i].get());
         }
 
         m_Accelerator = std::make_unique<BVHAccelerator>(shapePtrs);

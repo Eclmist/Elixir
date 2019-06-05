@@ -48,6 +48,7 @@
 #include "core/elixir.h"
 #include "core/scene.h"
 #include "camera/camera.h"
+#include "integrator/integrator.h"
 #include "material/lambertian.h"
 #include "material/diffuselight.h"
 #include "shape/sphere.h"
@@ -253,19 +254,124 @@ exrEND_NAMESPACE
 
 using namespace elixir;
 
-int main()
+// Global forward declarations
+struct Options
 {
-    exrInfoLine("Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH)
+    exrU32 numThreads = 0;
+    exrBool quickRender = false;
+    exrBool quiet = false, verbose = false;
+    exrString outputFile;
+};
 
-    stbi_uc* output = Render();
+void ElixirInit(const Options& options)
+{
+    ElixirOptions = options;
 
-    exrString fileName = "output_" + std::to_string(Timer::TimeSinceEpochMillisec()) + "_" + std::to_string(NUM_SAMPLES_PER_PIXEL) + "spp_" + std::to_string(NUM_BOUNDCE_PER_RAY) + "b.png";
-    stbi_write_png(fileName.c_str(), OUTPUT_WIDTH, OUTPUT_HEIGHT, 3, output, OUTPUT_WIDTH * 3);
+    // TODO: API Init goes here
+    // ...
 
-#ifdef EXR_PLATFORM_WIN
-    system(fileName.c_str());
-    system("PAUSE");
-#endif
+    // TODO: General Elixir Init goes here
+    // ...
+}
 
+void ElixirSceneInitialized()
+{
+    // TODO: Verify scene is initialized
+
+    std::unique_ptr<Integrator> integrator(renderingOptions->MakeIntegrator());
+    std::unique_ptr<Scene> scene(renderingOptions->MakeScene());
+
+    if (scene && integrator)
+    {
+        integrator->Render(*scene);
+    }
+
+    // TODO: Terminate worker threads
+    // ...
+
+    // TODO: Cleanup
+    // ...
+}
+
+void ElixirCleanup()
+{
+    // TODO: API Cleanup goes here
+    // ...
+}
+
+void PrintHelp()
+{
+    std::cout << "Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH << std::endl;
+    std::cout << "Usage: elixir [--numthreads n] [--out filename] [--quick] [--quiet] [--verbose] <scene.ether>" << std::endl;
+}
+
+// TODO: Implement scene file parser, and in a proper place. This is a placeholder for structure.
+exrBool ParseFile(exrString filename)
+{
+    if (filename == "-")
+    {
+        // Default scene (throw a cornell box here?)
+    }
+    else
+    {
+        // TODO: Parse scene from input files
+        exrInfoLine("Scene parsing has not yet been implemented.");
+     }
+
+}
+
+Options ElixirOptions;
+
+exrU32 main(exrU32 argc, exrChar *argv[])
+{
+    Options options;
+    std::vector<exrString> filenames;
+
+    // Process command-line arguments
+    for (exrU32 i = 1; i < argc; ++i)
+    {
+        if (!strcmp(argv[i], "--numthreads") || !strcmp(argv[i], "-t"))
+            options.numThreads == atoi(argv[++i]);
+        else if (!strcmp(argv[i], "--out") || !strcmp(argv[i], "-o"))
+            options.outputFile = argv[++i];
+        else if (!strcmp(argv[i], "--quick") || !strcmp(argv[i], "-q"))
+            options.quickRender = true;
+        else if (!strcmp(argv[i], "--verbose") || !strcmp(argv[i], "-v"))
+            options.verbose = true;
+        else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h"))
+            PrintHelp();
+        else 
+            filenames.push_back(argv[i]);
+    }
+
+    ElixirInit(options);
+
+    // Process scene description
+    if (filenames.size() == 0)
+    {
+        ParseFile("-");
+    }
+    else
+    {
+        for (const exrString& f : filenames)
+        {
+            if (!ParseFile(f))
+                exrError("Unable to parse scene file \"" << f.c_str() << "\"");
+        }
+    }
+
+    ElixirCleanup();
     return 0;
+
+//    exrInfoLine("Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH)
+//
+//    stbi_uc* output = Render();
+//
+//    exrString fileName = "output_" + std::to_string(Timer::TimeSinceEpochMillisec()) + "_" + std::to_string(NUM_SAMPLES_PER_PIXEL) + "spp_" + std::to_string(NUM_BOUNDCE_PER_RAY) + "b.png";
+//    stbi_write_png(fileName.c_str(), OUTPUT_WIDTH, OUTPUT_HEIGHT, 3, output, OUTPUT_WIDTH * 3);
+//
+//#ifdef EXR_PLATFORM_WIN
+//    system(fileName.c_str());
+//    system("PAUSE");
+//#endif
 }
