@@ -33,7 +33,7 @@ public:
 
     //! @brief Constructs a matrix with a float array
     //! @param data             An array of 16 floats
-    Matrix4x4(const exrFloat* data);
+    Matrix4x4(const exrFloat data[16]);
 
     //! @brief Constructs a matrix with a 2d float array
     //! @param data             An 2d array of 4 floats each
@@ -78,7 +78,7 @@ public:
     //! @brief Transforms a ray by the current matrix
     //! @param r                The ray to transform
     //! @return                 The transformed ray r'
-    Ray operator()(const Ray& v) const;
+    Ray operator()(const Ray& r) const;
 
     //! @brief Shortcut to access the data with the [] operator directly
     exrFloat operator[](const exrU32& i) const { return m_Data[i]; }

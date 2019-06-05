@@ -43,6 +43,14 @@ public:
     //! @param shape           A pointer to the shape
     void AddShape(std::unique_ptr<Shape> shape);
 
+    //! @brief Adds a emissive shape to the scene
+    //! 
+    //! This function adds a emissive shape to the scene's shape collection
+    //! Emissive shapes will be importance sampled
+    //! 
+    //! @param shape           A pointer to the shape
+    void AddEmissiveShape(std::unique_ptr<Shape> emissiveShape);
+
     //! @brief Raytrace through the scene and returns the info of the nearest interaction point
     //! 
     //! This function and executes an intersection test with the scene objects
@@ -62,11 +70,14 @@ public:
 public:
     //! @brief Returns the number of shape in the scene
     //! @return                 The number of shapes in the scene
-    inline exrU64 GetSceneSize() const { return static_cast<exrU64>(m_Shapes.size()); }
+    inline exrU64 GetSceneSize() const { return static_cast<exrU64>(m_Shapes.size() + m_EmissiveShapes.size()); }
 
 private:
     //! A collection of pointers that points to shapes in the scene
     std::vector<std::unique_ptr<Shape>> m_Shapes;
+
+    //! A collection of pointers that points to emissive shapes in the scene
+    std::vector<std::unique_ptr<Shape>> m_EmissiveShapes;
 
     //! The accelerator to use
     std::unique_ptr<Accelerator> m_Accelerator;

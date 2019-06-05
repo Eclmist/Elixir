@@ -35,7 +35,7 @@ public:
         : m_Albedo(copy.m_Albedo)
         , m_Roughness(copy.m_Roughness) {};
 
-    virtual exrBool Scatter(const Ray& incomingRay, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered, exrFloat& pdf) const override
+    virtual exrBool Scatter(const Ray& incomingRay, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const override
     {
         exrVector3 reflected = Reflect(incomingRay.m_Direction.Normalized(), hitInfo.m_Normal);
         scattered = Ray(hitInfo.m_Point, reflected + m_Roughness * Random::RandomInUnitSphere());

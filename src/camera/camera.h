@@ -65,7 +65,8 @@ public:
     //! @param t                The v coordinate of the ray in screen space
     Ray GetViewRay(exrFloat s, exrFloat t) 
     { 
-        exrVector3 rd = lensRadius * Random::RandomInUnitDisc();
+        exrPoint2 randomDiscOffset = Random::ConcentricSampleDisk(Random::Uniform01Point2());
+        exrVector3 rd = lensRadius * exrVector3(randomDiscOffset.x, randomDiscOffset.y, 0);
         exrVector3 offset = u * rd.x + v * rd.y;
         return Ray(m_Position + offset, m_Min + s * m_HorizontalStep + t * m_VerticalStep - m_Position - offset); 
     }

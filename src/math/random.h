@@ -34,7 +34,7 @@ public:
 
     //! @brief Generates a random value between 0 and 1
     //! @return A random exrFloat between 0 and 1
-    static inline exrFloat Random01() { return (exrFloat)rand() / RAND_MAX; }
+    static inline exrFloat Uniform01() { return (exrFloat)rand() / RAND_MAX; }
 
     //! @brief Generates a vector between length 0 - 1 in a random direction
     //! @return A random vector inside a unit sphere
@@ -44,9 +44,60 @@ public:
     //! @return A random vector on the surface of a unit sphere
     static exrVector3 RandomOnUnitSphere();
 
-    //! @brief Generates a vector between length 0 - 1 in a random direction
-    //! @return A random vector inside a unit disc
-    static exrVector3 RandomInUnitDisc();
+    static exrPoint2 Uniform01Point2() { return exrPoint2(Uniform01(), Uniform01()); }
+
+    static exrVector3 UniformSampleHemisphere(const exrPoint2& u) {
+        exrFloat z = u.x;
+        exrFloat r = sqrt(exrMax(0.0f, 1.0f - z * z));
+        exrFloat phi = 2 * EXR_M_PI * u.y;
+        return exrVector3(r * cos(phi), r * sin(phi), z);
+    }
+
+    static exrFloat UniformHemispherePdf() {
+        return EXR_M_INV2PI;
+    }
+
+    static exrVector3 UniformSampleSphere(const exrPoint2& u) {
+        exrFloat z = 1 - 2 * u.x;
+        exrFloat r = sqrt(exrMax(0.0f, 1.0f - z * z));
+        exrFloat phi = 2 * EXR_M_PI * u.y;
+        return exrVector3(r * cos(phi), r * sin(phi), z);
+    }
+
+    static exrFloat UniformSpherePdf() {
+        return EXR_M_INV2PI;
+    }
+
+    static exrPoint2 ConcentricSampleDisk(const exrPoint2& u) {
+        exrPoint2 uOffset = 2.0f * u - exrVector2(1, 1);
+
+        if (uOffset.x == 0 && uOffset.y == 0)
+            return exrPoint2(0, 0);
+
+        exrFloat theta, r;
+
+        if (abs(uOffset.x) > abs(uOffset.y)) {
+            r = uOffset.x;
+            theta = EXR_M_PIOVER4 * (uOffset.y / uOffset.x);
+        }
+        else {
+            r = uOffset.y;
+            theta = EXR_M_PIOVER2 - EXR_M_PIOVER4 * (uOffset.x / uOffset.y);
+        }
+
+        return r * exrPoint2(cos(theta), sin(theta));
+    }
+
+    static exrVector3 CosineSampleHemisphere(const exrPoint2& u) {
+        exrPoint2 d = ConcentricSampleDisk(u);
+        exrFloat z = sqrt(exrMax(0.0f, 1.0f - d.x * d.x - d.y * d.y));
+        return exrVector3(d.x, d.y, z);
+    }
+
+    static exrFloat CosineHemispherePdf(exrFloat cosTheta) {
+        return cosTheta * EXR_M_INVPI;
+    }
+
 };
 
 exrEND_NAMESPACE

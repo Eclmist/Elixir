@@ -71,9 +71,21 @@ inline Point2<T> operator-(const Point2<T>& p, const Vector2<T>& v)
 }
 
 template<class T>
-inline Vector2<T> operator-(const Point2<T>& p1, const Point2<T>& p2)
+inline Point2<T> operator-(const Point2<T>& p1, const Point2<T>& p2)
 {
-    return Vector2<T>(p1.x - p2.x, p1.y - p2.y);
+    return Point2<T>(p1.x - p2.x, p1.y - p2.y);
+}
+
+template<class T>
+inline Point2<T> operator*(const Point2<T>& p, const float f)
+{
+    return Point2<T>(p.x * f, p.y * f);
+}
+
+template<class T>
+inline Point2<T> operator*(const float f, const Point2<T>& p)
+{
+    return Point2<T>(p.x * f, p.y * f);
 }
 
 template<class T>

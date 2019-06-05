@@ -33,7 +33,7 @@ public:
     DiffuseLight(const DiffuseLight& copy)
         : m_Emissive(copy.m_Emissive) {};
 
-    virtual exrBool Scatter(const Ray& in, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered, exrFloat& pdf) const override
+    virtual exrBool Scatter(const Ray& in, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const override
     {
         // Assume light source does not scatter incoming ray
         return false;

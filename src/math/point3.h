@@ -77,6 +77,18 @@ inline Vector3<T> operator-(const Point3<T>& p1, const Point3<T>& p2)
 }
 
 template<class T>
+inline Point3<T> operator*(const Point3<T>& p, const float f)
+{
+    return Point3<T>(p.x * f, p.y * f, p.z * f);
+}
+
+template<class T>
+inline Point3<T> operator*(const float f, const Point3<T>& p)
+{
+    return Point3<T>(p.x * f, p.y * f, p.z * f);
+}
+
+template<class T>
 inline float DistanceSquared(const Point3<T>& p1, const Point3<T>& p2)
 {
     return (p2 - p1).SquareMagnitude();
@@ -87,5 +99,17 @@ inline float Distance(const Point3<T>& p1, const Point3<T>& p2)
 {
     return (p2 - p1).Magnitude();
 }
+
+template <typename T> inline void
+CoordinateSystem(const Vector3<T>& v1, Vector3<T>* v2, Vector3<T>* v3) {
+    if (std::abs(v1.x) > std::abs(v1.y))
+        * v2 = Vector3<T>(-v1.z, 0, v1.x) /
+        std::sqrt(v1.x * v1.x + v1.z * v1.z);
+    else
+        *v2 = Vector3<T>(0, v1.z, -v1.y) /
+        std::sqrt(v1.y * v1.y + v1.z * v1.z);
+    *v3 = Cross(v1, *v2);
+}
+
 
 exrEND_NAMESPACE

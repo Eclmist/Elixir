@@ -30,12 +30,7 @@ struct Interaction;
 class Material
 {
 public:
-    virtual exrBool Scatter(const Ray& in, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered, exrFloat& pdf) const
-    {
-        return false;
-    };
-
-    virtual exrFloat ScatterPDF(const Ray& in, const Interaction& hitInfo, const Ray& scattered) const
+    virtual exrBool Scatter(const Ray& in, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const
     {
         return false;
     };

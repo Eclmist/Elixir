@@ -33,7 +33,7 @@ bool Quad::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& 
     float x = localRay(t).x;
     float y = localRay(t).y;
 
-    if (x < m_LocalMin.x || x > m_LocalMax.x || y < m_LocalMin.y || y > m_LocalMax.y)
+    if (x < -m_HalfExtents.x || x > m_HalfExtents.x || y < -m_HalfExtents.y || y > m_HalfExtents.y)
         return false;
 
     hit.m_Time = t;
@@ -43,10 +43,30 @@ bool Quad::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& 
     return true;
 }
 
+Interaction Quad::Sample(const exrPoint2& u) const
+{
+    Interaction it;
+
+    exrFloat randomX = (Random::Uniform01() * 2 - 1) * m_HalfExtents.x;
+    exrFloat randomY = (Random::Uniform01() * 2 - 1) * m_HalfExtents.y;
+
+    exrPoint3 samplePoint = m_Transform.GetMatrix() * exrPoint3(randomX, randomY, 0);
+    it.m_Point = samplePoint;
+    it.m_Normal = m_Transform.GetMatrix() * exrVector3::Forward();
+    it.m_Material = m_Material.get();
+
+    return it;
+}
+
+exrFloat Quad::GetArea() const
+{
+    return m_HalfExtents.x * m_HalfExtents.y * 4;
+}
+
 bool Quad::ComputeBoundingVolume()
 {
-    exrPoint3 globalMin = m_Transform.GetMatrix() * m_LocalMin;
-    exrPoint3 globalMax = m_Transform.GetMatrix() * m_LocalMax;
+    exrPoint3 globalMin = m_Transform.GetMatrix() * m_HalfExtents;
+    exrPoint3 globalMax = m_Transform.GetMatrix() * -m_HalfExtents;
 
     // Swap ensure min is min and max is actually max, since we may have rotated the points above
     exrPoint3 realMin = exrPoint3(exrMin(globalMin.x, globalMax.x), exrMin(globalMin.y, globalMax.y), exrMin(globalMin.z, globalMax.z));

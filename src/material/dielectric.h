@@ -34,7 +34,7 @@ public:
         : m_Albedo(copy.m_Albedo)
         , m_RefractiveIndex(copy.m_RefractiveIndex) {};
 
-    virtual exrBool Scatter(const Ray& incomingRay, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered, exrFloat& pdf) const override
+    virtual exrBool Scatter(const Ray& incomingRay, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const override
     {
         exrVector3 reflectedRay = Reflect(incomingRay.m_Direction, hitInfo.m_Normal);
 
@@ -74,7 +74,7 @@ public:
         }
 
         // Reflection based on Fresnel approximation
-        if (Random::Random01() < reflectionProbability)
+        if (Random::Uniform01() < reflectionProbability)
         {
             scattered = Ray(hitInfo.m_Point, reflectedRay);
         }

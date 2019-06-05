@@ -20,9 +20,15 @@
 
 #pragma once
 
-#define EXR_M_PI                3.141592653589793F
+#define EXR_M_PI                3.141592653589793f
+#define EXR_M_INVPI             0.31830988618f
+#define EXR_M_INV2PI            0.15915494309f
+#define EXR_M_INV4PI            0.07957747154f
+#define EXR_M_PIOVER2           1.57079632679f
+#define EXR_M_PIOVER4           0.78539816339f
+
 #define EXR_EPSILON             0.00001f
-#define EXR_MAX_FLOAT           (3.402823466e+38F)
+#define EXR_MAX_FLOAT           (3.402823466e+38f)
 #define EXR_MIN_FLOAT           (-EXR_MAX_FLOAT)
 
 #define exrSaturate(x)          exrClamp(x, 0, 1)

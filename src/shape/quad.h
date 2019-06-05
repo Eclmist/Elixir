@@ -41,8 +41,7 @@ public:
         m_Transform.SetTranslation(exrVector3(position.x, position.y, position.z));
         m_Transform.SetRotation(rotation);
 
-        m_LocalMin = exrPoint3::Zero() - exrVector3(0.5f * scale.x, 0.5f * scale.y, EXR_EPSILON);
-        m_LocalMax = exrPoint3::Zero() + exrVector3(0.5f * scale.x, 0.5f * scale.y, EXR_EPSILON);
+        m_HalfExtents = exrPoint3::Zero() + exrVector3(0.5f * scale.x, 0.5f * scale.y, EXR_EPSILON);
 
         ComputeBoundingVolume();
     };
@@ -60,6 +59,25 @@ public:
     //! @return                 True if the there is an intersection
     virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const override;
 
+    //! @brief Samples a point on the surface of the quad
+    //!
+    //! Chooses a point on the surface of the quad using a sampling distribution with respect
+    //! to the surface area of the quad and returns the local geometric information about the
+    //! sampled point in an Interaction
+    //!
+    //! @param u                The sampled point
+    //!
+    //! @return                 The interaction at the sampled point
+    virtual Interaction Sample(const exrPoint2& u) const override;
+
+    //! @brief Returns the total surface area of the quad
+    //!
+    //! The total surface area of the quad. This can be used in constructing PDF and other
+    //! calculations
+    //!
+    //! @return                 The total surface area of the quad
+    virtual exrFloat GetArea() const override;
+
     //! @brief Computes a bounding volume
     //! 
     //! Computes the a bounding volume that encapsulates the current box.
@@ -68,8 +86,7 @@ public:
     virtual exrBool ComputeBoundingVolume() override;
 
 public:
-    exrPoint3 m_LocalMin;
-    exrPoint3 m_LocalMax;
+    exrPoint3 m_HalfExtents;
 };
 
 exrEND_NAMESPACE

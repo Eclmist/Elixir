@@ -30,15 +30,17 @@ class Material;
 //! at intersection points.
 struct Interaction
 {
+    //! Default Constructor
     Interaction() 
         : m_Time(0) {};
 
-    Interaction(const exrPoint3& point, const exrVector3& normal, const exrVector3& wo, Material* material, float time)
+    //! Constructor
+    Interaction(const exrPoint3& point, const exrVector3& normal, const exrVector3& wo, float time, Material* material)
         : m_Point(point)
         , m_Normal(normal)
         , m_RadianceDirection(wo)
-        , m_Material(material)
-        , m_Time(time) {};
+        , m_Time(time)
+        , m_Material(material) {};
 
     //! The ray's t value at the point of intersection
     float m_Time;

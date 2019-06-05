@@ -55,6 +55,25 @@ public:
     //! @return                 True if the there is an intersection
     virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const override;
 
+    //! @brief Samples a point on the surface of the sphere
+    //!
+    //! Chooses a point on the surface of the sphere using a sampling distribution with respect
+    //! to the surface area of the sphere and returns the local geometric information about the
+    //! sampled point in an Interaction
+    //!
+    //! @param u                I don't know what this does or why PBRT uses this, fuck it i'm leaving it here because maybe years later I would look back and go "ohhhhhh" that's what "u" was used for. But in the meantime I'm just gonna ignore all that and do it the naive way.
+    //!
+    //! @return                 The interaction at the sampled point
+    virtual Interaction Sample(const exrPoint2& u) const override;
+
+    //! @brief Returns the total surface area of the sphere
+    //!
+    //! The total surface area of the sphere. This can be used in constructing PDF and other
+    //! calculations
+    //!
+    //! @return                 The total surface area of the sphere
+    virtual exrFloat GetArea() const override;
+
     //! @brief Computes a bounding volume
     //! 
     //! Computes the a bounding volume that encapsulates the current sphere.
@@ -65,6 +84,7 @@ public:
 private:
     //! The radius of the sphere
     exrFloat m_Radius;
+
 };
 
 exrEND_NAMESPACE

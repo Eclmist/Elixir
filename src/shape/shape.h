@@ -54,6 +54,67 @@ public:
     //! @return                 True if the there is an intersection
     virtual exrBool Intersect(const Ray& ray, float tMin, float tMax, Interaction& interaction) const = 0;
 
+    //! @brief Samples a point on the surface of the shape
+    //!
+    //! Chooses a point on the surface of the shape using a sampling distribution with respect
+    //! to the surface area of the shape and returns the local geometric information about the
+    //! sampled point in an Interaction
+    //!
+    //! @param u                The sampled point
+    //!
+    //! @return                 The interaction at the sampled point
+    virtual Interaction Sample(const exrPoint2& u) const = 0;
+
+    //! @brief Samples a point with respect to the solid angle from reference point ref
+    //!
+    //! Samples a point on the surface of the shape by taking a point from which the surface of
+    //! the shape is being integrated over as a parameter. The sample point is picked using a
+    //! density with respect to the solid angle from the reference point ref.
+    //!
+    //! @param ref              The current point of the integrand
+    //! @param u                The sampled point
+    //!
+    //! @return                 The interaction at the sampled point
+    virtual Interaction Sample(const Interaction& ref, const exrPoint2& u) const { return Sample(u); }
+
+    //! @brief Samples the PDF of the current shape with the interaction
+    //!
+    //! Returns the probability according to the probability density with respect to the surface
+    //! area of the shape, for the current interaction. Shapes almost always sample uniformly by
+    //! area on their surface, and therefore the default implementation provided simply returns
+    //! one over the surface area of the shape.
+    //!
+    //! @return                 The probability of the current interaction
+    virtual exrFloat SamplePDF(const Interaction& interaction) const { return 1 / GetArea(); }
+
+    //! @brief Samples the PDF over the solid angle with regards to reference point ref
+    //!
+    //! Returns the probability according to the probability density with respect to
+    //! the solid angle of the shape, projected towards reference point ref.
+    //!
+    //! @return                 The probability of the current interaction
+    //virtual exrFloat SamplePDF(const Interaction& ref, const exrVector3& wi) const;
+    
+    //! @brief Returns the total surface area of the shape
+    //!
+    //! The total surface area of the shape. This can be used in constructing PDF and other
+    //! calculations
+    //!
+    //! @return                 The total surface area of the sphere
+    virtual exrFloat GetArea() const = 0;
+
+    //! @brief Returns the solid angle of the shape projected on unit sphere around point p
+    //!
+    //! Returns the solid angle subtended by the shape with regards to the reference point
+    //! p, given in world space. Some shapes compute this value in closed-form, while the
+    //! default uses Monte Carlo integration
+    //!
+    //! @param p                The point of reference
+    //! @param nbSamples        The number of samples to use if computing with MC
+    //!
+    //! @return                 The solid angle subtended by the shape w.r.t point p
+    virtual exrFloat SolidAngle(const exrPoint3& p, exrU32 nbSamples = 512) const;
+
 public:
     //! @brief Returns the bounding volume of the shape
     //! @return                 A bounding volume of the shape
