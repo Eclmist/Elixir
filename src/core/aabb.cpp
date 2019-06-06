@@ -42,7 +42,7 @@ exrBool AABB::Intersect(const Ray& r, exrFloat tMin, exrFloat tMax) const
     return true;
 }
 
-AABB AABB::Combine(const AABB& bv1, const AABB& bv2)
+AABB AABB::Union(const AABB& bv1, const AABB& bv2)
 {
     exrFloat minX, minY, minZ;
     exrFloat maxX, maxY, maxZ;
@@ -70,7 +70,7 @@ AABB AABB::BoundShapes(const std::vector<Shape*>& shapes)
 
     for (exrU32 i = 1; i < shapes.size(); i++)
     {
-        combinedBv = Combine(combinedBv, shapes[i]->GetBoundingVolume());
+        combinedBv = Union(combinedBv, shapes[i]->GetBoundingVolume());
     }
 
     return combinedBv;

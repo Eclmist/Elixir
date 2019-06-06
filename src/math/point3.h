@@ -100,16 +100,33 @@ inline float Distance(const Point3<T>& p1, const Point3<T>& p2)
     return (p2 - p1).Magnitude();
 }
 
-template <typename T> inline void
-CoordinateSystem(const Vector3<T>& v1, Vector3<T>* v2, Vector3<T>* v3) {
-    if (abs(v1.x) > abs(v1.y))
-        * v2 = Vector3<T>(-v1.z, 0, v1.x) /
-        sqrt(v1.x * v1.x + v1.z * v1.z);
-    else
-        *v2 = Vector3<T>(0, v1.z, -v1.y) /
-        sqrt(v1.y * v1.y + v1.z * v1.z);
-    *v3 = Cross(v1, *v2);
+template<class T>
+inline Point3<T> Min(const Point3<T>& p1, const Point3<T>& p2)
+{
+    return Point3<T>(exrMin(p1.x, p2.x), exrMin(p1.y, p2.y), exrMin(p1.z, p2.z));
 }
 
+template<class T>
+inline Point3<T> Max(const Point3<T>& p1, const Point3<T>& p2)
+{
+    return Point3<T>(exrMax(p1.x, p2.x), exrMax(p1.y, p2.y), exrMax(p1.z, p2.z));
+}
 
+template<class T>
+inline Point3<T> Floor(const Point3<T>& p)
+{
+    return Point3<T>(floor(p.x), floor(p.y), floor(p.z));
+}
+
+template<class T>
+inline Point3<T> Ceil(const Point3<T>& p)
+{
+    return Point3<T>(ceil(p.x), ceil(p.y), ceil(p.z));
+}
+
+template<class T>
+inline Point3<T> Abs(const Point3<T>& p)
+{
+    return Point3<T>(abs(p.x), abs(p.y), abs(p.z));
+}
 exrEND_NAMESPACE

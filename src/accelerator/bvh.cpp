@@ -158,7 +158,7 @@ void BVHAccelerator::SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 dept
     currentRoot->m_RightSubtree = std::make_unique<BVHNode>();
 
     const exrU32 splitsPerAxis = 32;
-    exrFloat bestHeuristics = EXR_MAX_FLOAT;
+    exrFloat bestHeuristics = MaxFloat;
 
     // for each axis
     for (exrU32 axis = 0; axis < 3; axis++)

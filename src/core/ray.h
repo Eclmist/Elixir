@@ -24,6 +24,8 @@
 
 exrBEGIN_NAMESPACE
 
+class Medium;
+
 //! @brief A class that defines a mathematical ray
 //!
 //! Defines a ray with a origin, direction and distance in the parametric form of 
@@ -31,14 +33,23 @@ exrBEGIN_NAMESPACE
 class Ray
 {
 public:
+    Ray()
+        : m_Distance(MaxFloat)
+        , m_Time(0.0f)
+        , m_Medium(nullptr) {};
+
     //! @brief Constructs a ray with an origin, direction and distance
     //! @param origin           The origin of the ray in world space
     //! @param direction        The normalized direction of the ray
     //! @param distance         The maximum ray distance
-    Ray(const exrPoint3& origin = 0.0f, const exrVector3& direction = 0.0f, exrFloat distance = 1000.0f)
+    //! @param time             The time when the ray was cast
+    //! @param medium           The medium containing the point origin
+    Ray(const exrPoint3& origin, const exrVector3& direction, exrFloat distance, exrFloat time, const Medium* medium)
         : m_Origin(origin)
         , m_Direction(direction.Normalized())
-        , m_Distance(distance) {};
+        , m_Distance(distance)
+        , m_Time(time)
+        , m_Medium(medium) {};
 
     //! @brief Copy constructor. Constructs a ray with the same origin, direction and distance from input
     //! @param copy             The ray to copy
@@ -63,6 +74,12 @@ public:
 
     //! The maximum distance of the ray
     exrFloat m_Distance;
+
+    //! In scenes with animated objects this can be used for motion blur
+    exrFloat m_Time;
+
+    //! The medium that contains the ray origin
+    const Medium* m_Medium;
 };
 
 exrEND_NAMESPACE

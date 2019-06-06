@@ -90,7 +90,7 @@ public:
     //! Computes a bounding volume that tightly encapsulates both input bounding volumes
     //!
     //! @return                 The combined bounding volume
-    static AABB Combine(const AABB& bv1, const AABB& bv2);
+    static AABB Union(const AABB& bv1, const AABB& bv2);
 
     //! @brief Combines two bounding volumes
     //!

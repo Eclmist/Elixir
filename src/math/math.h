@@ -28,14 +28,16 @@
 #define EXR_M_PIOVER4           0.78539816339f
 
 #define EXR_EPSILON             0.00001f
-#define EXR_MAX_FLOAT           (3.402823466e+38f)
-#define EXR_MIN_FLOAT           (-EXR_MAX_FLOAT)
 
 #define exrSaturate(x)          exrClamp(x, 0, 1)
 #define exrPow(x, n)            pow(x, n)
 #define exrDegToRad(x)          x * (EXR_M_PI / 180.0f)
 
 exrBEGIN_NAMESPACE
+
+static constexpr exrFloat MaxFloat = std::numeric_limits<float>::max();
+static constexpr exrFloat MinFloat = std::numeric_limits<float>::min();
+static constexpr exrFloat Infinity = std::numeric_limits<float>::infinity();
 
 template <typename _Type>
 inline _Type exrMax(_Type lhs, _Type rhs)
