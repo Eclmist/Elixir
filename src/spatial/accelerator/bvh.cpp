@@ -59,10 +59,15 @@ BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const Spl
 
 exrBool BVHAccelerator::Intersect(const Ray& ray, SurfaceInteraction* interaction) const
 {
-    return TraverseNode(*m_RootNode, ray, interaction);
+    return TraverseNode(*m_RootNode, ray, interaction, true);
 }
 
-exrBool BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray, SurfaceInteraction* interaction)
+exrBool BVHAccelerator::HasIntersect(const Ray& ray) const
+{
+    return TraverseNode(*m_RootNode, ray, nullptr, false);
+}
+
+exrBool BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray, SurfaceInteraction* interaction, exrBool initInteraction)
 {
     const exrFloat rayTMaxOriginal = ray.m_TMax;
 
@@ -78,10 +83,7 @@ exrBool BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray, Surfac
             // We may have a list of primitive, test all of them for intersection and return the closest hit
             for (Primitive* primitives : node.m_Primitives)
             {
-                if (primitives->Intersect(ray, interaction))
-                {
-                    hasHit = true;
-                }
+                hasHit = initInteraction ? primitives->Intersect(ray, interaction) : primitives->HasIntersect(ray);
             }
 
             return hasHit;

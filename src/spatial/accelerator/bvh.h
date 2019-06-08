@@ -88,9 +88,10 @@ private:
     //! @param node             The node to traverse down from
     //! @param ray              The ray to test against
     //! @param interaction      Output struct that contains the interaction information
+    //! @param initInteraction  Should use HasInteract() instead of Interact()
     //!
     //! @return                 True if the there are any intersections
-    static exrBool TraverseNode(const BVHNode& node, const Ray& ray, SurfaceInteraction* interaction);
+    static exrBool TraverseNode(const BVHNode& node, const Ray& ray, SurfaceInteraction* interaction, exrBool initInteraction);
 
     //! @brief Recursively splits objects into equal subtrees
     //! 

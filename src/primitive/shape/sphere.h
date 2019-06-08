@@ -50,6 +50,18 @@ public:
     //! @return                 True if the there is an intersection
     virtual exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const override;
 
+    //! @brief Test the sphere for intersections with a ray
+    //! 
+    //! This function allows us to do intersection tests with a segment of a ray, but
+    //! does not initialize interaction or hit info. Useful for when checking if a ray
+    //! is obstructed, such as with shadow rays
+    //! 
+    //! @param ray              The ray to test against
+    //! @param tHit             The t value of ray at the point of intersection, if any
+    //! 
+    //! @return                 True if the there is an intersection
+    virtual exrBool HasIntersect(const Ray& ray, exrFloat& tHit) const override;
+
     //! @brief Samples a point on the surface of the sphere
     //!
     //! Chooses a point on the surface of the sphere using a sampling distribution with respect

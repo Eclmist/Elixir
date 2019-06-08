@@ -60,9 +60,10 @@ public:
     //! is obstructed, such as with shadow rays
     //! 
     //! @param ray              The ray to test against
+    //! @param tHit             The t value of ray at the point of intersection, if any
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool HasIntersect(const Ray& ray) const = 0;
+    virtual exrBool HasIntersect(const Ray& ray, exrFloat& tHit) const = 0;
 
     //! @brief Samples a point on the surface of the shape
     //!
