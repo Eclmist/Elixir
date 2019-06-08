@@ -23,7 +23,7 @@
 #include "core/elixir.h"
 #include "primitive/transform.h"
 #include "spatial/aabb.h"
-#include "bsdf/material.h"
+#include "material/material.h"
 
 exrBEGIN_NAMESPACE
 
@@ -35,24 +35,32 @@ exrBEGIN_NAMESPACE
 class Shape
 {
 public:
-    //! @brief Constructs a shape
-    //! @param material         The material of the shape
-    Shape(std::unique_ptr<Material>& material)
-        : m_Material(std::move(material)) {};
+    //! Constructor
+    Shape(const Transform& transform) : m_Transform(transform) {};
 
 public:
     //! @brief Test the geometry for intersections with a ray
     //! 
-    //! This function allows us to do intersection tests with a segment of a ray in the domain
-    //! of tMin and tMax
+    //! This function allows us to do intersection tests with a segment of a ray, and
+    //! outputs the interaction info into <interaction>
     //! 
     //! @param ray              The ray to test against
-    //! @param tMin             Min t value of ray to test
-    //! @param tMax             Max t value of ray to test
+    //! @param tHit             The t value of ray at the point of intersection, if any
     //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool Intersect(const Ray& ray, float tMin, float tMax, Interaction& interaction) const = 0;
+    virtual exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction& interaction) const = 0;
+
+    //! @brief Test the geometry for intersections with a ray
+    //! 
+    //! This function allows us to do intersection tests with a segment of a ray, but
+    //! does not initialize interaction or hit info. Useful for when checking if a ray
+    //! is obstructed, such as with shadow rays
+    //! 
+    //! @param ray              The ray to test against
+    //! 
+    //! @return                 True if the there is an intersection
+    virtual exrBool HasIntersect(const Ray& ray) const = 0;
 
     //! @brief Samples a point on the surface of the shape
     //!
@@ -60,7 +68,7 @@ public:
     //! to the surface area of the shape and returns the local geometric information about the
     //! sampled point in an Interaction
     //!
-    //! @param u                The sampled point
+    //! @param u                Uniformly sampled 2D point
     //!
     //! @return                 The interaction at the sampled point
     virtual Interaction Sample(const exrPoint2& u) const = 0;
@@ -72,7 +80,7 @@ public:
     //! density with respect to the solid angle from the reference point ref.
     //!
     //! @param ref              The current point of the integrand
-    //! @param u                The sampled point
+    //! @param u                Uniformly sampled 2D point
     //!
     //! @return                 The interaction at the sampled point
     virtual Interaction Sample(const Interaction& ref, const exrPoint2& u) const { return Sample(u); }
@@ -132,9 +140,6 @@ protected :
     virtual bool ComputeBoundingVolume() = 0;
 
 protected:
-    //! A pointer to the material of the shape
-    const std::unique_ptr<Material> m_Material;
-    
     //! A bounding volume that contains the shape;
     AABB m_BoundingVolume;
 

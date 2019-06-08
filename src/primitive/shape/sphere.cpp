@@ -22,7 +22,7 @@
 
 exrBEGIN_NAMESPACE
 
-bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hit) const
+bool Sphere::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction& hit) const
 {
     Ray localRay = m_Transform.GetInverseMatrix() * ray;
     exrVector3 r0 = localRay.m_Origin - exrPoint3::Zero();
@@ -35,17 +35,17 @@ bool Sphere::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction
     if (!exrQuadratic(a, b, c, &t0, &t1))
         return false;
 
-    if (t0 > tMax || t1 <= tMin)
+    if (t0 > ray.m_TMax || t1 <= EXR_EPSILON)
         return false;
 
-    if (t0 <= tMin)
+    if (t0 <= EXR_EPSILON)
         t0 = t1;
 
-    hit.m_Time = t0;
+    tHit = t0;
     hit.m_Point = m_Transform.GetMatrix() * localRay(t0);
     // Normal vectors on sphere do not have to be transformed as sphere have no rotation and only uniform scale
     hit.m_Normal = static_cast<exrVector3>(localRay(t0)) / m_Radius;
-    hit.m_Material = m_Material.get();
+    hit.m_BSDF = m_Material.get();
 
     return true;
 }

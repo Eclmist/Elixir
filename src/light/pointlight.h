@@ -18,15 +18,37 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "ray.h"
+#pragma once
+
+#include "material.h"
 
 exrBEGIN_NAMESPACE
 
-Ray::Ray(const Ray& copy)
+class DiffuseLight : public Material
 {
-    m_Origin = copy.m_Origin;
-    m_Direction = copy.m_Direction;
-    m_TMax = copy.m_TMax;
-}
+public:
+    DiffuseLight(const exrVector3& e)
+        : m_Emissive(e) {};
+
+    DiffuseLight(const DiffuseLight& copy)
+        : m_Emissive(copy.m_Emissive) {};
+
+    virtual exrBool Scatter(const Ray& in, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const override
+    {
+        // Assume light source does not scatter incoming ray
+        return false;
+    };
+
+    virtual exrVector3 Emit(const Ray& in, const Interaction& hitInfo) const override
+    {
+        if (Dot(in.m_Direction, hitInfo.m_Normal) < 0)
+            return m_Emissive;
+        else
+            return 0.0f;
+    };
+
+private:
+    exrVector3 m_Emissive;
+};
 
 exrEND_NAMESPACE

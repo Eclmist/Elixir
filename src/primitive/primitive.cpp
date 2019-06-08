@@ -18,15 +18,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "ray.h"
+#pragma once
+
+#include "primitive.h"
+#include "spatial/aabb.h"
 
 exrBEGIN_NAMESPACE
 
-Ray::Ray(const Ray& copy)
+AABB GeometricPrimitive::GetBoundingVolume() const
 {
-    m_Origin = copy.m_Origin;
-    m_Direction = copy.m_Direction;
-    m_TMax = copy.m_TMax;
+    return m_Shape->GetBoundingVolume();
+}
+
+exrBool GeometricPrimitive::Intersect(const Ray& ray, SurfaceInteraction* interaction) const
+{
+    exrFloat tHit;
+
+    if (!m_Shape->Intersect(ray, &tHit, interaction)) return false;
+
+    ray.m_TMax = tHit;
+    interaction->m_Primitive = this;
+}
+
+exrBool GeometricPrimitive::HasIntersect(const Ray& r) const
+{
+    return m_Shape->HasIntersect(r);
 }
 
 exrEND_NAMESPACE

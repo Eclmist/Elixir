@@ -33,23 +33,16 @@ class Medium;
 class Ray
 {
 public:
-    Ray()
-        : m_Distance(MaxFloat)
-        , m_Time(0.0f)
-        , m_Medium(nullptr) {};
+    Ray() : m_TMax(MaxFloat) {};
 
     //! @brief Constructs a ray with an origin, direction and distance
     //! @param origin           The origin of the ray in world space
     //! @param direction        The normalized direction of the ray
-    //! @param distance         The maximum ray distance
-    //! @param time             The time when the ray was cast
-    //! @param medium           The medium containing the point origin
-    Ray(const exrPoint3& origin, const exrVector3& direction, exrFloat distance, exrFloat time, const Medium* medium)
+    //! @param tmax             The maximum ray distance
+    Ray(const exrPoint3& origin, const exrVector3& direction, exrFloat tmax)
         : m_Origin(origin)
         , m_Direction(direction.Normalized())
-        , m_Distance(distance)
-        , m_Time(time)
-        , m_Medium(medium) {};
+        , m_TMax(tmax) {};
 
     //! @brief Copy constructor. Constructs a ray with the same origin, direction and distance from input
     //! @param copy             The ray to copy
@@ -72,14 +65,11 @@ public:
     //! The normalized direction of the ray
     exrVector3 m_Direction;
 
-    //! The maximum distance of the ray
-    exrFloat m_Distance;
-
     //! In scenes with animated objects this can be used for motion blur
     exrFloat m_Time;
 
-    //! The medium that contains the ray origin
-    const Medium* m_Medium;
+    //! The maximum distance of the ray
+    mutable exrFloat m_TMax;
 };
 
 exrEND_NAMESPACE

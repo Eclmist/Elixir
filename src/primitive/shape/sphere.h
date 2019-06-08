@@ -34,11 +34,10 @@ public:
     //! @param center           The origin of the sphere in world space
     //! @param radius           The radius of the sphere
     //! @param material         The material of the sphere
-    Sphere(const exrPoint3& center, exrFloat radius, std::unique_ptr<Material> material)
-        : Shape(material)
+    Sphere(const Transform& transform, exrFloat radius)
+        : Shape(transform)
         , m_Radius(radius)
     {
-        m_Transform.Translate(exrVector3(center.x, center.y, center.z));
         ComputeBoundingVolume();
     };
 
@@ -48,12 +47,11 @@ public:
     //! of tMin and tMax
     //! 
     //! @param ray              The ray to test against
-    //! @param tMin             Min t value of ray to test
-    //! @param tMax             Max t value of ray to test
+    //! @param tHit             The t value of ray at the point of intersection, if any
     //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const override;
+    virtual exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction& interaction) const override;
 
     //! @brief Samples a point on the surface of the sphere
     //!
