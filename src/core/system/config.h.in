@@ -34,8 +34,4 @@
 #cmakedefine EXR_PLATFORM_MAC
 #cmakedefine EXR_PLATFORM_LINUX
 
-#cmakedefine EXR_ENABLE_LOGGING
-#cmakedefine EXR_ENABLE_ERRORS
-#cmakedefine EXR_ENABLE_ASSERTS
-
 #cmakedefine EXR_USE_NAMESPACE

@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "elixir.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 

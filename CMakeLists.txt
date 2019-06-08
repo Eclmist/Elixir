@@ -44,8 +44,6 @@ set ( EXR_VERSION_PATCH 32 CACHE STRING "Elixir patch version" )
 
 # Setting on project generation
 SET ( EXR_USE_NAMESPACE "YES" CACHE BOOL "Enable generating Elixir namespace. This is true by default." )
-SET ( EXR_ENABLE_LOGGING "YES" CACHE BOOL "Enable logging. This is true by default." )
-SET ( EXR_ENABLE_ASSERTS "YES" CACHE BOOL "Enable asserts. This is true by default." )
 
 # Define platform
 if ( WIN32 )

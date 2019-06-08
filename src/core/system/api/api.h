@@ -22,15 +22,11 @@
 
 #include "core/elixir.h"
 
-exrBEGIN_NAMESPACE
+/*
+    API function declarations
+    Make sure to increment API version when there are changes
+    Format: Major.Minor.Patch
+    For more versioning information, see <https://semver.org/>
+*/
 
-//! @brief A pool of threads
-//! 
-//! A pool of threads that will wait and execute any in
-//! to interact with the collection.
-class ThreadPool
-{
-public:
-};
 
-exrEND_NAMESPACE

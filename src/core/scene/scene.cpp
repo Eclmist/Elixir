@@ -23,9 +23,15 @@
 
 exrBEGIN_NAMESPACE
 
-void Scene::AddShape(std::unique_ptr<Shape> shape) 
+void Scene::AddShape(std::unique_ptr<Shape> shape)
 {
     m_Shapes.push_back(std::move(shape));
+    m_IsDirty = true;
+}
+
+void Scene::AddEmissiveShape(std::unique_ptr<Shape> emissiveShape)
+{
+    m_EmissiveShapes.push_back(std::move(emissiveShape));
     m_IsDirty = true;
 }
 
@@ -40,12 +46,17 @@ void Scene::InitAccelerator()
     {
         exrProfile("Building BVH Tree")
 
-        std::vector<Shape*> shapePtrs;
+            std::vector<Shape*> shapePtrs;
 
         // shallow copy pointer values to be used by bvh accel
         for (exrU32 i = 0; i < m_Shapes.size(); i++)
         {
             shapePtrs.push_back(m_Shapes[i].get());
+        }
+
+        for (exrU32 i = 0; i < m_EmissiveShapes.size(); i++)
+        {
+            shapePtrs.push_back(m_EmissiveShapes[i].get());
         }
 
         m_Accelerator = std::make_unique<BVHAccelerator>(shapePtrs);
