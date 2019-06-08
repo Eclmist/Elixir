@@ -90,14 +90,14 @@ exrBool BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray, Surfac
         }
 
         // Check left and right node
-        if (TraverseNode(*node.m_LeftSubtree, ray, interaction))
+        if (TraverseNode(*node.m_LeftSubtree, ray, interaction, initInteraction))
         {
-            TraverseNode(*node.m_RightSubtree, ray, interaction);
+            TraverseNode(*node.m_RightSubtree, ray, interaction, initInteraction);
             return true;
         }
         else
         {
-            return TraverseNode(*node.m_RightSubtree, ray, interaction);
+            return TraverseNode(*node.m_RightSubtree, ray, interaction, initInteraction);
         }
     }
 
