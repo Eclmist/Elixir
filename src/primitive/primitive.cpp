@@ -34,10 +34,12 @@ exrBool GeometricPrimitive::Intersect(const Ray& ray, SurfaceInteraction* intera
 {
     exrFloat tHit;
 
-    if (!m_Shape->Intersect(ray, &tHit, interaction)) return false;
+    if (!m_Shape->Intersect(ray, tHit, interaction)) return false;
 
     ray.m_TMax = tHit;
     interaction->m_Primitive = this;
+
+    return true;
 }
 
 exrBool GeometricPrimitive::HasIntersect(const Ray& r) const

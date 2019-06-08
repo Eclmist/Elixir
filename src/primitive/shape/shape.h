@@ -36,7 +36,9 @@ class Shape
 {
 public:
     //! Constructor
-    Shape(const Transform& transform) : m_Transform(transform) {};
+    Shape(const Transform& transform, const AABB& boundingVolume)
+        : m_Transform(transform)
+        , m_BoundingVolume(boundingVolume) {};
 
 public:
     //! @brief Test the geometry for intersections with a ray
@@ -49,7 +51,7 @@ public:
     //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction& interaction) const = 0;
+    virtual exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const = 0;
 
     //! @brief Test the geometry for intersections with a ray
     //! 
@@ -131,20 +133,16 @@ public:
         return m_BoundingVolume;
     };
 
-protected :
-    //! @brief Computes a bounding volume
-    //! 
-    //! Computes the a bounding volume that encapsulates the current geometry.
-    //!
-    //! @return                 True if the bounding volume was successfully created
-    virtual bool ComputeBoundingVolume() = 0;
+protected:
+    //! Computes a bounding volume that encapsulates the current geometry.
+    virtual AABB ComputeBoundingVolume() = 0;
 
 protected:
     //! A bounding volume that contains the shape;
-    AABB m_BoundingVolume;
+    const AABB m_BoundingVolume;
 
     //! The transform of the shape
-    Transform m_Transform;
+    const Transform m_Transform;
 };
 
 exrEND_NAMESPACE

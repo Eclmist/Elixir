@@ -26,8 +26,7 @@
 exrBEGIN_NAMESPACE
 
 class Material;
-class Shape;
-struct Interaction;
+class Primitive;
 
 //! @brief Defines a bounding volume hierarchy
 //!
@@ -39,8 +38,8 @@ public:
     //! @brief A single BVH Node
     struct BVHNode
     {
-        //! The list of shapes that this node contains
-        std::vector<Shape*> m_Shapes;
+        //! The list of primitives that this node contains
+        std::vector<Primitive*> m_Primitives;
 
         //! A bounding volume that contains all the objects below this node
         AABB m_BoundingVolume;
@@ -59,32 +58,39 @@ public:
     //! @brief Constructs a BVH with a collection of objects
     //! @param objects          A collection of objects
     //! @param splitMethod      Splitting algorithm to use when building the BVH
-    BVHAccelerator(const std::vector<Shape*>& objects, const SplitMethod splitMethod = SplitMethod::SAH);
+    BVHAccelerator(const std::vector<Primitive*>& objects, const SplitMethod splitMethod = SplitMethod::SAH);
 
-    //! @brief Test the entire BVH for intersections with a ray
+    //! @brief Test the bvh for intersections with a ray
     //! 
-    //! Do intersection tests with a segment of a ray in the domain
-    //! of tMin and tMax, against the bounding volume hierarchy. 
+    //! Test all geometry for intersection with the ray, and outputs the surface
+    //! intersection data in <interaction> 
     //! 
     //! @param ray              The ray to test against
-    //! @param tMin             Min t value of ray to test
-    //! @param tMax             Max t value of ray to test
     //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there are any intersections
-    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const override;
+    virtual exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const override;
+
+    //! @brief Test the bvh for intersections with a ray
+    //! 
+    //! This function allows us to do intersection tests with a segment of a ray, but
+    //! does not initialize interaction or hit info. Useful for when checking if a ray
+    //! is obstructed, such as with shadow rays
+    //! 
+    //! @param ray              The ray to test against
+    //! 
+    //! @return                 True if the there is an intersection
+    virtual exrBool HasIntersect(const Ray& ray) const override;
 
 private:
     //! @brief A recursive function to recursively traverse nodes and check for intersection
     //!
     //! @param node             The node to traverse down from
     //! @param ray              The ray to test against
-    //! @param tMin             Min t value of ray to test
-    //! @param tMax             Max t value of ray to test
     //! @param interaction      Output struct that contains the interaction information
     //!
     //! @return                 True if the there are any intersections
-    static exrBool TraverseNode(const BVHNode& node, const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction);
+    static exrBool TraverseNode(const BVHNode& node, const Ray& ray, SurfaceInteraction* interaction);
 
     //! @brief Recursively splits objects into equal subtrees
     //! 

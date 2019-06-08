@@ -20,35 +20,18 @@
 
 #pragma once
 
-#include "material.h"
+#include "light.h"
 
 exrBEGIN_NAMESPACE
 
-class DiffuseLight : public Material
+class AreaLight : public Light
 {
 public:
-    DiffuseLight(const exrVector3& e)
-        : m_Emissive(e) {};
+    AreaLight(const Transform& transform)
+        : Light(transform) {}
 
-    DiffuseLight(const DiffuseLight& copy)
-        : m_Emissive(copy.m_Emissive) {};
-
-    virtual exrBool Scatter(const Ray& in, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const override
-    {
-        // Assume light source does not scatter incoming ray
-        return false;
-    };
-
-    virtual exrVector3 Emit(const Ray& in, const Interaction& hitInfo) const override
-    {
-        if (Dot(in.m_Direction, hitInfo.m_Normal) < 0)
-            return m_Emissive;
-        else
-            return 0.0f;
-    };
-
-private:
-    exrVector3 m_Emissive;
+    AreaLight(const AreaLight& copy)
+        : Light(copy.m_Transform) {}
 };
 
 exrEND_NAMESPACE

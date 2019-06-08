@@ -25,7 +25,6 @@
 exrBEGIN_NAMESPACE
 
 class Ray;
-struct Interaction;
 
 class Material
 {

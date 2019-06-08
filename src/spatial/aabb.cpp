@@ -19,12 +19,15 @@
 */
 
 #include "aabb.h"
-#include "shape/shape.h"
+#include "primitive/primitive.h"
 
 exrBEGIN_NAMESPACE
 
-exrBool AABB::Intersect(const Ray& r, exrFloat tMin, exrFloat tMax) const
+exrBool AABB::Intersect(const Ray& r) const
 {
+    exrFloat tMin = EXR_EPSILON;
+    exrFloat tMax = r.m_TMax;
+
     for (exrU32 i = 0; i < 3; i++)
     {
         exrFloat invD = 1.0f / r.m_Direction[i];
@@ -58,19 +61,19 @@ AABB AABB::Union(const AABB& bv1, const AABB& bv2)
     return AABB(exrPoint3(minX, minY, minZ), exrPoint3(maxX, maxY, maxZ));
 }
 
-AABB AABB::BoundShapes(const std::vector<Shape*>& shapes)
+AABB AABB::BoundPrimitives(const std::vector<Primitive*>& primitives)
 {
     // We CANNOT combine with exrPoint3(0) because that will make all bv extend to origin..
-    if (shapes.size() <= 0)
+    if (primitives.size() <= 0)
     {
         return AABB(exrPoint3::Zero(), exrPoint3::Zero());
     }
 
-    AABB combinedBv = shapes[0]->GetBoundingVolume();
+    AABB combinedBv = primitives[0]->GetBoundingVolume();
 
-    for (exrU32 i = 1; i < shapes.size(); i++)
+    for (exrU32 i = 1; i < primitives.size(); i++)
     {
-        combinedBv = Union(combinedBv, shapes[i]->GetBoundingVolume());
+        combinedBv = Union(combinedBv, primitives[i]->GetBoundingVolume());
     }
 
     return combinedBv;

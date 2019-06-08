@@ -22,7 +22,7 @@
 
 exrBEGIN_NAMESPACE
 
-bool Sphere::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction& hit) const
+bool Sphere::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* hit) const
 {
     Ray localRay = m_Transform.GetInverseMatrix() * ray;
     exrVector3 r0 = localRay.m_Origin - exrPoint3::Zero();
@@ -42,19 +42,19 @@ bool Sphere::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction& hit) 
         t0 = t1;
 
     tHit = t0;
-    hit.m_Point = m_Transform.GetMatrix() * localRay(t0);
+    hit->m_Point = m_Transform.GetMatrix() * localRay(t0);
     // Normal vectors on sphere do not have to be transformed as sphere have no rotation and only uniform scale
-    hit.m_Normal = static_cast<exrVector3>(localRay(t0)) / m_Radius;
-    hit.m_BSDF = m_Material.get();
+    hit->m_Normal = static_cast<exrVector3>(localRay(t0)) / m_Radius;
+    hit->m_BSDF = m_Material.get();
 
     return true;
 }
-bool Sphere::ComputeBoundingVolume()
+
+AABB Sphere::ComputeBoundingVolume()
 {
     exrPoint3 min = m_Transform.GetMatrix() * exrPoint3(-m_Radius);
     exrPoint3 max = m_Transform.GetMatrix() * exrPoint3(m_Radius);
-    m_BoundingVolume = AABB(min, max);
-    return true;
+    return AABB(min, max);
 }
 
 Interaction Sphere::Sample(const exrPoint2& u) const

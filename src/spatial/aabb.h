@@ -78,11 +78,9 @@ public:
     //! of tMin and tMax, using the slab method
     //! 
     //! @param ray              The ray to test against
-    //! @param tMin             Min t value of ray to test
-    //! @param tMax             Max t value of ray to test
     //! 
     //! @return                 True if the there is an intersection
-    exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax) const;
+    exrBool Intersect(const Ray& ray) const;
 
 public:
     //! @brief Combines two bounding volumes
@@ -94,10 +92,10 @@ public:
 
     //! @brief Combines two bounding volumes
     //!
-    //! Computes a bounding volume that tightly encapsulates all input shapes
+    //! Computes a bounding volume that tightly encapsulates all input primitives
     //!
     //! @return                 The result bounding volume
-    static AABB BoundShapes(const std::vector<Shape*>& shapes);
+    static AABB BoundPrimitives(const std::vector<Primitive*>& primitives);
 
 private:
     exrPoint3 m_Min;

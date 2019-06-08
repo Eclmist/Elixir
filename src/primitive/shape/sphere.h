@@ -35,11 +35,8 @@ public:
     //! @param radius           The radius of the sphere
     //! @param material         The material of the sphere
     Sphere(const Transform& transform, exrFloat radius)
-        : Shape(transform)
-        , m_Radius(radius)
-    {
-        ComputeBoundingVolume();
-    };
+        : Shape(transform, ComputeBoundingVolume())
+        , m_Radius(radius) {};
 
     //! @brief Test the sphere for intersections with a ray
     //! 
@@ -51,7 +48,7 @@ public:
     //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction& interaction) const override;
+    virtual exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const override;
 
     //! @brief Samples a point on the surface of the sphere
     //!
@@ -77,7 +74,7 @@ public:
     //! Computes the a bounding volume that encapsulates the current sphere.
     //! 
     //! @return                 Always return true since bounding volumes can be created for spheres
-    virtual exrBool ComputeBoundingVolume() override;
+    virtual AABB ComputeBoundingVolume() override;
 
 private:
     //! The radius of the sphere

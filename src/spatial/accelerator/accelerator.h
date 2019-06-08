@@ -24,9 +24,7 @@
 
 exrBEGIN_NAMESPACE
 
-struct Interaction;
-
-//! @brief Defines the base class for shape and spacial accelerators
+//! @brief Defines the base class for hierarchial and spacial accelerators
 //!
 //! TODO: Add description
 class Accelerator
@@ -34,16 +32,25 @@ class Accelerator
 public:
     //! @brief Test the accelerator for intersections with a ray
     //! 
-    //! Do intersection tests with a segment of a ray in the domain
-    //! of tMin and tMax, against the accelerator. 
+    //! Test all geometry for intersection with the ray, and outputs the surface
+    //! intersection data in <interaction> 
     //! 
     //! @param ray              The ray to test against
-    //! @param tMin             Min t value of ray to test
-    //! @param tMax             Max t value of ray to test
     //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there are any intersections
-    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const = 0;
+    virtual exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const = 0;
+
+    //! @brief Test the accelerator for intersections with a ray
+    //! 
+    //! This function allows us to do intersection tests with a segment of a ray, but
+    //! does not initialize interaction or hit info. Useful for when checking if a ray
+    //! is obstructed, such as with shadow rays
+    //! 
+    //! @param ray              The ray to test against
+    //! 
+    //! @return                 True if the there is an intersection
+    virtual exrBool HasIntersect(const Ray& ray) const = 0;
 };
 
 exrEND_NAMESPACE

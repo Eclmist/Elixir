@@ -81,6 +81,6 @@ public:
     std::unique_ptr<Shape> m_Shape;
     std::unique_ptr<Material> m_Material;
     std::unique_ptr<AreaLight> m_AreaLight;
-}
+};
 
 exrEND_NAMESPACE

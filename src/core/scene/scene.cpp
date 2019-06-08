@@ -19,25 +19,27 @@
 */
 
 #include "scene.h"
-#include "accelerator/bvh.h"
+#include "spatial/accelerator/bvh.h"
+#include "light/arealight.h"
 
 exrBEGIN_NAMESPACE
 
-void Scene::AddShape(std::unique_ptr<Shape> shape)
+void Scene::AddPrimitive(std::unique_ptr<Primitive> primitive)
 {
-    m_Shapes.push_back(std::move(shape));
+    m_Primitives.push_back(std::move(primitive));
+
+    // If primitive is an area light, add it to the lights collection
+    const AreaLight* primitiveLight = primitive->GetAreaLight();
+    if (primitiveLight) 
+        AddLight(std::make_shared<AreaLight>(primitiveLight));
+
     m_IsDirty = true;
 }
 
-void Scene::AddEmissiveShape(std::unique_ptr<Shape> emissiveShape)
+void Scene::AddLight(std::shared_ptr<Light> light)
 {
-    m_EmissiveShapes.push_back(std::move(emissiveShape));
+    m_Lights.push_back(light);
     m_IsDirty = true;
-}
-
-exrBool Scene::RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hitInfo) const
-{
-    return m_Accelerator->Intersect(ray, tMin, tMax, hitInfo);
 }
 
 void Scene::InitAccelerator()
@@ -46,20 +48,15 @@ void Scene::InitAccelerator()
     {
         exrProfile("Building BVH Tree")
 
-            std::vector<Shape*> shapePtrs;
+        std::vector<Primitive*> primitivePtrs;
 
         // shallow copy pointer values to be used by bvh accel
-        for (exrU32 i = 0; i < m_Shapes.size(); i++)
+        for (exrU32 i = 0; i < m_Primitives.size(); i++)
         {
-            shapePtrs.push_back(m_Shapes[i].get());
+            primitivePtrs.push_back(m_Primitives[i].get());
         }
 
-        for (exrU32 i = 0; i < m_EmissiveShapes.size(); i++)
-        {
-            shapePtrs.push_back(m_EmissiveShapes[i].get());
-        }
-
-        m_Accelerator = std::make_unique<BVHAccelerator>(shapePtrs);
+        m_Accelerator = std::make_unique<BVHAccelerator>(primitivePtrs);
         m_IsDirty = false;
         exrEndProfile()
     }

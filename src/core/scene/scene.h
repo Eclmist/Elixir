@@ -21,61 +21,50 @@
 #pragma once
 
 #include "core/elixir.h"
-#include "accelerator/accelerator.h"
-#include "shape/shape.h"
-
-class Accelerator;
-struct Interaction;
+#include "light/light.h"
+#include "primitive/primitive.h"
+#include "spatial/accelerator/accelerator.h"
 
 exrBEGIN_NAMESPACE
 
-//! @brief A scene object that owns a collection of shapes
+//! @brief A scene object that owns a collection of primitives
 //! 
-//! A scene class that contains a collection of shapes and various helper functions
+//! A scene class that contains a collection of primitives and various helper functions
 //! to interact with the collection.
 class Scene
 {
 public:
-    //! @brief Adds a shape to the scene
+    //! @brief Adds a primitive to the scene
     //! 
-    //! This function adds a new shape to the scene's shape collection
+    //! This function adds a new primitive to the scene's primitive collection
     //! 
-    //! @param shape           A pointer to the shape
-    void AddShape(std::unique_ptr<Shape> shape);
+    //! @param primitive        A pointer to the primitive
+    void AddPrimitive(std::unique_ptr<Primitive> primitive);
 
-    //! @brief Adds a emissive shape to the scene
+    //! @brief Adds a light to the scene
     //! 
-    //! This function adds a emissive shape to the scene's shape collection
-    //! Emissive shapes will be importance sampled
+    //! This function adds a light to the scene's light collection
+    //! Lights will be importance sampled
     //! 
-    //! @param shape           A pointer to the shape
-    void AddEmissiveShape(std::unique_ptr<Shape> emissiveShape);
-
-    //! @brief Raytrace through the scene and returns the info of the nearest interaction point
-    //! 
-    //! This function and executes an intersection test with the scene objects
-    //! with the input ray.
-    //! 
-    //! @param ray              The ray to test against
-    //! @param tMin             Min t value of ray to test
-    //! @param tMax             Max t value of ray to test
-    //! @param interaction      Output struct that contains the interaction information of the nearest interaction point
-    //! 
-    //! @return                 True if the there is at least one intersection
-    exrBool RaytraceScene(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const;
+    //! @param light            A pointer to the light
+    void AddLight(std::shared_ptr<Light> light);
 
     //! @brief Initializes the scene's accelerator if it has yet to be initialized or needs to be updated
     void InitAccelerator();
 
 public:
-    //! @brief Returns the number of shape in the scene
-    //! @return                 The number of shapes in the scene
-    inline exrU64 GetSceneSize() const { return static_cast<exrU64>(m_Shapes.size()); }
+    //! @brief Returns the number of primitive in the scene
+    //! @return                 The number of primitives in the scene
+    inline exrU64 GetSceneSize() const { return static_cast<exrU64>(m_Primitives.size()); }
 
+public:
+    //! A collection of pointers that points to primitives in the scene
+    std::vector<std::unique_ptr<Primitive>> m_Primitives;
+
+    //! A collection of pointers that points to lights in the scene
+    //! Shared ptr because lights could be either owned by the scene or by primitives
+    std::vector<std::shared_ptr<Light>> m_Lights;
 private:
-    //! A collection of pointers that points to shapes in the scene
-    std::vector<std::unique_ptr<Shape>> m_Shapes;
-
     //! The accelerator to use
     std::unique_ptr<Accelerator> m_Accelerator;
 
