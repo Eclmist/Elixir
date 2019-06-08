@@ -21,9 +21,9 @@
 #pragma once
 
 #include "core/elixir.h"
-#include "core/aabb.h"
-#include "material/material.h"
-#include "math/transform.h"
+#include "primitive/transform.h"
+#include "spatial/aabb.h"
+#include "bsdf/material.h"
 
 exrBEGIN_NAMESPACE
 

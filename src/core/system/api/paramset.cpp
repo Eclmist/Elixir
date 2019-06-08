@@ -87,7 +87,7 @@ void ParamSet::AddVector3(const exrString& key, const exrVector3* val, exrU32 nu
     m_Vector3s.emplace_back(std::make_unique<ParamSetItem<exrVector3>>(key, std::move(val), numVals));
 }
 
-#define REMOVE_PARAM(item, key)                      \
+#define REMOVE_PARAM(item, key)                     \
     for (exrU32 i = 0; i < item.size(); i++)        \
     {                                               \
         if (item[i]->m_Key == key)                  \
@@ -145,7 +145,7 @@ exrBool ParamSet::RemoveVector3(const exrString& key)
 
 #undef REMOVE_PARAM
 
-#define FIND_FIRST_ITEM(T, item, key, d)              \
+#define FIND_FIRST_ITEM(T, item, key, d)            \
     for (exrU32 i = 0; i < item.size(); i++)        \
     {                                               \
         if (item[i]->m_Key == key)                  \

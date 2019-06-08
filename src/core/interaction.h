@@ -24,38 +24,53 @@
 
 exrBEGIN_NAMESPACE
 
-class Material;
+class BSDF;
+class Primitive;
 
 //! A struct that contains information about the local differential geometry
 //! at intersection points.
 struct Interaction
 {
     //! Default Constructor
-    Interaction() 
-        : m_Time(0) {};
+    Interaction() {};
 
     //! Constructor
-    Interaction(const exrPoint3& point, const exrVector3& normal, const exrVector3& wo, float time, Material* material)
+    Interaction(const exrPoint3& point, const exrVector3& normal, const exrVector3& wo)
         : m_Point(point)
         , m_Normal(normal)
-        , m_RadianceDirection(wo)
-        , m_Time(time)
-        , m_Material(material) {};
-
-    //! The ray's t value at the point of intersection
-    float m_Time;
+        , m_Wo(wo) {};
 
     //! The point of intersection
     exrPoint3 m_Point;
 
-    //! The negative ray direction, Wo
-    exrVector3 m_RadianceDirection;
+    //! The outgoing light direction Wo
+    exrVector3 m_Wo;
 
     //! The normal of the surface at the point of intersection
     exrVector3 m_Normal;
+};
 
-    //! A pointer to the material of the surface at the point of intersection
-    Material* m_Material;
+class SurfaceInteraction : public Interaction
+{
+public:
+    SurfaceInteraction() {};
+    SurfaceInteraction(const exrPoint3& point, const exrVector3& normal, const exrPoint2& uv, const exrVector3& wo, const Primitive* primitive)
+        : Interaction(point, normal, wo)
+        , m_Primitive(primitive)
+        , m_UV(uv)
+        , m_BSDF() {};
+
+    exrVector3 GetEmission(const exrVector3& wo) const;
+
+public:
+    //! A reference to the primitive that the interaction lies on
+    const Primitive* m_Primitive = nullptr;
+    
+    //! The BSDF of the surface
+    const BSDF* m_BSDF = nullptr;
+
+    //! The UV coordinate of the shape at the point of intersection
+    exrPoint2 m_UV;
 };
 
 exrEND_NAMESPACE

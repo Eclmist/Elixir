@@ -19,6 +19,9 @@
 */
 
 #include "core/elixir.h"
+#include "core/system/api/api.h"
+
+using namespace elixir;
 
 void PrintUsage(const exrChar* msg = nullptr)
 {
@@ -34,12 +37,11 @@ void PrintUsage(const exrChar* msg = nullptr)
     cout << "   -t, --numthreads            Specify the number of rendering threads to use" << endl;
     cout << "   -o, --out <fname>           Write the output image to a specified filename" << endl;
     cout << "   -q, --quick                 Reduce output quality for quick render" << endl;
+    cout << "   -d, --debug                 Render debug scene defined in code. To be deprecated." << endl;
     cout << "Logging Options: " << endl;
     cout << "   --quiet                     Suppress all non-error messages" << endl;
     cout << "For documentations, please refer to http://docs.elixir.moe/" << endl;
 }
-
-using namespace elixir;
 
 exrU32 main(exrU32 argc, exrChar *argv[])
 {
@@ -55,8 +57,10 @@ exrU32 main(exrU32 argc, exrChar *argv[])
             options.outputFile = argv[++i];
         else if (!strcmp(argv[i], "--quick") || !strcmp(argv[i], "-q"))
             options.quickRender = true;
-        else if (!strcmp(argv[i], "--verbose") || !strcmp(argv[i], "-v"))
-            options.quiet = argv[++i];
+        else if (!strcmp(argv[i], "--quiet"))
+            options.quiet = true;
+        else if (!strcmp(argv[i], "--debug") || !strcmp(argv[i], "-d"))
+            options.debug = true;
         else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h"))
             PrintUsage();
         else 
@@ -66,16 +70,15 @@ exrU32 main(exrU32 argc, exrChar *argv[])
     ElixirInit(options);
 
     // Process scene description
-    if (filenames.size() == 0)
+    if (filenames.size() == 0 || options.debug)
     {
-        ParseFile("-");
+        ElixirParseFile("-");
     }
     else
     {
         for (const exrString& f : filenames)
         {
-            if (!ParseFile(f))
-                exrError("Unable to parse scene file \"" << f.c_str() << "\"");
+            ElixirParseFile(f);
         }
     }
 

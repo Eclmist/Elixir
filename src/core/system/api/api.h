@@ -25,8 +25,18 @@
 /*
     API function declarations
     Make sure to increment API version when there are changes
-    Format: Major.Minor.Patch
+    Format: Major.Minor.Patch-PreleaseID
     For more versioning information, see <https://semver.org/>
 */
+#define EXR_VERSION_MAJOR 0
+#define EXR_VERSION_MINOR 1
+#define EXR_VERSION_PATCH 0
+#define EXR_VERSION_PRERELEASEID "dev" 
 
+exrBEGIN_NAMESPACE
 
+void ElixirInit(const Options& options);
+void ElixirCleanup();
+
+void ElixirParseFile(const exrString& filename);
+exrEND_NAMESPACE

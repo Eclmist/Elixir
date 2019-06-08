@@ -59,6 +59,7 @@ struct Options
     exrString       outputFile;
     exrBool         quickRender;
     exrBool         quiet;
+    exrBool         debug;
 };
 
 exrEND_NAMESPACE
