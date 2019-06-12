@@ -69,7 +69,7 @@ public:
     //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there are any intersections
-    virtual exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const override;
+    exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const override;
 
     //! @brief Test the bvh for intersections with a ray
     //! 
@@ -80,7 +80,7 @@ public:
     //! @param ray              The ray to test against
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool HasIntersect(const Ray& ray) const override;
+    exrBool HasIntersect(const Ray& ray) const override;
 
 private:
     //! @brief A recursive function to recursively traverse nodes and check for intersection

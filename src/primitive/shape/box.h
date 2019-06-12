@@ -38,8 +38,8 @@ public:
     Box(const exrPoint3& position, const exrVector3& scale, const exrVector3& rotation, std::unique_ptr<Material> material);
 
     // Temp: just to allow compile
-    virtual Interaction Sample(const exrPoint2& u) const override;
-    virtual exrFloat GetArea() const override;
+    Interaction Sample(const exrPoint2& u) const override;
+    exrFloat GetArea() const override;
 
     //! @brief Test the box for intersections with a ray
     //! 
@@ -52,14 +52,14 @@ public:
     //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const override;
+    exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const override;
 
     //! @brief Computes a bounding volume
     //! 
     //! Computes the a bounding volume that encapsulates the current box.
     //! 
     //! @return                 Always return true since bounding volumes can be created for quads
-    virtual exrBool ComputeBoundingVolume() override;
+    exrBool ComputeBoundingVolume() override;
 
 public:
     //! Sides of the boxes, internally handled as quads

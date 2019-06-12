@@ -22,7 +22,7 @@
 
 exrBEGIN_NAMESPACE
 
-bool Quad::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& hit) const
+exrBool Quad::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const
 {
     Ray localRay = m_Transform.GetInverseMatrix() * ray;
 
@@ -63,7 +63,7 @@ exrFloat Quad::GetArea() const
     return m_HalfExtents.x * m_HalfExtents.y * 4;
 }
 
-bool Quad::ComputeBoundingVolume()
+exrBool Quad::ComputeBoundingVolume()
 {
     exrPoint3 globalMin = m_Transform.GetMatrix() * m_HalfExtents;
     exrPoint3 globalMax = m_Transform.GetMatrix() * -m_HalfExtents;

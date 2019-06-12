@@ -45,7 +45,8 @@ exrBool Sphere::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* hi
     hit->m_Point = m_Transform.GetMatrix() * localRay(t0);
     // Normal vectors on sphere do not have to be transformed as sphere have no rotation and only uniform scale
     hit->m_Normal = static_cast<exrVector3>(localRay(t0)) / m_Radius;
-    hit->m_BSDF = m_Material.get();
+    hit->m_Wo = -ray.m_Direction;
+    hit->m_BSDF = m_Material.CreateB;
 
     return true;
 }

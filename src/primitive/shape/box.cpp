@@ -90,7 +90,7 @@ Box::Box(const exrPoint3& position, const exrVector3& scale, const exrVector3& r
     ComputeBoundingVolume();
 }
 
-bool Box::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const
+exrBool Box::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const
 {
     exrBool hasIntersect = false;
     Ray localRay = m_Transform.GetInverseMatrix() * ray;
@@ -110,7 +110,7 @@ bool Box::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& i
     return hasIntersect;
 }
 
-bool Box::ComputeBoundingVolume()
+exrBool Box::ComputeBoundingVolume()
 {
     exrPoint3 realMin(MaxFloat);
     exrPoint3 realMax(MinFloat);

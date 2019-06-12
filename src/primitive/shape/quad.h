@@ -48,16 +48,27 @@ public:
 
     //! @brief Test the box for intersections with a ray
     //! 
-    //! This function allows us to do intersection tests with a segment of a ray in the domain
-    //! of tMin and tMax
+    //! This function allows us to do intersection tests with a segment of a ray, and
+    //! outputs the interaction info into <interaction>
     //! 
     //! @param ray              The ray to test against
-    //! @param tMin             Min t value of ray to test
-    //! @param tMax             Max t value of ray to test
+    //! @param tHit             The t value of ray at the point of intersection, if any
     //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const override;
+    exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const override;
+
+    //! @brief Test the geometry for intersections with a ray
+    //! 
+    //! This function allows us to do intersection tests with a segment of a ray, but
+    //! does not initialize interaction or hit info. Useful for when checking if a ray
+    //! is obstructed, such as with shadow rays
+    //! 
+    //! @param ray              The ray to test against
+    //! @param tHit             The t value of ray at the point of intersection, if any
+    //! 
+    //! @return                 True if the there is an intersection
+    exrBool HasIntersect(const Ray& ray, exrFloat& tHit) const override;
 
     //! @brief Samples a point on the surface of the quad
     //!
@@ -68,7 +79,7 @@ public:
     //! @param u                The sampled point
     //!
     //! @return                 The interaction at the sampled point
-    virtual Interaction Sample(const exrPoint2& u) const override;
+    Interaction Sample(const exrPoint2& u) const override;
 
     //! @brief Returns the total surface area of the quad
     //!
@@ -76,14 +87,14 @@ public:
     //! calculations
     //!
     //! @return                 The total surface area of the quad
-    virtual exrFloat GetArea() const override;
+    exrFloat GetArea() const override;
 
     //! @brief Computes a bounding volume
     //! 
     //! Computes the a bounding volume that encapsulates the current box.
     //! 
     //! @return                 Always return true since bounding volumes can be created for quads
-    virtual exrBool ComputeBoundingVolume() override;
+    exrBool ComputeBoundingVolume() override;
 
 public:
     exrPoint3 m_HalfExtents;

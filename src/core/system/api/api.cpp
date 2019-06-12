@@ -37,7 +37,8 @@ enum class APIState
 {
     APISTATE_UNINITIALIZED,     // Before ElixirInit() or after ElixirCleanup(). No API calls are legal.
     APISTATE_CONFIGURATION,     // Scene-wide global options can be set
-    APISTATE_SCENESETUP,        // Scene may be described
+    APISTATE_SCENE_SETUP,       // Scene may be described
+    APISTATE_RENDERING          // Currently rendering scene. No API calls are legal.
 };
 
 static APIState CurrentAPIState = APIState::APISTATE_UNINITIALIZED;
@@ -74,7 +75,7 @@ void ElixirCleanup()
 void ElixirParseFile(const exrString& filename)
 {
     if (filename == "-")
-
+        
     else
         exrError("Scene file parsing is not yet implemented!");
 }

@@ -39,4 +39,8 @@ void ElixirInit(const Options& options);
 void ElixirCleanup();
 
 void ElixirParseFile(const exrString& filename);
+void ElixirSetupRenderOptions();
+void ElixirSetupScene(const exrString& fileName);
+
+void ElixirRender();
 exrEND_NAMESPACE

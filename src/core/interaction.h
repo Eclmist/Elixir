@@ -54,23 +54,19 @@ class SurfaceInteraction : public Interaction
 {
 public:
     SurfaceInteraction() {};
-    SurfaceInteraction(const exrPoint3& point, const exrVector3& normal, const exrPoint2& uv, const exrVector3& wo, const Primitive* primitive)
+    SurfaceInteraction(const exrPoint3& point, const exrVector3& normal, const exrVector3& wo, const Primitive* primitive)
         : Interaction(point, normal, wo)
         , m_Primitive(primitive)
-        , m_UV(uv)
-        , m_BSDF() {};
+        , m_BSDF(nullptr) {};
 
     exrVector3 GetEmission(const exrVector3& wo) const;
 
 public:
+    //! The BRDF of the surface
+    std::unique_ptr<BSDF> m_BSDF = nullptr;
+
     //! A reference to the primitive that the interaction lies on
     const Primitive* m_Primitive = nullptr;
-    
-    //! The BSDF of the surface
-    const BSDF* m_BSDF = nullptr;
-
-    //! The UV coordinate of the shape at the point of intersection
-    exrPoint2 m_UV;
 };
 
 exrEND_NAMESPACE

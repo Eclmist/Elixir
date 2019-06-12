@@ -48,7 +48,7 @@ public:
     //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const override;
+    exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const override;
 
     //! @brief Test the sphere for intersections with a ray
     //! 
@@ -60,7 +60,7 @@ public:
     //! @param tHit             The t value of ray at the point of intersection, if any
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool HasIntersect(const Ray& ray, exrFloat& tHit) const override;
+    exrBool HasIntersect(const Ray& ray, exrFloat& tHit) const override;
 
     //! @brief Samples a point on the surface of the sphere
     //!
@@ -71,7 +71,7 @@ public:
     //! @param u                I don't know what this does or why PBRT uses this, fuck it i'm leaving it here because maybe years later I would look back and go "ohhhhhh" that's what "u" was used for. But in the meantime I'm just gonna ignore all that and do it the naive way.
     //!
     //! @return                 The interaction at the sampled point
-    virtual Interaction Sample(const exrPoint2& u) const override;
+    Interaction Sample(const exrPoint2& u) const override;
 
     //! @brief Returns the total surface area of the sphere
     //!
@@ -79,14 +79,14 @@ public:
     //! calculations
     //!
     //! @return                 The total surface area of the sphere
-    virtual exrFloat GetArea() const override;
+    exrFloat GetArea() const override;
 
     //! @brief Computes a bounding volume
     //! 
     //! Computes the a bounding volume that encapsulates the current sphere.
     //! 
     //! @return                 Always return true since bounding volumes can be created for spheres
-    virtual AABB ComputeBoundingVolume() override;
+    AABB ComputeBoundingVolume() override;
 
 private:
     //! The radius of the sphere
