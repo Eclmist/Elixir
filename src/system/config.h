@@ -18,29 +18,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+    DO NOT EDIT: This is a CMake auto generated file
+    CMake configurations can be defined here, but all other changes may be lost!
+*/
+
 #pragma once
 
-#include "core/elixir.h"
-
-/*
-    API function declarations
-    Make sure to increment API version when there are changes
-    Format: Major.Minor.Patch-PreleaseID
-    For more versioning information, see <https://semver.org/>
-*/
-#define EXR_VERSION_MAJOR 0
-#define EXR_VERSION_MINOR 1
-#define EXR_VERSION_PATCH 0
-#define EXR_VERSION_PRERELEASEID "dev" 
-
-exrBEGIN_NAMESPACE
-
-void ElixirInit(const Options& options);
-void ElixirCleanup();
-
-void ElixirParseFile(const exrString& filename);
-void ElixirSetupRenderOptions();
-void ElixirSetupScene(const exrString& fileName);
-
-void ElixirRender();
-exrEND_NAMESPACE
+#define EXR_PLATFORM_NAME				"Windows"
+#define EXR_PLATFORM_WIN
+/* #undef EXR_PLATFORM_MAC */
+/* #undef EXR_PLATFORM_LINUX */
+#define EXR_USE_NAMESPACE

@@ -21,14 +21,29 @@
 #pragma once
 
 #include "api.h"
+#include "camera.h"
+#include "scene.h"
 
 exrBEGIN_NAMESPACE
 
 /* ==========================================================================
     Global API Settings
 */
-Options ElixirRuntimeOptions;
+ElixirOptions ElixirRuntimeOptions;
 
+/* ==========================================================================
+    API Local Classes
+*/
+struct RenderJob
+{
+    // Integrator
+    // Scene
+    Scene* CreateScene();
+    Camera* CreateCamera();
+    // Camera (type + transform)
+    // Accelerator
+
+};
 
 /* ==========================================================================
     API Static Data
@@ -36,34 +51,39 @@ Options ElixirRuntimeOptions;
 enum class APIState
 {
     APISTATE_UNINITIALIZED,     // Before ElixirInit() or after ElixirCleanup(). No API calls are legal.
-    APISTATE_CONFIGURATION,     // Scene-wide global options can be set
-    APISTATE_SCENE_SETUP,       // Scene may be described
+    APISTATE_SETUP_OPTION,      // Scene-wide global options can be set
+    APISTATE_SETUP_SCENE,       // Scene may be described
     APISTATE_RENDERING          // Currently rendering scene. No API calls are legal.
 };
 
 static APIState CurrentAPIState = APIState::APISTATE_UNINITIALIZED;
-
+static std::unique_ptr<RenderJob> CurrentRenderJob = nullptr;
 
 /* ==========================================================================
     API Macros
 */
-#define VERIFY_INITIALIZED(func)                                            \
-    if (CurrentAPIState == APIState::APISTATE_UNINITIALIZED) {              \
-        exrError("ElixirInit() must be called before " << func << "()!");   \
-        return;                                                             \
-    }                                                                       \
+#define VERIFY_UNINITIALIZED(func)\
+    if (CurrentAPIState != APIState::APISTATE_UNINITIALIZED) {\
+        exrError(func << "() must be called before ElixirInit()!");\
+        return;\
+    }\
+
+#define VERIFY_INITIALIZED(func)\
+    if (CurrentAPIState == APIState::APISTATE_UNINITIALIZED) {\
+        exrError("ElixirInit() must be called before " << func << "()!");\
+        return;\
+    }\
 
 /* ==========================================================================
     API Function definitions
 */
-void ElixirInit(const Options& options)
+void ElixirInit(const ElixirOptions& options)
 {
-    ElixirRuntimeOptions = options;
-
     if (CurrentAPIState != APIState::APISTATE_UNINITIALIZED)
         exrError("ElixirInit() has already been called!");
 
-    CurrentAPIState = APIState::APISTATE_CONFIGURATION;
+    ElixirRuntimeOptions = options;
+    CurrentAPIState = APIState::APISTATE_SETUP_OPTION;
 }
 
 void ElixirCleanup()
@@ -75,9 +95,19 @@ void ElixirCleanup()
 void ElixirParseFile(const exrString& filename)
 {
     if (filename == "-")
-        
-    else
-        exrError("Scene file parsing is not yet implemented!");
+        ElixirSetupDemo();
+
+    exrError("Scene file parsing is not yet implemented!");
 }
 
+void ElixirSetupDemo()
+{
+    CurrentRenderJob = std::make_unique<RenderJob>();
+    CurrentRenderJob->
+}
+
+void ElixirRender()
+{
+    
+}
 exrEND_NAMESPACE

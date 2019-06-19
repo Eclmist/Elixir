@@ -20,46 +20,31 @@
 
 #pragma once
 
-#define EXR_ENABLE_LOGGING
-#define EXR_ENABLE_ERRORS
-#define EXR_ENABLE_ASSERTS
-
-// The order of the following includes matter!
-#include <memory>
-#include <vector>
-#include <math.h>
-#include <atomic>
-#include <condition_variable>
-#include <mutex>
-
-#include "system/config.h"
-#include "system/error.h"
-#include "system/utils.h"
-#include "system/types.h"
-#include "system/parallel.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/vector2.h"
-#include "math/vector3.h"
-#include "math/point2.h"
-#include "math/point3.h"
-#include "math/matrix4x4.h"
-
-#include "sampling/random.h"
-
-#include "core/ray.h"
-#include "core/interaction.h"
-
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class AtomicFloat
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    explicit AtomicFloat(exrFloat v = 0) { bits = FloatToBits(v); }
+    operator exrFloat() const { return BitsToFloat(bits); }
+    exrFloat operator=(exrFloat v)
+    {
+        bits = FloatToBits(v);
+        return v;
+    }
+    void Add(exrFloat v)
+    {
+        exrU32 oldBits = bits, newBits;
+
+        do
+        {
+            newBits = FloatToBits(BitsToFloat(oldBits) + v);
+        } while (!bits.compare_exchange_weak(oldBits, newBits));
+    }
+
+private:
+    std::atomic<exrU32> bits;
 };
+
 
 exrEND_NAMESPACE

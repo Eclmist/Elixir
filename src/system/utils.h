@@ -25,7 +25,6 @@
 // has been found in an include file used by the source file.
 // error C2872: 'inElixirNamespace' : ambiguous symbol
 // To help you find the source, you should activate the display of file inclusion in advanced C++ settings of the project.
-
 #ifdef EXR_USE_NAMESPACE
 enum { InElixirNamespace = false };
 namespace elixir { enum { InElixirNamespace = true }; }
@@ -36,4 +35,16 @@ namespace elixir { enum { InElixirNamespace = true }; }
 #define exrEND_NAMESPACE        ((void)0)
 #endif
 
-#define exrTest                 {}
+inline uint32_t FloatToBits(float f)
+{
+    uint32_t ui;
+    memcpy(&ui, &f, sizeof(float));
+    return ui;
+}
+
+inline float BitsToFloat(uint32_t ui)
+{
+    float f;
+    memcpy(&f, &ui, sizeof(uint32_t));
+    return f;
+}

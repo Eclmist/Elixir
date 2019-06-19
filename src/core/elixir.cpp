@@ -19,7 +19,7 @@
 */
 
 #include "core/elixir.h"
-#include "core/system/api/api.h"
+#include "api/api.h"
 
 using namespace elixir;
 
@@ -29,7 +29,7 @@ void PrintUsage(const exrChar* msg = nullptr)
         fprintf(stderr, "elixir: %s\n\n", msg);
 
     using namespace std;
-    cout << "Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH;
+    cout << "Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH << EXR_VERSION_PRERELEASEID;
     cout << ", Copyright (c) 2019 Samuel Van Allen" << endl << endl;
     cout << "Usage: elixir [options] <One or more scene files>" << endl << endl;
     cout << "Rendering Options: " << endl;
@@ -45,14 +45,14 @@ void PrintUsage(const exrChar* msg = nullptr)
 
 exrU32 main(exrU32 argc, exrChar *argv[])
 {
-    Options options;
+    ElixirOptions options;
     std::vector<exrString> filenames;
 
     // Process command-line arguments
     for (exrU32 i = 1; i < argc; ++i)
     {
         if (!strcmp(argv[i], "--numthreads") || !strcmp(argv[i], "-t"))
-            options.numThreads == atoi(argv[++i]);
+            options.numThreads = atoi(argv[++i]);
         else if (!strcmp(argv[i], "--out") || !strcmp(argv[i], "-o"))
             options.outputFile = argv[++i];
         else if (!strcmp(argv[i], "--quick") || !strcmp(argv[i], "-q"))

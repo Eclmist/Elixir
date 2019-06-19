@@ -20,46 +20,38 @@
 
 #pragma once
 
-#define EXR_ENABLE_LOGGING
-#define EXR_ENABLE_ERRORS
-#define EXR_ENABLE_ASSERTS
-
-// The order of the following includes matter!
-#include <memory>
-#include <vector>
-#include <math.h>
-#include <atomic>
-#include <condition_variable>
-#include <mutex>
-
-#include "system/config.h"
-#include "system/error.h"
-#include "system/utils.h"
-#include "system/types.h"
-#include "system/parallel.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/vector2.h"
-#include "math/vector3.h"
-#include "math/point2.h"
-#include "math/point3.h"
-#include "math/matrix4x4.h"
-
-#include "sampling/random.h"
-
-#include "core/ray.h"
-#include "core/interaction.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+//! @brief A class writes the final image output of the renderer to a file
+class Film
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    Film(const Point2<exrU32>& resolution, const exrString& filename, exrBool stampFile = true)
+        : m_Resolution(resolution)
+        , m_FileName(filename)
+        , m_StampFile(stampFile) {}
+
+    void AddSplat(const exrPoint2& point, const exrVector3& value);
+    void WriteImage(exrFloat splatScale);
+
+
+private:
+    struct Pixel
+    {
+        exrFloat m_FilterWeightSum = 0;
+        AtomicFloat m_SplatRGB[3];
+    };
+
+    Pixel& GetPixel(const Point2<exrU32>& point);
+
+private:
+    std::unique_ptr<Pixel[]> m_Pixels;
+
+    Point2<exrU32> m_Resolution;
+    exrString m_FileName;
+    exrBool m_StampFile;
 };
 
 exrEND_NAMESPACE

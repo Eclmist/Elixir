@@ -37,11 +37,6 @@ set(CMAKE_SUPPRESS_REGENERATION true)
 set ( EXR_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
 set ( EXR_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} )
 
-# Set the project version, semver style
-set ( EXR_VERSION_MAJOR 0 CACHE STRING "Elixir major version" )
-set ( EXR_VERSION_MINOR 1 CACHE STRING "Elixir minor version" )
-set ( EXR_VERSION_PATCH 32 CACHE STRING "Elixir patch version" )
-
 # Setting on project generation
 SET ( EXR_USE_NAMESPACE "YES" CACHE BOOL "Enable generating Elixir namespace. This is true by default." )
 
@@ -65,8 +60,8 @@ endif ()
 
 # Send the variables to the source code header
 configure_file (
-    "${PROJECT_SOURCE_DIR}/src/core/system/config.h.in"
-    "${PROJECT_SOURCE_DIR}/src/core/system/config.h"
+    "${PROJECT_SOURCE_DIR}/src/system/config.h.in"
+    "${PROJECT_SOURCE_DIR}/src/system/config.h"
 )
 
 # Enable multi-thread compiling on Windows.
