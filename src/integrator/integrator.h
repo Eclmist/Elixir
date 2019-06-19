@@ -43,8 +43,6 @@ protected:
 
 private:
     std::unique_ptr<Sampler> m_Sampler;
-
-    //! The camera to render from
     std::unique_ptr<Camera> m_Camera;    
 };
 

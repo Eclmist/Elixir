@@ -42,9 +42,9 @@ exrBool GeometricPrimitive::Intersect(const Ray& ray, SurfaceInteraction* intera
     return true;
 }
 
-exrBool GeometricPrimitive::HasIntersect(const Ray& r) const
+exrBool GeometricPrimitive::HasIntersect(const Ray& r, exrFloat& tHit) const
 {
-    return m_Shape->HasIntersect(r);
+    return m_Shape->HasIntersect(r, tHit);
 }
 
 exrEND_NAMESPACE

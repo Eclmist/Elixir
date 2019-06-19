@@ -24,14 +24,9 @@
 
 exrBEGIN_NAMESPACE
 
-class Ray;
-
 class Material
 {
 public:
-
-    virtual void GetScatteringFunctions(const SurfaceIntera)
-
     virtual exrBool Scatter(const Ray& in, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const
     {
         return false;

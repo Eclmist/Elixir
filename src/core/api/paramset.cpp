@@ -87,15 +87,15 @@ void ParamSet::AddVector3(const exrString& key, const exrVector3* val, exrU32 nu
     m_Vector3s.emplace_back(std::make_unique<ParamSetItem<exrVector3>>(key, std::move(val), numVals));
 }
 
-#define REMOVE_PARAM(item, key)                     \
-    for (exrU32 i = 0; i < item.size(); i++)        \
-    {                                               \
-        if (item[i]->m_Key == key)                  \
-        {                                           \
-            item.erase(item.begin() + i);           \
-            return true;                            \
-        }                                           \
-    }                                               \
+#define REMOVE_PARAM(item, key)\
+    for (exrU32 i = 0; i < item.size(); i++)\
+    {\
+        if (item[i]->m_Key == key)\
+        {\
+            item.erase(item.begin() + i);\
+            return true;\
+        }\
+    }\
     return false;
 
 exrBool ParamSet::RemoveBool(const exrString& key)
@@ -145,15 +145,15 @@ exrBool ParamSet::RemoveVector3(const exrString& key)
 
 #undef REMOVE_PARAM
 
-#define FIND_FIRST_ITEM(T, item, key, d)            \
-    for (exrU32 i = 0; i < item.size(); i++)        \
-    {                                               \
-        if (item[i]->m_Key == key)                  \
-        {                                           \
-            item[i]->m_LookedUp = true;             \
-            return item[i]->m_Values[0];            \
-        }                                           \
-    }                                               \
+#define FIND_FIRST_ITEM(T, item, key, d)\
+    for (exrU32 i = 0; i < item.size(); i++)\
+    {\
+        if (item[i]->m_Key == key)\
+        {\
+            item[i]->m_LookedUp = true;\
+            return item[i]->m_Values[0];\
+        }\
+    }\
     return d;
 
 
@@ -204,16 +204,16 @@ exrVector3 ParamSet::FindFirstVector3(const exrString& key, exrVector3 d) const
 
 #undef FIND_FIRST_ITEM
 
-#define FIND_ITEM(T, item, key, num)                \
-    for (exrU32 i = 0; i < item.size(); i++)        \
-    {                                               \
-        if (item[i]->m_Key == key)                  \
-        {                                           \
-            item[i]->m_LookedUp = true;             \
-            *num = item[i]->m_NumValues;            \
-            return item[i]->m_Values.get();         \
-        }                                           \
-    }                                               \
+#define FIND_ITEM(T, item, key, num)\
+    for (exrU32 i = 0; i < item.size(); i++)\
+    {\
+        if (item[i]->m_Key == key)\
+        {\
+            item[i]->m_LookedUp = true;\
+            *num = item[i]->m_NumValues;\
+            return item[i]->m_Values.get();\
+        }\
+    }\
     return nullptr;
 
 exrBool* ParamSet::FindBool(const exrString& key, exrU32* num) const
@@ -265,9 +265,9 @@ exrVector3* ParamSet::FindVector3(const exrString& key, exrU32* num) const
 
 void ParamSet::ReportUnused() const
 {
-#define CHECK_UNUSED(v)                            \
-    for (exrU32 i = 0; i < (v).size(); ++i)        \
-        if (!(v)[i]->m_LookedUp)                   \
+#define CHECK_UNUSED(v)\
+    for (exrU32 i = 0; i < (v).size(); ++i)\
+        if (!(v)[i]->m_LookedUp)\
             exrWarningLine("Parameter "<< (v)[i]->m_Key.c_str() << " not used");
 
     CHECK_UNUSED(m_Booleans);

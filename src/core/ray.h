@@ -39,7 +39,7 @@ public:
     //! @param origin           The origin of the ray in world space
     //! @param direction        The normalized direction of the ray
     //! @param tmax             The maximum ray distance
-    Ray(const exrPoint3& origin, const exrVector3& direction, exrFloat tmax)
+    Ray(const exrPoint3& origin, const exrVector3& direction, exrFloat tmax = MaxFloat)
         : m_Origin(origin)
         , m_Direction(direction.Normalized())
         , m_TMax(tmax) {};

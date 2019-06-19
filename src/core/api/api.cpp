@@ -21,8 +21,8 @@
 #pragma once
 
 #include "api.h"
-#include "camera.h"
-#include "scene.h"
+#include "camera/camera.h"
+#include "scene/scene.h"
 
 exrBEGIN_NAMESPACE
 
@@ -36,13 +36,16 @@ ElixirOptions ElixirRuntimeOptions;
 */
 struct RenderJob
 {
-    // Integrator
-    // Scene
-    Scene* CreateScene();
-    Camera* CreateCamera();
-    // Camera (type + transform)
-    // Accelerator
+    Scene* MakeScene();
+    Camera* MakeCamera();
 
+    exrString m_SamplerName = "halton";
+    exrString m_AcceleratorName = "bvh";
+    exrString m_IntegratorName = "pathtracer";
+    exrString m_CameraName = "perspective";
+    
+    std::vector<std::unique_ptr<Light>> m_Lights;
+    std::vector<std::unique_ptr<Primitive>> m_Primitives;
 };
 
 /* ==========================================================================
@@ -96,14 +99,25 @@ void ElixirParseFile(const exrString& filename)
 {
     if (filename == "-")
         ElixirSetupDemo();
-
-    exrError("Scene file parsing is not yet implemented!");
+    else
+        exrError("Scene file parsing is not yet implemented!");
 }
 
 void ElixirSetupDemo()
 {
-    CurrentRenderJob = std::make_unique<RenderJob>();
-    CurrentRenderJob->
+    // light
+    CurrentRenderJob.m_Lights->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 5.5f, 0.0f), exrVector2(1.3f, 1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.77f, 0.4f) * 7.0f)));
+
+    // room
+    CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(-2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(90), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 0.0f, 0.0f))));
+    CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(-90.0f), 0), std::make_unique<Lambertian>(exrVector3(0.0f, 1.0f, 0.0f))));
+    CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 2.75f, -2.80f), exrVector2(5.5f), exrVector3(0.0f), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 0.0f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(-90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 5.5f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
+
+    // objects
+    CurrentRenderJob.m_Primitives->push_back(std::make_unique<Box>(exrPoint3(-0.9f, 1.8f, -1.0f), exrVector3(1.6f, 3.6f, 1.6f), exrVector3(0, exrDegToRad(110), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
+    CurrentRenderJob.m_Primitives->push_back(std::make_unique<Box>(exrPoint3(0.9f, 0.8f, 1.0f), exrVector3(1.6f, 1.6f, 1.6f), exrVector3(0, exrDegToRad(-20), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
 }
 
 void ElixirRender()

@@ -54,9 +54,10 @@ public:
     //! Useful for shadow rays that don't require surface data.
     //!
     //! @param ray              The ray to test against
+    //! @param tHit             The t-value of the hitpoint along the ray
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool HasIntersect(const Ray& r) const = 0;
+    virtual exrBool HasIntersect(const Ray& r, exrFloat& tHit) const = 0;
 
     //! Returns the area light pointer if the primitive is a light source.
     //! Returns nullptr otherwise.
@@ -71,7 +72,7 @@ class GeometricPrimitive : public Primitive
 public:
     virtual AABB GetBoundingVolume() const override;
     virtual exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const override;
-    virtual exrBool HasIntersect(const Ray& r) const override;
+    virtual exrBool HasIntersect(const Ray& r, exrFloat& tHit) const override;
 
 public:
     virtual inline const AreaLight* GetAreaLight() const override { return m_AreaLight.get(); };
