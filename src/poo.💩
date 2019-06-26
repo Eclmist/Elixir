@@ -1,0 +1,8 @@
+Rules for deciding where source files should go:
+
+If it can be part of some math library -> /math/file
+If it can be inherited and extended -> /baseclass/file
+If it is directly used by and only by entities/primitives (eg. transforms) -> /primitive/file
+If it is some generic, non-raytracer specific utility class -> /system/file
+If it is part of the exposed API -> /api/file
+Everything else goes into -> /core/
