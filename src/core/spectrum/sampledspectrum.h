@@ -38,15 +38,25 @@ public:
     exrFloat GetLuminance() const;
 
 public:
+    static SampledSpectrum FromRGB(const exrVector3& rgb, SpectrumType type);
+    static SampledSpectrum FromXYZ(const exrVector3& xyz, SpectrumType type);
+
     static void Init();
-    static exrBool SpectrumSamplesIsSorted(const std::vector<exrFloat>& wavelengths);
     static void SortSpectrumSamples(std::vector<exrFloat>& wavelengths, std::vector<exrFloat>& values);
+    static exrBool SpectrumSamplesIsSorted(const std::vector<exrFloat>& wavelengths);
 
 private:
     exrFloat AverageSpectrumSamples(const std::vector<exrFloat>& wavelengths, const std::vector<exrFloat>& values, exrFloat w0, exrFloat w1);
 
 private:
     static SampledSpectrum m_X, m_Y, m_Z;
+    static SampledSpectrum m_rgbIllum2SpectWhite;
+    static SampledSpectrum m_rgbIllum2SpectCyan, m_rgbIllum2SpectMagenta, m_rgbIllum2SpectYellow;
+    static SampledSpectrum m_rgbIllum2SpectRed, m_rgbIllum2SpectGreen, m_rgbIllum2SpectBlue;
+    static SampledSpectrum m_rgbRefl2SpectWhite;
+    static SampledSpectrum m_rgbRefl2SpectCyan, m_rgbRefl2SpectMagenta, m_rgbRefl2SpectYellow;
+    static SampledSpectrum m_rgbRefl2SpectRed, m_rgbRefl2SpectGreen, m_rgbRefl2SpectBlue;
+
 };
 
 exrEND_NAMESPACE
