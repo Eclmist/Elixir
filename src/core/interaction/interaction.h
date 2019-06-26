@@ -20,16 +20,33 @@
 
 #pragma once
 
-#include "interaction.h"
-#include "primitive/primitive.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 
-exrVector3 SurfaceInteraction::GetEmission(const exrVector3& wo) const
+class BSDF;
+class Primitive;
+
+//! A struct that contains information about the local differential geometry
+//! at intersection points.
+struct Interaction
 {
-    return m_Primitive->GetEmission(wo);
-}
+    //! Default Constructor
+    Interaction() {};
 
+    //! Constructor
+    Interaction(const exrPoint3& point, const exrVector3& normal, const exrVector3& wo)
+        : m_Point(point)
+        , m_Normal(normal)
+        , m_Wo(wo) {};
+
+    //! The point of intersection
+    exrPoint3 m_Point;
+
+    //! The outgoing light direction Wo
+    exrVector3 m_Wo;
+
+    //! The normal of the surface at the point of intersection
+    exrVector3 m_Normal;
+};
 exrEND_NAMESPACE
-
-

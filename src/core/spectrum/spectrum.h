@@ -24,8 +24,7 @@
 
 exrBEGIN_NAMESPACE
 
-constexpr exrU32 numSpectrumSamples = 3;
-
+template <exrU32 numSpectrumSamples>
 class Spectrum
 {
 public:

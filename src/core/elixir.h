@@ -25,12 +25,13 @@
 #define EXR_ENABLE_ASSERTS
 
 // The order of the following includes matter!
-#include <memory>
-#include <vector>
-#include <math.h>
+#include <algorithm>
 #include <atomic>
 #include <condition_variable>
+#include <math.h>
+#include <memory>
 #include <mutex>
+#include <vector>
 
 #include "system/config.h"
 #include "system/error.h"
@@ -48,9 +49,9 @@
 
 #include "sampling/random.h"
 
-#include "core/interaction.h"
+#include "core/interaction/surfaceinteraction.h"
+#include "core/spectrum/sampledspectrum.h"
 #include "core/ray.h"
-#include "core/spectrum.h"
 
 exrBEGIN_NAMESPACE
 

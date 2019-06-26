@@ -18,8 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <algorithm>
-
 #include "bvh.h"
 #include "primitive/primitive.h"
 #include "material/material.h"

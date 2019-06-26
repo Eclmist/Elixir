@@ -26,7 +26,8 @@ exrBEGIN_NAMESPACE
 
 class Matrix4x4;
 class Ray;
-class Spectrum;
+class RGBSpectrum;
+class SampledSpectrum;
 
 template <class T> class Vector2;
 template <class T> class Vector3;
@@ -50,5 +51,6 @@ typedef Vector2<exrF32>         exrVector2;
 typedef Vector3<exrF32>         exrVector3;
 typedef Point2<exrF32>          exrPoint2;
 typedef Point3<exrF32>          exrPoint3;
+typedef SampledSpectrum         exrSpectrum;
 
 exrEND_NAMESPACE
