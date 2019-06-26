@@ -33,13 +33,19 @@ class SampledSpectrum : public Spectrum<numSpectrumSamples>
 public:
     SampledSpectrum(exrFloat v = 0.0f) : Spectrum(v) {};
     SampledSpectrum(std::vector<exrFloat> wavelengths, std::vector<exrFloat> values);
+    exrVector3 ToXYZ() const;
+    exrFloat GetLuminance() const;
 
 public:
+    static void Init();
     static exrBool SpectrumSamplesIsSorted(const std::vector<exrFloat>& wavelengths);
     static void SortSpectrumSamples(std::vector<exrFloat>& wavelengths, std::vector<exrFloat>& values);
 
 private:
     exrFloat AverageSpectrumSamples(const std::vector<exrFloat>& wavelengths, const std::vector<exrFloat>& values, exrFloat w0, exrFloat w1);
+
+private:
+    static SampledSpectrum m_X, m_Y, m_Z;
 };
 
 exrEND_NAMESPACE

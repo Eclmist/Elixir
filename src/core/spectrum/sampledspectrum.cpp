@@ -37,6 +37,44 @@ SampledSpectrum::SampledSpectrum(std::vector<exrFloat> wavelengths, std::vector<
     }
 }
 
+exrVector3 SampledSpectrum::ToXYZ() const
+{
+    exrVector3 xyz = exrVector3::Zero();
+    for (exrU32 i = 0; i < numSpectrumSamples; ++i)
+    {
+        xyz.x += m_X[i] * m_Wavelengths[i];
+        xyz.y += m_Y[i] * m_Wavelengths[i];
+        xyz.z += m_Z[i] * m_Wavelengths[i];
+    }
+
+    exrFloat scale = exrFloat(sampledWavelengthEnd - sampledWavelengthStart) / exrFloat(numSpectrumSamples);
+    xyz *= scale;
+}
+
+exrFloat SampledSpectrum::GetLuminance() const
+{
+    // Luminance is usually closely related to the y coefficient of the XYZ color.
+    // Therefore, as a good enough approximation we will just return the y coefficient
+    exrFloat y = 0.0f;
+
+    for (exrU32 i = 0; i < numSpectrumSamples; ++i)
+        y += m_Y.m_Wavelengths[i] * m_Wavelengths[i];
+
+    return y *= exrFloat(sampledWavelengthEnd - sampledWavelengthStart) / exrFloat(numSpectrumSamples);
+}
+
+void SampledSpectrum::Init()
+{
+    std::vector<exrFloat> CIE_Wavelengths(CIE_WavelengthsRaw, CIE_WavelengthsRaw + sizeof(CIE_WavelengthsRaw) / sizeof(CIE_WavelengthsRaw[0]));
+    std::vector<exrFloat> CIE_XVal(CIE_X, CIE_X + sizeof(CIE_X) / sizeof(CIE_X[0]));
+    std::vector<exrFloat> CIE_YVal(CIE_Y, CIE_Y + sizeof(CIE_Y) / sizeof(CIE_Y[0]));
+    std::vector<exrFloat> CIE_ZVal(CIE_Z, CIE_Z + sizeof(CIE_Z) / sizeof(CIE_Z[0]));
+
+    m_X = SampledSpectrum(CIE_Wavelengths, CIE_XVal);
+    m_Y = SampledSpectrum(CIE_Wavelengths, CIE_YVal);
+    m_Z = SampledSpectrum(CIE_Wavelengths, CIE_ZVal);
+}
+
 exrBool SampledSpectrum::SpectrumSamplesIsSorted(const std::vector<exrFloat>& wavelengths)
 {
     const auto size = wavelengths.size() - 1;
@@ -83,6 +121,8 @@ exrFloat SampledSpectrum::AverageSpectrumSamples(const std::vector<exrFloat>& wa
     exrU32 i = 0;
     while (w0 > wavelengths[i + 1]) ++i;
 
+    // This following calculation is a little confusing, the process is described here
+    // <http://www.pbr-book.org/3ed-2018/Color_and_Radiometry/The_SampledSpectrum_Class.html>
     auto interp = [wavelengths, values](exrFloat w, exrU32 i)
     {
         return exrLerp(values[i], values[i + 1], (w - wavelengths[i]) / (wavelengths[i + 1] - wavelengths[i]));

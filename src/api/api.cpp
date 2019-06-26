@@ -86,6 +86,8 @@ void ElixirInit(const ElixirOptions& options)
         exrError("ElixirInit() has already been called!");
 
     ElixirRuntimeOptions = options;
+    SampledSpectrum.Init();
+
     CurrentAPIState = APIState::APISTATE_SETUP_OPTION;
 }
 

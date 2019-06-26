@@ -24,6 +24,12 @@
 
 exrBEGIN_NAMESPACE
 
+static const int numCIESamples = 471;
+extern const exrFloat CIE_X[numCIESamples];
+extern const exrFloat CIE_Y[numCIESamples];
+extern const exrFloat CIE_Z[numCIESamples];
+extern const exrFloat CIE_WavelengthsRaw[numCIESamples];
+
 template <exrU32 numSpectrumSamples>
 class Spectrum
 {
@@ -41,6 +47,9 @@ public:
     
     // This implies that the set of coefficients are linear
     inline exrFloat& operator[](exrU32 i) { return m_Wavelengths[i]; }
+
+public:
+    virtual exrVector3 ToXYZ();
 
 public:
     exrBool IsBlack() const;
