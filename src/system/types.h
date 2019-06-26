@@ -47,10 +47,10 @@ typedef int                     exrS32;
 typedef unsigned long           exrU64;
 typedef long                    exrS64;
 typedef std::string             exrString;
-typedef Vector2<exrF32>         exrVector2;
-typedef Vector3<exrF32>         exrVector3;
-typedef Point2<exrF32>          exrPoint2;
-typedef Point3<exrF32>          exrPoint3;
+typedef Vector2<exrFloat>       exrVector2;
+typedef Vector3<exrFloat>       exrVector3;
+typedef Point2<exrFloat>        exrPoint2;
+typedef Point3<exrFloat>        exrPoint3;
 typedef SampledSpectrum         exrSpectrum;
 
 exrEND_NAMESPACE

@@ -71,6 +71,108 @@ exrFloat SampledSpectrum::GetLuminance() const
     return y *= exrFloat(sampledWavelengthEnd - sampledWavelengthStart) / exrFloat(numSpectrumSamples);
 }
 
+SampledSpectrum SampledSpectrum::FromRGB(const exrVector3& rgb, SpectrumType type)
+{
+    SampledSpectrum res;
+
+    switch (type)
+    {
+    case SpectrumType::Illuminant:
+        if (rgb.r <= rgb.b && rgb.r <= rgb.g)
+        {
+            res += rgb.r * m_rgbIllum2SpectWhite;
+            if (rgb.g <= rgb.b)
+            {
+                res += (rgb.g - rgb.r) * m_rgbIllum2SpectCyan;
+                res += (rgb.b - rgb.g) * m_rgbIllum2SpectBlue;
+            }
+            else
+            {
+                res += (rgb.b - rgb.r) * m_rgbIllum2SpectCyan;
+                res += (rgb.g - rgb.b) * m_rgbIllum2SpectGreen;
+            }
+        }
+        else if (rgb.g <= rgb.r && rgb.g <= rgb.b)
+        {
+            res += rgb.g * m_rgbIllum2SpectWhite;
+            if (rgb.r <= rgb.b)
+            {
+                res += (rgb.r - rgb.g) * m_rgbIllum2SpectMagenta;
+                res += (rgb.b - rgb.r) * m_rgbIllum2SpectBlue;
+            }
+            else
+            {
+                res += (rgb.b - rgb.g) * m_rgbIllum2SpectMagenta;
+                res += (rgb.r - rgb.b) * m_rgbIllum2SpectRed;
+            }
+        }
+        else
+        {
+            res += rgb.b * m_rgbIllum2SpectWhite;
+            if (rgb.r <= rgb.g)
+            {
+                res += (rgb.r - rgb.b) * m_rgbIllum2SpectYellow;
+                res += (rgb.g - rgb.r) * m_rgbIllum2SpectGreen;
+            }
+            else
+            {
+                res += (rgb.g - rgb.b) * m_rgbIllum2SpectYellow;
+                res += (rgb.r - rgb.g) * m_rgbIllum2SpectRed;
+            }
+        }
+
+        break;
+    case SpectrumType::Reflectance:
+        if (rgb.r <= rgb.b && rgb.r <= rgb.g)
+        {
+            res += rgb.r * m_rgbRefl2SpectWhite;
+            if (rgb.g <= rgb.b)
+            {
+                res += (rgb.g - rgb.r) * m_rgbRefl2SpectCyan;
+                res += (rgb.b - rgb.g) * m_rgbRefl2SpectBlue;
+            }
+            else
+            {
+                res += (rgb.b - rgb.r) * m_rgbRefl2SpectCyan;
+                res += (rgb.g - rgb.b) * m_rgbRefl2SpectGreen;
+            }
+        }
+        else if (rgb.g <= rgb.r && rgb.g <= rgb.b)
+        {
+            res += rgb.g * m_rgbRefl2SpectWhite;
+            if (rgb.r <= rgb.b)
+            {
+                res += (rgb.r - rgb.g) * m_rgbRefl2SpectMagenta;
+                res += (rgb.b - rgb.r) * m_rgbRefl2SpectBlue;
+            }
+            else
+            {
+                res += (rgb.b - rgb.g) * m_rgbRefl2SpectMagenta;
+                res += (rgb.r - rgb.b) * m_rgbRefl2SpectRed;
+            }
+        }
+        else
+        {
+            res += rgb.b * m_rgbRefl2SpectWhite;
+            if (rgb.r <= rgb.g)
+            {
+                res += (rgb.r - rgb.b) * m_rgbRefl2SpectYellow;
+                res += (rgb.g - rgb.r) * m_rgbRefl2SpectGreen;
+            }
+            else
+            {
+                res += (rgb.g - rgb.b) * m_rgbRefl2SpectYellow;
+                res += (rgb.r - rgb.g) * m_rgbRefl2SpectRed;
+            }
+        }
+        break;
+    default:
+        throw std::exception("Invalid Spectrum Type!");
+    }
+
+    return res;
+}
+
 void SampledSpectrum::Init()
 {
     std::vector<exrFloat> CIE_Wavelengths(CIE_WavelengthsRaw, CIE_WavelengthsRaw + sizeof(CIE_WavelengthsRaw) / sizeof(CIE_WavelengthsRaw[0]));
@@ -81,6 +183,40 @@ void SampledSpectrum::Init()
     m_X = SampledSpectrum(CIE_Wavelengths, CIE_XVal);
     m_Y = SampledSpectrum(CIE_Wavelengths, CIE_YVal);
     m_Z = SampledSpectrum(CIE_Wavelengths, CIE_ZVal);
+
+    // Compute RGB to spectrum functions
+    std::vector<exrFloat> RGB2SpectWavelengths(RGB2SpectWavelengthsRaw, RGB2SpectWavelengthsRaw + sizeof(RGB2SpectWavelengthsRaw) / sizeof(RGB2SpectWavelengthsRaw[0]));
+    std::vector<exrFloat> RGBIllum2SpectWhiteVal(RGBIllum2SpectWhite, RGBIllum2SpectWhite + sizeof(RGBIllum2SpectWhite) / sizeof(RGBIllum2SpectWhite[0]));
+    std::vector<exrFloat> RGBIllum2SpectCyanVal(RGBIllum2SpectCyan, RGBIllum2SpectCyan + sizeof(RGBIllum2SpectCyan) / sizeof(RGBIllum2SpectCyan[0]));
+    std::vector<exrFloat> RGBIllum2SpectMagentaVal(RGBIllum2SpectMagenta, RGBIllum2SpectMagenta + sizeof(RGBIllum2SpectMagenta) / sizeof(RGBIllum2SpectMagenta[0]));
+    std::vector<exrFloat> RGBIllum2SpectYellowVal(RGBIllum2SpectYellow, RGBIllum2SpectYellow + sizeof(RGBIllum2SpectYellow) / sizeof(RGBIllum2SpectYellow[0]));
+    std::vector<exrFloat> RGBIllum2SpectRedVal(RGBIllum2SpectRed, RGBIllum2SpectRed + sizeof(RGBIllum2SpectRed) / sizeof(RGBIllum2SpectRed[0]));
+    std::vector<exrFloat> RGBIllum2SpectGreenVal(RGBIllum2SpectGreen, RGBIllum2SpectGreen + sizeof(RGBIllum2SpectGreen) / sizeof(RGBIllum2SpectGreen[0]));
+    std::vector<exrFloat> RGBIllum2SpectBlueVal(RGBIllum2SpectBlue, RGBIllum2SpectBlue + sizeof(RGBIllum2SpectBlue) / sizeof(RGBIllum2SpectBlue[0]));
+
+    std::vector<exrFloat> RGBRefl2SpectWhiteVal(RGBRefl2SpectWhite, RGBRefl2SpectWhite + sizeof(RGBRefl2SpectWhite) / sizeof(RGBRefl2SpectWhite[0]));
+    std::vector<exrFloat> RGBRefl2SpectCyanVal(RGBRefl2SpectCyan, RGBRefl2SpectCyan + sizeof(RGBRefl2SpectCyan) / sizeof(RGBRefl2SpectCyan[0]));
+    std::vector<exrFloat> RGBRefl2SpectMagentaVal(RGBRefl2SpectMagenta, RGBRefl2SpectMagenta + sizeof(RGBRefl2SpectMagenta) / sizeof(RGBRefl2SpectMagenta[0]));
+    std::vector<exrFloat> RGBRefl2SpectYellowVal(RGBRefl2SpectYellow, RGBRefl2SpectYellow + sizeof(RGBRefl2SpectYellow) / sizeof(RGBRefl2SpectYellow[0]));
+    std::vector<exrFloat> RGBRefl2SpectRedVal(RGBRefl2SpectRed, RGBRefl2SpectRed + sizeof(RGBRefl2SpectRed) / sizeof(RGBRefl2SpectRed[0]));
+    std::vector<exrFloat> RGBRefl2SpectGreenVal(RGBRefl2SpectGreen, RGBRefl2SpectGreen + sizeof(RGBRefl2SpectGreen) / sizeof(RGBRefl2SpectGreen[0]));
+    std::vector<exrFloat> RGBRefl2SpectBlueVal(RGBRefl2SpectBlue, RGBRefl2SpectBlue + sizeof(RGBRefl2SpectBlue) / sizeof(RGBRefl2SpectBlue[0]));
+
+    m_rgbIllum2SpectWhite   = SampledSpectrum(RGB2SpectWavelengths, RGBIllum2SpectWhiteVal);
+    m_rgbIllum2SpectCyan    = SampledSpectrum(RGB2SpectWavelengths, RGBIllum2SpectCyanVal);
+    m_rgbIllum2SpectMagenta = SampledSpectrum(RGB2SpectWavelengths, RGBIllum2SpectMagentaVal);
+    m_rgbIllum2SpectYellow  = SampledSpectrum(RGB2SpectWavelengths, RGBIllum2SpectYellowVal);
+    m_rgbIllum2SpectRed     = SampledSpectrum(RGB2SpectWavelengths, RGBIllum2SpectRedVal);
+    m_rgbIllum2SpectGreen   = SampledSpectrum(RGB2SpectWavelengths, RGBIllum2SpectGreenVal);
+    m_rgbIllum2SpectBlue    = SampledSpectrum(RGB2SpectWavelengths, RGBIllum2SpectBlueVal);
+
+    m_rgbRefl2SpectWhite    = SampledSpectrum(RGB2SpectWavelengths, RGBRefl2SpectWhiteVal);
+    m_rgbRefl2SpectCyan     = SampledSpectrum(RGB2SpectWavelengths, RGBRefl2SpectCyanVal);
+    m_rgbRefl2SpectMagenta  = SampledSpectrum(RGB2SpectWavelengths, RGBRefl2SpectMagentaVal);
+    m_rgbRefl2SpectYellow   = SampledSpectrum(RGB2SpectWavelengths, RGBRefl2SpectYellowVal);
+    m_rgbRefl2SpectRed      = SampledSpectrum(RGB2SpectWavelengths, RGBRefl2SpectRedVal);
+    m_rgbRefl2SpectGreen    = SampledSpectrum(RGB2SpectWavelengths, RGBRefl2SpectGreenVal);
+    m_rgbRefl2SpectBlue     = SampledSpectrum(RGB2SpectWavelengths, RGBRefl2SpectBlueVal);
 }
 
 exrBool SampledSpectrum::SpectrumSamplesIsSorted(const std::vector<exrFloat>& wavelengths)

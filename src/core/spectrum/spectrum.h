@@ -30,6 +30,29 @@ extern const exrFloat CIE_Y[numCIESamples];
 extern const exrFloat CIE_Z[numCIESamples];
 extern const exrFloat CIE_WavelengthsRaw[numCIESamples];
 
+static const int numRGB2SpectSamples = 32;
+extern const exrFloat RGB2SpectWavelengthsRaw[numRGB2SpectSamples];
+extern const exrFloat RGBRefl2SpectWhite[numRGB2SpectSamples];
+extern const exrFloat RGBRefl2SpectCyan[numRGB2SpectSamples];
+extern const exrFloat RGBRefl2SpectMagenta[numRGB2SpectSamples];
+extern const exrFloat RGBRefl2SpectYellow[numRGB2SpectSamples];
+extern const exrFloat RGBRefl2SpectRed[numRGB2SpectSamples];
+extern const exrFloat RGBRefl2SpectGreen[numRGB2SpectSamples];
+extern const exrFloat RGBRefl2SpectBlue[numRGB2SpectSamples];
+extern const exrFloat RGBIllum2SpectWhite[numRGB2SpectSamples];
+extern const exrFloat RGBIllum2SpectCyan[numRGB2SpectSamples];
+extern const exrFloat RGBIllum2SpectMagenta[numRGB2SpectSamples];
+extern const exrFloat RGBIllum2SpectYellow[numRGB2SpectSamples];
+extern const exrFloat RGBIllum2SpectRed[numRGB2SpectSamples];
+extern const exrFloat RGBIllum2SpectGreen[numRGB2SpectSamples];
+extern const exrFloat RGBIllum2SpectBlue[numRGB2SpectSamples];
+
+enum class SpectrumType
+{ 
+    Reflectance,
+    Illuminant
+};
+
 template <exrU32 numSpectrumSamples>
 class Spectrum
 {
@@ -54,7 +77,7 @@ public:
 
     // Conversion to RGB based on a standard set of RGB spectra that has been
     // defined for high-definition televisions
-    inline void XYZToRGB(const exrFloat xyz[3], exrFloat& rgb[3])
+    inline void XYZToRGB(const exrFloat xyz[3], exrFloat rgb[3]) const
     {
         rgb[0] = 3.240479f*xyz[0] - 1.537150f*xyz[1] - 0.498535f*xyz[2];
         rgb[1] = -0.969256f*xyz[0] + 1.875991f*xyz[1] + 0.041556f*xyz[2];
@@ -62,7 +85,7 @@ public:
     };
 
     // The inverse of the xyz to rgb conversion
-    inline void RGBToXYZ(const exrFloat rgb[3], exrFloat& xyz[3])
+    inline void RGBToXYZ(const exrFloat rgb[3], exrFloat xyz[3]) const
     {
         xyz[0] = 0.412453f*rgb[0] + 0.357580f*rgb[1] + 0.180423f*rgb[2];
         xyz[1] = 0.212671f*rgb[0] + 0.715160f*rgb[1] + 0.072169f*rgb[2];
