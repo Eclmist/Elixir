@@ -24,8 +24,9 @@
 
 exrBEGIN_NAMESPACE
 
-class Ray;
 class Matrix4x4;
+class Ray;
+class Spectrum;
 
 template <class T> class Vector2;
 template <class T> class Vector3;

@@ -48,8 +48,9 @@
 
 #include "sampling/random.h"
 
-#include "core/ray.h"
 #include "core/interaction.h"
+#include "core/ray.h"
+#include "core/spectrum.h"
 
 exrBEGIN_NAMESPACE
 
