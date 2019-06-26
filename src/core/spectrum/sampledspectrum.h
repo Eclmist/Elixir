@@ -34,6 +34,7 @@ public:
     SampledSpectrum(exrFloat v = 0.0f) : Spectrum(v) {};
     SampledSpectrum(std::vector<exrFloat> wavelengths, std::vector<exrFloat> values);
     exrVector3 ToXYZ() const;
+    exrVector3 ToRGB() const;
     exrFloat GetLuminance() const;
 
 public:

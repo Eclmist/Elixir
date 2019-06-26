@@ -51,6 +51,14 @@ exrVector3 SampledSpectrum::ToXYZ() const
     xyz *= scale;
 }
 
+exrVector3 SampledSpectrum::ToRGB() const
+{
+    exrVector3 xyz = ToXYZ();
+    exrVector3 rgb;
+    XYZToRGB(xyz.m_Data, rgb.m_Data);
+    return rgb;
+}
+
 exrFloat SampledSpectrum::GetLuminance() const
 {
     // Luminance is usually closely related to the y coefficient of the XYZ color.
