@@ -22,21 +22,6 @@
 
 exrBEGIN_NAMESPACE
 
-SampledSpectrum::SampledSpectrum(std::vector<exrFloat> wavelengths, std::vector<exrFloat> values)
-{
-    if (!SpectrumSamplesIsSorted(wavelengths))
-    {
-        SortSpectrumSamples(wavelengths, values);
-    }
-
-    for (exrU32 i = 0; i < numSpectrumSamples; ++i)
-    {
-        exrFloat w0 = exrLerp(exrFloat(sampledWavelengthStart), exrFloat(sampledWavelengthEnd), exrFloat(i) / numSpectrumSamples);
-        exrFloat w1 = exrLerp(exrFloat(sampledWavelengthStart), exrFloat(sampledWavelengthEnd), exrFloat(i + 1) / numSpectrumSamples);
-        m_Wavelengths[i] = AverageSpectrumSamples(wavelengths, values, w0, w1);
-    }
-}
-
 exrVector3 SampledSpectrum::ToXYZ() const
 {
     exrVector3 xyz = exrVector3::Zero();
@@ -49,6 +34,7 @@ exrVector3 SampledSpectrum::ToXYZ() const
 
     exrFloat scale = exrFloat(sampledWavelengthEnd - sampledWavelengthStart) / exrFloat(numSpectrumSamples);
     xyz *= scale;
+    return xyz;
 }
 
 exrVector3 SampledSpectrum::ToRGB() const
@@ -77,47 +63,47 @@ SampledSpectrum SampledSpectrum::FromRGB(const exrVector3& rgb, SpectrumType typ
 
     switch (type)
     {
-    case SpectrumType::Illuminant:
+    case SpectrumType::llluminance:
         if (rgb.r <= rgb.b && rgb.r <= rgb.g)
         {
-            res += rgb.r * m_rgbIllum2SpectWhite;
+            res += m_rgbIllum2SpectWhite * rgb.r;
             if (rgb.g <= rgb.b)
             {
-                res += (rgb.g - rgb.r) * m_rgbIllum2SpectCyan;
-                res += (rgb.b - rgb.g) * m_rgbIllum2SpectBlue;
+                res += m_rgbIllum2SpectCyan * (rgb.g - rgb.r);
+                res += m_rgbIllum2SpectBlue * (rgb.b - rgb.g);
             }
             else
             {
-                res += (rgb.b - rgb.r) * m_rgbIllum2SpectCyan;
-                res += (rgb.g - rgb.b) * m_rgbIllum2SpectGreen;
+                res += m_rgbIllum2SpectCyan * (rgb.b - rgb.r);
+                res += m_rgbIllum2SpectGreen * (rgb.g - rgb.b);
             }
         }
         else if (rgb.g <= rgb.r && rgb.g <= rgb.b)
         {
-            res += rgb.g * m_rgbIllum2SpectWhite;
+            res += m_rgbIllum2SpectWhite * rgb.g;
             if (rgb.r <= rgb.b)
             {
-                res += (rgb.r - rgb.g) * m_rgbIllum2SpectMagenta;
-                res += (rgb.b - rgb.r) * m_rgbIllum2SpectBlue;
+                res += m_rgbIllum2SpectMagenta * (rgb.r - rgb.g);
+                res += m_rgbIllum2SpectBlue * (rgb.b - rgb.r);
             }
             else
             {
-                res += (rgb.b - rgb.g) * m_rgbIllum2SpectMagenta;
-                res += (rgb.r - rgb.b) * m_rgbIllum2SpectRed;
+                res += m_rgbIllum2SpectMagenta * (rgb.b - rgb.g);
+                res += m_rgbIllum2SpectRed * (rgb.r - rgb.b);
             }
         }
         else
         {
-            res += rgb.b * m_rgbIllum2SpectWhite;
+            res += m_rgbIllum2SpectWhite * rgb.b;
             if (rgb.r <= rgb.g)
             {
-                res += (rgb.r - rgb.b) * m_rgbIllum2SpectYellow;
-                res += (rgb.g - rgb.r) * m_rgbIllum2SpectGreen;
+                res += m_rgbIllum2SpectYellow * (rgb.r - rgb.b);
+                res += m_rgbIllum2SpectGreen * (rgb.g - rgb.r);
             }
             else
             {
-                res += (rgb.g - rgb.b) * m_rgbIllum2SpectYellow;
-                res += (rgb.r - rgb.g) * m_rgbIllum2SpectRed;
+                res += m_rgbIllum2SpectYellow * (rgb.g - rgb.b);
+                res += m_rgbIllum2SpectRed * (rgb.r - rgb.g);
             }
         }
 
@@ -125,44 +111,44 @@ SampledSpectrum SampledSpectrum::FromRGB(const exrVector3& rgb, SpectrumType typ
     case SpectrumType::Reflectance:
         if (rgb.r <= rgb.b && rgb.r <= rgb.g)
         {
-            res += rgb.r * m_rgbRefl2SpectWhite;
+            res += m_rgbRefl2SpectWhite * rgb.r;
             if (rgb.g <= rgb.b)
             {
-                res += (rgb.g - rgb.r) * m_rgbRefl2SpectCyan;
-                res += (rgb.b - rgb.g) * m_rgbRefl2SpectBlue;
+                res += m_rgbRefl2SpectCyan * (rgb.g - rgb.r);
+                res += m_rgbRefl2SpectBlue * (rgb.b - rgb.g);
             }
             else
             {
-                res += (rgb.b - rgb.r) * m_rgbRefl2SpectCyan;
-                res += (rgb.g - rgb.b) * m_rgbRefl2SpectGreen;
+                res += m_rgbRefl2SpectCyan * (rgb.b - rgb.r);
+                res += m_rgbRefl2SpectGreen * (rgb.g - rgb.b);
             }
         }
         else if (rgb.g <= rgb.r && rgb.g <= rgb.b)
         {
-            res += rgb.g * m_rgbRefl2SpectWhite;
+            res += m_rgbRefl2SpectWhite * rgb.g;
             if (rgb.r <= rgb.b)
             {
-                res += (rgb.r - rgb.g) * m_rgbRefl2SpectMagenta;
-                res += (rgb.b - rgb.r) * m_rgbRefl2SpectBlue;
+                res += m_rgbRefl2SpectMagenta * (rgb.r - rgb.g);
+                res += m_rgbRefl2SpectBlue * (rgb.b - rgb.r);
             }
             else
             {
-                res += (rgb.b - rgb.g) * m_rgbRefl2SpectMagenta;
-                res += (rgb.r - rgb.b) * m_rgbRefl2SpectRed;
+                res += m_rgbRefl2SpectMagenta * (rgb.b - rgb.g);
+                res += m_rgbRefl2SpectRed * (rgb.r - rgb.b);
             }
         }
         else
         {
-            res += rgb.b * m_rgbRefl2SpectWhite;
+            res += m_rgbRefl2SpectWhite * rgb.b;
             if (rgb.r <= rgb.g)
             {
-                res += (rgb.r - rgb.b) * m_rgbRefl2SpectYellow;
-                res += (rgb.g - rgb.r) * m_rgbRefl2SpectGreen;
+                res += m_rgbRefl2SpectYellow * (rgb.r - rgb.b);
+                res += m_rgbRefl2SpectGreen * (rgb.g - rgb.r);
             }
             else
             {
-                res += (rgb.g - rgb.b) * m_rgbRefl2SpectYellow;
-                res += (rgb.r - rgb.g) * m_rgbRefl2SpectRed;
+                res += m_rgbRefl2SpectYellow * (rgb.g - rgb.b);
+                res += m_rgbRefl2SpectRed * (rgb.r - rgb.g);
             }
         }
         break;
@@ -173,6 +159,35 @@ SampledSpectrum SampledSpectrum::FromRGB(const exrVector3& rgb, SpectrumType typ
     return res;
 }
 
+SampledSpectrum SampledSpectrum::FromXYZ(const exrVector3& xyz, SpectrumType type)
+{
+    exrVector3 rgb;
+    XYZToRGB(xyz.m_Data, rgb.m_Data);
+    return FromRGB(rgb, type);
+}
+
+SampledSpectrum SampledSpectrum::FromSampled(const std::vector<exrFloat>& wavelengths, const std::vector<exrFloat>& values)
+{
+    SampledSpectrum s;
+
+    if (!SpectrumSamplesIsSorted(wavelengths))
+    {
+        std::vector<exrFloat> sortedWavelengths = wavelengths;
+        std::vector<exrFloat> sortedValues = values;
+        SortSpectrumSamples(sortedWavelengths, sortedValues);
+        return FromSampled(sortedWavelengths, sortedValues);
+    }
+
+    for (exrU32 i = 0; i < numSpectrumSamples; ++i)
+    {
+        exrFloat w0 = exrLerp(exrFloat(sampledWavelengthStart), exrFloat(sampledWavelengthEnd), exrFloat(i) / numSpectrumSamples);
+        exrFloat w1 = exrLerp(exrFloat(sampledWavelengthStart), exrFloat(sampledWavelengthEnd), exrFloat(i + 1) / numSpectrumSamples);
+        s.m_Wavelengths[i] = AverageSpectrumSamples(wavelengths, values, w0, w1);
+    }
+
+    return s;
+}
+
 void SampledSpectrum::Init()
 {
     std::vector<exrFloat> CIE_Wavelengths(CIE_WavelengthsRaw, CIE_WavelengthsRaw + sizeof(CIE_WavelengthsRaw) / sizeof(CIE_WavelengthsRaw[0]));
@@ -180,9 +195,9 @@ void SampledSpectrum::Init()
     std::vector<exrFloat> CIE_YVal(CIE_Y, CIE_Y + sizeof(CIE_Y) / sizeof(CIE_Y[0]));
     std::vector<exrFloat> CIE_ZVal(CIE_Z, CIE_Z + sizeof(CIE_Z) / sizeof(CIE_Z[0]));
 
-    m_X = SampledSpectrum(CIE_Wavelengths, CIE_XVal);
-    m_Y = SampledSpectrum(CIE_Wavelengths, CIE_YVal);
-    m_Z = SampledSpectrum(CIE_Wavelengths, CIE_ZVal);
+    m_X = SampledSpectrum::FromSampled(CIE_Wavelengths, CIE_XVal);
+    m_Y = SampledSpectrum::FromSampled(CIE_Wavelengths, CIE_YVal);
+    m_Z = SampledSpectrum::FromSampled(CIE_Wavelengths, CIE_ZVal);
 
     // Compute RGB to spectrum functions
     std::vector<exrFloat> RGB2SpectWavelengths(RGB2SpectWavelengthsRaw, RGB2SpectWavelengthsRaw + sizeof(RGB2SpectWavelengthsRaw) / sizeof(RGB2SpectWavelengthsRaw[0]));
@@ -202,21 +217,21 @@ void SampledSpectrum::Init()
     std::vector<exrFloat> RGBRefl2SpectGreenVal(RGBRefl2SpectGreen, RGBRefl2SpectGreen + sizeof(RGBRefl2SpectGreen) / sizeof(RGBRefl2SpectGreen[0]));
     std::vector<exrFloat> RGBRefl2SpectBlueVal(RGBRefl2SpectBlue, RGBRefl2SpectBlue + sizeof(RGBRefl2SpectBlue) / sizeof(RGBRefl2SpectBlue[0]));
 
-    m_rgbIllum2SpectWhite   = SampledSpectrum(RGB2SpectWavelengths, RGBIllum2SpectWhiteVal);
-    m_rgbIllum2SpectCyan    = SampledSpectrum(RGB2SpectWavelengths, RGBIllum2SpectCyanVal);
-    m_rgbIllum2SpectMagenta = SampledSpectrum(RGB2SpectWavelengths, RGBIllum2SpectMagentaVal);
-    m_rgbIllum2SpectYellow  = SampledSpectrum(RGB2SpectWavelengths, RGBIllum2SpectYellowVal);
-    m_rgbIllum2SpectRed     = SampledSpectrum(RGB2SpectWavelengths, RGBIllum2SpectRedVal);
-    m_rgbIllum2SpectGreen   = SampledSpectrum(RGB2SpectWavelengths, RGBIllum2SpectGreenVal);
-    m_rgbIllum2SpectBlue    = SampledSpectrum(RGB2SpectWavelengths, RGBIllum2SpectBlueVal);
+    m_rgbIllum2SpectWhite   = SampledSpectrum::FromSampled(RGB2SpectWavelengths, RGBIllum2SpectWhiteVal);
+    m_rgbIllum2SpectCyan    = SampledSpectrum::FromSampled(RGB2SpectWavelengths, RGBIllum2SpectCyanVal);
+    m_rgbIllum2SpectMagenta = SampledSpectrum::FromSampled(RGB2SpectWavelengths, RGBIllum2SpectMagentaVal);
+    m_rgbIllum2SpectYellow  = SampledSpectrum::FromSampled(RGB2SpectWavelengths, RGBIllum2SpectYellowVal);
+    m_rgbIllum2SpectRed     = SampledSpectrum::FromSampled(RGB2SpectWavelengths, RGBIllum2SpectRedVal);
+    m_rgbIllum2SpectGreen   = SampledSpectrum::FromSampled(RGB2SpectWavelengths, RGBIllum2SpectGreenVal);
+    m_rgbIllum2SpectBlue    = SampledSpectrum::FromSampled(RGB2SpectWavelengths, RGBIllum2SpectBlueVal);
 
-    m_rgbRefl2SpectWhite    = SampledSpectrum(RGB2SpectWavelengths, RGBRefl2SpectWhiteVal);
-    m_rgbRefl2SpectCyan     = SampledSpectrum(RGB2SpectWavelengths, RGBRefl2SpectCyanVal);
-    m_rgbRefl2SpectMagenta  = SampledSpectrum(RGB2SpectWavelengths, RGBRefl2SpectMagentaVal);
-    m_rgbRefl2SpectYellow   = SampledSpectrum(RGB2SpectWavelengths, RGBRefl2SpectYellowVal);
-    m_rgbRefl2SpectRed      = SampledSpectrum(RGB2SpectWavelengths, RGBRefl2SpectRedVal);
-    m_rgbRefl2SpectGreen    = SampledSpectrum(RGB2SpectWavelengths, RGBRefl2SpectGreenVal);
-    m_rgbRefl2SpectBlue     = SampledSpectrum(RGB2SpectWavelengths, RGBRefl2SpectBlueVal);
+    m_rgbRefl2SpectWhite    = SampledSpectrum::FromSampled(RGB2SpectWavelengths, RGBRefl2SpectWhiteVal);
+    m_rgbRefl2SpectCyan     = SampledSpectrum::FromSampled(RGB2SpectWavelengths, RGBRefl2SpectCyanVal);
+    m_rgbRefl2SpectMagenta  = SampledSpectrum::FromSampled(RGB2SpectWavelengths, RGBRefl2SpectMagentaVal);
+    m_rgbRefl2SpectYellow   = SampledSpectrum::FromSampled(RGB2SpectWavelengths, RGBRefl2SpectYellowVal);
+    m_rgbRefl2SpectRed      = SampledSpectrum::FromSampled(RGB2SpectWavelengths, RGBRefl2SpectRedVal);
+    m_rgbRefl2SpectGreen    = SampledSpectrum::FromSampled(RGB2SpectWavelengths, RGBRefl2SpectGreenVal);
+    m_rgbRefl2SpectBlue     = SampledSpectrum::FromSampled(RGB2SpectWavelengths, RGBRefl2SpectBlueVal);
 }
 
 exrBool SampledSpectrum::SpectrumSamplesIsSorted(const std::vector<exrFloat>& wavelengths)
