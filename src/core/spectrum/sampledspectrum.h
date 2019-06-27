@@ -32,21 +32,22 @@ class SampledSpectrum : public Spectrum<numSpectrumSamples>
 {
 public:
     SampledSpectrum(exrFloat v = 0.0f) : Spectrum(v) {};
-    SampledSpectrum(std::vector<exrFloat> wavelengths, std::vector<exrFloat> values);
-    exrVector3 ToXYZ() const;
-    exrVector3 ToRGB() const;
     exrFloat GetLuminance() const;
+
+public:
+    // virtual functions
+    exrVector3 ToXYZ() const override;
+    exrVector3 ToRGB() const override;
 
 public:
     static SampledSpectrum FromRGB(const exrVector3& rgb, SpectrumType type);
     static SampledSpectrum FromXYZ(const exrVector3& xyz, SpectrumType type);
+    static SampledSpectrum FromSampled(const std::vector<exrFloat>& wavelengths, const std::vector<exrFloat>& values);
 
     static void Init();
     static void SortSpectrumSamples(std::vector<exrFloat>& wavelengths, std::vector<exrFloat>& values);
     static exrBool SpectrumSamplesIsSorted(const std::vector<exrFloat>& wavelengths);
-
-private:
-    exrFloat AverageSpectrumSamples(const std::vector<exrFloat>& wavelengths, const std::vector<exrFloat>& values, exrFloat w0, exrFloat w1);
+    static exrFloat AverageSpectrumSamples(const std::vector<exrFloat>& wavelengths, const std::vector<exrFloat>& values, exrFloat w0, exrFloat w1);
 
 private:
     static SampledSpectrum m_X, m_Y, m_Z;
