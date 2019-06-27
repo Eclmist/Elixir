@@ -21,9 +21,9 @@
 #pragma once
 
 #include "core/elixir.h"
-#include "light/arealight.h"
-#include "material/material.h"
-#include "shape/shape.h"
+#include "core/light/arealight.h"
+#include "core/material/material.h"
+#include "core/primitive/shape/shape.h"
 
 exrBEGIN_NAMESPACE
 

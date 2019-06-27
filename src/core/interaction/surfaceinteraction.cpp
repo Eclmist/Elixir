@@ -21,7 +21,7 @@
 #pragma once
 
 #include "surfaceinteraction.h"
-#include "primitive/primitive.h"
+#include "core/primitive/primitive.h"
 
 exrBEGIN_NAMESPACE
 

@@ -63,7 +63,7 @@ exrFloat Quad::GetArea() const
     return m_HalfExtents.x * m_HalfExtents.y * 4;
 }
 
-exrBool Quad::ComputeBoundingVolume()
+AABB Quad::ComputeBoundingVolume()
 {
     exrPoint3 globalMin = m_Transform.GetMatrix() * m_HalfExtents;
     exrPoint3 globalMax = m_Transform.GetMatrix() * -m_HalfExtents;
@@ -72,8 +72,7 @@ exrBool Quad::ComputeBoundingVolume()
     exrPoint3 realMin = exrPoint3(exrMin(globalMin.x, globalMax.x), exrMin(globalMin.y, globalMax.y), exrMin(globalMin.z, globalMax.z));
     exrPoint3 realMax = exrPoint3(exrMax(globalMin.x, globalMax.x), exrMax(globalMin.y, globalMax.y), exrMax(globalMin.z, globalMax.z));
 
-    m_BoundingVolume = AABB(realMin, realMax);
-    return true;
+    return AABB(realMin, realMax);
 }
 
 exrEND_NAMESPACE

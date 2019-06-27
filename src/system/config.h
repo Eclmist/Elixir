@@ -30,3 +30,4 @@
 /* #undef EXR_PLATFORM_MAC */
 /* #undef EXR_PLATFORM_LINUX */
 #define EXR_USE_NAMESPACE
+

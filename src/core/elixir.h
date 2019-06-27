@@ -20,37 +20,12 @@
 
 #pragma once
 
-#define EXR_ENABLE_LOGGING
-#define EXR_ENABLE_ERRORS
-#define EXR_ENABLE_ASSERTS
-
-// The order of the following includes matter!
-#include <algorithm>
-#include <atomic>
-#include <condition_variable>
-#include <math.h>
-#include <memory>
-#include <mutex>
-#include <vector>
-
-#include "system/config.h"
-#include "system/error.h"
-#include "system/utils.h"
-#include "system/types.h"
-#include "system/parallel.h"
-#include "system/profiling/profiler.h"
-
+#include "system/system.h"
 #include "math/math.h"
-#include "math/vector2.h"
-#include "math/vector3.h"
-#include "math/point2.h"
-#include "math/point3.h"
-#include "math/matrix4x4.h"
-
-#include "sampling/random.h"
-
-#include "core/interaction/interaction.h"
-#include "core/spectrum/spectrum.h"
+#include "core/interaction/surfaceinteraction.h"
+#include "core/sampling/random.h"
+#include "core/spectrum/sampledspectrum.h"
+#include "core/spectrum/rgbspectrum.h"
 #include "core/ray.h"
 
 exrBEGIN_NAMESPACE

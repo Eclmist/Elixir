@@ -20,31 +20,22 @@
 
 #pragma once
 
-#include "core/primitive/primitive.h"
-#include "core/spatial/aabb.h"
+#define EXR_ENABLE_LOGGING
+#define EXR_ENABLE_ERRORS
+#define EXR_ENABLE_ASSERTS
 
-exrBEGIN_NAMESPACE
+// The order of the following includes matter!
+#include <algorithm>
+#include <atomic>
+#include <condition_variable>
+#include <math.h>
+#include <memory>
+#include <mutex>
+#include <vector>
 
-AABB GeometricPrimitive::GetBoundingVolume() const
-{
-    return m_Shape->GetBoundingVolume();
-}
-
-exrBool GeometricPrimitive::Intersect(const Ray& ray, SurfaceInteraction* interaction) const
-{
-    exrFloat tHit;
-
-    if (!m_Shape->Intersect(ray, tHit, interaction)) return false;
-
-    ray.m_TMax = tHit;
-    interaction->m_Primitive = this;
-
-    return true;
-}
-
-exrBool GeometricPrimitive::HasIntersect(const Ray& r, exrFloat& tHit) const
-{
-    return m_Shape->HasIntersect(r, tHit);
-}
-
-exrEND_NAMESPACE
+#include "system/config.h"
+#include "system/error.h"
+#include "system/utils.h"
+#include "system/types.h"
+#include "system/parallel.h"
+#include "system/profiling/profiler.h"
