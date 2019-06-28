@@ -21,8 +21,8 @@
 #pragma once
 
 #include "api.h"
-#include "camera/camera.h"
-#include "scene/scene.h"
+#include "core/camera/camera.h"
+#include "core/scene/scene.h"
 
 exrBEGIN_NAMESPACE
 

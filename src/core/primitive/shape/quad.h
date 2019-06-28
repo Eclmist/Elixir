@@ -94,7 +94,7 @@ public:
     //! Computes the a bounding volume that encapsulates the current box.
     //! 
     //! @return                 Always return true since bounding volumes can be created for quads
-    exrBool ComputeBoundingVolume() override;
+    AABB ComputeBoundingVolume() override;
 
 public:
     exrPoint3 m_HalfExtents;

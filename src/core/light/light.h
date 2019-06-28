@@ -21,7 +21,7 @@
 #pragma once
 
 #include "core/elixir.h"
-#include "primitive/transform.h"
+#include "core/primitive/transform.h"
 
 exrBEGIN_NAMESPACE
 

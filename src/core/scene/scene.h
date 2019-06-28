@@ -21,9 +21,9 @@
 #pragma once
 
 #include "core/elixir.h"
-#include "light/light.h"
-#include "primitive/primitive.h"
-#include "spatial/accelerator/accelerator.h"
+#include "core/light/light.h"
+#include "core/primitive/primitive.h"
+#include "core/spatial/accelerator/accelerator.h"
 
 exrBEGIN_NAMESPACE
 

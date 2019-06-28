@@ -20,7 +20,8 @@
 
 #pragma once
 
-#include "core/elixir.h"
+#include "system/system.h"
+#include "math/math.h"
 
 exrBEGIN_NAMESPACE
 

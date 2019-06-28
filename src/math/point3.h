@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "core/elixir.h"
+#include "math/mathutils.h"
 
 exrBEGIN_NAMESPACE
 
