@@ -25,13 +25,15 @@
 exrBEGIN_NAMESPACE
 
 //! Maximum primitives in a leaf node
-static constexpr exrU16 MaxPrimitivesPerNode = 1;
+static constexpr exrU16 MaxPrimitivesPerNode = 8;
 
 //! Maximum depth of BVH tree
 static constexpr exrU16 MaxNodeDepth = 16;
 
 BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const SplitMethod splitMethod)
 {
+    exrProfile("Building BVH Accelerator");
+
     const auto numObjects = objects.size();
     exrAssert(numObjects > 0, "Attempting to create a BVH with zero objects! This is illegal.");
 
@@ -53,6 +55,7 @@ BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const Spl
         break;
     }
 
+    exrEndProfile();
 }
 
 exrBool BVHAccelerator::Intersect(const Ray& ray, SurfaceInteraction* interaction) const
@@ -161,7 +164,7 @@ void BVHAccelerator::SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 dept
     currentRoot->m_RightSubtree = std::make_unique<BVHNode>();
 
     const exrU32 splitsPerAxis = 32;
-    exrFloat bestHeuristics = MaxexrFloat;
+    exrFloat bestHeuristics = MaxFloat;
 
     // for each axis
     for (exrU32 axis = 0; axis < 3; axis++)

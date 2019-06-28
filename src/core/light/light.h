@@ -25,12 +25,16 @@
 
 exrBEGIN_NAMESPACE
 
+class Scene;
+
 class Light
 {
 public:
-
     Light (const Transform& transform)
-        : m_Transform(transform) {}
+        : m_Transform(transform) {};
+
+public:
+    virtual void Preprocess(const Scene& scene) = 0;
 
 protected:
     const Transform m_Transform;

@@ -20,17 +20,27 @@
 
 #pragma once
 
-#include "core/elixir.h"
+#include "integrator.h"
 
 exrBEGIN_NAMESPACE
 
-class Scene;
-
-class Integrator
+class SamplerIntegrator : public Integrator
 {
 public:
-    virtual ~Integrator();
-    virtual void Render(const Scene& scene) = 0;
+
+    SamplerIntegrator(std::unique_ptr<Camera> camera, std::unique_ptr<Sampler> sampler)
+        : m_Camera(camera)
+        , m_Sampler(sampler)
+
+    virtual void Render(const Scene& scene) override;
+    virtual void Preprocess(const Scene& scene) {}
+
+protected:
+
+private:
+    std::unique_ptr<Sampler> m_Sampler;
+    std::unique_ptr<Camera> m_Camera;    
 };
+
 
 exrEND_NAMESPACE

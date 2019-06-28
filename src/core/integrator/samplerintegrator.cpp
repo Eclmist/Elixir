@@ -18,19 +18,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "core/elixir.h"
+#include "samplerintegrator.h"
 
 exrBEGIN_NAMESPACE
 
-class Scene;
-
-class Integrator
+void SamplerIntegrator::Render(const Scene& scene)
 {
-public:
-    virtual ~Integrator();
-    virtual void Render(const Scene& scene) = 0;
-};
+    Preprocess(scene);
+}
+
 
 exrEND_NAMESPACE

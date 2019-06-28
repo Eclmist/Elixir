@@ -30,6 +30,13 @@ exrBEGIN_NAMESPACE
 class Accelerator
 {
 public:
+
+    enum AcceleratorType
+    {
+        ACCELERATORTYPE_BVH,
+        ACCELERATORTYPE_KDTREE
+    };
+
     //! @brief Test the accelerator for intersections with a ray
     //! 
     //! Test all geometry for intersection with the ray, and outputs the surface

@@ -21,7 +21,7 @@
 #pragma once
 
 #include "accelerator.h"
-#include "spatial/aabb.h"
+#include "core/spatial/aabb.h"
 
 exrBEGIN_NAMESPACE
 

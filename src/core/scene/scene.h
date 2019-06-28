@@ -34,6 +34,12 @@ exrBEGIN_NAMESPACE
 class Scene
 {
 public:
+
+    Scene(const std::vector<std::unique_ptr<Primitive>>& primitives, const std::vector<std::shared_ptr<Light>>& lights, Accelerator::AcceleratorType accelType)
+        : m_Primitives(primitives)
+        , m_Lights(lights)
+        , m_AcceleratorType(accelType) {};
+
     //! @brief Adds a primitive to the scene
     //! 
     //! This function adds a new primitive to the scene's primitive collection
@@ -52,10 +58,31 @@ public:
     //! @brief Initializes the scene's accelerator if it has yet to be initialized or needs to be updated
     void InitAccelerator();
 
-public:
     //! @brief Returns the number of primitive in the scene
     //! @return                 The number of primitives in the scene
-    inline exrU64 GetSceneSize() const { return static_cast<exrU64>(m_Primitives.size()); }
+    inline exrU64 GetSceneSize() const { return static_cast<exrU64>(m_Primitives.size()); };
+
+    //! @brief Test the accelerator for intersections with a ray
+    //! 
+    //! Test all geometry for intersection with the ray, and outputs the surface
+    //! intersection data in <interaction> 
+    //! 
+    //! @param ray              The ray to test against
+    //! @param interaction      Output struct that contains the interaction information
+    //! 
+    //! @return                 True if the there are any intersections
+    exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const;
+
+    //! @brief Test the scene geometry for intersections with a ray
+    //! 
+    //! This function allows us to do intersection tests with a segment of a ray, but
+    //! does not initialize interaction or hit info. Useful for when checking if a ray
+    //! is obstructed, such as with shadow rays
+    //! 
+    //! @param ray              The ray to test against
+    //! 
+    //! @return                 True if the there is an intersection
+    exrBool HasIntersect(const Ray& ray) const;
 
 public:
     //! A collection of pointers that points to primitives in the scene
@@ -65,14 +92,11 @@ public:
     //! Shared ptr because lights could be either owned by the scene or by primitives
     std::vector<std::shared_ptr<Light>> m_Lights;
 private:
+    //! The type of accelerator to use
+    Accelerator::AcceleratorType m_AcceleratorType;
+
     //! The accelerator to use
     std::unique_ptr<Accelerator> m_Accelerator;
-
-    //! A flag that determines if the scene has changed since the last render
-    exrBool m_IsDirty;
-
-    //! The bounding volume that completely encapsulates the scene
-    AABB m_WorldBound;
 };
 
 exrEND_NAMESPACE

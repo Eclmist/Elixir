@@ -21,6 +21,7 @@
 #pragma once
 
 #include "core/elixir.h"
+#include "core/film.h"
 
 exrBEGIN_NAMESPACE
 
@@ -78,6 +79,9 @@ public:
 
     exrVector3 u, v, w;
     exrFloat lensRadius;
+
+private:
+    Film m_Film;
 };
 
 exrEND_NAMESPACE
