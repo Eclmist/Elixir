@@ -44,9 +44,10 @@
 #include <cassert>
 #define exrAssert(condition, msg)                   assert(condition && msg)
 #define exrSoftAssert(condition, msg)               std::cerr << "Soft assert failed: " #condition << " " << msg << '\n';
-#define exrStaticAssertMsg(condition, msg)          static_assert(condition, "static_assert: " msg)
 #else
 #define exrSoftAssert(condition, msg)               ((void)0)
 #define exrAssert(condition, msg)                   ((void)0)
-#define exrStaticAssertMsg(condition, msg)          ((void)0)
 #endif
+
+// Static assert should always be there
+#define exrStaticAssertMsg(condition, msg)          static_assert(condition, "static_assert: " msg)
