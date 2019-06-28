@@ -28,7 +28,7 @@ exrVector3 Random::RandomInUnitSphere()
 
     do {
         p = 2.0f * exrVector3(Random::Uniform01(), Random::Uniform01(), Random::Uniform01()) - exrVector3(1.0f);
-    } while (p.SquareMagnitude() >= 1.0f);
+    } while (p.MagnitudeSquared() >= 1.0f);
 
     return p;
 }

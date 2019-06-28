@@ -20,21 +20,20 @@
 
 #pragma once
 
-#include "light.h"
+#include "pointlight.h"
 
 exrBEGIN_NAMESPACE
 
-class AreaLight : public Light
+exrSpectrum PointLight::SampleLi(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const
 {
-public:
-    AreaLight(const Transform& transform)
-        : Light(transform) {}
+    wi = (m_Point - interaction.m_Point).Normalized();
+    pdf = 1.0f;
+    return m_Intensity / DistanceSquared(m_Point, interaction.m_Point);
+}
 
-    AreaLight(const AreaLight& copy)
-        : Light(copy.m_Transform) {}
-
-protected:
-    exrU32 m_NumSamples;
-};
+exrSpectrum PointLight::Power() const
+{
+    return m_Intensity * 4 * EXR_M_PI;
+}
 
 exrEND_NAMESPACE

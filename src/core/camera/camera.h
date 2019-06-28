@@ -18,6 +18,18 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* ========================================================================================== /
+         ######\  ##\      ########\  ######\  ##\   ##\       ##\      ##\ ########\
+        ##  __##\ ## |     ##  _____|##  __##\ ###\  ## |      ###\    ### |##  _____|
+        ## /  \__|## |     ## |      ## /  ## |####\ ## |      ####\  #### |## |
+        ## |      ## |     #####\    ######## |## ##\## |      ##\##\## ## |#####\
+        ## |      ## |     ##  __|   ##  __## |## \#### |      ## \###  ## |##  __|
+        ## |  ##\ ## |     ## |      ## |  ## |## |\### |      ## |\#  /## |## |
+        \######  |########\########\ ## |  ## |## | \## |      ## | \_/ ## |########\
+         \______/ \________\________|\__|  \__|\__|  \__|      \__|     \__|\________|
+                 Banner of shame. Remove when this file is no longer ghetto.
+=========================================================================================== */
+
 #pragma once
 
 #include "core/elixir.h"
@@ -58,6 +70,9 @@ public:
         m_Min = position - halfWidth * focusDist * u - halfHeight * focusDist * v + w * focusDist;
         m_HorizontalStep = 2.0f * halfWidth * focusDist* u;
         m_VerticalStep = 2.0f * halfHeight * focusDist * v;
+
+        // TODO: replace these with values from renderjob
+        m_Film = std::make_unique<Film>(exrPoint2(500, 500), "test", true);
     }
 
     //! @brief Creates a view ray based from a uv coordinate
@@ -80,8 +95,7 @@ public:
     exrVector3 u, v, w;
     exrFloat lensRadius;
 
-private:
-    Film m_Film;
+    std::unique_ptr<Film> m_Film;
 };
 
 exrEND_NAMESPACE

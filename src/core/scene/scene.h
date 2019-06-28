@@ -22,6 +22,7 @@
 
 #include "core/elixir.h"
 #include "core/light/light.h"
+#include "core/light/skylight.h"
 #include "core/primitive/primitive.h"
 #include "core/spatial/accelerator/accelerator.h"
 
@@ -83,6 +84,13 @@ public:
     //! 
     //! @return                 True if the there is an intersection
     exrBool HasIntersect(const Ray& ray) const;
+    
+    //! @brief Return the skylight color for the given ray direction
+    //!
+    //! @param ray              The reference ray
+    //!
+    //! @return                 The skylight color
+    exrSpectrum SampleSkyLight(const Ray& ray) const;
 
 public:
     //! A collection of pointers that points to primitives in the scene
@@ -91,6 +99,7 @@ public:
     //! A collection of pointers that points to lights in the scene
     //! Shared ptr because lights could be either owned by the scene or by primitives
     std::vector<std::shared_ptr<Light>> m_Lights;
+
 private:
     //! The type of accelerator to use
     Accelerator::AcceleratorType m_AcceleratorType;

@@ -18,23 +18,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "light.h"
+#include "ray.h"
 
 exrBEGIN_NAMESPACE
 
-class AreaLight : public Light
+void RayDifferential::ScaleDifferentials(exrFloat scale)
 {
-public:
-    AreaLight(const Transform& transform)
-        : Light(transform) {}
-
-    AreaLight(const AreaLight& copy)
-        : Light(copy.m_Transform) {}
-
-protected:
-    exrU32 m_NumSamples;
-};
+    m_RxOrigin = m_Origin + (m_RxOrigin - m_Origin) * scale;
+    m_RyOrigin = m_Origin + (m_RyOrigin - m_Origin) * scale;
+    m_RxDirection = m_Direction + (m_RxDirection - m_Direction) * scale;
+    m_RyDirection = m_Direction + (m_RyDirection - m_Direction) * scale;
+}
 
 exrEND_NAMESPACE

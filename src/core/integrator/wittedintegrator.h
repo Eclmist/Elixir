@@ -20,21 +20,22 @@
 
 #pragma once
 
-#include "light.h"
+#include "samplerintegrator.h"
 
 exrBEGIN_NAMESPACE
 
-class AreaLight : public Light
+class WittedIntegrator : public SamplerIntegrator
 {
 public:
-    AreaLight(const Transform& transform)
-        : Light(transform) {}
+    WittedIntegrator(std::unique_ptr<Camera> camera, exrU32 maxDepth)
+        : SamplerIntegrator(std::move(camera))
+        , m_MaxDepth(maxDepth) {};
 
-    AreaLight(const AreaLight& copy)
-        : Light(copy.m_Transform) {}
+    void Render(const Scene& scene) override;
+    exrSpectrum Li(const RayDifferential& ray, const Scene& scene) const override;
 
-protected:
-    exrU32 m_NumSamples;
+private:
+    exrU32 m_MaxDepth;
 };
 
 exrEND_NAMESPACE

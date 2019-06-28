@@ -52,8 +52,8 @@ public:
     inline explicit operator Point3<T>() const { return Point3<T>(x, y, z); }
 
 public:
-    inline const float SquareMagnitude() const { return x * x + y * y + z * z; }
-    inline const float Magnitude() const { return sqrt(SquareMagnitude()); }
+    inline const float MagnitudeSquared() const { return x * x + y * y + z * z; }
+    inline const float Magnitude() const { return sqrt(MagnitudeSquared()); }
     inline Vector3<T> Normalized() const { return *this / Magnitude(); };
 
 public:

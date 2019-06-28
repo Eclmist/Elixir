@@ -20,21 +20,32 @@
 
 #pragma once
 
-#include "light.h"
+#include "ray.h"
 
 exrBEGIN_NAMESPACE
 
-class AreaLight : public Light
+class RayDifferential : public Ray
 {
 public:
-    AreaLight(const Transform& transform)
-        : Light(transform) {}
+    RayDifferential()
+        : m_HasDifferentials(false) {};
 
-    AreaLight(const AreaLight& copy)
-        : Light(copy.m_Transform) {}
+    RayDifferential(const exrPoint3& origin, const exrVector3& direction, exrFloat tmax = MaxFloat)
+        : Ray(origin, direction, tmax)
+        , m_HasDifferentials(false) {};
 
-protected:
-    exrU32 m_NumSamples;
+    RayDifferential(const Ray& ray)
+        : Ray(ray)
+        , m_HasDifferentials(false) {};
+
+    void ScaleDifferentials(exrFloat scale);
+
+private:
+    exrBool m_HasDifferentials;
+    exrPoint3 m_RxOrigin;
+    exrPoint3 m_RyOrigin;
+    exrVector3 m_RxDirection;
+    exrVector3 m_RyDirection;
 };
 
 exrEND_NAMESPACE

@@ -21,6 +21,7 @@
 #pragma once
 
 #include "integrator.h"
+#include "core/camera/camera.h"
 
 exrBEGIN_NAMESPACE
 
@@ -28,19 +29,17 @@ class SamplerIntegrator : public Integrator
 {
 public:
 
-    SamplerIntegrator(std::unique_ptr<Camera> camera, std::unique_ptr<Sampler> sampler)
-        : m_Camera(camera)
-        , m_Sampler(sampler)
+    SamplerIntegrator(std::unique_ptr<Camera>& camera, exrU32 numSamples)
+        : m_Camera(std::move(camera))
+        , m_NumSamples(numSamples) {};
 
     virtual void Render(const Scene& scene) override;
-    virtual void Preprocess(const Scene& scene) {}
-
-protected:
+    virtual void Preprocess(const Scene& scene) {};
+    virtual exrSpectrum Li(const RayDifferential& ray, const Scene& scene) const;
 
 private:
-    std::unique_ptr<Sampler> m_Sampler;
-    std::unique_ptr<Camera> m_Camera;    
+    std::unique_ptr<Camera> m_Camera;
+    exrU32 m_NumSamples;
 };
-
 
 exrEND_NAMESPACE

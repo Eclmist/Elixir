@@ -18,23 +18,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "light.h"
+#include "ray.h"
 
 exrBEGIN_NAMESPACE
 
-class AreaLight : public Light
+Ray::Ray(const Ray& copy)
 {
-public:
-    AreaLight(const Transform& transform)
-        : Light(transform) {}
-
-    AreaLight(const AreaLight& copy)
-        : Light(copy.m_Transform) {}
-
-protected:
-    exrU32 m_NumSamples;
-};
+    m_Origin = copy.m_Origin;
+    m_Direction = copy.m_Direction;
+    m_TMax = copy.m_TMax;
+}
 
 exrEND_NAMESPACE

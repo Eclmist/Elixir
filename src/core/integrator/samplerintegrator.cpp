@@ -25,6 +25,8 @@ exrBEGIN_NAMESPACE
 void SamplerIntegrator::Render(const Scene& scene)
 {
     Preprocess(scene);
+
+    m_Camera->m_Film->WriteImage(1.0f / m_NumSamples);
 }
 
 

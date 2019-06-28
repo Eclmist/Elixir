@@ -51,6 +51,6 @@ typedef Vector2<exrFloat>       exrVector2;
 typedef Vector3<exrFloat>       exrVector3;
 typedef Point2<exrFloat>        exrPoint2;
 typedef Point3<exrFloat>        exrPoint3;
-typedef SampledSpectrum         exrSpectrum;
+typedef RGBSpectrum             exrSpectrum;
 
 exrEND_NAMESPACE

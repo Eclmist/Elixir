@@ -30,15 +30,29 @@ class Scene;
 class Light
 {
 public:
-    Light (const Transform& transform)
-        : m_Transform(transform) {};
+
+    enum LightFlags
+    {
+        LIGHTFLAGS_DELTAPOSITION = 1,
+        LIGHTFLAGS_DELTADIRECTION = 2,
+        LIGHTFLAGS_AREA = 4,
+        LIGHTFLAGS_INFINITE = 8
+    };
+
+    Light(const Transform& transform, exrU32 flags)
+        : m_Transform(transform)
+        , m_Flags(flags) {};
+
+    inline exrBool IsDeltaLight() { return m_Flags & LightFlags::LIGHTFLAGS_DELTAPOSITION || m_Flags & LightFlags::LIGHTFLAGS_DELTADIRECTION; };
 
 public:
-    virtual void Preprocess(const Scene& scene) = 0;
+    virtual void Preprocess(const Scene& scene) {};
+    virtual exrSpectrum SampleLi(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const = 0;
+    virtual exrSpectrum Power() const = 0;
 
 protected:
     const Transform m_Transform;
-    
+    const exrU32 m_Flags;
 };
 
 exrEND_NAMESPACE
