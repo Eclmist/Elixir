@@ -20,33 +20,13 @@
 
 #pragma once
 
-#include "core/elixir.h"
+#include "lambert.h"
 
 exrBEGIN_NAMESPACE
 
-class BxDF
+exrSpectrum Lambert::Evaluate(const exrVector3& wo, const exrVector3& wi) const
 {
-public:
-
-    enum BxDFType
-    {
-        BSDF_REFLECTION   = 1 << 0,
-        BSDF_TRANSMISSION = 1 << 1,
-        BSDF_DIFFUSE      = 1 << 2,
-        BSDF_GLOSSY       = 1 << 3,
-        BSDF_SPECULAR     = 1 << 4,
-        BSDF_ALL          = BSDF_REFLECTION | BSDF_TRANSMISSION | BSDF_DIFFUSE | BSDF_GLOSSY | BSDF_SPECULAR,
-    };
-
-    BxDF(BxDFType type)
-        : m_BxDFType(type) {};
-
-    exrBool MatchesFlags(BxDFType t) const { return m_BxDFType == t; };
-
-    virtual exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const = 0;
-	virtual exrSpectrum EvaluateDelta(const exrVector3& wo, exrVector3& wi, BxDFType& thisType) const;
-private:
-    BxDFType m_BxDFType;
-};
+	return m_Albedo * EXR_M_INVPI;
+}
 
 exrEND_NAMESPACE

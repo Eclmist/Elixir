@@ -73,7 +73,7 @@ exrBool Scene::HasIntersect(const Ray& ray) const
     return m_Accelerator->HasIntersect(ray);
 }
 
-exrSpectrum Scene::Skybox(const Ray& ray) const
+exrSpectrum Scene::SampleSkyLight(const Ray& ray) const
 {
     // Hard coded values for now
     exrVector3 sunsetRed(0.725f, 0.268f, 0.152f);
