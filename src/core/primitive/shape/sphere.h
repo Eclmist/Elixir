@@ -35,7 +35,7 @@ public:
     //! @param radius           The radius of the sphere
     //! @param material         The material of the sphere
     Sphere(const Transform& transform, exrFloat radius)
-        : Shape(transform)
+        : Shape(transform, ComputeBoundingVolume())
         , m_Radius(radius) {};
 
     //! @brief Test the sphere for intersections with a ray
@@ -81,6 +81,7 @@ public:
     //! @return                 The total surface area of the sphere
     exrFloat GetArea() const override;
 
+protected:
     //! @brief Computes a bounding volume
     //! 
     //! Computes the a bounding volume that encapsulates the current sphere.

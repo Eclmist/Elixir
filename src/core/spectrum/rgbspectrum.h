@@ -32,8 +32,8 @@ public:
 
 public:
     // virtual functions
-    exrVector3 ToXYZ() const override;
-    exrVector3 ToRGB() const override;
+    exrVector3 ToXYZ() const;
+    exrVector3 ToRGB() const;
 
 public:
     // SpectrumType may not be used here, but since we may swap out which kind of spectrum

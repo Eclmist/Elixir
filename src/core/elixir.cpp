@@ -33,14 +33,14 @@ void PrintUsage(const exrChar* msg = nullptr)
     cout << ", Copyright (c) 2019 Samuel Van Allen" << endl << endl;
     cout << "Usage: elixir [options] <One or more scene files>" << endl << endl;
     cout << "Rendering Options: " << endl;
-    cout << "   -h, --help                  Display this help page" << endl;
-    cout << "   -t, --numthreads            Specify the number of rendering threads to use" << endl;
-    cout << "   -o, --out <fname>           Write the output image to a specified filename" << endl;
-    cout << "   -q, --quick                 Reduce output quality for quick render" << endl;
-    cout << "   -d, --debug                 Render debug scene defined in code. To be deprecated." << endl;
+    cout << "   -h, --help              Display this help page" << endl;
+    cout << "   -t, --numthreads        Specify the number of rendering threads to use" << endl;
+    cout << "   -o, --out <fname>       Write the output image to a specified filename" << endl;
+    cout << "   -q, --quick             Reduce output quality for quick render" << endl;
+    cout << "   -d, --debug             Render debug scene defined in code. To be deprecated." << endl;
     cout << "Logging Options: " << endl;
-    cout << "   --quiet                     Suppress all non-error messages" << endl;
-    cout << "For documentations, please refer to http://docs.elixir.moe/" << endl;
+    cout << "   --quiet                 Suppress all non-error messages" << endl;
+    cout << "For documentations, please refer to <http://docs.elixir.moe/>" << endl;
 }
 
 exrU32 main(exrU32 argc, exrChar *argv[])

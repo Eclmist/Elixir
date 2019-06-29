@@ -32,7 +32,7 @@ class Quad : public Shape
 public:
     //! @brief Constructs a box with a position and a scale
     Quad(const Transform& transform, const exrVector2& scale)
-        : Shape(transform)
+        : Shape(transform, ComputeBoundingVolume())
     {
         m_HalfExtents = exrPoint3::Zero() + exrVector3(0.5f * scale.x, 0.5f * scale.y, EXR_EPSILON);
     };

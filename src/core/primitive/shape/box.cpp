@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 exrBEGIN_NAMESPACE
 
 Box::Box(const Transform& transform, const exrVector3& scale)
-    : Shape(transform)
+    : Shape(transform, ComputeBoundingVolume())
 {
     // TODO: Implement child quads
 

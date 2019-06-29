@@ -50,6 +50,7 @@ public:
     //! @return                 True if the there is an intersection
     exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const override;
 
+protected:
     //! @brief Computes a bounding volume
     //! 
     //! Computes the a bounding volume that encapsulates the current box.
@@ -57,7 +58,7 @@ public:
     //! @return                 Always return true since bounding volumes can be created for quads
     AABB ComputeBoundingVolume() const override;
 
-public:
+private:
     //! Sides of the boxes, internally handled as quads
     std::unique_ptr<Quad> m_Sides[6];
 

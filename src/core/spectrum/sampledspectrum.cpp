@@ -22,6 +22,14 @@
 
 exrBEGIN_NAMESPACE
 
+static SampledSpectrum m_X, m_Y, m_Z;
+static SampledSpectrum m_rgbIllum2SpectWhite;
+static SampledSpectrum m_rgbIllum2SpectCyan, m_rgbIllum2SpectMagenta, m_rgbIllum2SpectYellow;
+static SampledSpectrum m_rgbIllum2SpectRed, m_rgbIllum2SpectGreen, m_rgbIllum2SpectBlue;
+static SampledSpectrum m_rgbRefl2SpectWhite;
+static SampledSpectrum m_rgbRefl2SpectCyan, m_rgbRefl2SpectMagenta, m_rgbRefl2SpectYellow;
+static SampledSpectrum m_rgbRefl2SpectRed, m_rgbRefl2SpectGreen, m_rgbRefl2SpectBlue;
+
 exrVector3 SampledSpectrum::ToXYZ() const
 {
     exrVector3 xyz = exrVector3::Zero();

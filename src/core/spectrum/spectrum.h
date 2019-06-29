@@ -83,10 +83,6 @@ public:
     inline exrFloat& operator[](exrU32 i) { return m_Wavelengths[i]; }
 
 public:
-    virtual exrVector3 ToXYZ() const;
-    virtual exrVector3 ToRGB() const;
-
-public:
     // Conversion to RGB based on a standard set of RGB spectra that has been
     // defined for high-definition televisions
     static void XYZToRGB(const exrFloat xyz[3], exrFloat rgb[3]);
@@ -107,5 +103,267 @@ public:
 protected:
     exrFloat m_Wavelengths[numSpectrumSamples];
 };
+
+template <exrU32 N>
+Spectrum<N>::Spectrum(exrFloat v)
+{
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        m_Wavelengths[i] = v;
+    }
+}
+
+template <exrU32 N>
+Spectrum<N>& Spectrum<N>::operator+=(const Spectrum<N>& s2)
+{
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        m_Wavelengths[i] += s2.m_Wavelengths[i];
+    }
+
+    return *this;
+}
+
+template <exrU32 N>
+Spectrum<N>& Spectrum<N>::operator-=(const Spectrum<N>& s2)
+{
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        m_Wavelengths[i] -= s2.m_Wavelengths[i];
+    }
+
+    return *this;
+}
+
+template <exrU32 N>
+Spectrum<N>& Spectrum<N>::operator*=(const Spectrum<N>& s2)
+{
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        m_Wavelengths[i] *= s2.m_Wavelengths[i];
+    }
+
+    return *this;
+}
+
+template <exrU32 N>
+Spectrum<N>& Spectrum<N>::operator/=(const Spectrum<N>& s2)
+{
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        m_Wavelengths[i] /= s2.m_Wavelengths[i];
+    }
+
+    return *this;
+}
+
+template <exrU32 N>
+Spectrum<N>& Spectrum<N>::operator+=(exrFloat v)
+{
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        m_Wavelengths[i] += v;
+    }
+
+    return *this;
+}
+
+template <exrU32 N>
+Spectrum<N>& Spectrum<N>::operator-=(exrFloat v)
+{
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        m_Wavelengths[i] -= v;
+    }
+
+    return *this;
+}
+
+template <exrU32 N>
+Spectrum<N>& Spectrum<N>::operator*=(exrFloat v)
+{
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        m_Wavelengths[i] *= v;
+    }
+
+    return *this;
+}
+
+template <exrU32 N>
+Spectrum<N>& Spectrum<N>::operator/=(exrFloat v)
+{
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        m_Wavelengths[i] /= v;
+    }
+
+    return *this;
+}
+
+template <exrU32 N>
+Spectrum<N> Spectrum<N>::operator+(const Spectrum<N>& s2) const
+{
+    Spectrum<N> ret = *this;
+
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        ret.m_Wavelengths[i] += s2.m_Wavelengths[i];
+    }
+
+    return ret;
+}
+
+template <exrU32 N>
+Spectrum<N> Spectrum<N>::operator-(const Spectrum<N>& s2) const
+{
+    Spectrum<N> ret = *this;
+
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        ret.m_Wavelengths[i] -= s2.m_Wavelengths[i];
+    }
+
+    return ret;
+}
+
+template <exrU32 N>
+Spectrum<N> Spectrum<N>::operator*(const Spectrum<N>& s2) const
+{
+    Spectrum<N> ret = *this;
+
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        ret.m_Wavelengths[i] *= s2.m_Wavelengths[i];
+    }
+
+    return ret;
+}
+
+template <exrU32 N>
+Spectrum<N> Spectrum<N>::operator/(const Spectrum<N>& s2) const
+{
+    Spectrum<N> ret = *this;
+
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        ret.m_Wavelengths[i] /= s2.m_Wavelengths[i];
+    }
+
+    return ret;
+}
+
+template <exrU32 N>
+Spectrum<N> Spectrum<N>::operator+(exrFloat v) const
+{
+    Spectrum<N> ret = *this;
+
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        ret.m_Wavelengths[i] += v;
+    }
+
+    return ret;
+}
+
+template <exrU32 N>
+Spectrum<N> Spectrum<N>::operator-(exrFloat v) const
+{
+    Spectrum<N> ret = *this;
+
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        ret.m_Wavelengths[i] -= v;
+    }
+
+    return ret;
+}
+
+template <exrU32 N>
+Spectrum<N> Spectrum<N>::operator*(exrFloat v) const
+{
+    Spectrum<N> ret = *this;
+
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        ret.m_Wavelengths[i] *= v;
+    }
+
+    return ret;
+}
+
+template <exrU32 N>
+Spectrum<N> Spectrum<N>::operator/(exrFloat v) const
+{
+    Spectrum<N> ret = *this;
+
+    for (exrU32 i = 0; i < N; ++i)
+    {
+        ret.m_Wavelengths[i] /= v;
+    }
+
+    return ret;
+}
+
+template <exrU32 N>
+void Spectrum<N>::XYZToRGB(const exrFloat xyz[3], exrFloat rgb[3])
+{
+    rgb[0] = 3.240479f*xyz[0] - 1.537150f*xyz[1] - 0.498535f*xyz[2];
+    rgb[1] = -0.969256f*xyz[0] + 1.875991f*xyz[1] + 0.041556f*xyz[2];
+    rgb[2] = 0.055648f*xyz[0] - 0.204043f*xyz[1] + 1.057311f*xyz[2];
+}
+
+template <exrU32 N>
+void Spectrum<N>::RGBToXYZ(const exrFloat rgb[3], exrFloat xyz[3])
+{
+    xyz[0] = 0.412453f*rgb[0] + 0.357580f*rgb[1] + 0.180423f*rgb[2];
+    xyz[1] = 0.212671f*rgb[0] + 0.715160f*rgb[1] + 0.072169f*rgb[2];
+    xyz[2] = 0.019334f*rgb[0] + 0.119193f*rgb[1] + 0.950227f*rgb[2];
+}
+
+template <exrU32 N>
+exrBool Spectrum<N>::IsBlack() const
+{
+    for (exrU32 i = 0; i < N; ++i)
+        if (m_Wavelengths[i] != 0.0f) return false;
+
+    return true;
+}
+
+template <exrU32 N>
+exrBool Spectrum<N>::HasNaNs() const
+{
+    for (exrU32 i = 0; i < N; ++i)
+        if (std::isnan(m_Wavelengths[i])) return true;
+
+    return false;
+}
+
+template <exrU32 N>
+Spectrum<N> Spectrum<N>::GetSqrt() const
+{
+    Spectrum<N> ret;
+    for (exrU32 i = 0; i < N; ++i)
+        ret.m_Wavelengths[i] = sqrt(m_Wavelengths[i]);
+    return ret;
+}
+
+template <exrU32 N>
+Spectrum<N> Spectrum<N>::GetPow(exrU32 e) const
+{
+    Spectrum<N> ret;
+    for (exrU32 i = 0; i < N; ++i)
+        ret.m_Wavelengths[i] = pow(m_Wavelengths[i], e);
+    return ret;
+}
+
+template <exrU32 N>
+Spectrum<N> Spectrum<N>::GetExp() const
+{
+    Spectrum<N> ret;
+    for (exrU32 i = 0; i < N; ++i)
+        ret.m_Wavelengths[i] = exp(m_Wavelengths[i]);
+    return ret;
+}
 
 exrEND_NAMESPACE

@@ -46,8 +46,13 @@ public:
 
     //! @brief Copy constructor. Constructs a ray with the same origin, direction and distance from input
     //! @param copy             The ray to copy
-    Ray(const Ray& copy);
-    
+    Ray(const Ray& copy)
+    {
+        m_Origin = copy.m_Origin;
+        m_Direction = copy.m_Direction;
+        m_TMax = copy.m_TMax;
+    }
+
     //! @brief Returns the point along the ray at distance t
     //! 
     //! Evaluates the ray with t and return the point on the ray such that
@@ -56,7 +61,10 @@ public:
     //! @param t                The t param in parametric ray equation
     //! 
     //! @return                 The point along the ray at distance t
-    inline exrPoint3 operator()(exrFloat t) const;
+    inline exrPoint3 Ray::operator()(exrFloat t) const
+    {
+        return m_Origin + t * m_Direction;
+    }
 
 public:
     //! The origin of the ray in world space

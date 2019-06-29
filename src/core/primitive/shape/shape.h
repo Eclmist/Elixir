@@ -36,9 +36,9 @@ class Shape
 {
 public:
     //! Constructor
-    Shape(const Transform& transform)
+    Shape(const Transform& transform, const AABB& boundingBox)
         : m_Transform(transform)
-        , m_BoundingVolume(ComputeBoundingVolume()) {};
+        , m_BoundingVolume(boundingBox) {};
 
 public:
     //! @brief Test the geometry for intersections with a ray

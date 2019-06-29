@@ -36,8 +36,8 @@ public:
 
 public:
     // virtual functions
-    exrVector3 ToXYZ() const override;
-    exrVector3 ToRGB() const override;
+    exrVector3 ToXYZ() const;
+    exrVector3 ToRGB() const;
 
 public:
     static SampledSpectrum FromRGB(const exrVector3& rgb, SpectrumType type);
@@ -48,16 +48,6 @@ public:
     static void SortSpectrumSamples(std::vector<exrFloat>& wavelengths, std::vector<exrFloat>& values);
     static exrBool SpectrumSamplesIsSorted(const std::vector<exrFloat>& wavelengths);
     static exrFloat AverageSpectrumSamples(const std::vector<exrFloat>& wavelengths, const std::vector<exrFloat>& values, exrFloat w0, exrFloat w1);
-
-private:
-    static SampledSpectrum m_X, m_Y, m_Z;
-    static SampledSpectrum m_rgbIllum2SpectWhite;
-    static SampledSpectrum m_rgbIllum2SpectCyan, m_rgbIllum2SpectMagenta, m_rgbIllum2SpectYellow;
-    static SampledSpectrum m_rgbIllum2SpectRed, m_rgbIllum2SpectGreen, m_rgbIllum2SpectBlue;
-    static SampledSpectrum m_rgbRefl2SpectWhite;
-    static SampledSpectrum m_rgbRefl2SpectCyan, m_rgbRefl2SpectMagenta, m_rgbRefl2SpectYellow;
-    static SampledSpectrum m_rgbRefl2SpectRed, m_rgbRefl2SpectGreen, m_rgbRefl2SpectBlue;
-
 };
 
 exrEND_NAMESPACE
