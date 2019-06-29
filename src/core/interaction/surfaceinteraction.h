@@ -24,8 +24,8 @@
 
 exrBEGIN_NAMESPACE
 
-class BSDF;
 class Primitive;
+class BSDF;
 
 class SurfaceInteraction : public Interaction
 {
@@ -40,7 +40,7 @@ public:
 
 public:
     //! The BRDF of the surface
-    std::unique_ptr<BSDF> m_BSDF = nullptr;
+    BSDF* m_BSDF = nullptr;
 
     //! A reference to the primitive that the interaction lies on
     const Primitive* m_Primitive = nullptr;

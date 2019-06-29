@@ -20,17 +20,23 @@
 
 #pragma once
 
-#include "surfaceinteraction.h"
-#include "core/primitive/primitive.h"
+#include "bsdf.h"
 
 exrBEGIN_NAMESPACE
 
-exrVector3 SurfaceInteraction::GetEmission(const exrVector3& wo) const
+void BSDF::AddComponent(const BxDF* bxdf)
 {
-	// TODO: fix this
-	return exrVector3::Zero();
+	exrAssert(m_NumBxDF < MaxBxDFs, "Max number of BxDFs exceeded for material!");
+	m_BxDFs[m_NumBxDF++] = bxdf;
+}
+
+exrU32 BSDF::GetComponentCount(BxDF::BxDFType flags) const
+{
+	exrU32 res = 0;
+	for (exrU32 i = 0; i < m_NumBxDF; ++i)
+		if (m_BxDFs[i]->MatchesFlags(flags)) ++res;
+
+	return res;
 }
 
 exrEND_NAMESPACE
-
-
