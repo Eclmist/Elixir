@@ -28,7 +28,7 @@ exrBEGIN_NAMESPACE
 class Film
 {
 public:
-    Film(const Point2<exrU32>& resolution, const exrString& filename, exrBool stampFile = true)
+    Film(const Point2<int>& resolution, const exrString& filename, exrBool stampFile = true)
         : m_Resolution(resolution)
         , m_FileName(filename)
         , m_StampFile(stampFile) {}
@@ -44,12 +44,12 @@ private:
         AtomicFloat m_SplatRGB[3];
     };
 
-    Pixel& GetPixel(const Point2<exrU32>& point);
+    Pixel& GetPixel(const Point2<int>& point);
 
 private:
     std::unique_ptr<Pixel[]> m_Pixels;
 
-    Point2<exrU32> m_Resolution;
+    Point2<int> m_Resolution;
     exrString m_FileName;
     exrBool m_StampFile;
 };

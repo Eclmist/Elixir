@@ -44,7 +44,7 @@ public:
     exrBool MatchesFlags(BxDFType t) const { return m_BxDFType == t; };
 
     virtual exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const = 0;
-	virtual exrSpectrum EvaluateDelta(const exrVector3& wo, exrVector3& wi, BxDFType& thisType) const;
+	//virtual exrSpectrum EvaluateDelta(const exrVector3& wo, exrVector3& wi, BxDFType& thisType) const;
 private:
     BxDFType m_BxDFType;
 };

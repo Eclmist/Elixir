@@ -28,17 +28,17 @@ exrBEGIN_NAMESPACE
 class SamplerIntegrator : public Integrator
 {
 public:
-    SamplerIntegrator(std::unique_ptr<Camera>& camera, exrU32 numSamplesPerPixel)
+    SamplerIntegrator(std::unique_ptr<Camera>& camera, int numSamplesPerPixel)
         : m_Camera(std::move(camera))
         , m_NumSamplesPerPixel(numSamplesPerPixel) {};
 
     virtual void Render(const Scene& scene) override;
     virtual void Preprocess(const Scene& scene) {};
-    virtual exrSpectrum Li(const RayDifferential& ray, const Scene& scene, exrU32 depth) const;
+    virtual exrSpectrum Li(const RayDifferential& ray, const Scene& scene, int depth) const = 0;
 
 private:
     std::unique_ptr<Camera> m_Camera;
-    exrU32 m_NumSamplesPerPixel;
+    int m_NumSamplesPerPixel;
 };
 
 exrEND_NAMESPACE

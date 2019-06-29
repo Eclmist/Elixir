@@ -137,7 +137,7 @@ void BVHAccelerator::EqualCountSplit(std::unique_ptr<BVHNode>& currentRoot, exrU
     std::vector<Primitive*> temp = currentRoot->m_Primitives;
 
     // Get a random axis to split objects
-    switch (exrU32(Random::Uniform01() * 3))
+    switch (int(Random::Uniform01() * 3))
     {
     case 0:
         // Split along x axis
@@ -182,19 +182,19 @@ void BVHAccelerator::SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 dept
     currentRoot->m_LeftSubtree = std::make_unique<BVHNode>();
     currentRoot->m_RightSubtree = std::make_unique<BVHNode>();
 
-    const exrU32 splitsPerAxis = 32;
+    const int splitsPerAxis = 32;
     exrFloat bestHeuristics = MaxFloat;
 
     // for each axis
-    for (exrU32 axis = 0; axis < 3; axis++)
+    for (int axis = 0; axis < 3; axis++)
     {
-        for (exrU32 i = 0; i < splitsPerAxis; i++)
+        for (int i = 0; i < splitsPerAxis; ++i)
         {
             exrFloat splitValue = exrFloat(i) / exrFloat(splitsPerAxis);
 
             std::vector<Primitive*> leftObjects, rightObjects;
 
-            for (exrU32 n = 0; n < numObjects; n++)
+            for (int n = 0; n < numObjects; n++)
             {
                 if ((currentRoot->m_Primitives[n]->GetBoundingVolume().Min()[axis] - currentRoot->m_BoundingVolume.Min()[axis]) / currentRoot->m_BoundingVolume.GetExtents()[axis] < splitValue)
                 {

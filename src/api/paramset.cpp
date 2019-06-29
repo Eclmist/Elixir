@@ -25,7 +25,7 @@
 exrBEGIN_NAMESPACE
 
 template <class T>
-ParamSet::ParamSetItem<T>::ParamSetItem(const exrString& key, const T* value, exrU32 numValues /*= 1*/)
+ParamSet::ParamSetItem<T>::ParamSetItem(const exrString& key, const T* value, int numValues /*= 1*/)
     : m_Key(key)
     , m_Values(std::make_unique<T[]>(numValues))
     , m_NumValues(numValues)
@@ -33,62 +33,62 @@ ParamSet::ParamSetItem<T>::ParamSetItem(const exrString& key, const T* value, ex
     std::copy(value, value + numValues, m_Values.get());
 }
 
-void ParamSet::AddBool(const exrString& key, const exrBool* val, exrU32 numVals)
+void ParamSet::AddBool(const exrString& key, const exrBool* val, int numVals)
 {
     RemoveBool(key);
     m_Booleans.emplace_back(std::make_unique<ParamSetItem<exrBool>>(key, std::move(val), numVals));
 }
 
-void ParamSet::AddU32(const exrString& key, const exrU32* val, exrU32 numVals)
+void ParamSet::AddU32(const exrString& key, const int* val, int numVals)
 {
     RemoveU32(key);
-    m_U32s.emplace_back(std::make_unique<ParamSetItem<exrU32>>(key, std::move(val), numVals));
+    m_U32s.emplace_back(std::make_unique<ParamSetItem<int>>(key, std::move(val), numVals));
 }
 
-void ParamSet::AddS32(const exrString& key, const exrS32* val, exrU32 numVals)
+void ParamSet::AddS32(const exrString& key, const exrS32* val, int numVals)
 {
     RemoveS32(key);
     m_S32s.emplace_back(std::make_unique<ParamSetItem<exrS32>>(key, std::move(val), numVals));
 }
 
-void ParamSet::AddexrFloat(const exrString& key, const exrFloat* val, exrU32 numVals)
+void ParamSet::AddexrFloat(const exrString& key, const exrFloat* val, int numVals)
 {
     RemoveexrFloat(key);
     m_exrFloats.emplace_back(std::make_unique<ParamSetItem<exrFloat>>(key, std::move(val), numVals));
 }
 
-void ParamSet::AddString(const exrString& key, const exrString* val, exrU32 numVals)
+void ParamSet::AddString(const exrString& key, const exrString* val, int numVals)
 {
     RemoveString(key);
     m_Strings.emplace_back(std::make_unique<ParamSetItem<exrString>>(key, std::move(val), numVals));
 }
 
-void ParamSet::AddPoint2(const exrString& key, const exrPoint2* val, exrU32 numVals)
+void ParamSet::AddPoint2(const exrString& key, const exrPoint2* val, int numVals)
 {
     RemovePoint2(key);
     m_Point2s.emplace_back(std::make_unique<ParamSetItem<exrPoint2>>(key, std::move(val), numVals));
 }
 
-void ParamSet::AddPoint3(const exrString& key, const exrPoint3* val, exrU32 numVals)
+void ParamSet::AddPoint3(const exrString& key, const exrPoint3* val, int numVals)
 {
     RemovePoint3(key);
     m_Point3s.emplace_back(std::make_unique<ParamSetItem<exrPoint3>>(key, std::move(val), numVals));
 }
 
-void ParamSet::AddVector2(const exrString& key, const exrVector2* val, exrU32 numVals)
+void ParamSet::AddVector2(const exrString& key, const exrVector2* val, int numVals)
 {
     RemoveVector2(key);
     m_Vector2s.emplace_back(std::make_unique<ParamSetItem<exrVector2>>(key, std::move(val), numVals));
 }
 
-void ParamSet::AddVector3(const exrString& key, const exrVector3* val, exrU32 numVals)
+void ParamSet::AddVector3(const exrString& key, const exrVector3* val, int numVals)
 {
     RemoveVector3(key);
     m_Vector3s.emplace_back(std::make_unique<ParamSetItem<exrVector3>>(key, std::move(val), numVals));
 }
 
 #define REMOVE_PARAM(item, key)\
-    for (exrU32 i = 0; i < item.size(); i++)\
+    for (exrU32 i = 0; i < item.size(); ++i)\
     {\
         if (item[i]->m_Key == key)\
         {\
@@ -146,7 +146,7 @@ exrBool ParamSet::RemoveVector3(const exrString& key)
 #undef REMOVE_PARAM
 
 #define FIND_FIRST_ITEM(T, item, key, d)\
-    for (exrU32 i = 0; i < item.size(); i++)\
+    for (exrU32 i = 0; i < item.size(); ++i)\
     {\
         if (item[i]->m_Key == key)\
         {\
@@ -162,9 +162,9 @@ exrBool ParamSet::FindFirstBool(const exrString& key, exrBool d) const
     FIND_FIRST_ITEM(exrBool, m_Booleans, key, d)
 }
 
-exrU32 ParamSet::FindFirstU32(const exrString& key, exrU32 d) const
+int ParamSet::FindFirstU32(const exrString& key, int d) const
 {
-    FIND_FIRST_ITEM(exrU32, m_U32s, key, d)
+    FIND_FIRST_ITEM(int, m_U32s, key, d)
 }
 
 exrS32 ParamSet::FindFirstS32(const exrString& key, exrS32 d) const
@@ -205,7 +205,7 @@ exrVector3 ParamSet::FindFirstVector3(const exrString& key, exrVector3 d) const
 #undef FIND_FIRST_ITEM
 
 #define FIND_ITEM(T, item, key, num)\
-    for (exrU32 i = 0; i < item.size(); i++)\
+    for (exrU32 i = 0; i < item.size(); ++i)\
     {\
         if (item[i]->m_Key == key)\
         {\
@@ -216,47 +216,47 @@ exrVector3 ParamSet::FindFirstVector3(const exrString& key, exrVector3 d) const
     }\
     return nullptr;
 
-exrBool* ParamSet::FindBool(const exrString& key, exrU32* num) const
+exrBool* ParamSet::FindBool(const exrString& key, int* num) const
 {
     FIND_ITEM(exrBool, m_Booleans, key, num)
 }
 
-exrU32* ParamSet::FindU32(const exrString& key, exrU32* num) const
+int* ParamSet::FindU32(const exrString& key, int* num) const
 {
-    FIND_ITEM(exrU32, m_U32s, key, num)
+    FIND_ITEM(int, m_U32s, key, num)
 }
 
-exrS32* ParamSet::FindS32(const exrString& key, exrU32* num) const
+exrS32* ParamSet::FindS32(const exrString& key, int* num) const
 {
     FIND_ITEM(exrS32, m_S32s, key, num)
 }
 
-exrFloat* ParamSet::FindexrFloat(const exrString& key, exrU32* num) const
+exrFloat* ParamSet::FindexrFloat(const exrString& key, int* num) const
 {
     FIND_ITEM(exrFloat, m_exrFloats, key, num)
 }
 
-exrString* ParamSet::FindString(const exrString& key, exrU32* num) const
+exrString* ParamSet::FindString(const exrString& key, int* num) const
 {
     FIND_ITEM(exrString, m_Strings, key, num)
 }
 
-exrPoint2* ParamSet::FindPoint2(const exrString& key, exrU32* num) const
+exrPoint2* ParamSet::FindPoint2(const exrString& key, int* num) const
 {
     FIND_ITEM(exrPoint2, m_Point2s, key, num)
 }
 
-exrPoint3* ParamSet::FindPoint3(const exrString& key, exrU32* num) const
+exrPoint3* ParamSet::FindPoint3(const exrString& key, int* num) const
 {
     FIND_ITEM(exrPoint3, m_Point3s, key, num)
 }
 
-exrVector2* ParamSet::FindVector2(const exrString& key, exrU32* num) const
+exrVector2* ParamSet::FindVector2(const exrString& key, int* num) const
 {
     FIND_ITEM(exrVector2, m_Vector2s, key, num)
 }
 
-exrVector3* ParamSet::FindVector3(const exrString& key, exrU32* num) const
+exrVector3* ParamSet::FindVector3(const exrString& key, int* num) const
 {
     FIND_ITEM(exrVector3, m_Vector3s, key, num)
 }

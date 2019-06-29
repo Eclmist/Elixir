@@ -31,7 +31,7 @@ class Random
 public:
     //! @brief Seeds the random class
     //! @param a                The value to seed the random class
-    static inline void Seed(exrU32 a) { srand(a); }
+    static inline void Seed(int a) { srand(a); }
 
     //! @brief Generates a random value between 0 and 1
     //! @return A random exrFloat between 0 and 1

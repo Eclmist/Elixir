@@ -30,10 +30,10 @@ void BSDF::AddComponent(const BxDF* bxdf)
 	m_BxDFs[m_NumBxDF++] = bxdf;
 }
 
-exrU32 BSDF::GetComponentCount(BxDF::BxDFType flags) const
+int BSDF::GetComponentCount(BxDF::BxDFType flags) const
 {
-	exrU32 res = 0;
-	for (exrU32 i = 0; i < m_NumBxDF; ++i)
+	int res = 0;
+	for (int i = 0; i < m_NumBxDF; ++i)
 		if (m_BxDFs[i]->MatchesFlags(flags)) ++res;
 
 	return res;

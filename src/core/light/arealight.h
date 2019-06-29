@@ -44,7 +44,7 @@ public:
     }
 
 protected:
-    exrU32 m_NumSamples;
+    int m_NumSamples;
 };
 
 exrEND_NAMESPACE

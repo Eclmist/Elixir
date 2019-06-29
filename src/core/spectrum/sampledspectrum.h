@@ -24,9 +24,9 @@
 
 exrBEGIN_NAMESPACE
 
-static constexpr exrU32 sampledWavelengthStart = 400;
-static constexpr exrU32 sampledWavelengthEnd = 700;
-static constexpr exrU32 numSpectrumSamples = 60;
+static constexpr int sampledWavelengthStart = 400;
+static constexpr int sampledWavelengthEnd = 700;
+static constexpr int numSpectrumSamples = 60;
 
 class SampledSpectrum : public Spectrum<numSpectrumSamples>
 {

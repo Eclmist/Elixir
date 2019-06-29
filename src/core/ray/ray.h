@@ -61,7 +61,7 @@ public:
     //! @param t                The t param in parametric ray equation
     //! 
     //! @return                 The point along the ray at distance t
-    inline exrPoint3 Ray::operator()(exrFloat t) const
+    inline exrPoint3 operator()(exrFloat t) const
     {
         return m_Origin + t * m_Direction;
     }

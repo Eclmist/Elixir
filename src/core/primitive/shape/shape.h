@@ -124,7 +124,7 @@ public:
     //! @param nbSamples        The number of samples to use if computing with MC
     //!
     //! @return                 The solid angle subtended by the shape w.r.t point p
-    virtual exrFloat SolidAngle(const exrPoint3& p, exrU32 nbSamples = 512) const;
+    virtual exrFloat SolidAngle(const exrPoint3& p, int nbSamples = 512) const;
 
 public:
     //! @brief Returns the bounding volume of the shape

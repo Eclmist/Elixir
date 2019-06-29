@@ -51,7 +51,7 @@ public:
     Matrix4x4 operator*(const Matrix4x4& m) const;
 
     //! @brief Shortcut to access the data with the [] operator directly
-    exrFloat operator[](const exrU32& i) const { return m_Data[i]; }
+    exrFloat operator[](const int& i) const { return m_Data[i]; }
 
     //! @brief Returns the transpose the current matrix
     Matrix4x4 Transposed() const;

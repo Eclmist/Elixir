@@ -39,7 +39,7 @@ public:
         LIGHTFLAGS_INFINITE       = 1 << 3,
     };
 
-    Light(const Transform& transform, exrU32 flags)
+    Light(const Transform& transform, int flags)
         : m_Transform(transform)
         , m_Flags(flags) {};
 
@@ -52,7 +52,7 @@ public:
 
 protected:
     const Transform m_Transform;
-    const exrU32 m_Flags;
+    const int m_Flags;
 };
 
 exrEND_NAMESPACE

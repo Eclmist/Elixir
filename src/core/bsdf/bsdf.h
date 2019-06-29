@@ -25,7 +25,7 @@
 
 exrBEGIN_NAMESPACE
 
-static constexpr exrU32 MaxBxDFs = 8;
+static constexpr int MaxBxDFs = 8;
 
 class BSDF
 {
@@ -36,14 +36,14 @@ public:
 		, m_NumBxDF(0) {};
 
 	void AddComponent(const BxDF* b);
-	exrU32 GetComponentCount(BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
+	int GetComponentCount(BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
 
 public:
 	const exrFloat m_ReflectiveIndex;
 
 private:
 	const exrVector3 m_ShadingNormal;
-	exrU32 m_NumBxDF;
+	int m_NumBxDF;
 	const BxDF* m_BxDFs[MaxBxDFs];
 };
 

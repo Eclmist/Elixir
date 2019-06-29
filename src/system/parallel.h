@@ -34,7 +34,7 @@ public:
     }
     void Add(exrFloat v)
     {
-        exrU32 oldBits = bits, newBits;
+        int oldBits = bits, newBits;
 
         do
         {
@@ -43,7 +43,7 @@ public:
     }
 
 private:
-    std::atomic<exrU32> bits;
+    std::atomic<int> bits;
 };
 
 

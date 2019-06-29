@@ -35,7 +35,7 @@ public:
 
     virtual exrBool Scatter(const Ray& incomingRay, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const override
     {
-        throw std::exception("Use of outdated material!");
+        throw std::runtime_error(("Use of outdated material!").c_str());
     };
 
 public:

@@ -29,9 +29,9 @@ exrBEGIN_NAMESPACE
 
 void Film::AddSplat(const exrPoint2& point, const exrVector3& value)
 {
-    Pixel& pixel = GetPixel(Point2<exrU32>((exrU32)point.x, (exrU32)point.y));
+    Pixel& pixel = GetPixel(Point2<int>((int)point.x, (int)point.y));
 
-    for (exrU32 i = 0; i < 3; ++i)
+    for (int i = 0; i < 3; ++i)
         pixel.m_SplatRGB[i].Add(value[i]);
 }
 
@@ -45,10 +45,10 @@ void Film::WriteImage(exrFloat splatScale)
     buffer.resize(buffer.size() + m_Resolution.x * m_Resolution.y * sizeof(exrByte) * 3);
     memcpy(buffer.data(), header.c_str(), strlen(header.c_str()));
 
-    Point2<exrU32> point;
-    for (exrU32 y = 0; y < m_Resolution.y; ++y)
+    Point2<int> point;
+    for (int y = 0; y < m_Resolution.y; ++y)
     {
-        for (exrU32 x = 0; x < m_Resolution.x; ++x)
+        for (int x = 0; x < m_Resolution.x; ++x)
         {
             point.x = x;
             point.y = y;
@@ -83,9 +83,9 @@ void Film::WriteImage(exrFloat splatScale)
     stbi_write_png(filename.c_str(), m_Resolution.x, m_Resolution.y, 3, ppmOut, m_Resolution.x * 3);
 }
 
-Film::Pixel& Film::GetPixel(const Point2<exrU32>& point)
+Film::Pixel& Film::GetPixel(const Point2<int>& point)
 {
-    exrU32 offset = point.x + (point.y * m_Resolution.x);
+    int offset = point.x + (point.y * m_Resolution.x);
     return m_Pixels[offset];
 }
 

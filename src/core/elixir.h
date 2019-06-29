@@ -36,7 +36,7 @@ exrBEGIN_NAMESPACE
 
 struct ElixirOptions
 {
-    exrU32          numThreads;
+    int          numThreads;
     exrString       outputFile;
     exrBool         quickRender;
     exrBool         quiet;

@@ -35,6 +35,8 @@ namespace elixir { enum { InElixirNamespace = true }; }
 #define exrEND_NAMESPACE        ((void)0)
 #endif
 
+#include <string.h>
+
 inline uint32_t FloatToBits(float f)
 {
     uint32_t ui;

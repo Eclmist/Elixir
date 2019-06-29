@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 exrBEGIN_NAMESPACE
 
-exrSpectrum WittedIntegrator::Li(const RayDifferential& ray, const Scene& scene, exrU32 depth) const
+exrSpectrum WittedIntegrator::Li(const RayDifferential& ray, const Scene& scene, int depth) const
 {
     exrSpectrum L(0.0);
     SurfaceInteraction interaction;

@@ -33,7 +33,7 @@ static SampledSpectrum m_rgbRefl2SpectRed, m_rgbRefl2SpectGreen, m_rgbRefl2Spect
 exrVector3 SampledSpectrum::ToXYZ() const
 {
     exrVector3 xyz = exrVector3::Zero();
-    for (exrU32 i = 0; i < numSpectrumSamples; ++i)
+    for (int i = 0; i < numSpectrumSamples; ++i)
     {
         xyz.x += m_X[i] * m_Wavelengths[i];
         xyz.y += m_Y[i] * m_Wavelengths[i];
@@ -59,7 +59,7 @@ exrFloat SampledSpectrum::GetLuminance() const
     // Therefore, as a good enough approximation we will just return the y coefficient
     exrFloat y = 0.0f;
 
-    for (exrU32 i = 0; i < numSpectrumSamples; ++i)
+    for (int i = 0; i < numSpectrumSamples; ++i)
         y += m_Y.m_Wavelengths[i] * m_Wavelengths[i];
 
     return y *= exrFloat(sampledWavelengthEnd - sampledWavelengthStart) / exrFloat(numSpectrumSamples);
@@ -161,7 +161,7 @@ SampledSpectrum SampledSpectrum::FromRGB(const exrVector3& rgb, SpectrumType typ
         }
         break;
     default:
-        throw std::exception("Invalid Spectrum Type!");
+        throw "Invalid Spectrum Type!";
     }
 
     return res;
@@ -186,7 +186,7 @@ SampledSpectrum SampledSpectrum::FromSampled(const std::vector<exrFloat>& wavele
         return FromSampled(sortedWavelengths, sortedValues);
     }
 
-    for (exrU32 i = 0; i < numSpectrumSamples; ++i)
+    for (int i = 0; i < numSpectrumSamples; ++i)
     {
         exrFloat w0 = exrLerp(exrFloat(sampledWavelengthStart), exrFloat(sampledWavelengthEnd), exrFloat(i) / numSpectrumSamples);
         exrFloat w1 = exrLerp(exrFloat(sampledWavelengthStart), exrFloat(sampledWavelengthEnd), exrFloat(i + 1) / numSpectrumSamples);
@@ -245,7 +245,7 @@ void SampledSpectrum::Init()
 exrBool SampledSpectrum::SpectrumSamplesIsSorted(const std::vector<exrFloat>& wavelengths)
 {
     const auto size = wavelengths.size() - 1;
-    for (exrU32 i = 0; i < size; ++i)
+    for (int i = 0; i < size; ++i)
         if (wavelengths[i] > wavelengths[i + 1]) return false;
     return true;
 }
@@ -254,7 +254,7 @@ void SampledSpectrum::SortSpectrumSamples(std::vector<exrFloat>& wavelengths, st
 {
     std::vector<std::pair<exrFloat, exrFloat>> samples(wavelengths.size());
 
-    for (exrU32 i = 0; i < wavelengths.size(); ++i)
+    for (int i = 0; i < wavelengths.size(); ++i)
         samples[i] = std::pair<exrFloat, exrFloat>(wavelengths[i], values[i]);
 
     std::sort(samples.begin(), samples.end(), [&](auto& left, auto& right)
@@ -262,7 +262,7 @@ void SampledSpectrum::SortSpectrumSamples(std::vector<exrFloat>& wavelengths, st
         return left.first > right.first;
     });
 
-    for (exrU32 i = 0; i < wavelengths.size(); ++i)
+    for (int i = 0; i < wavelengths.size(); ++i)
     {
         wavelengths[i] = samples[i].first;
         values[i] = samples[i].second;
@@ -285,12 +285,12 @@ exrFloat SampledSpectrum::AverageSpectrumSamples(const std::vector<exrFloat>& wa
 
     // Find the first index where the starting wavelength of the interpolation range overlaps segments w0 to w1
     const auto size = wavelengths.size();
-    exrU32 i = 0;
+    int i = 0;
     while (w0 > wavelengths[i + 1]) ++i;
 
     // This following calculation is a little confusing, the process is described here
     // <http://www.pbr-book.org/3ed-2018/Color_and_Radiometry/The_SampledSpectrum_Class.html>
-    auto interp = [wavelengths, values](exrFloat w, exrU32 i)
+    auto interp = [wavelengths, values](exrFloat w, int i)
     {
         return exrLerp(values[i], values[i + 1], (w - wavelengths[i]) / (wavelengths[i + 1] - wavelengths[i]));
     };

@@ -27,10 +27,10 @@ exrBEGIN_NAMESPACE
 Scene::Scene(std::vector<std::unique_ptr<Primitive>>& primitives, std::vector<std::unique_ptr<Light>>& lights, Accelerator::AcceleratorType accelType)
     : m_AcceleratorType(accelType)
 {
-    for (exrU32 i = 0; i < primitives.size(); ++i)
+    for (int i = 0; i < primitives.size(); ++i)
         m_Primitives.push_back(std::move(primitives[i]));
 
-    for (exrU32 i = 0; i < lights.size(); ++i)
+    for (int i = 0; i < lights.size(); ++i)
         m_SceneLights.push_back(std::move(lights[i]));
 }
 
@@ -64,7 +64,7 @@ void Scene::InitAccelerator()
         std::vector<Primitive*> primitivePtrs;
 
         // shallow copy pointer values to be used by bvh accel
-        for (exrU32 i = 0; i < m_Primitives.size(); i++)
+        for (int i = 0; i < m_Primitives.size(); ++i)
             primitivePtrs.push_back(m_Primitives[i].get());
 
         switch (m_AcceleratorType)
@@ -73,9 +73,9 @@ void Scene::InitAccelerator()
             m_Accelerator = std::make_unique<BVHAccelerator>(primitivePtrs);
             break;
         case Accelerator::ACCELERATORTYPE_KDTREE:
-            throw std::exception("KDTree is not yet implemented!");
+            throw "KDTree is not yet implemented!";
         default:
-            throw std::exception("Invalid accelerator type!");
+            throw "Invalid accelerator type!";
         }
     }
 }
