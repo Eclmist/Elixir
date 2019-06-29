@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 exrBEGIN_NAMESPACE
 
-exrSpectrum WittedIntegrator::Li(const RayDifferential& ray, const Scene& scene) const
+exrSpectrum WittedIntegrator::Li(const RayDifferential& ray, const Scene& scene, exrU32 depth) const
 {
     exrSpectrum L(0.0);
     SurfaceInteraction interaction;
@@ -34,10 +34,10 @@ exrSpectrum WittedIntegrator::Li(const RayDifferential& ray, const Scene& scene)
 
     exrVector3 normal = interaction.m_Normal;
     exrVector3 wo = interaction.m_Wo;
-    interaction.ComputeScatteringFunctions(ray);
+    //interaction.ComputeScatteringFunctions(ray);
 
     // Handle emissive surfaces
-    L += interaction.Le(wo);
+    //L += interaction.Le(wo);
 
     // Add contribution of each light source
     for (const auto& light : scene.m_Lights)
@@ -48,16 +48,16 @@ exrSpectrum WittedIntegrator::Li(const RayDifferential& ray, const Scene& scene)
         exrSpectrum Li = light->SampleLi(interaction, uv, wi, pdf);
         
         if (Li.IsBlack() || pdf == 0) continue;
-        exrSpectrum f = interaction.m_BSDF->f(wo, wi);
+        //exrSpectrum f = interaction.m_BSDF->f(wo, wi);
         // TODO: replace scene hasintersect with dedicated shadowray function
-        if (!f.IsBlack() && Scene.HasIntersect(Ray(interaction.m_Point, wi, (light->m_Transform.GetTranslation() - wi).Magnitude()))
-            L += f * Li * abs(Dot(wi, normal)) / pdf;
+        //if (!f.IsBlack() && scene.HasIntersect(Ray(interaction.m_Point, wi, (light->m_Transform.GetTranslation() - wi).Magnitude()))
+        //    L += f * Li * abs(Dot(wi, normal)) / pdf;
     }
 
     if (depth + 1 < m_MaxDepth)
     {
-        L += SpecularReflect(ray, interaction, scene, depth);
-        L += SpecularTransmit(ray, interaction, scene, depth);
+        //L += SpecularReflect(ray, interaction, scene, depth);
+        //L += SpecularTransmit(ray, interaction, scene, depth);
     }
 
     return L;

@@ -19,8 +19,7 @@
 */
 
 #include "bvh.h"
-#include "primitive/primitive.h"
-#include "material/material.h"
+#include "core/primitive/primitive.h"
 
 exrBEGIN_NAMESPACE
 
@@ -70,8 +69,6 @@ exrBool BVHAccelerator::HasIntersect(const Ray& ray) const
 
 exrBool BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray, SurfaceInteraction* interaction, exrBool initInteraction)
 {
-    const exrFloat rayTMaxOriginal = ray.m_TMax;
-
     // If intersect bounding volume
     if (node.m_BoundingVolume.Intersect(ray))
     {
@@ -79,12 +76,34 @@ exrBool BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray, Surfac
         if (node.m_LeftSubtree == nullptr || node.m_RightSubtree == nullptr)
         {
             exrBool hasHit = false;
-            ray.m_TMax = rayTMaxOriginal;
 
-            // We may have a list of primitive, test all of them for intersection and return the closest hit
-            for (Primitive* primitives : node.m_Primitives)
+            if (initInteraction)
             {
-                hasHit = initInteraction ? primitives->Intersect(ray, interaction) : primitives->HasIntersect(ray);
+                // We may have a list of primitive, test all of them for intersection and return the closest hit
+                for (Primitive* primitives : node.m_Primitives)
+                {
+                    // Ray's tmax will automatically be reduced so we don't have to worry about hitting occluded geometry
+                    if (primitives->Intersect(ray, interaction))
+                    {
+                        hasHit = true;
+                    }
+                }
+            }
+            else
+            {
+                // keep track of the closest tHit manually since hasIntersect will not touch the ray's tmax
+                exrFloat closestHit = ray.m_TMax;
+
+                // We may have a list of primitive, test all of them for intersection and return the closest hit
+                for (Primitive* primitives : node.m_Primitives)
+                {
+                    exrFloat tHit;
+                    if (primitives->HasIntersect(ray, tHit) && tHit < closestHit)
+                    {
+                        closestHit = tHit;
+                        hasHit = true;
+                    }
+                }
             }
 
             return hasHit;

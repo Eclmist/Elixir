@@ -20,17 +20,18 @@
 
 #pragma once
 
-#include "core/elixir.h"
+#include "system/system.h"
+#include "math/math.h"
 
 exrBEGIN_NAMESPACE
 
-static const int numCIESamples = 471;
+static constexpr exrU32 numCIESamples = 471;
 extern const exrFloat CIE_X[numCIESamples];
 extern const exrFloat CIE_Y[numCIESamples];
 extern const exrFloat CIE_Z[numCIESamples];
 extern const exrFloat CIE_WavelengthsRaw[numCIESamples];
 
-static const int numRGB2SpectSamples = 32;
+static constexpr exrU32 numRGB2SpectSamples = 32;
 extern const exrFloat RGB2SpectWavelengthsRaw[numRGB2SpectSamples];
 extern const exrFloat RGBRefl2SpectWhite[numRGB2SpectSamples];
 extern const exrFloat RGBRefl2SpectCyan[numRGB2SpectSamples];

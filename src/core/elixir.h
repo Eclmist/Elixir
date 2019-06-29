@@ -25,7 +25,7 @@
 
 #include "core/interaction/surfaceinteraction.h"
 #include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
+#include "core/spectrum/spectrum.h"
 #include "core/spectrum/rgbspectrum.h"
 #include "core/ray/raydifferential.h"
 

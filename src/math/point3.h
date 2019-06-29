@@ -91,7 +91,7 @@ inline Point3<T> operator*(const float f, const Point3<T>& p)
 template<class T>
 inline float DistanceSquared(const Point3<T>& p1, const Point3<T>& p2)
 {
-    return (p2 - p1).SquareMagnitude();
+    return (p2 - p1).MagnitudeSquared();
 }
 
 template<class T>
