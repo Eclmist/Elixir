@@ -29,4 +29,9 @@ Ray::Ray(const Ray& copy)
     m_TMax = copy.m_TMax;
 }
 
+exrPoint3 Ray::operator()(exrFloat t) const
+{ 
+    return m_Origin + t * m_Direction;
+}
+
 exrEND_NAMESPACE

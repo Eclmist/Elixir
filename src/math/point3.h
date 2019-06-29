@@ -59,24 +59,6 @@ public:
 };
 
 template<class T>
-inline Point3<T> operator+(const Point3<T>& p, const Vector3<T>& v)
-{
-    return Point3<T>(p.x + v.x, p.y + v.y, p.z + v.z);
-}
-
-template<class T>
-inline Point3<T> operator-(const Point3<T>& p, const Vector3<T>& v)
-{
-    return Point3<T>(p.x - v.x, p.y - v.y, p.z - v.z);
-}
-
-template<class T>
-inline Vector3<T> operator-(const Point3<T>& p1, const Point3<T>& p2)
-{
-    return Vector3<T>(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
-}
-
-template<class T>
 inline Point3<T> operator*(const Point3<T>& p, const float f)
 {
     return Point3<T>(p.x * f, p.y * f, p.z * f);

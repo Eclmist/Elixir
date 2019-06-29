@@ -22,6 +22,7 @@
 
 #include "system/system.h"
 #include "math/math.h"
+#include "math/conversionutils.h"
 
 exrBEGIN_NAMESPACE
 
@@ -55,7 +56,7 @@ public:
     //! @param t                The t param in parametric ray equation
     //! 
     //! @return                 The point along the ray at distance t
-    inline exrPoint3 operator()(exrFloat t) const { return m_Origin + t * m_Direction; }
+    inline exrPoint3 operator()(exrFloat t) const;
 
 public:
     //! The origin of the ray in world space
@@ -67,5 +68,15 @@ public:
     //! The maximum distance of the ray
     mutable exrFloat m_TMax;
 };
+
+inline Ray operator*(const Ray& r, const Matrix4x4& m)
+{
+    return Ray(r.m_Origin * m, r.m_Direction * m, r.m_TMax);
+}
+
+inline Ray operator*(const Matrix4x4& m, const Ray& r)
+{
+    return r * m;
+}
 
 exrEND_NAMESPACE

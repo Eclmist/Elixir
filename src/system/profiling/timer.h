@@ -20,9 +20,10 @@
 
 #pragma once
 
-#include "core/elixir.h"
+#include "system/system.h"
 
 exrBEGIN_NAMESPACE
+
 //! @brief A simple code timer implemented with ctime
 //!
 //! A code timer that can measure and print the time taken from object declaration to 

@@ -21,7 +21,6 @@
 #pragma once
 
 #include "material.h"
-#include "math/utils.h"
 
 exrBEGIN_NAMESPACE
 
@@ -36,54 +35,7 @@ public:
 
     virtual exrBool Scatter(const Ray& incomingRay, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const override
     {
-        exrVector3 reflectedRay = Reflect(incomingRay.m_Direction, hitInfo.m_Normal);
-
-        exrFloat ni_over_nt;
-        attenuation = m_Albedo;
-
-        exrVector3 outNormal;
-        exrVector3 refractedRay;
-
-        // for Fresnel calculations
-        exrFloat cosine;
-        exrFloat reflectionProbability;
-
-        // entering material
-        if (Dot(incomingRay.m_Direction, hitInfo.m_Normal) > 0.0f)
-        {
-            outNormal = -hitInfo.m_Normal;
-            ni_over_nt = m_RefractiveIndex;
-            cosine = m_RefractiveIndex * Dot(incomingRay.m_Direction, hitInfo.m_Normal) / incomingRay.m_Direction.Magnitude();
-        }
-        else // exiting material
-        {
-            outNormal = hitInfo.m_Normal;
-            ni_over_nt = 1.0f / m_RefractiveIndex;
-            cosine = -Dot(incomingRay.m_Direction, hitInfo.m_Normal) / incomingRay.m_Direction.Magnitude();
-        }
-
-        if (Refract(incomingRay.m_Direction, outNormal, ni_over_nt, refractedRay))
-        {
-            // refraction
-            reflectionProbability = SchlickFresnelApproximation(cosine, m_RefractiveIndex);
-        }
-        else
-        {
-            // total internal reflection
-            reflectionProbability = 1.0f;
-        }
-
-        // Reflection based on Fresnel approximation
-        if (Random::Uniform01() < reflectionProbability)
-        {
-            scattered = Ray(hitInfo.m_Point, reflectedRay);
-        }
-        else
-        {
-            scattered = Ray(hitInfo.m_Point, refractedRay);
-        }
-
-        return true;
+        throw std::exception("Use of outdated material!");
     };
 
 public:

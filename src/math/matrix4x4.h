@@ -50,36 +50,6 @@ public:
     //! @return                 The resultant matrix by multiplying this * m
     Matrix4x4 operator*(const Matrix4x4& m) const;
 
-    //! @brief Transforms a point by the current matrix
-    //! @param p                The point to transform
-    //! @return                 The transformed point p'
-    exrPoint3 operator*(const exrPoint3& p) const;
-
-    //! @brief Transforms a point by the current matrix
-    //! @param p                The point to transform
-    //! @return                 The transformed point p'
-    exrPoint3 operator()(const exrPoint3& p) const;
-
-    //! @brief Transforms a vector by the current matrix
-    //! @param v                The vector to transform
-    //! @return                 The transformed vector v'
-    exrVector3 operator*(const exrVector3& v) const;
-
-    //! @brief Transforms a vector by the current matrix
-    //! @param v                The vector to transform
-    //! @return                 The transformed vector v'
-    exrVector3 operator()(const exrVector3& v) const;
-
-    //! @brief Transforms a ray by the current matrix
-    //! @param r                The ray to transform
-    //! @return                 The transformed ray r'
-    Ray operator*(const Ray& r) const;
-
-    //! @brief Transforms a ray by the current matrix
-    //! @param r                The ray to transform
-    //! @return                 The transformed ray r'
-    Ray operator()(const Ray& r) const;
-
     //! @brief Shortcut to access the data with the [] operator directly
     exrFloat operator[](const exrU32& i) const { return m_Data[i]; }
 

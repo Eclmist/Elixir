@@ -22,6 +22,7 @@
 
 #include "system/system.h"
 #include "math/math.h"
+#include "math/conversionutils.h"
 
 exrBEGIN_NAMESPACE
 
@@ -106,4 +107,5 @@ public:
 protected:
     exrFloat m_Wavelengths[numSpectrumSamples];
 };
+
 exrEND_NAMESPACE

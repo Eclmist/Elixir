@@ -22,13 +22,12 @@
 
 #include "api.h"
 #include "core/camera/camera.h"
-#include "core/scene/scene.h"
+#include "core/integrator/wittedintegrator.h"
+#include "core/integrator/samplerintegrator.h"
 #include "core/primitive/shape/box.h"
 #include "core/primitive/shape/quad.h"
 #include "core/primitive/shape/sphere.h"
-#include "core/material/dielectric.h"
-#include "core/material/lambert.h"
-#include "core/material/metallic.h"
+#include "core/scene/scene.h"
 
 exrBEGIN_NAMESPACE
 
@@ -93,7 +92,7 @@ void ElixirInit(const ElixirOptions& options)
         exrError("ElixirInit() has already been called!");
 
     ElixirRuntimeOptions = options;
-    SampledSpectrum.Init();
+    SampledSpectrum::Init();
 
     CurrentAPIState = APIState::APISTATE_SETUP_OPTION;
 }
@@ -118,15 +117,15 @@ void ElixirSetupDemo()
     //CurrentRenderJob.m_Lights->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 5.5f, 0.0f), exrVector2(1.3f, 1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.77f, 0.4f) * 7.0f)));
 
     // room
-    CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(-2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(90), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 0.0f, 0.0f))));
-    CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(-90.0f), 0), std::make_unique<Lambertian>(exrVector3(0.0f, 1.0f, 0.0f))));
-    CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 2.75f, -2.80f), exrVector2(5.5f), exrVector3(0.0f), std::make_unique<Lambertian>(exrVector3(1.0f))));
-    CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 0.0f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(-90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
-    CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 5.5f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    //CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(-2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(90), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 0.0f, 0.0f))));
+    //CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(-90.0f), 0), std::make_unique<Lambertian>(exrVector3(0.0f, 1.0f, 0.0f))));
+    //CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 2.75f, -2.80f), exrVector2(5.5f), exrVector3(0.0f), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    //CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 0.0f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(-90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
+    //CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 5.5f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
 
-    // objects
-    CurrentRenderJob.m_Primitives->push_back(std::make_unique<Box>(exrPoint3(-0.9f, 1.8f, -1.0f), exrVector3(1.6f, 3.6f, 1.6f), exrVector3(0, exrDegToRad(110), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
-    CurrentRenderJob.m_Primitives->push_back(std::make_unique<Box>(exrPoint3(0.9f, 0.8f, 1.0f), exrVector3(1.6f, 1.6f, 1.6f), exrVector3(0, exrDegToRad(-20), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
+    //// objects
+    //CurrentRenderJob.m_Primitives->push_back(std::make_unique<Box>(exrPoint3(-0.9f, 1.8f, -1.0f), exrVector3(1.6f, 3.6f, 1.6f), exrVector3(0, exrDegToRad(110), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
+    //CurrentRenderJob.m_Primitives->push_back(std::make_unique<Box>(exrPoint3(0.9f, 0.8f, 1.0f), exrVector3(1.6f, 1.6f, 1.6f), exrVector3(0, exrDegToRad(-20), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
 
 }
 
