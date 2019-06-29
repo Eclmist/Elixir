@@ -39,7 +39,6 @@ exrBool Quad::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* inte
     tHit = t;
     interaction->m_Point = m_Transform.GetMatrix() * localRay(t);
     interaction->m_Normal = m_Transform.GetMatrix() * exrVector3::Forward();
-    interaction->m_ = m_Material.get();
     return true;
 }
 
@@ -53,7 +52,6 @@ Interaction Quad::Sample(const exrPoint2& u) const
     exrPoint3 samplePoint = m_Transform.GetMatrix() * exrPoint3(randomX, randomY, 0);
     it.m_Point = samplePoint;
     it.m_Normal = m_Transform.GetMatrix() * exrVector3::Forward();
-    it.m_Material = m_Material.get();
 
     return it;
 }
@@ -63,7 +61,7 @@ exrFloat Quad::GetArea() const
     return m_HalfExtents.x * m_HalfExtents.y * 4;
 }
 
-AABB Quad::ComputeBoundingVolume()
+AABB Quad::ComputeBoundingVolume() const
 {
     exrPoint3 globalMin = m_Transform.GetMatrix() * m_HalfExtents;
     exrPoint3 globalMax = m_Transform.GetMatrix() * -m_HalfExtents;

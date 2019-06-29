@@ -22,7 +22,6 @@
 
 #include "core/elixir.h"
 #include "core/light/light.h"
-#include "core/light/skylight.h"
 #include "core/primitive/primitive.h"
 #include "core/spatial/accelerator/accelerator.h"
 
@@ -36,17 +35,14 @@ class Scene
 {
 public:
 
-    Scene(const std::vector<std::unique_ptr<Primitive>>& primitives, const std::vector<std::shared_ptr<Light>>& lights, Accelerator::AcceleratorType accelType)
-        : m_Primitives(primitives)
-        , m_Lights(lights)
-        , m_AcceleratorType(accelType) {};
+    Scene(std::vector<std::unique_ptr<Primitive>>& primitives, std::vector<std::unique_ptr<Light>>& lights, Accelerator::AcceleratorType accelType);
 
     //! @brief Adds a primitive to the scene
     //! 
     //! This function adds a new primitive to the scene's primitive collection
     //! 
     //! @param primitive        A pointer to the primitive
-    void AddPrimitive(std::unique_ptr<Primitive> primitive);
+    void AddPrimitive(std::unique_ptr<Primitive>& primitive);
 
     //! @brief Adds a light to the scene
     //! 
@@ -54,7 +50,7 @@ public:
     //! Lights will be importance sampled
     //! 
     //! @param light            A pointer to the light
-    void AddLight(std::shared_ptr<Light> light);
+    void AddLight(std::unique_ptr<Light>& light);
 
     //! @brief Initializes the scene's accelerator if it has yet to be initialized or needs to be updated
     void InitAccelerator();
@@ -93,12 +89,12 @@ public:
     exrSpectrum SampleSkyLight(const Ray& ray) const;
 
 public:
-    //! A collection of pointers that points to primitives in the scene
-    std::vector<std::unique_ptr<Primitive>> m_Primitives;
-
     //! A collection of pointers that points to lights in the scene
-    //! Shared ptr because lights could be either owned by the scene or by primitives
-    std::vector<std::shared_ptr<Light>> m_Lights;
+    //! ALL lights, including those owned by primitives
+    std::vector<Light*> m_Lights;
+
+private:
+    void AddLight(Light& light);
 
 private:
     //! The type of accelerator to use
@@ -106,6 +102,12 @@ private:
 
     //! The accelerator to use
     std::unique_ptr<Accelerator> m_Accelerator;
+
+    //! Lights that the scene owns and doesn't belong to any primitive.
+    std::vector<std::unique_ptr<Light>> m_SceneLights;
+
+    //! A collection of pointers that points to primitives in the scene
+    std::vector<std::unique_ptr<Primitive>> m_Primitives;
 };
 
 exrEND_NAMESPACE

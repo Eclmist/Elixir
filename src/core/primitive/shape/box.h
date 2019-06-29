@@ -31,11 +31,7 @@ class Box : public Shape
 {
 public:
     //! @brief Constructs a box with a position and a scale
-    //! @param position         The origin of the box in world space
-    //! @param scale            The scale of the box
-    //! @param rotation         The rotation of the box
-    //! @param material         The material of the box
-    Box(const exrPoint3& position, const exrVector3& scale, const exrVector3& rotation, std::unique_ptr<Material> material);
+    Box(const Transform& transform, const exrVector3& scale);
 
     // Temp: just to allow compile
     Interaction Sample(const exrPoint2& u) const override;
@@ -52,14 +48,14 @@ public:
     //! @param interaction      Output struct that contains the interaction information
     //! 
     //! @return                 True if the there is an intersection
-    exrBool Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const override;
+    exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const override;
 
     //! @brief Computes a bounding volume
     //! 
     //! Computes the a bounding volume that encapsulates the current box.
     //! 
     //! @return                 Always return true since bounding volumes can be created for quads
-    exrBool ComputeBoundingVolume() override;
+    AABB ComputeBoundingVolume() const override;
 
 public:
     //! Sides of the boxes, internally handled as quads

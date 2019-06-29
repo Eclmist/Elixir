@@ -29,7 +29,7 @@ exrSpectrum WittedIntegrator::Li(const RayDifferential& ray, const Scene& scene)
     SurfaceInteraction interaction;
     if (!scene.Intersect(ray, &interaction))
     {
-        return scene.Skybox(ray);
+        return scene.SampleSkyLight(ray);
     }
 
     exrVector3 normal = interaction.m_Normal;

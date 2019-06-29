@@ -18,16 +18,43 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "samplerintegrator.h"
+#pragma once
+
+#include "geometricprimitive.h"
 
 exrBEGIN_NAMESPACE
 
-void SamplerIntegrator::Render(const Scene& scene)
+AABB GeometricPrimitive::GetBoundingVolume() const
 {
-    Preprocess(scene);
-
-    m_Camera->m_Film->WriteImage(1.0f / m_NumSamplesPerPixel);
+    return m_Shape->GetBoundingVolume();
 }
 
+exrBool GeometricPrimitive::Intersect(const Ray& ray, SurfaceInteraction* interaction) const
+{
+    exrFloat tHit;
+
+    if (!m_Shape->Intersect(ray, tHit, interaction)) return false;
+
+    ray.m_TMax = tHit;
+    interaction->m_Primitive = this;
+
+    return true;
+}
+
+exrBool GeometricPrimitive::HasIntersect(const Ray& r, exrFloat& tHit) const
+{
+    return m_Shape->HasIntersect(r, tHit);
+}
+
+AreaLight* GeometricPrimitive::GetAreaLight() const
+{
+    return m_AreaLight.get();
+}
+
+const Material* GeometricPrimitive::GetMaterial() const
+{
+    return m_Material.get();
+}
 
 exrEND_NAMESPACE
+

@@ -60,28 +60,11 @@ public:
     virtual exrBool HasIntersect(const Ray& r, exrFloat& tHit) const = 0;
 
     //! Returns the area light pointer if the primitive is a light source.
-    //! Returns nullptr otherwise.
-    virtual const AreaLight* GetAreaLight() const = 0;
+    //! Returns nullptr otherwise. Not const because we may call Preprocess()
+    virtual AreaLight* GetAreaLight() const = 0;
 
     //! Returns the material of the current primitive
     virtual const Material* GetMaterial() const = 0;
-};
-
-class GeometricPrimitive : public Primitive
-{
-public:
-    virtual AABB GetBoundingVolume() const override;
-    virtual exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const override;
-    virtual exrBool HasIntersect(const Ray& r, exrFloat& tHit) const override;
-
-public:
-    virtual inline const AreaLight* GetAreaLight() const override { return m_AreaLight.get(); };
-    virtual inline const Material* GetMaterial() const override { return m_Material.get(); };
-
-public:
-    std::unique_ptr<Shape> m_Shape;
-    std::unique_ptr<Material> m_Material;
-    std::unique_ptr<AreaLight> m_AreaLight;
 };
 
 exrEND_NAMESPACE

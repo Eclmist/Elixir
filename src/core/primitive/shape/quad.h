@@ -31,19 +31,10 @@ class Quad : public Shape
 {
 public:
     //! @brief Constructs a box with a position and a scale
-    //! @param position         The origin of the box in world space
-    //! @param scale            The scale of the box
-    //! @param rotation         The rotation of the box
-    //! @param material         The material of the box
-    Quad(const exrPoint3& position, const exrVector2& scale, const exrVector3& rotation, std::unique_ptr<Material> material)
-        : Shape(material)
+    Quad(const Transform& transform, const exrVector2& scale)
+        : Shape(transform)
     {
-        m_Transform.SetTranslation(exrVector3(position.x, position.y, position.z));
-        m_Transform.SetRotation(rotation);
-
         m_HalfExtents = exrPoint3::Zero() + exrVector3(0.5f * scale.x, 0.5f * scale.y, EXR_EPSILON);
-
-        ComputeBoundingVolume();
     };
 
     //! @brief Test the box for intersections with a ray
@@ -94,7 +85,7 @@ public:
     //! Computes the a bounding volume that encapsulates the current box.
     //! 
     //! @return                 Always return true since bounding volumes can be created for quads
-    AABB ComputeBoundingVolume() override;
+    AABB ComputeBoundingVolume() const override;
 
 public:
     exrPoint3 m_HalfExtents;

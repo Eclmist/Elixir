@@ -23,13 +23,10 @@
 #include "system/system.h"
 #include "math/math.h"
 
-#include "core/interaction/interaction.h"
 #include "core/interaction/surfaceinteraction.h"
 #include "core/sampling/random.h"
-#include "core/spectrum/spectrum.h"
 #include "core/spectrum/sampledspectrum.h"
 #include "core/spectrum/rgbspectrum.h"
-#include "core/ray/ray.h"
 #include "core/ray/raydifferential.h"
 
 exrBEGIN_NAMESPACE

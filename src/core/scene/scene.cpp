@@ -24,20 +24,37 @@
 
 exrBEGIN_NAMESPACE
 
-void Scene::AddPrimitive(std::unique_ptr<Primitive> primitive)
+Scene::Scene(std::vector<std::unique_ptr<Primitive>>& primitives, std::vector<std::unique_ptr<Light>>& lights, Accelerator::AcceleratorType accelType)
+    : m_AcceleratorType(accelType)
+{
+    for (exrU32 i = 0; i < primitives.size(); ++i)
+        m_Primitives.push_back(std::move(primitives[i]));
+
+    for (exrU32 i = 0; i < lights.size(); ++i)
+        m_SceneLights.push_back(std::move(lights[i]));
+}
+
+void Scene::AddPrimitive(std::unique_ptr<Primitive>& primitive)
 {
     m_Primitives.push_back(std::move(primitive));
 
     // If primitive is an area light, add it to the lights collection
-    const AreaLight* primitiveLight = primitive->GetAreaLight();
+    AreaLight* primitiveLight = primitive->GetAreaLight();
     if (primitiveLight) 
-        AddLight(std::make_shared<AreaLight>(primitiveLight));
+        AddLight(*primitiveLight);
 }
 
-void Scene::AddLight(std::shared_ptr<Light> light)
+void Scene::AddLight(std::unique_ptr<Light>& light)
 {
     light->Preprocess(*this);
-    m_Lights.push_back(light);
+    m_Lights.push_back(light.get());
+    m_SceneLights.push_back(std::move(light));
+}
+
+void Scene::AddLight(Light& light)
+{
+    light.Preprocess(*this);
+    m_Lights.push_back(&light);
 }
 
 void Scene::InitAccelerator()

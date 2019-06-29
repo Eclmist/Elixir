@@ -36,9 +36,9 @@ class Shape
 {
 public:
     //! Constructor
-    Shape(const Transform& transform, const AABB& boundingVolume)
+    Shape(const Transform& transform)
         : m_Transform(transform)
-        , m_BoundingVolume(boundingVolume) {};
+        , m_BoundingVolume(ComputeBoundingVolume()) {};
 
 public:
     //! @brief Test the geometry for intersections with a ray
@@ -136,7 +136,7 @@ public:
 
 protected:
     //! Computes a bounding volume that encapsulates the current geometry.
-    virtual AABB ComputeBoundingVolume() = 0;
+    virtual AABB ComputeBoundingVolume() const = 0;
 
 protected:
     //! A bounding volume that contains the shape;

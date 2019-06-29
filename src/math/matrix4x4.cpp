@@ -113,7 +113,7 @@ exrVector3 Matrix4x4::operator()(const exrVector3& v) const
 
 Ray Matrix4x4::operator*(const Ray& r) const
 {
-    return Ray(operator*(r.m_Origin), operator*(r.m_Direction), r.m_Distance);
+    return Ray(operator*(r.m_Origin), operator*(r.m_Direction), r.m_TMax);
 }
 
 Ray Matrix4x4::operator()(const Ray& r) const

@@ -22,87 +22,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 exrBEGIN_NAMESPACE
 
-Box::Box(const exrPoint3& position, const exrVector3& scale, const exrVector3& rotation, std::unique_ptr<Material> material)
-    : Shape(material)
+Box::Box(const Transform& transform, const exrVector3& scale)
+    : Shape(transform)
 {
-    m_Transform.SetTranslation(exrVector3(position.x, position.y, position.z));
-    m_Transform.SetRotation(rotation);
-
-    // front
-    m_Sides[0] = std::make_unique<Quad>(
-        exrPoint3(0, 0, scale.z * 0.5f), 
-        exrVector2(scale.x, scale.y), 
-        0.0f, 
-        std::make_unique<Material>());
-    m_Normals[0] = m_Transform.GetMatrix() * exrVector3::Forward();
-
-    // back
-    m_Sides[1] = std::make_unique<Quad>(
-        exrPoint3(0, 0, -scale.z * 0.5f), 
-        exrVector2(scale.x, scale.y), 
-        exrVector3(0, exrDegToRad(180), 0), 
-        std::make_unique<Material>());
-    m_Normals[1] = m_Transform.GetMatrix() * -exrVector3::Forward();
-
-    // left
-    m_Sides[2] = std::make_unique<Quad>(
-        exrPoint3(-scale.x * 0.5f, 0, 0), 
-        exrVector2(scale.z, scale.y), 
-        exrVector3(0, exrDegToRad(90), 0), 
-        std::make_unique<Material>());
-    m_Normals[2] = m_Transform.GetMatrix() * -exrVector3::Right();
-
-    // right
-    m_Sides[3] = std::make_unique<Quad>(
-        exrPoint3(+ scale.x * 0.5f, 0, 0), 
-        exrVector2(scale.z, scale.y), 
-        exrVector3(0, exrDegToRad(-90), 0), 
-        std::make_unique<Material>());
-    m_Normals[3] = m_Transform.GetMatrix() * exrVector3::Right();
-
-    // top
-    m_Sides[4] = std::make_unique<Quad>(
-        exrPoint3(0, scale.y * 0.5f, 0), 
-        exrVector2(scale.x, scale.z), 
-        exrVector3(exrDegToRad(90), 0, 0), 
-        std::make_unique<Material>());
-    m_Normals[4] = m_Transform.GetMatrix() * exrVector3::Up();
-
-    // bottom
-    m_Sides[5] = std::make_unique<Quad>(
-        exrPoint3(0, -scale.y * 0.5f, 0), 
-        exrVector2(scale.x, scale.z), 
-        exrVector3(exrDegToRad(-90), 0, 0), 
-        std::make_unique<Material>());
-    m_Normals[5] = m_Transform.GetMatrix() * -exrVector3::Up();
-
+    // TODO: Implement child quads
 
     exrVector3 halfExtent = scale / 2;
-    m_LocalCorners[0] = m_Transform.GetMatrix() * exrPoint3(-halfExtent.x, -halfExtent.y, -halfExtent.z);
-    m_LocalCorners[1] = m_Transform.GetMatrix() * exrPoint3(halfExtent.x, -halfExtent.y, -halfExtent.z);
-    m_LocalCorners[2] = m_Transform.GetMatrix() * exrPoint3(-halfExtent.x, halfExtent.y, -halfExtent.z);
-    m_LocalCorners[3] = m_Transform.GetMatrix() * exrPoint3(halfExtent.x, halfExtent.y, -halfExtent.z);
-    m_LocalCorners[4] = m_Transform.GetMatrix() * exrPoint3(-halfExtent.x, -halfExtent.y, halfExtent.z);
-    m_LocalCorners[5] = m_Transform.GetMatrix() * exrPoint3(halfExtent.x, -halfExtent.y, halfExtent.z);
-    m_LocalCorners[6] = m_Transform.GetMatrix() * exrPoint3(-halfExtent.x, halfExtent.y, halfExtent.z);
-    m_LocalCorners[7] = m_Transform.GetMatrix() * exrPoint3(halfExtent.x, halfExtent.y, halfExtent.z);
-
-    ComputeBoundingVolume();
+    Matrix4x4 transformMat = transform.GetMatrix();
+    m_LocalCorners[0] = transformMat * exrPoint3(-halfExtent.x, -halfExtent.y, -halfExtent.z);
+    m_LocalCorners[1] = transformMat * exrPoint3(halfExtent.x, -halfExtent.y, -halfExtent.z);
+    m_LocalCorners[2] = transformMat * exrPoint3(-halfExtent.x, halfExtent.y, -halfExtent.z);
+    m_LocalCorners[3] = transformMat * exrPoint3(halfExtent.x, halfExtent.y, -halfExtent.z);
+    m_LocalCorners[4] = transformMat * exrPoint3(-halfExtent.x, -halfExtent.y, halfExtent.z);
+    m_LocalCorners[5] = transformMat * exrPoint3(halfExtent.x, -halfExtent.y, halfExtent.z);
+    m_LocalCorners[6] = transformMat * exrPoint3(-halfExtent.x, halfExtent.y, halfExtent.z);
+    m_LocalCorners[7] = transformMat * exrPoint3(halfExtent.x, halfExtent.y, halfExtent.z);
 }
 
-exrBool Box::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction& interaction) const
+exrBool Box::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const
 {
     exrBool hasIntersect = false;
     Ray localRay = m_Transform.GetInverseMatrix() * ray;
 
     for (exrU32 i = 0; i < 6; i++)
     {
-        if (m_Sides[i]->Intersect(localRay, tMin, tMax, interaction))
+        if (m_Sides[i]->Intersect(localRay, tHit, interaction))
         {
-            tMax = interaction.m_Time;
-            interaction.m_Normal = m_Normals[i];
-            interaction.m_Point = m_Transform.GetMatrix() * localRay(interaction.m_Time);
-            interaction.m_Material = m_Material.get();
+            interaction->m_Normal = m_Normals[i];
+            interaction->m_Point = m_Transform.GetMatrix() * interaction->m_Point;
             hasIntersect = true;
         }
     }
@@ -110,7 +57,7 @@ exrBool Box::Intersect(const Ray& ray, exrFloat tMin, exrFloat tMax, Interaction
     return hasIntersect;
 }
 
-exrBool Box::ComputeBoundingVolume()
+AABB Box::ComputeBoundingVolume() const
 {
     exrPoint3 realMin(MaxFloat);
     exrPoint3 realMax(MinFloat);
@@ -121,9 +68,7 @@ exrBool Box::ComputeBoundingVolume()
         realMax = Max(realMax, m_LocalCorners[i]);
     }
 
-    m_BoundingVolume = AABB(realMin, realMax);
-
-    return true;
+    return AABB(realMin, realMax);
 }
 
 exrFloat Box::GetArea() const

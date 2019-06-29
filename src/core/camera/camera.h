@@ -33,7 +33,7 @@
 #pragma once
 
 #include "core/elixir.h"
-#include "core/film.h"
+#include "core/film/film.h"
 
 exrBEGIN_NAMESPACE
 

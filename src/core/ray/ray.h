@@ -25,8 +25,6 @@
 
 exrBEGIN_NAMESPACE
 
-class Medium;
-
 //! @brief A class that defines a mathematical ray
 //!
 //! Defines a ray with a origin, direction and distance in the parametric form of 
@@ -65,9 +63,6 @@ public:
 
     //! The normalized direction of the ray
     exrVector3 m_Direction;
-
-    //! In scenes with animated objects this can be used for motion blur
-    exrFloat m_Time;
 
     //! The maximum distance of the ray
     mutable exrFloat m_TMax;

@@ -28,7 +28,8 @@ class RayDifferential : public Ray
 {
 public:
     RayDifferential()
-        : m_HasDifferentials(false) {};
+        : Ray()
+        , m_HasDifferentials(false) {};
 
     RayDifferential(const exrPoint3& origin, const exrVector3& direction, exrFloat tmax = MaxFloat)
         : Ray(origin, direction, tmax)

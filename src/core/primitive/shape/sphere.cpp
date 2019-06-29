@@ -46,7 +46,6 @@ exrBool Sphere::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* hi
     // Normal vectors on sphere do not have to be transformed as sphere have no rotation and only uniform scale
     hit->m_Normal = static_cast<exrVector3>(localRay(t0)) / m_Radius;
     hit->m_Wo = -ray.m_Direction;
-    hit->m_BSDF = m_Material.CreateB;
 
     return true;
 }
@@ -75,7 +74,7 @@ exrBool Sphere::HasIntersect(const Ray& ray, exrFloat& tHit) const
     return true;
 }
 
-AABB Sphere::ComputeBoundingVolume()
+AABB Sphere::ComputeBoundingVolume() const
 {
     exrPoint3 min = m_Transform.GetMatrix() * exrPoint3(-m_Radius);
     exrPoint3 max = m_Transform.GetMatrix() * exrPoint3(m_Radius);

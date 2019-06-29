@@ -20,31 +20,8 @@
 
 #pragma once
 
-#include "core/primitive/primitive.h"
-#include "core/spatial/aabb.h"
+#include "primitive.h"
 
 exrBEGIN_NAMESPACE
-
-AABB GeometricPrimitive::GetBoundingVolume() const
-{
-    return m_Shape->GetBoundingVolume();
-}
-
-exrBool GeometricPrimitive::Intersect(const Ray& ray, SurfaceInteraction* interaction) const
-{
-    exrFloat tHit;
-
-    if (!m_Shape->Intersect(ray, tHit, interaction)) return false;
-
-    ray.m_TMax = tHit;
-    interaction->m_Primitive = this;
-
-    return true;
-}
-
-exrBool GeometricPrimitive::HasIntersect(const Ray& r, exrFloat& tHit) const
-{
-    return m_Shape->HasIntersect(r, tHit);
-}
 
 exrEND_NAMESPACE

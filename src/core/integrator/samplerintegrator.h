@@ -28,10 +28,9 @@ exrBEGIN_NAMESPACE
 class SamplerIntegrator : public Integrator
 {
 public:
-
-    SamplerIntegrator(std::unique_ptr<Camera>& camera, exrU32 numSamples)
+    SamplerIntegrator(std::unique_ptr<Camera>& camera, exrU32 numSamplesPerPixel)
         : m_Camera(std::move(camera))
-        , m_NumSamples(numSamples) {};
+        , m_NumSamplesPerPixel(numSamplesPerPixel) {};
 
     virtual void Render(const Scene& scene) override;
     virtual void Preprocess(const Scene& scene) {};
@@ -39,7 +38,7 @@ public:
 
 private:
     std::unique_ptr<Camera> m_Camera;
-    exrU32 m_NumSamples;
+    exrU32 m_NumSamplesPerPixel;
 };
 
 exrEND_NAMESPACE

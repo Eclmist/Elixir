@@ -27,8 +27,8 @@ exrBEGIN_NAMESPACE
 class WittedIntegrator : public SamplerIntegrator
 {
 public:
-    WittedIntegrator(std::unique_ptr<Camera> camera, exrU32 maxDepth)
-        : SamplerIntegrator(std::move(camera))
+    WittedIntegrator(std::unique_ptr<Camera>& camera, exrU32 numSamplesPerPixel, exrU32 maxDepth)
+        : SamplerIntegrator(camera, numSamplesPerPixel)
         , m_MaxDepth(maxDepth) {};
 
     void Render(const Scene& scene) override;

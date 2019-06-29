@@ -28,10 +28,20 @@ class AreaLight : public Light
 {
 public:
     AreaLight(const Transform& transform)
-        : Light(transform) {}
+        : Light(transform, Light::LightFlags::LIGHTFLAGS_AREA) {}
 
     AreaLight(const AreaLight& copy)
-        : Light(copy.m_Transform) {}
+        : Light(copy.m_Transform, copy.m_Flags) {}
+
+    virtual exrSpectrum SampleLi(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const override
+    {
+        throw std::logic_error("The method or operation is not implemented.");
+    }
+
+    virtual exrSpectrum Power() const override
+    {
+        throw std::logic_error("The method or operation is not implemented.");
+    }
 
 protected:
     exrU32 m_NumSamples;

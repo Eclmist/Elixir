@@ -18,16 +18,29 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "samplerintegrator.h"
+#pragma once
+
+#include "primitive.h"
 
 exrBEGIN_NAMESPACE
 
-void SamplerIntegrator::Render(const Scene& scene)
+class AABB;
+
+class GeometricPrimitive : public Primitive
 {
-    Preprocess(scene);
+public:
+    virtual AABB GetBoundingVolume() const override;
+    virtual exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const override;
+    virtual exrBool HasIntersect(const Ray& r, exrFloat& tHit) const override;
 
-    m_Camera->m_Film->WriteImage(1.0f / m_NumSamplesPerPixel);
-}
+public:
+    virtual AreaLight* GetAreaLight() const override;
+    virtual const Material* GetMaterial() const override;
 
+public:
+    std::unique_ptr<Shape> m_Shape;
+    std::unique_ptr<Material> m_Material;
+    std::unique_ptr<AreaLight> m_AreaLight;
+};
 
 exrEND_NAMESPACE

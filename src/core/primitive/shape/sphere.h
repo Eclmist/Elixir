@@ -35,7 +35,7 @@ public:
     //! @param radius           The radius of the sphere
     //! @param material         The material of the sphere
     Sphere(const Transform& transform, exrFloat radius)
-        : Shape(transform, ComputeBoundingVolume())
+        : Shape(transform)
         , m_Radius(radius) {};
 
     //! @brief Test the sphere for intersections with a ray
@@ -86,7 +86,7 @@ public:
     //! Computes the a bounding volume that encapsulates the current sphere.
     //! 
     //! @return                 Always return true since bounding volumes can be created for spheres
-    AABB ComputeBoundingVolume() override;
+    AABB ComputeBoundingVolume() const override;
 
 private:
     //! The radius of the sphere
