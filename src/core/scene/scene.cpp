@@ -24,6 +24,9 @@
 
 exrBEGIN_NAMESPACE
 
+Scene::Scene(Accelerator::AcceleratorType accelType)
+    : m_AcceleratorType(accelType) { }
+
 Scene::Scene(std::vector<std::unique_ptr<Primitive>>& primitives, std::vector<std::unique_ptr<Light>>& lights, Accelerator::AcceleratorType accelType)
     : m_AcceleratorType(accelType)
 {

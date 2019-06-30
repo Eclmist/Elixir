@@ -31,7 +31,6 @@ public:
         : SamplerIntegrator(camera, numSamplesPerPixel)
         , m_MaxDepth(maxDepth) {};
 
-    void Render(const Scene& scene) override;
     exrSpectrum Li(const RayDifferential& ray, const Scene& scene, exrU32 depth) const override;
 
 private:

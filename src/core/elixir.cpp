@@ -48,6 +48,9 @@ int main(int argc, exrChar *argv[])
     ElixirOptions options;
     std::vector<exrString> filenames;
 
+    if (argc <= 1)
+        return -1;
+
     // Process command-line arguments
     for (exrS32 i = 1; i < argc; ++i)
     {
@@ -82,6 +85,7 @@ int main(int argc, exrChar *argv[])
         }
     }
 
+    ElixirRender();
     ElixirCleanup();
     return 0;
 }

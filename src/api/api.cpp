@@ -21,6 +21,7 @@
 #pragma once
 
 #include "api.h"
+
 #include "core/camera/camera.h"
 #include "core/integrator/wittedintegrator.h"
 #include "core/integrator/samplerintegrator.h"
@@ -28,6 +29,7 @@
 #include "core/primitive/shape/quad.h"
 #include "core/primitive/shape/sphere.h"
 #include "core/scene/scene.h"
+#include "core/spatial/accelerator/accelerator.h"
 
 exrBEGIN_NAMESPACE
 
@@ -41,17 +43,9 @@ ElixirOptions ElixirRuntimeOptions;
 */
 struct RenderJob
 {
-    Scene* MakeScene();
-    Camera* MakeCamera();
-    Integrator* MakeIntegrator();
-
-    exrString m_SamplerName = "halton";
-    exrString m_AcceleratorName = "bvh";
-    exrString m_IntegratorName = "pathtracer";
-    exrString m_CameraName = "perspective";
-    
-    std::vector<std::unique_ptr<Light>> m_Lights;
-    std::vector<std::unique_ptr<Primitive>> m_Primitives;
+    std::unique_ptr<Camera> m_Camera;
+    std::unique_ptr<Scene> m_Scene;
+    std::unique_ptr<Integrator> m_Integrator;
 };
 
 /* ==========================================================================
@@ -60,8 +54,8 @@ struct RenderJob
 enum class APIState
 {
     APISTATE_UNINITIALIZED,     // Before ElixirInit() or after ElixirCleanup(). No API calls are legal.
-    APISTATE_SETUP_OPTION,      // Scene-wide global options can be set
-    APISTATE_SETUP_SCENE,       // Scene may be described
+    APISTATE_OPTIONS,           // Scene-wide global options can be set
+    APISTATE_SCENE,             // Scene may be described
     APISTATE_RENDERING          // Currently rendering scene. No API calls are legal.
 };
 
@@ -69,37 +63,22 @@ static APIState CurrentAPIState = APIState::APISTATE_UNINITIALIZED;
 static std::unique_ptr<RenderJob> CurrentRenderJob = nullptr;
 
 /* ==========================================================================
-    API Macros
-*/
-#define VERIFY_UNINITIALIZED(func)\
-    if (CurrentAPIState != APIState::APISTATE_UNINITIALIZED) {\
-        exrError(func << "() must be called before ElixirInit()!");\
-        return;\
-    }\
-
-#define VERIFY_INITIALIZED(func)\
-    if (CurrentAPIState == APIState::APISTATE_UNINITIALIZED) {\
-        exrError("ElixirInit() must be called before " << func << "()!");\
-        return;\
-    }\
-
-/* ==========================================================================
     API Function definitions
 */
 void ElixirInit(const ElixirOptions& options)
 {
-    if (CurrentAPIState != APIState::APISTATE_UNINITIALIZED)
-        exrError("ElixirInit() has already been called!");
+    exrAssert(CurrentAPIState == APIState::APISTATE_UNINITIALIZED, "ElixirInit() has already been called!");
 
     ElixirRuntimeOptions = options;
+    CurrentRenderJob = std::make_unique<RenderJob>();
     SampledSpectrum::Init();
 
-    CurrentAPIState = APIState::APISTATE_SETUP_OPTION;
+    CurrentAPIState = APIState::APISTATE_OPTIONS;
 }
 
 void ElixirCleanup()
 {
-    VERIFY_INITIALIZED("ElixirCleanup");
+    exrAssert(CurrentAPIState != APIState::APISTATE_UNINITIALIZED, "ElixirCleanup() called before initialization!");
     CurrentAPIState = APIState::APISTATE_UNINITIALIZED;
 }
 
@@ -113,24 +92,27 @@ void ElixirParseFile(const exrString& filename)
 
 void ElixirSetupDemo()
 {
-    // light
-    //CurrentRenderJob.m_Lights->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 5.5f, 0.0f), exrVector2(1.3f, 1.0f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<DiffuseLight>(exrVector3(1.0f, 0.77f, 0.4f) * 7.0f)));
+    exrAssert(CurrentAPIState == APIState::APISTATE_OPTIONS, "ElixirSetupDemo() called before initialization!");
+    exrPoint3 position(0.0f, 2.75f, 10.0f);
+    exrPoint3 lookat(0.0f, 2.75f, 0.0f);
+    exrFloat fov = 40.0f;
+    exrFloat aspect = exrFloat(OutputWidth) / exrFloat(OutputHeight);
+    exrFloat focusDist = (position - lookat).Magnitude();
+    exrFloat aperture = 0.05f;
+    CurrentRenderJob->m_Camera = std::make_unique<Camera>(position, lookat, exrVector3::Up(), fov, aspect, aperture, focusDist);
+    CurrentRenderJob->m_Scene = std::make_unique<Scene>();
+    CurrentRenderJob->m_Integrator = std::make_unique<WittedIntegrator>(CurrentRenderJob->m_Camera, 32, 8);
 
-    // room
-    //CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(-2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(90), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 0.0f, 0.0f))));
-    //CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(2.75f, 2.75f, 0.0f), exrVector2(5.6f, 5.5f), exrVector3(0, exrDegToRad(-90.0f), 0), std::make_unique<Lambertian>(exrVector3(0.0f, 1.0f, 0.0f))));
-    //CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 2.75f, -2.80f), exrVector2(5.5f), exrVector3(0.0f), std::make_unique<Lambertian>(exrVector3(1.0f))));
-    //CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 0.0f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(-90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
-    //CurrentRenderJob.m_Primitives->push_back(std::make_unique<Quad>(exrPoint3(0.0f, 5.5f, 0.0f), exrVector2(5.5f, 5.6f), exrVector3(exrDegToRad(90), 0, 0), std::make_unique<Lambertian>(exrVector3(1.0f))));
-
-    //// objects
-    //CurrentRenderJob.m_Primitives->push_back(std::make_unique<Box>(exrPoint3(-0.9f, 1.8f, -1.0f), exrVector3(1.6f, 3.6f, 1.6f), exrVector3(0, exrDegToRad(110), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
-    //CurrentRenderJob.m_Primitives->push_back(std::make_unique<Box>(exrPoint3(0.9f, 0.8f, 1.0f), exrVector3(1.6f, 1.6f, 1.6f), exrVector3(0, exrDegToRad(-20), 0), std::make_unique<Lambertian>(exrVector3(1.0f, 1.0f, 1.0f))));
-
+    CurrentAPIState = APIState::APISTATE_SCENE;
+    // Setup scene..
 }
 
 void ElixirRender()
 {
-    
+    exrAssert(CurrentAPIState == APIState::APISTATE_SCENE, "ElixirRendering() before scene has been described!");
+    CurrentAPIState = APIState::APISTATE_RENDERING;
+
+    // Do render/write file
+    CurrentRenderJob->m_Integrator->Render(*CurrentRenderJob->m_Scene);
 }
 exrEND_NAMESPACE

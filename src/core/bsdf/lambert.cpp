@@ -26,7 +26,7 @@ exrBEGIN_NAMESPACE
 
 exrSpectrum Lambert::Evaluate(const exrVector3& wo, const exrVector3& wi) const
 {
-	return m_Albedo * EXR_M_INVPI;
+    return m_Albedo * EXR_M_INVPI;
 }
 
 exrEND_NAMESPACE

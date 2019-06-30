@@ -35,6 +35,8 @@ class Scene
 {
 public:
 
+    Scene(Accelerator::AcceleratorType accelType = Accelerator::AcceleratorType::ACCELERATORTYPE_BVH);
+
     Scene(std::vector<std::unique_ptr<Primitive>>& primitives, std::vector<std::unique_ptr<Light>>& lights, Accelerator::AcceleratorType accelType);
 
     //! @brief Adds a primitive to the scene

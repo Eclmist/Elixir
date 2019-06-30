@@ -30,21 +30,21 @@ static constexpr exrU32 MaxBxDFs = 8;
 class BSDF
 {
 public:
-	BSDF(const SurfaceInteraction& si, exrFloat ior = 1)
-		: m_ReflectiveIndex(ior)
-		, m_ShadingNormal(si.m_Normal)
-		, m_NumBxDF(0) {};
+    BSDF(const SurfaceInteraction& si, exrFloat ior = 1)
+        : m_ReflectiveIndex(ior)
+        , m_ShadingNormal(si.m_Normal)
+        , m_NumBxDF(0) {};
 
-	void AddComponent(const BxDF* b);
-	exrU32 GetComponentCount(BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
+    void AddComponent(const BxDF* b);
+    exrU32 GetComponentCount(BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
 
 public:
-	const exrFloat m_ReflectiveIndex;
+    const exrFloat m_ReflectiveIndex;
 
 private:
-	const exrVector3 m_ShadingNormal;
-	exrU32 m_NumBxDF;
-	const BxDF* m_BxDFs[MaxBxDFs];
+    const exrVector3 m_ShadingNormal;
+    exrU32 m_NumBxDF;
+    const BxDF* m_BxDFs[MaxBxDFs];
 };
 
 exrEND_NAMESPACE

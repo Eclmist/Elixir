@@ -29,10 +29,10 @@ class Lambert : public BxDF
 public:
     Lambert(const exrSpectrum& r)
         : BxDF(BxDFType(BxDFType::BSDF_REFLECTION | BxDFType::BSDF_DIFFUSE))
-		, m_Albedo(r) {};
+        , m_Albedo(r) {};
 
-	exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const override;
+    exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const override;
 private:
-	exrSpectrum m_Albedo;
+    exrSpectrum m_Albedo;
 };
 exrEND_NAMESPACE

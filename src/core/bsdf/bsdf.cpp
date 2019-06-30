@@ -26,17 +26,17 @@ exrBEGIN_NAMESPACE
 
 void BSDF::AddComponent(const BxDF* bxdf)
 {
-	exrAssert(m_NumBxDF < MaxBxDFs, "Max number of BxDFs exceeded for material!");
-	m_BxDFs[m_NumBxDF++] = bxdf;
+    exrAssert(m_NumBxDF < MaxBxDFs, "Max number of BxDFs exceeded for material!");
+    m_BxDFs[m_NumBxDF++] = bxdf;
 }
 
 exrU32 BSDF::GetComponentCount(BxDF::BxDFType flags) const
 {
-	exrU32 res = 0;
-	for (exrU32 i = 0; i < m_NumBxDF; ++i)
-		if (m_BxDFs[i]->MatchesFlags(flags)) ++res;
+    exrU32 res = 0;
+    for (exrU32 i = 0; i < m_NumBxDF; ++i)
+        if (m_BxDFs[i]->MatchesFlags(flags)) ++res;
 
-	return res;
+    return res;
 }
 
 exrEND_NAMESPACE

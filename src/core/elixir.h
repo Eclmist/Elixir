@@ -34,6 +34,9 @@
 
 exrBEGIN_NAMESPACE
 
+static constexpr exrU32 OutputWidth = 500;
+static constexpr exrU32 OutputHeight = 500;
+
 struct ElixirOptions
 {
     exrU32          numThreads;

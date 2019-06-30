@@ -27,8 +27,8 @@ exrBEGIN_NAMESPACE
 
 exrVector3 SurfaceInteraction::GetEmission(const exrVector3& wo) const
 {
-	// TODO: fix this
-	return exrVector3::Zero();
+    // TODO: fix this
+    return exrVector3::Zero();
 }
 
 exrEND_NAMESPACE

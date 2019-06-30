@@ -29,6 +29,12 @@ class Scene;
 class Integrator
 {
 public:
+
+    enum IntegratorType
+    {
+        INTEGRATOR_WITTED,
+    };
+
     virtual void Render(const Scene& scene) = 0;
 };
 
