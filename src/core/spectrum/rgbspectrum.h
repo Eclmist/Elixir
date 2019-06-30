@@ -20,27 +20,26 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "spectrum.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class RGBSpectrum : public Spectrum<3>
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    RGBSpectrum(exrFloat v = 0.0f) : Spectrum(v) {};
+    RGBSpectrum(const Spectrum<3>& v) : Spectrum(v) {};
+
+public:
+    // virtual functions
+    exrVector3 ToXYZ() const;
+    exrVector3 ToRGB() const;
+
+public:
+    // SpectrumType may not be used here, but since we may swap out which kind of spectrum
+    // objects to use on compile time, we need to have the same signature.
+    static RGBSpectrum FromRGB(const exrVector3& rgb, SpectrumType type);
+    static RGBSpectrum FromXYZ(const exrVector3& xyz, SpectrumType type);
 };
 
 exrEND_NAMESPACE

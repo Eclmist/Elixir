@@ -18,29 +18,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+    DO NOT EDIT: This is a CMake auto generated file
+    CMake configurations can be defined here, but all other changes may be lost!
+*/
+
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
-
-exrBEGIN_NAMESPACE
-
-struct ElixirOptions
-{
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
-};
-
-exrEND_NAMESPACE
+#define EXR_PLATFORM_NAME				"Windows"
+#define EXR_PLATFORM_WIN
+/* #undef EXR_PLATFORM_MAC */
+/* #undef EXR_PLATFORM_LINUX */
+#define EXR_USE_NAMESPACE

@@ -20,27 +20,33 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "ray.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class RayDifferential : public Ray
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    RayDifferential()
+        : Ray()
+        , m_HasDifferentials(false) {};
+
+    RayDifferential(const exrPoint3& origin, const exrVector3& direction, exrFloat tmax = MaxFloat)
+        : Ray(origin, direction, tmax)
+        , m_HasDifferentials(false) {};
+
+    RayDifferential(const Ray& ray)
+        : Ray(ray)
+        , m_HasDifferentials(false) {};
+
+    void ScaleDifferentials(exrFloat scale);
+
+private:
+    exrBool m_HasDifferentials;
+    exrPoint3 m_RxOrigin;
+    exrPoint3 m_RyOrigin;
+    exrVector3 m_RxDirection;
+    exrVector3 m_RyDirection;
 };
 
 exrEND_NAMESPACE

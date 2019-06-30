@@ -18,29 +18,25 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "random.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+exrVector3 Random::RandomInUnitSphere()
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
-};
+    exrVector3 p;
+
+    do {
+        p = 2.0f * exrVector3(Random::Uniform01(), Random::Uniform01(), Random::Uniform01()) - exrVector3(1.0f);
+    } while (p.MagnitudeSquared() >= 1.0f);
+
+    return p;
+}
+
+exrVector3 Random::RandomOnUnitSphere()
+{
+    return RandomInUnitSphere().Normalized();
+}
+
 
 exrEND_NAMESPACE

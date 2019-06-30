@@ -18,29 +18,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "samplerintegrator.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+void SamplerIntegrator::Render(const Scene& scene)
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
-};
+    Preprocess(scene);
+
+    m_Camera->m_Film->WriteImage(1.0f / m_NumSamplesPerPixel);
+}
+
 
 exrEND_NAMESPACE

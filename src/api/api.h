@@ -20,27 +20,25 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
+#include "core/elixir.h"
 
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+/*
+    API function declarations
+    Make sure to increment API version when there are changes
+    Format: Major.Minor.Patch-PreleaseID
+    For more versioning information, see <https://semver.org/>
+*/
+#define EXR_VERSION_MAJOR 0
+#define EXR_VERSION_MINOR 1
+#define EXR_VERSION_PATCH 0
+#define EXR_VERSION_PRERELEASEID "dev" 
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
-{
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
-};
+void ElixirInit(const ElixirOptions& options);
+void ElixirParseFile(const exrString& filename);
+void ElixirSetupDemo();
+void ElixirRender();
+void ElixirCleanup();
 
 exrEND_NAMESPACE

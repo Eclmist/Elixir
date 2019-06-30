@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "core/elixir.h"
+#include "math/mathutils.h"
 
 exrBEGIN_NAMESPACE
 
@@ -52,9 +52,8 @@ public:
     inline explicit operator Point3<T>() const { return Point3<T>(x, y, z); }
 
 public:
-    inline const float SquareMagnitude() const { return x * x + y * y + z * z; }
-    inline const float Magnitude() const { return sqrt(SquareMagnitude()); }
-
+    inline const float MagnitudeSquared() const { return x * x + y * y + z * z; }
+    inline const float Magnitude() const { return sqrt(MagnitudeSquared()); }
     inline Vector3<T> Normalized() const { return *this / Magnitude(); };
 
 public:
@@ -160,6 +159,17 @@ inline bool Refract(const Vector3<T>& v, const Vector3<T>& n, float ni_over_nt, 
     }
 
     return false;
+}
+
+template<class T>
+inline void CoordinateSystem(const Vector3<T>& v1, Vector3<T>* v2, Vector3<T>* v3)
+{
+    if (abs(v1.x) > abs(v1.y))
+        *v2 = Vector3<T>(-v1.z, 0, v1.x) / sqrt(v1.x * v1.x + v1.z * v1.z);
+    else
+        *v2 = Vector3<T>(0, v1.z, -v1.y) / sqrt(v1.y * v1.y + v1.z * v1.z);
+
+    *v3 = Cross(v1, *v2);
 }
 
 exrEND_NAMESPACE

@@ -20,27 +20,30 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "interaction.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class Primitive;
+class BSDF;
+
+class SurfaceInteraction : public Interaction
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    SurfaceInteraction() {};
+    SurfaceInteraction(const exrPoint3& point, const exrVector3& normal, const exrVector3& wo, const Primitive* primitive)
+        : Interaction(point, normal, wo)
+        , m_Primitive(primitive)
+        , m_BSDF(nullptr) {};
+
+    exrVector3 GetEmission(const exrVector3& wo) const;
+
+public:
+    //! The BRDF of the surface
+    BSDF* m_BSDF = nullptr;
+
+    //! A reference to the primitive that the interaction lies on
+    const Primitive* m_Primitive = nullptr;
 };
 
 exrEND_NAMESPACE

@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "core/elixir.h"
+#include "math/mathutils.h"
 
 exrBEGIN_NAMESPACE
 
@@ -52,9 +52,8 @@ public:
     inline explicit operator Point3<T>() const { return Point3<T>(x, y, 0); }
 
 public:
-    inline const float SquareMagnitude() const { return x * x + y * y; }
-    inline const float Magnitude() const { return sqrt(SquareMagnitude()); }
-
+    inline const float MagnitudeSquared() const { return x * x + y * y; }
+    inline const float Magnitude() const { return sqrt(MagnitudeSquared()); }
     inline Vector2<T> Normalized() const { return *this / Magnitude(); }
 
 public:

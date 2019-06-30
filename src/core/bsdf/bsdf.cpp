@@ -20,27 +20,23 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "bsdf.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+void BSDF::AddComponent(const BxDF* bxdf)
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
-};
+	exrAssert(m_NumBxDF < MaxBxDFs, "Max number of BxDFs exceeded for material!");
+	m_BxDFs[m_NumBxDF++] = bxdf;
+}
+
+exrU32 BSDF::GetComponentCount(BxDF::BxDFType flags) const
+{
+	exrU32 res = 0;
+	for (exrU32 i = 0; i < m_NumBxDF; ++i)
+		if (m_BxDFs[i]->MatchesFlags(flags)) ++res;
+
+	return res;
+}
 
 exrEND_NAMESPACE

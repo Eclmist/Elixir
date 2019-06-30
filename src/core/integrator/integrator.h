@@ -20,27 +20,16 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class Scene;
+
+class Integrator
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    virtual void Render(const Scene& scene) = 0;
 };
 
 exrEND_NAMESPACE

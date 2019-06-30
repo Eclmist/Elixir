@@ -20,27 +20,13 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "lambert.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+exrSpectrum Lambert::Evaluate(const exrVector3& wo, const exrVector3& wi) const
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
-};
+	return m_Albedo * EXR_M_INVPI;
+}
 
 exrEND_NAMESPACE

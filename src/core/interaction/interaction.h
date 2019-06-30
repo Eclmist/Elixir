@@ -20,27 +20,33 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
-{
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
-};
+class BSDF;
+class Primitive;
 
+//! A struct that contains information about the local differential geometry
+//! at intersection points.
+struct Interaction
+{
+    //! Default Constructor
+    Interaction() {};
+
+    //! Constructor
+    Interaction(const exrPoint3& point, const exrVector3& normal, const exrVector3& wo)
+        : m_Point(point)
+        , m_Normal(normal)
+        , m_Wo(wo) {};
+
+    //! The point of intersection
+    exrPoint3 m_Point;
+
+    //! The outgoing light direction Wo
+    exrVector3 m_Wo;
+
+    //! The normal of the surface at the point of intersection
+    exrVector3 m_Normal;
+};
 exrEND_NAMESPACE

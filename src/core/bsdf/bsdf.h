@@ -20,27 +20,31 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "core/elixir.h"
+#include "core/bsdf/bxdf.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+static constexpr exrU32 MaxBxDFs = 8;
+
+class BSDF
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+	BSDF(const SurfaceInteraction& si, exrFloat ior = 1)
+		: m_ReflectiveIndex(ior)
+		, m_ShadingNormal(si.m_Normal)
+		, m_NumBxDF(0) {};
+
+	void AddComponent(const BxDF* b);
+	exrU32 GetComponentCount(BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
+
+public:
+	const exrFloat m_ReflectiveIndex;
+
+private:
+	const exrVector3 m_ShadingNormal;
+	exrU32 m_NumBxDF;
+	const BxDF* m_BxDFs[MaxBxDFs];
 };
 
 exrEND_NAMESPACE

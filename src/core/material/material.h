@@ -20,27 +20,22 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class Material
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    virtual exrBool Scatter(const Ray& in, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const
+    {
+        return false;
+    };
+
+    virtual exrVector3 Emit(const Ray& in, const Interaction& hitInfo) const
+    {
+        return 0.0f;
+    };
 };
 
 exrEND_NAMESPACE

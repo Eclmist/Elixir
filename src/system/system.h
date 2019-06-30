@@ -20,27 +20,22 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
+#define EXR_ENABLE_LOGGING
+#define EXR_ENABLE_ERRORS
+#define EXR_ENABLE_ASSERTS
 
-#include "math/math.h"
-#include "math/conversionutils.h"
+// The order of the following includes matter!
+#include <algorithm>
+#include <atomic>
+#include <condition_variable>
+#include <math.h>
+#include <memory>
+#include <mutex>
+#include <vector>
+#include <stdexcept>
 
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
-
-exrBEGIN_NAMESPACE
-
-struct ElixirOptions
-{
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
-};
-
-exrEND_NAMESPACE
+#include "system/config.h"
+#include "system/error.h"
+#include "system/utils.h"
+#include "system/types.h"
+#include "system/parallel.h"

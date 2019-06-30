@@ -20,27 +20,31 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
-
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class AtomicFloat
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    explicit AtomicFloat(exrFloat v = 0) { bits = FloatToBits(v); }
+    operator exrFloat() const { return BitsToFloat(bits); }
+    exrFloat operator=(exrFloat v)
+    {
+        bits = FloatToBits(v);
+        return v;
+    }
+    void Add(exrFloat v)
+    {
+        exrU32 oldBits = bits, newBits;
+
+        do
+        {
+            newBits = FloatToBits(BitsToFloat(oldBits) + v);
+        } while (!bits.compare_exchange_weak(oldBits, newBits));
+    }
+
+private:
+    std::atomic<exrU32> bits;
 };
+
 
 exrEND_NAMESPACE

@@ -20,27 +20,29 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "light.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class PointLight : public Light
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    PointLight(const Transform& transform)
+        : Light(transform, LightFlags::LIGHTFLAGS_DELTAPOSITION) 
+        , m_Intensity(1.0f)
+        , m_Point(exrPoint3::Zero()) {};
+
+    PointLight(const exrPoint3& pos)
+        : Light(Transform(), LightFlags::LIGHTFLAGS_DELTAPOSITION) 
+        , m_Intensity(1.0f)
+        , m_Point(pos) {};
+
+    exrSpectrum SampleLi(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const override;
+    exrSpectrum Power() const override;
+
+private:
+    const exrSpectrum m_Intensity;
+    const exrPoint3 m_Point;
 };
 
 exrEND_NAMESPACE

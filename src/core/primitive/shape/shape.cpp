@@ -18,29 +18,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "shape.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+exrFloat Shape::SolidAngle(const exrPoint3& p, exrU32 nbSamples /*= 512*/) const
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
-};
-
+    // TODO: use MC to calculate solid angle. Returning 0 obviously won't work.
+    return 0;
+}
 exrEND_NAMESPACE

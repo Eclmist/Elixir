@@ -20,27 +20,25 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "integrator.h"
+#include "core/camera/camera.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class SamplerIntegrator : public Integrator
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    SamplerIntegrator(std::unique_ptr<Camera>& camera, exrU32 numSamplesPerPixel)
+        : m_Camera(std::move(camera))
+        , m_NumSamplesPerPixel(numSamplesPerPixel) {};
+
+    virtual void Render(const Scene& scene) override;
+    virtual void Preprocess(const Scene& scene) {};
+	virtual exrSpectrum Li(const RayDifferential& ray, const Scene& scene, exrU32 depth) const = 0;
+
+private:
+    std::unique_ptr<Camera> m_Camera;
+    exrU32 m_NumSamplesPerPixel;
 };
 
 exrEND_NAMESPACE

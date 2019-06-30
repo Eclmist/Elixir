@@ -20,27 +20,17 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "surfaceinteraction.h"
+#include "core/primitive/primitive.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+exrVector3 SurfaceInteraction::GetEmission(const exrVector3& wo) const
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
-};
+	// TODO: fix this
+	return exrVector3::Zero();
+}
 
 exrEND_NAMESPACE
+
+

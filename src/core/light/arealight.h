@@ -20,27 +20,31 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "light.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class AreaLight : public Light
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    AreaLight(const Transform& transform)
+        : Light(transform, Light::LightFlags::LIGHTFLAGS_AREA) {}
+
+    AreaLight(const AreaLight& copy)
+        : Light(copy.m_Transform, copy.m_Flags) {}
+
+    virtual exrSpectrum SampleLi(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const override
+    {
+        throw std::logic_error("The method or operation is not implemented.");
+    }
+
+    virtual exrSpectrum Power() const override
+    {
+        throw std::logic_error("The method or operation is not implemented.");
+    }
+
+protected:
+    exrU32 m_NumSamples;
 };
 
 exrEND_NAMESPACE

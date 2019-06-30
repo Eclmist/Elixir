@@ -20,27 +20,38 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+//! @brief A class writes the final image output of the renderer to a file
+class Film
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    Film(const Point2<exrU32>& resolution, const exrString& filename, exrBool stampFile = true)
+        : m_Resolution(resolution)
+        , m_FileName(filename)
+        , m_StampFile(stampFile) {}
+
+    void AddSplat(const exrPoint2& point, const exrVector3& value);
+    void WriteImage(exrFloat splatScale);
+
+
+private:
+    struct Pixel
+    {
+        exrFloat m_FilterWeightSum = 0;
+        AtomicFloat m_SplatRGB[3];
+    };
+
+    Pixel& GetPixel(const Point2<exrU32>& point);
+
+private:
+    std::unique_ptr<Pixel[]> m_Pixels;
+
+    Point2<exrU32> m_Resolution;
+    exrString m_FileName;
+    exrBool m_StampFile;
 };
 
 exrEND_NAMESPACE

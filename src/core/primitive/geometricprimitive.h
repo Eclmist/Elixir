@@ -20,27 +20,27 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "primitive.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class AABB;
+
+class GeometricPrimitive : public Primitive
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    virtual AABB GetBoundingVolume() const override;
+    virtual exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const override;
+    virtual exrBool HasIntersect(const Ray& r, exrFloat& tHit) const override;
+
+public:
+    virtual AreaLight* GetAreaLight() const override;
+    virtual const Material* GetMaterial() const override;
+
+public:
+    std::unique_ptr<Shape> m_Shape;
+    std::unique_ptr<Material> m_Material;
+    std::unique_ptr<AreaLight> m_AreaLight;
 };
 
 exrEND_NAMESPACE

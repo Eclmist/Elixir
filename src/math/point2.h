@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "core/elixir.h"
+#include "math/mathutils.h"
 
 exrBEGIN_NAMESPACE
 
@@ -100,5 +100,33 @@ inline float Distance(const Point2<T>& p1, const Point2<T>& p2)
     return (p2 - p1).Magnitude();
 }
 
+template<class T>
+inline Point2<T> Min(const Point2<T>& p1, const Point2<T>& p2)
+{
+    return Point2<T>(exrMin(p1.x, p2.x), exrMin(p1.y, p2.y));
+}
 
+template<class T>
+inline Point2<T> Max(const Point2<T>& p1, const Point2<T>& p2)
+{
+    return Point2<T>(exrMax(p1.x, p2.x), exrMax(p1.y, p2.y));
+}
+
+template<class T>
+inline Point2<T> Floor(const Point2<T>& p)
+{
+    return Point2<T>(floor(p.x), floor(p.y));
+}
+
+template<class T>
+inline Point2<T> Ceil(const Point2<T>& p)
+{
+    return Point2<T>(ceil(p.x), ceil(p.y));
+}
+
+template<class T>
+inline Point2<T> Abs(const Point2<T>& p)
+{
+    return Point2<T>(abs(p.x), abs(p.y));
+}
 exrEND_NAMESPACE

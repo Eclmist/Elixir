@@ -20,27 +20,27 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "material.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class Dielectric : public Material
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    Dielectric(const exrVector3& a, exrFloat ior) : m_Albedo(a), m_RefractiveIndex(ior) {};
+
+    Dielectric(const Dielectric& copy)
+        : m_Albedo(copy.m_Albedo)
+        , m_RefractiveIndex(copy.m_RefractiveIndex) {};
+
+    virtual exrBool Scatter(const Ray& incomingRay, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const override
+    {
+        throw "Use of outdated material!";
+    };
+
+public:
+    exrVector3 m_Albedo;
+    exrFloat m_RefractiveIndex;
 };
 
 exrEND_NAMESPACE

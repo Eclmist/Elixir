@@ -18,29 +18,41 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "rgbspectrum.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+exrVector3 RGBSpectrum::ToXYZ() const
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
-};
+    exrVector3 xyz = exrVector3::Zero();
+    RGBToXYZ(m_Wavelengths, xyz.m_Data);
+    return xyz;
+}
+
+exrVector3 RGBSpectrum::ToRGB() const
+{
+    exrVector3 rgb = exrVector3::Zero();
+    rgb.r = m_Wavelengths[0];
+    rgb.g = m_Wavelengths[1];
+    rgb.b = m_Wavelengths[2];
+    return rgb;
+}
+
+RGBSpectrum RGBSpectrum::FromRGB(const exrVector3& rgb, SpectrumType type)
+{
+    RGBSpectrum s;
+    s.m_Wavelengths[0] = rgb.r;
+    s.m_Wavelengths[1] = rgb.g;
+    s.m_Wavelengths[2] = rgb.b;
+    return s;
+}
+
+RGBSpectrum RGBSpectrum::FromXYZ(const exrVector3& xyz, SpectrumType type)
+{
+    exrVector3 rgb = exrVector3::Zero();
+    XYZToRGB(xyz.m_Data, rgb.m_Data);
+    return FromRGB(rgb, type);
+}
 
 exrEND_NAMESPACE
+

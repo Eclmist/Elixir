@@ -20,27 +20,33 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class BxDF
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+
+    enum BxDFType
+    {
+        BSDF_REFLECTION   = 1 << 0,
+        BSDF_TRANSMISSION = 1 << 1,
+        BSDF_DIFFUSE      = 1 << 2,
+        BSDF_GLOSSY       = 1 << 3,
+        BSDF_SPECULAR     = 1 << 4,
+        BSDF_ALL          = BSDF_REFLECTION | BSDF_TRANSMISSION | BSDF_DIFFUSE | BSDF_GLOSSY | BSDF_SPECULAR,
+    };
+
+    BxDF(BxDFType type)
+        : m_BxDFType(type) {};
+
+    exrBool MatchesFlags(BxDFType t) const { return m_BxDFType == t; };
+
+    virtual exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const = 0;
+	// virtual exrSpectrum EvaluateDelta(const exrVector3& wo, exrVector3& wi, BxDFType& thisType) const;
+private:
+    BxDFType m_BxDFType;
 };
 
 exrEND_NAMESPACE

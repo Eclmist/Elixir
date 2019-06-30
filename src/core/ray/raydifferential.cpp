@@ -18,29 +18,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "raydifferential.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+void RayDifferential::ScaleDifferentials(exrFloat scale)
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
-};
+    m_RxOrigin = m_Origin + (m_RxOrigin - m_Origin) * scale;
+    m_RyOrigin = m_Origin + (m_RyOrigin - m_Origin) * scale;
+    m_RxDirection = m_Direction + (m_RxDirection - m_Direction) * scale;
+    m_RyDirection = m_Direction + (m_RyDirection - m_Direction) * scale;
+}
 
 exrEND_NAMESPACE

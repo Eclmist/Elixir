@@ -20,27 +20,20 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "pointlight.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+exrSpectrum PointLight::SampleLi(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
-};
+    wi = (m_Point - interaction.m_Point).Normalized();
+    pdf = 1.0f;
+    return m_Intensity / DistanceSquared(m_Point, interaction.m_Point);
+}
+
+exrSpectrum PointLight::Power() const
+{
+    return m_Intensity * 4 * EXR_M_PI;
+}
 
 exrEND_NAMESPACE

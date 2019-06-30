@@ -20,27 +20,22 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "samplerintegrator.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class WittedIntegrator : public SamplerIntegrator
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    WittedIntegrator(std::unique_ptr<Camera>& camera, exrU32 numSamplesPerPixel, exrU32 maxDepth)
+        : SamplerIntegrator(camera, numSamplesPerPixel)
+        , m_MaxDepth(maxDepth) {};
+
+    void Render(const Scene& scene) override;
+    exrSpectrum Li(const RayDifferential& ray, const Scene& scene, exrU32 depth) const override;
+
+private:
+    exrU32 m_MaxDepth;
 };
 
 exrEND_NAMESPACE

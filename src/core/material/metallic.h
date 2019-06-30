@@ -20,27 +20,33 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "material.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class Metallic : public Material
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    Metallic(const exrVector3& a, const exrVector3& r)
+        : m_Albedo(a)
+        , m_Roughness(r) {};
+
+    Metallic(const Metallic& copy)
+        : m_Albedo(copy.m_Albedo)
+        , m_Roughness(copy.m_Roughness) {};
+
+    virtual exrBool Scatter(const Ray& incomingRay, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const override
+    {
+        exrVector3 reflected = Reflect(incomingRay.m_Direction.Normalized(), hitInfo.m_Normal);
+        scattered = Ray(hitInfo.m_Point, reflected + m_Roughness * Random::RandomInUnitSphere());
+        attenuation = m_Albedo;
+
+        return (Dot(scattered.m_Direction, hitInfo.m_Normal) > 0);
+    };
+
+public:
+    exrVector3 m_Albedo;
+    exrVector3 m_Roughness;
 };
 
 exrEND_NAMESPACE

@@ -20,27 +20,30 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "material.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+class Lambertian : public Material
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+public:
+    Lambertian(const exrVector3& a)
+        : m_Albedo(a) {};
+
+    Lambertian(const Lambertian& copy)
+        : m_Albedo(copy.m_Albedo) {};
+
+    virtual exrBool Scatter(const Ray& incomingRay, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const override
+    {
+        // This implicitly samples a cosine weighted hemisphere around the normals
+        exrPoint3 target = hitInfo.m_Point + hitInfo.m_Normal + Random::UniformSampleSphere(Random::Uniform01Point2());
+        scattered = Ray(hitInfo.m_Point, target - hitInfo.m_Point);
+        attenuation = m_Albedo;
+        return true;
+    };
+
+public:
+    exrVector3 m_Albedo;
 };
 
 exrEND_NAMESPACE

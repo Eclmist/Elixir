@@ -20,27 +20,41 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "system/profiling/profiler.h"
-
-#include "math/math.h"
-#include "math/conversionutils.h"
-
-#include "core/interaction/surfaceinteraction.h"
-#include "core/sampling/random.h"
-#include "core/spectrum/sampledspectrum.h"
-#include "core/spectrum/rgbspectrum.h"
-#include "core/ray/raydifferential.h"
+#include "geometricprimitive.h"
 
 exrBEGIN_NAMESPACE
 
-struct ElixirOptions
+AABB GeometricPrimitive::GetBoundingVolume() const
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
-};
+    return m_Shape->GetBoundingVolume();
+}
+
+exrBool GeometricPrimitive::Intersect(const Ray& ray, SurfaceInteraction* interaction) const
+{
+    exrFloat tHit;
+
+    if (!m_Shape->Intersect(ray, tHit, interaction)) return false;
+
+    ray.m_TMax = tHit;
+    interaction->m_Primitive = this;
+
+    return true;
+}
+
+exrBool GeometricPrimitive::HasIntersect(const Ray& r, exrFloat& tHit) const
+{
+    return m_Shape->HasIntersect(r, tHit);
+}
+
+AreaLight* GeometricPrimitive::GetAreaLight() const
+{
+    return m_AreaLight.get();
+}
+
+const Material* GeometricPrimitive::GetMaterial() const
+{
+    return m_Material.get();
+}
 
 exrEND_NAMESPACE
+
