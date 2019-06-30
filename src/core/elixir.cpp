@@ -43,13 +43,13 @@ void PrintUsage(const exrChar* msg = nullptr)
     cout << "For documentations, please refer to <http://docs.elixir.moe/>" << endl;
 }
 
-exrU32 main(exrU32 argc, exrChar *argv[])
+int main(int argc, exrChar *argv[])
 {
     ElixirOptions options;
     std::vector<exrString> filenames;
 
     // Process command-line arguments
-    for (exrU32 i = 1; i < argc; ++i)
+    for (exrS32 i = 1; i < argc; ++i)
     {
         if (!strcmp(argv[i], "--numthreads") || !strcmp(argv[i], "-t"))
             options.numThreads = atoi(argv[++i]);

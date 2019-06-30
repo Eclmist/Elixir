@@ -334,7 +334,7 @@ template <exrU32 N>
 exrBool Spectrum<N>::HasNaNs() const
 {
     for (exrU32 i = 0; i < N; ++i)
-        if (std::isnan(m_Wavelengths[i])) return true;
+        if (isnan(m_Wavelengths[i])) return true;
 
     return false;
 }

@@ -161,7 +161,7 @@ SampledSpectrum SampledSpectrum::FromRGB(const exrVector3& rgb, SpectrumType typ
         }
         break;
     default:
-        throw std::exception("Invalid Spectrum Type!");
+        throw "Invalid Spectrum Type!";
     }
 
     return res;

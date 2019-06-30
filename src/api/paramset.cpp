@@ -172,7 +172,7 @@ exrS32 ParamSet::FindFirstS32(const exrString& key, exrS32 d) const
     FIND_FIRST_ITEM(exrS32, m_S32s, key, d)
 }
 
-exrFloat ParamSet::FindFirstexrFloat(const exrString& key, exrFloat d) const
+exrFloat ParamSet::FindFirstFloat(const exrString& key, exrFloat d) const
 {
     FIND_FIRST_ITEM(exrFloat, m_exrFloats, key, d)
 }
@@ -231,7 +231,7 @@ exrS32* ParamSet::FindS32(const exrString& key, exrU32* num) const
     FIND_ITEM(exrS32, m_S32s, key, num)
 }
 
-exrFloat* ParamSet::FindexrFloat(const exrString& key, exrU32* num) const
+exrFloat* ParamSet::FindFloat(const exrString& key, exrU32* num) const
 {
     FIND_ITEM(exrFloat, m_exrFloats, key, num)
 }

@@ -70,7 +70,7 @@ public:
     exrBool     FindFirstBool       (const exrString& key, exrBool     d) const;
     exrU32      FindFirstU32        (const exrString& key, exrU32      d) const;
     exrS32      FindFirstS32        (const exrString& key, exrS32      d) const;
-    exrFloat    FindFirstexrFloat      (const exrString& key, exrFloat    d) const;
+    exrFloat    FindFirstFloat      (const exrString& key, exrFloat    d) const;
     exrString   FindFirstString     (const exrString& key, exrString   d) const;
     exrPoint2   FindFirstPoint2     (const exrString& key, exrPoint2   d) const;
     exrPoint3   FindFirstPoint3     (const exrString& key, exrPoint3   d) const;
@@ -80,7 +80,7 @@ public:
     exrBool*    FindBool            (const exrString& key, exrU32*   num) const;
     exrU32*     FindU32             (const exrString& key, exrU32*   num) const;
     exrS32*     FindS32             (const exrString& key, exrU32*   num) const;
-    exrFloat*   FindexrFloat           (const exrString& key, exrU32*   num) const;
+    exrFloat*   FindFloat           (const exrString& key, exrU32*   num) const;
     exrString*  FindString          (const exrString& key, exrU32*   num) const;
     exrPoint2*  FindPoint2          (const exrString& key, exrU32*   num) const;
     exrPoint3*  FindPoint3          (const exrString& key, exrU32*   num) const;

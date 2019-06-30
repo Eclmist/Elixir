@@ -32,6 +32,7 @@
 #include <memory>
 #include <mutex>
 #include <vector>
+#include <stdexcept>
 
 #include "system/config.h"
 #include "system/error.h"

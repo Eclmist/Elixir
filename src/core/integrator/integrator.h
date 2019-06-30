@@ -29,7 +29,6 @@ class Scene;
 class Integrator
 {
 public:
-    virtual ~Integrator();
     virtual void Render(const Scene& scene) = 0;
 };
 

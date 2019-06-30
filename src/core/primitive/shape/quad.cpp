@@ -42,6 +42,11 @@ exrBool Quad::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* inte
     return true;
 }
 
+exrBool Quad::HasIntersect(const Ray& ray, exrFloat& tHit) const
+{
+    throw "Not yet implemented";
+}
+
 Interaction Quad::Sample(const exrPoint2& u) const
 {
     Interaction it;

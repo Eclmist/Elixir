@@ -73,9 +73,9 @@ void Scene::InitAccelerator()
             m_Accelerator = std::make_unique<BVHAccelerator>(primitivePtrs);
             break;
         case Accelerator::ACCELERATORTYPE_KDTREE:
-            throw std::exception("KDTree is not yet implemented!");
+            throw "KDTree is not yet implemented!";
         default:
-            throw std::exception("Invalid accelerator type!");
+            throw "Invalid accelerator type!";
         }
     }
 }
