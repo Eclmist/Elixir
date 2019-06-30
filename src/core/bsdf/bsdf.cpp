@@ -39,4 +39,37 @@ exrU32 BSDF::GetComponentCount(BxDF::BxDFType flags) const
     return res;
 }
 
+exrSpectrum BSDF::Evaluate(const exrVector3& worldWo, const exrVector3& worldWi, BxDF::BxDFType flags) const
+{
+    exrVector3 wi = WorldToLocal(worldWi);
+    exrVector3 wo = WorldToLocal(worldWo);
+
+    exrBool reflect = ((Dot(worldWi, m_GeometricNormal) * Dot(worldWo, m_GeometricNormal)) > 0);
+    exrSpectrum res;
+
+    for (exrU32 i = 0; i < m_NumBxDF; ++i)
+    {
+        if (m_BxDFs[i]->MatchesFlags(flags) && (reflect && m_BxDFs[i]->MatchesFlags(BxDF::BSDF_REFLECTION)) &&
+            (!reflect && m_BxDFs[i]->MatchesFlags(BxDF::BSDF_TRANSMISSION)))
+        {
+            res += m_BxDFs[i]->Evaluate(wo, wi);
+        }
+    }
+
+    return res;
+}
+
+exrVector3 BSDF::WorldToLocal(const exrVector3& v) const
+{
+    return exrVector3(Dot(v, m_ShadingTangent2), Dot(v, m_ShadingTangent), Dot(v, m_ShadingNormal));
+}
+
+exrVector3 BSDF::LocalToWorld(const exrVector3& v) const
+{
+    return exrVector3(m_ShadingTangent2.x * v.x + m_ShadingTangent.x * v.y + m_ShadingNormal.x * v.z,
+                      m_ShadingTangent2.y * v.x + m_ShadingTangent.y * v.y + m_ShadingNormal.y * v.z,
+                      m_ShadingTangent2.z * v.x + m_ShadingTangent.z * v.y + m_ShadingNormal.z * v.z);
+}
+
+
 exrEND_NAMESPACE

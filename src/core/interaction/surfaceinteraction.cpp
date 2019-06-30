@@ -25,12 +25,33 @@
 
 exrBEGIN_NAMESPACE
 
-exrVector3 SurfaceInteraction::GetEmission(const exrVector3& wo) const
+SurfaceInteraction::SurfaceInteraction(const exrPoint3& point, const exrVector3& wo,
+    const exrVector3& dpdu, const exrVector3& dpdv,
+    const exrVector3& dndu, const exrVector3& dndv, const Shape* shape)
+    : Interaction(point, (Cross(dpdu, dpdv)).Normalized(), wo)
+    , m_Dpdu(dpdu)
+    , m_Dpdv(dpdv)
+    , m_Dndu(dndu)
+    , m_Dndv(dndv)
+    , m_Shape(shape)
+    , m_BSDF(nullptr)
 {
-    // TODO: fix this
-    return exrVector3::Zero();
-}
+    m_ShadingInfo.m_Normal = m_Normal;
+    m_ShadingInfo.m_Dpdu = dpdu;
+    m_ShadingInfo.m_Dpdv = dpdv;
+    m_ShadingInfo.m_Dndu = dndu;
+    m_ShadingInfo.m_Dndv = dndv;
+};
 
+void SurfaceInteraction::SetShadingGeometry(const exrVector3& sDpdu, const exrVector3& sDpdv,
+    const exrVector3& sDndu, const exrVector3& sDndv)
+{
+    m_ShadingInfo.m_Normal = (Cross(sDpdu, sDpdv)).Normalized();
+    m_ShadingInfo.m_Dpdu = sDpdu;
+    m_ShadingInfo.m_Dpdv = sDpdv;
+    m_ShadingInfo.m_Dndu = sDndu;
+    m_ShadingInfo.m_Dndv = sDndv;
+}
 exrEND_NAMESPACE
 
 

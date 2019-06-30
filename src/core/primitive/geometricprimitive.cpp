@@ -36,7 +36,7 @@ exrBool GeometricPrimitive::Intersect(const Ray& ray, SurfaceInteraction* intera
     if (!m_Shape->Intersect(ray, tHit, interaction)) return false;
 
     ray.m_TMax = tHit;
-    interaction->m_Primitive = this;
+    interaction->m_Shape = m_Shape.get();
 
     return true;
 }

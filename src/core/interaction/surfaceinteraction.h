@@ -24,26 +24,40 @@
 
 exrBEGIN_NAMESPACE
 
-class Primitive;
+class Shape;
 class BSDF;
 
 class SurfaceInteraction : public Interaction
 {
 public:
-    SurfaceInteraction() {};
-    SurfaceInteraction(const exrPoint3& point, const exrVector3& normal, const exrVector3& wo, const Primitive* primitive)
-        : Interaction(point, normal, wo)
-        , m_Primitive(primitive)
-        , m_BSDF(nullptr) {};
 
-    exrVector3 GetEmission(const exrVector3& wo) const;
+    struct ShadingInfo
+    {
+        exrVector3 m_Normal;
+        exrVector3 m_Dpdu, m_Dpdv;
+        exrVector3 m_Dndu, m_Dndv;
+    };
+
+    SurfaceInteraction() {};
+    SurfaceInteraction(const exrPoint3& point, const exrVector3& wo,
+        const exrVector3& dpdu, const exrVector3& dpdv,
+        const exrVector3& dndu, const exrVector3& dndv, const Shape* shape);
+
+    void SetShadingGeometry(const exrVector3& sDpdu, const exrVector3& sDpdv,
+        const exrVector3& sDndu, const exrVector3& sDndv);
 
 public:
     //! The BRDF of the surface
     BSDF* m_BSDF = nullptr;
 
-    //! A reference to the primitive that the interaction lies on
-    const Primitive* m_Primitive = nullptr;
+    // Partial derivatives that describe the surface
+    exrVector3 m_Dpdu, m_Dpdv;
+    exrVector3 m_Dndu, m_Dndv;
+
+    //! A reference to the shape that the interaction lies on
+    const Shape* m_Shape = nullptr;
+
+    ShadingInfo m_ShadingInfo;
 };
 
 exrEND_NAMESPACE

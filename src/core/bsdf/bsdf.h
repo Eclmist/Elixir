@@ -32,18 +32,27 @@ class BSDF
 public:
     BSDF(const SurfaceInteraction& si, exrFloat ior = 1)
         : m_ReflectiveIndex(ior)
-        , m_ShadingNormal(si.m_Normal)
-        , m_NumBxDF(0) {};
+        , m_ShadingNormal(si.m_ShadingInfo.m_Normal)
+        , m_GeometricNormal(si.m_Normal)
+        , m_ShadingTangent((si.m_ShadingInfo.m_Dpdu).Normalized())
+        , m_ShadingTangent2(Cross(m_ShadingNormal, m_ShadingTangent)) {};
 
     void AddComponent(const BxDF* b);
     exrU32 GetComponentCount(BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
+
+    exrSpectrum Evaluate(const exrVector3& worldWo, const exrVector3& worldWi, BxDF::BxDFType flags) const;
+
+    exrVector3 WorldToLocal(const exrVector3& v) const;
+    exrVector3 LocalToWorld(const exrVector3& v) const;
 
 public:
     const exrFloat m_ReflectiveIndex;
 
 private:
-    const exrVector3 m_ShadingNormal;
-    exrU32 m_NumBxDF;
+    const exrVector3 m_ShadingNormal, m_GeometricNormal;
+    const exrVector3 m_ShadingTangent, m_ShadingTangent2;
+
+    exrU32 m_NumBxDF = 0;
     const BxDF* m_BxDFs[MaxBxDFs];
 };
 
