@@ -26,9 +26,48 @@ void SamplerIntegrator::Render(const Scene& scene)
 {
     Preprocess(scene);
 
+    Film* film = m_Camera->m_Film.get();
 
+    // Compute number of tiles
+    Point2<exrU32> maxResolution = film->m_Resolution;
+    Point2<exrU32> numTiles((maxResolution.x + TileSize - 1) / TileSize,
+                            (maxResolution.y + TileSize - 1) / TileSize);
 
-    m_Camera->m_Film->WriteImage(1.0f / m_NumSamplesPerPixel);
+    exrU32 totalNumTiles = numTiles.x * numTiles.y;
+
+    // Loop in terms of x,y tiles so this can become async in the future
+    for (exrU32 i = 0; i < totalNumTiles; ++i)
+    {
+        exrU32 tileX = i % numTiles.x;
+        exrU32 tileY = exrU32(i / exrFloat(numTiles.x));
+
+        // Compute bounds for tile
+        Point2<exrU32> tileMin(tileX * TileSize, tileY * TileSize);
+        Point2<exrU32> tileMax(tileX * TileSize + TileSize, tileY * TileSize + TileSize);
+
+        // Foreach pixel, shade
+        for (exrU32 x = 0; x < TileSize; ++x)
+        {
+            for (exrU32 y = 0; y < TileSize; ++y)
+            {
+                // Foreach sample
+                for (exrU32 n = 0; n < m_NumSamplesPerPixel; ++n)
+                {
+                    exrFloat u = exrFloat(tileMin.x + x + Random::Uniform01()) / exrFloat(maxResolution.x);
+                    exrFloat v = exrFloat(tileMin.y + y + Random::Uniform01()) / exrFloat(maxResolution.y);
+                    RayDifferential viewRay = m_Camera->GetViewRay(u, v);
+                    
+                    exrSpectrum L(0.0f);
+                    L += Li(viewRay, scene);
+
+                    film->AddSplat(Point2<exrU32>(tileMin.x + x, tileMin.y + y), L);
+                }
+            }
+        }
+
+    }
+
+    film->WriteImage(1.0f / m_NumSamplesPerPixel);
 }
 
 

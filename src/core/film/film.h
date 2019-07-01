@@ -28,29 +28,26 @@ exrBEGIN_NAMESPACE
 class Film
 {
 public:
-    Film(const Point2<exrU32>& resolution, const exrString& filename, exrBool stampFile = true)
-        : m_Resolution(resolution)
-        , m_FileName(filename)
-        , m_StampFile(stampFile) {}
+    Film(const Point2<exrU32>& resolution, const exrString& filename, exrBool stampFile = true);
 
-    void AddSplat(const exrPoint2& point, const exrVector3& value);
+    void AddSplat(const Point2<exrU32>& point, const exrSpectrum& value);
     void WriteImage(exrFloat splatScale);
 
+public:
+    Point2<exrU32> m_Resolution;
+    exrString m_FileName;
 
 private:
     struct Pixel
     {
         exrFloat m_FilterWeightSum = 0;
-        AtomicFloat m_SplatRGB[3];
+        AtomicFloat m_SplatXYZ[3];
     };
 
     Pixel& GetPixel(const Point2<exrU32>& point);
 
 private:
     std::unique_ptr<Pixel[]> m_Pixels;
-
-    Point2<exrU32> m_Resolution;
-    exrString m_FileName;
     exrBool m_StampFile;
 };
 

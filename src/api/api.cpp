@@ -101,8 +101,14 @@ void ElixirSetupDemo()
     exrFloat aperture = 0.05f;
     CurrentRenderJob->m_Camera = std::make_unique<Camera>(position, lookat, exrVector3::Up(), fov, aspect, aperture, focusDist);
     CurrentRenderJob->m_Scene = std::make_unique<Scene>();
-    CurrentRenderJob->m_Integrator = std::make_unique<WittedIntegrator>(CurrentRenderJob->m_Camera, 32, 8);
 
+    // Scene objects to be added here.
+
+    CurrentRenderJob->m_Scene->InitAccelerator();
+
+    const exrU32 numSamples = 4;
+    const exrU32 numBounces = 4;
+    CurrentRenderJob->m_Integrator = std::make_unique<WittedIntegrator>(CurrentRenderJob->m_Camera, numSamples, numBounces);
     CurrentAPIState = APIState::APISTATE_SCENE;
     // Setup scene..
 }
@@ -110,6 +116,7 @@ void ElixirSetupDemo()
 void ElixirRender()
 {
     exrAssert(CurrentAPIState == APIState::APISTATE_SCENE, "ElixirRendering() before scene has been described!");
+    exrAssert(!CurrentRenderJob->m_Scene->m_SceneChanged, "Did we forget to call InitAccelerator()?");
     CurrentAPIState = APIState::APISTATE_RENDERING;
 
     // Do render/write file

@@ -27,12 +27,21 @@
 
 exrBEGIN_NAMESPACE
 
-void Film::AddSplat(const exrPoint2& point, const exrVector3& value)
+Film::Film(const Point2<exrU32>& resolution, const exrString& filename, exrBool stampFile)
+    : m_Resolution(resolution)
+    , m_FileName(filename)
+    , m_StampFile(stampFile)
 {
-    Pixel& pixel = GetPixel(Point2<exrU32>((exrU32)point.x, (exrU32)point.y));
+    m_Pixels = std::make_unique<Pixel[]>(m_Resolution.x * m_Resolution.y);
+}
+
+void Film::AddSplat(const Point2<exrU32>& point, const exrSpectrum& value)
+{
+    Pixel& pixel = GetPixel(point);
+    exrVector3 xyz = value.ToXYZ();
 
     for (exrU32 i = 0; i < 3; ++i)
-        pixel.m_SplatRGB[i].Add(value[i]);
+        pixel.m_SplatXYZ[i].Add(xyz[i]);
 }
 
 void Film::WriteImage(exrFloat splatScale)
@@ -45,18 +54,17 @@ void Film::WriteImage(exrFloat splatScale)
     buffer.resize(buffer.size() + m_Resolution.x * m_Resolution.y * sizeof(exrByte) * 3);
     memcpy(buffer.data(), header.c_str(), strlen(header.c_str()));
 
-    Point2<exrU32> point;
     for (exrU32 y = 0; y < m_Resolution.y; ++y)
     {
         for (exrU32 x = 0; x < m_Resolution.x; ++x)
         {
-            point.x = x;
-            point.y = y;
-            Pixel& pixel = GetPixel(point);
+            Pixel& pixel = GetPixel(Point2<exrU32>(x, y));
+            exrVector3 xyz(pixel.m_SplatXYZ[0], pixel.m_SplatXYZ[1], pixel.m_SplatXYZ[2]);
+            exrVector3 rgb = exrSpectrum::FromXYZ(xyz, SpectrumType::llluminance).ToRGB();
 
-            exrFloat r = exrSaturate(pixel.m_SplatRGB[0] / splatScale);
-            exrFloat g = exrSaturate(pixel.m_SplatRGB[1] / splatScale);
-            exrFloat b = exrSaturate(pixel.m_SplatRGB[2] / splatScale);
+            exrFloat r = exrSaturate(rgb.r * splatScale);
+            exrFloat g = exrSaturate(rgb.g * splatScale);
+            exrFloat b = exrSaturate(rgb.b * splatScale);
             
             // Correct gamma and to 0 - 256 (exclusive) range
             // 256 because PPM takes ranges up to 256 exclusive
@@ -71,7 +79,7 @@ void Film::WriteImage(exrFloat splatScale)
         }
     }
 
-    // hardcoded write to PNG for now
+    // hard-coded write to PNG for now
     // TODO: template this
     exrS32 x, y, n;
     stbi_uc* ppmOut = stbi_load_from_memory(buffer.data(), static_cast<int>(buffer.size()), &x, &y, &n, 0);
@@ -81,6 +89,10 @@ void Film::WriteImage(exrFloat splatScale)
     filename += ".png";
 
     stbi_write_png(filename.c_str(), m_Resolution.x, m_Resolution.y, 3, ppmOut, m_Resolution.x * 3);
+
+#ifdef EXR_PLATFORM_WIN
+    system(filename.c_str());
+#endif
 }
 
 Film::Pixel& Film::GetPixel(const Point2<exrU32>& point)

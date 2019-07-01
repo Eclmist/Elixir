@@ -27,7 +27,8 @@ exrBEGIN_NAMESPACE
 Scene::Scene(Accelerator::AcceleratorType accelType)
     : m_AcceleratorType(accelType) { }
 
-Scene::Scene(std::vector<std::unique_ptr<Primitive>>& primitives, std::vector<std::unique_ptr<Light>>& lights, Accelerator::AcceleratorType accelType)
+Scene::Scene(std::vector<std::unique_ptr<Primitive>>& primitives,std::vector<std::unique_ptr<Light>>& lights,
+    Accelerator::AcceleratorType accelType)
     : m_AcceleratorType(accelType)
 {
     for (exrU32 i = 0; i < primitives.size(); ++i)
@@ -45,6 +46,8 @@ void Scene::AddPrimitive(std::unique_ptr<Primitive>& primitive)
     AreaLight* primitiveLight = primitive->GetAreaLight();
     if (primitiveLight) 
         AddLight(*primitiveLight);
+
+    m_SceneChanged = true;
 }
 
 void Scene::AddLight(std::unique_ptr<Light>& light)
@@ -62,34 +65,35 @@ void Scene::AddLight(Light& light)
 
 void Scene::InitAccelerator()
 {
-    if (m_Accelerator == nullptr)
+    m_SceneChanged = false;
+
+    std::vector<Primitive*> primitivePtrs;
+
+    // shallow copy pointer values to be used by bvh accel
+    for (exrU32 i = 0; i < m_Primitives.size(); i++)
+        primitivePtrs.push_back(m_Primitives[i].get());
+
+    switch (m_AcceleratorType)
     {
-        std::vector<Primitive*> primitivePtrs;
-
-        // shallow copy pointer values to be used by bvh accel
-        for (exrU32 i = 0; i < m_Primitives.size(); i++)
-            primitivePtrs.push_back(m_Primitives[i].get());
-
-        switch (m_AcceleratorType)
-        {
-        case Accelerator::ACCELERATORTYPE_BVH:
-            m_Accelerator = std::make_unique<BVHAccelerator>(primitivePtrs);
-            break;
-        case Accelerator::ACCELERATORTYPE_KDTREE:
-            throw "KDTree is not yet implemented!";
-        default:
-            throw "Invalid accelerator type!";
-        }
+    case Accelerator::ACCELERATORTYPE_BVH:
+        m_Accelerator = std::make_unique<BVHAccelerator>(primitivePtrs);
+        break;
+    case Accelerator::ACCELERATORTYPE_KDTREE:
+        throw "KDTree is not yet implemented!";
+    default:
+        throw "Invalid accelerator type!";
     }
 }
 
 exrBool Scene::Intersect(const Ray& ray, SurfaceInteraction* interaction) const
 {
+    exrAssert(m_Accelerator, "Scene accelerator has not yet been initialized!");
     return m_Accelerator->Intersect(ray, interaction);
 }
 
 exrBool Scene::HasIntersect(const Ray& ray) const
 {
+    exrAssert(m_Accelerator, "Scene accelerator has not yet been initialized!");
     return m_Accelerator->HasIntersect(ray);
 }
 

@@ -34,7 +34,6 @@ BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const Spl
     exrProfile("Building BVH Accelerator");
 
     const auto numObjects = objects.size();
-    exrAssert(numObjects > 0, "Attempting to create a BVH with zero objects! This is illegal.");
 
     // Create root node
     m_RootNode = std::make_unique<BVHNode>();

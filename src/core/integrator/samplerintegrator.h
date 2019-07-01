@@ -25,6 +25,8 @@
 
 exrBEGIN_NAMESPACE
 
+static constexpr exrU32 TileSize = 16;
+
 class SamplerIntegrator : public Integrator
 {
 public:
@@ -34,7 +36,7 @@ public:
 
     virtual void Render(const Scene& scene) override;
     virtual void Preprocess(const Scene& scene) {};
-    virtual exrSpectrum Li(const RayDifferential& ray, const Scene& scene, exrU32 depth) const = 0;
+    virtual exrSpectrum Li(const RayDifferential& ray, const Scene& scene, exrU32 depth = 0) const = 0;
 
 private:
     std::unique_ptr<Camera> m_Camera;

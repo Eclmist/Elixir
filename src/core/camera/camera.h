@@ -72,19 +72,19 @@ public:
         m_VerticalStep = 2.0f * halfHeight * focusDist * v;
 
         // TODO: replace these with values from renderjob
-        m_Film = std::make_unique<Film>(Point2<exrU32>(500, 500), "test", true);
+        m_Film = std::make_unique<Film>(Point2<exrU32>(512, 512), "test", true);
     }
 
     //! @brief Creates a view ray based from a uv coordinate
     //!
     //! @param s                The u coordinate of the ray in screen space
     //! @param t                The v coordinate of the ray in screen space
-    Ray GetViewRay(exrFloat s, exrFloat t) 
+    RayDifferential GetViewRay(exrFloat s, exrFloat t) 
     { 
         exrPoint2 randomDiscOffset = Random::ConcentricSampleDisk(Random::Uniform01Point2());
         exrVector3 rd = lensRadius * exrVector3(randomDiscOffset.x, randomDiscOffset.y, 0);
         exrVector3 offset = u * rd.x + v * rd.y;
-        return Ray(m_Position + offset, m_Min + s * m_HorizontalStep + t * m_VerticalStep - m_Position - offset); 
+        return RayDifferential(m_Position + offset, m_Min + s * m_HorizontalStep + t * m_VerticalStep - m_Position - offset); 
     }
 
     exrPoint3 m_Position;

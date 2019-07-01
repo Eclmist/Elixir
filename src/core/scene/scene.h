@@ -37,7 +37,8 @@ public:
 
     Scene(Accelerator::AcceleratorType accelType = Accelerator::AcceleratorType::ACCELERATORTYPE_BVH);
 
-    Scene(std::vector<std::unique_ptr<Primitive>>& primitives, std::vector<std::unique_ptr<Light>>& lights, Accelerator::AcceleratorType accelType);
+    Scene(std::vector<std::unique_ptr<Primitive>>& primitives, std::vector<std::unique_ptr<Light>>& lights,
+        Accelerator::AcceleratorType accelType);
 
     //! @brief Adds a primitive to the scene
     //! 
@@ -94,6 +95,9 @@ public:
     //! A collection of pointers that points to lights in the scene
     //! ALL lights, including those owned by primitives
     std::vector<Light*> m_Lights;
+
+    //! A flag that can remind us to re-init the accelerator after scene updates
+    exrBool m_SceneChanged = true;
 
 private:
     void AddLight(Light& light);

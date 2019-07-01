@@ -25,25 +25,25 @@ exrBEGIN_NAMESPACE
 class AtomicFloat
 {
 public:
-    explicit AtomicFloat(exrFloat v = 0) { bits = FloatToBits(v); }
-    operator exrFloat() const { return BitsToFloat(bits); }
+    explicit AtomicFloat(exrFloat v = 0) { m_Bits = FloatToBits(v); }
+    operator exrFloat() const { return BitsToFloat(m_Bits); }
     exrFloat operator=(exrFloat v)
     {
-        bits = FloatToBits(v);
+        m_Bits = FloatToBits(v);
         return v;
     }
     void Add(exrFloat v)
     {
-        exrU32 oldBits = bits, newBits;
+        exrU32 oldBits = m_Bits, newBits;
 
         do
         {
             newBits = FloatToBits(BitsToFloat(oldBits) + v);
-        } while (!bits.compare_exchange_weak(oldBits, newBits));
+        } while (!m_Bits.compare_exchange_weak(oldBits, newBits));
     }
 
 private:
-    std::atomic<exrU32> bits;
+    std::atomic<exrU32> m_Bits;
 };
 
 
