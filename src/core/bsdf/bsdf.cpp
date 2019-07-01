@@ -61,14 +61,14 @@ exrSpectrum BSDF::Evaluate(const exrVector3& worldWo, const exrVector3& worldWi,
 
 exrVector3 BSDF::WorldToLocal(const exrVector3& v) const
 {
-    return exrVector3(Dot(v, m_ShadingTangent2), Dot(v, m_ShadingTangent), Dot(v, m_ShadingNormal));
+    return exrVector3(Dot(v, m_ShadingBitangent), Dot(v, m_ShadingTangent), Dot(v, m_ShadingNormal));
 }
 
 exrVector3 BSDF::LocalToWorld(const exrVector3& v) const
 {
-    return exrVector3(m_ShadingTangent2.x * v.x + m_ShadingTangent.x * v.y + m_ShadingNormal.x * v.z,
-                      m_ShadingTangent2.y * v.x + m_ShadingTangent.y * v.y + m_ShadingNormal.y * v.z,
-                      m_ShadingTangent2.z * v.x + m_ShadingTangent.z * v.y + m_ShadingNormal.z * v.z);
+    return exrVector3(m_ShadingBitangent.x * v.x + m_ShadingTangent.x * v.y + m_ShadingNormal.x * v.z,
+                      m_ShadingBitangent.y * v.x + m_ShadingTangent.y * v.y + m_ShadingNormal.y * v.z,
+                      m_ShadingBitangent.z * v.x + m_ShadingTangent.z * v.y + m_ShadingNormal.z * v.z);
 }
 
 

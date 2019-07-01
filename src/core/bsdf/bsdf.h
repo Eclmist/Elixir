@@ -35,7 +35,7 @@ public:
         , m_ShadingNormal(si.m_ShadingInfo.m_Normal)
         , m_GeometricNormal(si.m_Normal)
         , m_ShadingTangent((si.m_ShadingInfo.m_Dpdu).Normalized())
-        , m_ShadingTangent2(Cross(m_ShadingNormal, m_ShadingTangent)) {};
+        , m_ShadingBitangent(Cross(m_ShadingNormal, m_ShadingTangent)) {};
 
     void AddComponent(const BxDF* b);
     exrU32 GetComponentCount(BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
@@ -50,7 +50,7 @@ public:
 
 private:
     const exrVector3 m_ShadingNormal, m_GeometricNormal;
-    const exrVector3 m_ShadingTangent, m_ShadingTangent2;
+    const exrVector3 m_ShadingTangent, m_ShadingBitangent;
 
     exrU32 m_NumBxDF = 0;
     const BxDF* m_BxDFs[MaxBxDFs];
