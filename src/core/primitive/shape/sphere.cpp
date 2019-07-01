@@ -22,6 +22,13 @@
 
 exrBEGIN_NAMESPACE
 
+Sphere::Sphere(const Transform& transform, exrFloat radius)
+    : Shape(transform)
+    , m_Radius(radius)
+{
+    ComputeBoundingVolume();
+}
+
 exrBool Sphere::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* hit) const
 {
     Ray localRay = m_Transform.GetInverseMatrix() * ray;

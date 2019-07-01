@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 exrBEGIN_NAMESPACE
 
 Box::Box(const Transform& transform, const exrVector3& scale)
-    : Shape(transform, ComputeBoundingVolume())
+    : Shape(transform)
 {
     // TODO: Implement child quads
 
@@ -37,6 +37,8 @@ Box::Box(const Transform& transform, const exrVector3& scale)
     m_LocalCorners[5] = transformMat * exrPoint3(halfExtent.x, -halfExtent.y, halfExtent.z);
     m_LocalCorners[6] = transformMat * exrPoint3(-halfExtent.x, halfExtent.y, halfExtent.z);
     m_LocalCorners[7] = transformMat * exrPoint3(halfExtent.x, halfExtent.y, halfExtent.z);
+
+    ComputeBoundingVolume();
 }
 
 exrBool Box::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const

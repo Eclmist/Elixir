@@ -34,9 +34,7 @@ public:
     //! @param center           The origin of the sphere in world space
     //! @param radius           The radius of the sphere
     //! @param material         The material of the sphere
-    Sphere(const Transform& transform, exrFloat radius)
-        : Shape(transform, ComputeBoundingVolume())
-        , m_Radius(radius) {};
+    Sphere(const Transform& transform, exrFloat radius);
 
     //! @brief Test the sphere for intersections with a ray
     //! 
