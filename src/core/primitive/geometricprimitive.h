@@ -29,13 +29,13 @@ class AABB;
 class GeometricPrimitive : public Primitive
 {
 public:
-    virtual AABB GetBoundingVolume() const override;
-    virtual exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const override;
-    virtual exrBool HasIntersect(const Ray& r, exrFloat& tHit) const override;
-
+    AABB GetBoundingVolume() const override;
+    exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const override;
+    exrBool HasIntersect(const Ray& r, exrFloat& tHit) const override;
+    void ComputeScatteringFunctions(SurfaceInteraction* interaction) const override;
 public:
-    virtual AreaLight* GetAreaLight() const override;
-    virtual const Material* GetMaterial() const override;
+    AreaLight* GetAreaLight() const override;
+    const Material* GetMaterial() const override;
 
 public:
     std::unique_ptr<Shape> m_Shape;

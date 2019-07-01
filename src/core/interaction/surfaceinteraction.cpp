@@ -22,6 +22,7 @@
 
 #include "surfaceinteraction.h"
 #include "core/primitive/primitive.h"
+#include "core/ray/raydifferential.h"
 
 exrBEGIN_NAMESPACE
 
@@ -52,6 +53,28 @@ void SurfaceInteraction::SetShadingGeometry(const exrVector3& sDpdu, const exrVe
     m_ShadingInfo.m_Dndu = sDndu;
     m_ShadingInfo.m_Dndv = sDndv;
 }
+
+void SurfaceInteraction::ComputeDifferentials(const RayDifferential& ray)
+{
+    if (ray.m_HasDifferentials)
+    {
+        throw "Ray differentials have yet to be implemented!";
+    }
+    else
+    {
+        m_Dudx = 0;
+        m_Dvdx = 0;
+        m_Dudy = 0;
+        m_Dvdy = 0;
+        m_Dpdx = exrVector3::Zero();
+        m_Dpdy = exrVector3::Zero();
+    }
+}
+
+void SurfaceInteraction::ComputeScatteringFunctions(const RayDifferential& ray)
+{
+    ComputeDifferentials(ray);
+    m_Primitive->ComputeScatteringFunctions(this);
+}
+
 exrEND_NAMESPACE
-
-

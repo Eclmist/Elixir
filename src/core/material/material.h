@@ -27,15 +27,7 @@ exrBEGIN_NAMESPACE
 class Material
 {
 public:
-    virtual exrBool Scatter(const Ray& in, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const
-    {
-        return false;
-    };
-
-    virtual exrVector3 Emit(const Ray& in, const Interaction& hitInfo) const
-    {
-        return 0.0f;
-    };
+    virtual void ComputeScatteringFunctions(SurfaceInteraction* si) const = 0;
 };
 
 exrEND_NAMESPACE

@@ -185,15 +185,15 @@ void BVHAccelerator::SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 dept
     exrFloat bestHeuristics = MaxFloat;
 
     // for each axis
-    for (exrU32 axis = 0; axis < 3; axis++)
+    for (exrU32 axis = 0; axis < 3; ++axis)
     {
-        for (exrU32 i = 0; i < splitsPerAxis; i++)
+        for (exrU32 i = 0; i < splitsPerAxis; ++i)
         {
             exrFloat splitValue = exrFloat(i) / exrFloat(splitsPerAxis);
 
             std::vector<Primitive*> leftObjects, rightObjects;
 
-            for (exrU32 n = 0; n < numObjects; n++)
+            for (exrU32 n = 0; n < numObjects; ++n)
             {
                 if ((currentRoot->m_Primitives[n]->GetBoundingVolume().Min()[axis] - currentRoot->m_BoundingVolume.Min()[axis]) / currentRoot->m_BoundingVolume.GetExtents()[axis] < splitValue)
                 {

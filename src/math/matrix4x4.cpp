@@ -32,7 +32,7 @@ Matrix4x4::Matrix4x4()
 
 Matrix4x4::Matrix4x4(const exrFloat data[16])
 {
-    for (exrU32 i = 0; i < 16; i++)
+    for (exrU32 i = 0; i < 16; ++i)
     {
         m_Data[i] = data[i];
     }
@@ -52,9 +52,9 @@ Matrix4x4::Matrix4x4(
 
 Matrix4x4::Matrix4x4(const exrFloat data[4][4])
 {
-    for (exrU32 s = 0; s < 4; s++)
+    for (exrU32 s = 0; s < 4; ++s)
     {
-        for (exrU32 t = 0; t < 4; t++)
+        for (exrU32 t = 0; t < 4; ++t)
         {
             m_Data2D[s][t] = data[s][t];
         }
@@ -65,10 +65,10 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4& m) const
 {
     exrFloat data[4][4];
 
-    for (exrU32 i = 0; i < 4; i++) {
-        for (exrU32 j = 0; j < 4; j++) {
+    for (exrU32 i = 0; i < 4; ++i) {
+        for (exrU32 j = 0; j < 4; ++j) {
             exrFloat val = 0;
-            for (exrU32 k = 0; k < 4; k++) {
+            for (exrU32 k = 0; k < 4; ++k) {
                 val += m_Data2D[i][k] * m.m_Data2D[k][j];
             }
             data[i][j] = val;

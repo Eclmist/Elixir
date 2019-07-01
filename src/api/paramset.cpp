@@ -88,7 +88,7 @@ void ParamSet::AddVector3(const exrString& key, const exrVector3* val, exrU32 nu
 }
 
 #define REMOVE_PARAM(item, key)\
-    for (exrU32 i = 0; i < item.size(); i++)\
+    for (exrU32 i = 0; i < item.size(); ++i)\
     {\
         if (item[i]->m_Key == key)\
         {\
@@ -146,7 +146,7 @@ exrBool ParamSet::RemoveVector3(const exrString& key)
 #undef REMOVE_PARAM
 
 #define FIND_FIRST_ITEM(T, item, key, d)\
-    for (exrU32 i = 0; i < item.size(); i++)\
+    for (exrU32 i = 0; i < item.size(); ++i)\
     {\
         if (item[i]->m_Key == key)\
         {\
@@ -205,7 +205,7 @@ exrVector3 ParamSet::FindFirstVector3(const exrString& key, exrVector3 d) const
 #undef FIND_FIRST_ITEM
 
 #define FIND_ITEM(T, item, key, num)\
-    for (exrU32 i = 0; i < item.size(); i++)\
+    for (exrU32 i = 0; i < item.size(); ++i)\
     {\
         if (item[i]->m_Key == key)\
         {\

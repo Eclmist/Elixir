@@ -41,7 +41,7 @@ public:
 
     void ScaleDifferentials(exrFloat scale);
 
-private:
+public:
     exrBool m_HasDifferentials;
     exrPoint3 m_RxOrigin;
     exrPoint3 m_RyOrigin;

@@ -70,7 +70,7 @@ void Scene::InitAccelerator()
     std::vector<Primitive*> primitivePtrs;
 
     // shallow copy pointer values to be used by bvh accel
-    for (exrU32 i = 0; i < m_Primitives.size(); i++)
+    for (exrU32 i = 0; i < m_Primitives.size(); ++i)
         primitivePtrs.push_back(m_Primitives[i].get());
 
     switch (m_AcceleratorType)

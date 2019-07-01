@@ -28,7 +28,7 @@ exrBool AABB::Intersect(const Ray& r) const
     exrFloat tMin = EXR_EPSILON;
     exrFloat tMax = r.m_TMax;
 
-    for (exrU32 i = 0; i < 3; i++)
+    for (exrU32 i = 0; i < 3; ++i)
     {
         exrFloat invD = 1.0f / r.m_Direction[i];
         exrFloat t0 = (m_Min[i] - r.m_Origin[i]) * invD;
@@ -71,7 +71,7 @@ AABB AABB::BoundPrimitives(const std::vector<Primitive*>& primitives)
 
     AABB combinedBv = primitives[0]->GetBoundingVolume();
 
-    for (exrU32 i = 1; i < primitives.size(); i++)
+    for (exrU32 i = 1; i < primitives.size(); ++i)
     {
         combinedBv = Union(combinedBv, primitives[i]->GetBoundingVolume());
     }

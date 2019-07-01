@@ -59,6 +59,9 @@ public:
     //! @return                 True if the there is an intersection
     virtual exrBool HasIntersect(const Ray& r, exrFloat& tHit) const = 0;
 
+    //! Initializes the BSDF and BSSRDF
+    virtual void ComputeScatteringFunctions(SurfaceInteraction* interaction) const = 0;
+
     //! Returns the area light pointer if the primitive is a light source.
     //! Returns nullptr otherwise. Not const because we may call Preprocess()
     virtual AreaLight* GetAreaLight() const = 0;

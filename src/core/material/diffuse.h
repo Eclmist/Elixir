@@ -24,26 +24,21 @@
 
 exrBEGIN_NAMESPACE
 
-class Lambertian : public Material
+class Diffuse : public Material
 {
 public:
-    Lambertian(const exrVector3& a)
-        : m_Albedo(a) {};
+    Diffuse(const exrSpectrum& albedo)
+        : m_Albedo(albedo) {}
 
-    Lambertian(const Lambertian& copy)
-        : m_Albedo(copy.m_Albedo) {};
-
-    virtual exrBool Scatter(const Ray& incomingRay, const Interaction& hitInfo, exrVector3& attenuation, Ray& scattered) const override
+    void ComputeScatteringFunctions(SurfaceInteraction* si) const override
     {
-        // This implicitly samples a cosine weighted hemisphere around the normals
-        exrPoint3 target = hitInfo.m_Point + hitInfo.m_Normal + Random::UniformSampleSphere(Random::Uniform01Point2());
-        scattered = Ray(hitInfo.m_Point, target - hitInfo.m_Point);
-        attenuation = m_Albedo;
-        return true;
-    };
+        // TODO: Fix memory leak here!!! 
+        si->m_BSDF = new BSDF(*si);
+        si->m_BSDF->AddComponent(new Lambert(m_Albedo));
+    }
 
-public:
-    exrVector3 m_Albedo;
+private:
+    exrSpectrum m_Albedo;
 };
 
 exrEND_NAMESPACE

@@ -44,7 +44,7 @@ exrBool Box::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* inter
     exrBool hasIntersect = false;
     Ray localRay = m_Transform.GetInverseMatrix() * ray;
 
-    for (exrU32 i = 0; i < 6; i++)
+    for (exrU32 i = 0; i < 6; ++i)
     {
         if (m_Sides[i]->Intersect(localRay, tHit, interaction))
         {
@@ -62,7 +62,7 @@ AABB Box::ComputeBoundingVolume() const
     exrPoint3 realMin(MaxFloat);
     exrPoint3 realMax(MinFloat);
 
-    for (exrU32 i = 0; i < 8; i++)
+    for (exrU32 i = 0; i < 8; ++i)
     {
         realMin = Min(realMin, m_LocalCorners[i]);
         realMax = Max(realMax, m_LocalCorners[i]);

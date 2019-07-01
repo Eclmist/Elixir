@@ -34,7 +34,8 @@ public:
         : m_Camera(std::move(camera))
         , m_NumSamplesPerPixel(numSamplesPerPixel) {};
 
-    virtual void Render(const Scene& scene) override;
+    void Render(const Scene& scene) override;
+
     virtual void Preprocess(const Scene& scene) {};
     virtual exrSpectrum Li(const RayDifferential& ray, const Scene& scene, exrU32 depth = 0) const = 0;
 
