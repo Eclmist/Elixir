@@ -40,13 +40,12 @@ Scene::Scene(std::vector<std::unique_ptr<Primitive>>& primitives,std::vector<std
 
 void Scene::AddPrimitive(std::unique_ptr<Primitive>& primitive)
 {
-    m_Primitives.push_back(std::move(primitive));
-
     // If primitive is an area light, add it to the lights collection
     AreaLight* primitiveLight = primitive->GetAreaLight();
     if (primitiveLight) 
         AddLight(*primitiveLight);
 
+    m_Primitives.push_back(std::move(primitive));
     m_SceneChanged = true;
 }
 

@@ -50,6 +50,7 @@ exrBool Box::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* inter
         {
             interaction->m_Normal = m_Normals[i];
             interaction->m_Point = m_Transform.GetMatrix() * interaction->m_Point;
+            interaction->m_Shape = this;
             hasIntersect = true;
         }
     }

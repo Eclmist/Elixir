@@ -46,6 +46,7 @@ exrBool Sphere::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* hi
     // Normal vectors on sphere do not have to be transformed as sphere have no rotation and only uniform scale
     hit->m_Normal = static_cast<exrVector3>(localRay(t0)) / m_Radius;
     hit->m_Wo = -ray.m_Direction;
+    hit->m_Shape = this;
 
     return true;
 }

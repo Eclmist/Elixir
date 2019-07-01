@@ -40,7 +40,7 @@ public:
     void AddComponent(const BxDF* b);
     exrU32 GetComponentCount(BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
 
-    exrSpectrum Evaluate(const exrVector3& worldWo, const exrVector3& worldWi, BxDF::BxDFType flags) const;
+    exrSpectrum Evaluate(const exrVector3& worldWo, const exrVector3& worldWi, BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
 
     exrVector3 WorldToLocal(const exrVector3& v) const;
     exrVector3 LocalToWorld(const exrVector3& v) const;

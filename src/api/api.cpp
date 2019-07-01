@@ -25,6 +25,8 @@
 #include "core/camera/camera.h"
 #include "core/integrator/wittedintegrator.h"
 #include "core/integrator/samplerintegrator.h"
+#include "core/material/diffuse.h"
+#include "core/primitive/geometricprimitive.h"
 #include "core/primitive/shape/box.h"
 #include "core/primitive/shape/quad.h"
 #include "core/primitive/shape/sphere.h"
@@ -93,9 +95,9 @@ void ElixirParseFile(const exrString& filename)
 void ElixirSetupDemo()
 {
     exrAssert(CurrentAPIState == APIState::APISTATE_OPTIONS, "ElixirSetupDemo() called before initialization!");
-    exrPoint3 position(0.0f, 2.75f, 10.0f);
-    exrPoint3 lookat(0.0f, 2.75f, 0.0f);
-    exrFloat fov = 40.0f;
+    exrPoint3 position(0.0f, 0.0f, 10.0f);
+    exrPoint3 lookat(0.0f, 0.0, 0.0f);
+    exrFloat fov = 1.0f;
     exrFloat aspect = exrFloat(OutputWidth) / exrFloat(OutputHeight);
     exrFloat focusDist = (position - lookat).Magnitude();
     exrFloat aperture = 0.05f;
@@ -103,11 +105,18 @@ void ElixirSetupDemo()
     CurrentRenderJob->m_Scene = std::make_unique<Scene>();
 
     // Scene objects to be added here.
+    std::unique_ptr<GeometricPrimitive> sphere = std::make_unique<GeometricPrimitive>();
+    Transform transform;
+    transform.SetTranslation(exrVector3(0.0f, 0.0f, 0.0f));
+    sphere->m_Shape = std::make_unique<Sphere>(transform, 1.0f);
+    sphere->m_Material = std::make_unique<Diffuse>(exrSpectrum());
+    std::unique_ptr<Primitive> p = std::move(sphere);
+    CurrentRenderJob->m_Scene->AddPrimitive(p);
 
     CurrentRenderJob->m_Scene->InitAccelerator();
 
     const exrU32 numSamples = 4;
-    const exrU32 numBounces = 4;
+    const exrU32 numBounces = 1;
     CurrentRenderJob->m_Integrator = std::make_unique<WittedIntegrator>(CurrentRenderJob->m_Camera, numSamples, numBounces);
     CurrentAPIState = APIState::APISTATE_SCENE;
     // Setup scene..

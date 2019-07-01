@@ -77,4 +77,10 @@ void SurfaceInteraction::ComputeScatteringFunctions(const RayDifferential& ray)
     m_Primitive->ComputeScatteringFunctions(this);
 }
 
+exrSpectrum SurfaceInteraction::EvaluateEmission(const exrVector3& w) const
+{
+    const AreaLight* arealight = m_Primitive->GetAreaLight();
+    return arealight ? arealight->Sample(*this, w) : exrSpectrum(0.0f);
+}
+
 exrEND_NAMESPACE

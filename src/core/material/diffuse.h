@@ -21,6 +21,8 @@
 #pragma once
 
 #include "material.h"
+#include "core/bsdf/lambert.h"
+#include "core/bsdf/bsdf.h"
 
 exrBEGIN_NAMESPACE
 

@@ -58,7 +58,7 @@ void SamplerIntegrator::Render(const Scene& scene)
                     RayDifferential viewRay = m_Camera->GetViewRay(u, v);
                     
                     exrSpectrum L(0.0f);
-                    L += Li(viewRay, scene);
+                    L += Evaluate(viewRay, scene);
 
                     film->AddSplat(Point2<exrU32>(tileMin.x + x, tileMin.y + y), L);
                 }

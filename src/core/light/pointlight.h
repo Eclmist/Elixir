@@ -37,7 +37,7 @@ public:
         , m_Intensity(1.0f)
         , m_Point(pos) {};
 
-    exrSpectrum SampleLi(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const override;
+    exrSpectrum Sample(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const override;
     exrSpectrum Power() const override;
 
 private:

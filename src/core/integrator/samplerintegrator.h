@@ -37,7 +37,7 @@ public:
     void Render(const Scene& scene) override;
 
     virtual void Preprocess(const Scene& scene) {};
-    virtual exrSpectrum Li(const RayDifferential& ray, const Scene& scene, exrU32 depth = 0) const = 0;
+    virtual exrSpectrum Evaluate(const RayDifferential& ray, const Scene& scene, exrU32 depth = 0) const = 0;
 
 private:
     std::unique_ptr<Camera> m_Camera;

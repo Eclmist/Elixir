@@ -24,7 +24,7 @@
 
 exrBEGIN_NAMESPACE
 
-exrSpectrum PointLight::SampleLi(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const
+exrSpectrum PointLight::Sample(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const
 {
     wi = (m_Point - interaction.m_Point).Normalized();
     pdf = 1.0f;

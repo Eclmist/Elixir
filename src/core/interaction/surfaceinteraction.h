@@ -43,11 +43,11 @@ public:
     SurfaceInteraction(const exrPoint3& point, const exrVector3& wo, const exrVector3& dpdu, const exrVector3& dpdv,
         const exrVector3& dndu, const exrVector3& dndv, const Shape* shape);
 
-    void SetShadingGeometry(const exrVector3& sDpdu, const exrVector3& sDpdv, const exrVector3& sDndu,
-        const exrVector3& sDndv);
-
+    void SetShadingGeometry(const exrVector3& sDpdu, const exrVector3& sDpdv, const exrVector3& sDndu, const exrVector3& sDndv);
     void ComputeDifferentials(const RayDifferential& ray);
     void ComputeScatteringFunctions(const RayDifferential& ray);
+
+    exrSpectrum EvaluateEmission(const exrVector3& w) const;
 
 public:
     //! The BRDF of the surface
