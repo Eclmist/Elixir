@@ -47,6 +47,9 @@ Elixir uses CMake to build it's binaries. Run the following CMake commands to ge
 
 ```shell
 $ cmake -B build -S . -DCMAKE_CONFIGURATION_TYPES:STRING="Debug;Release;"
+```
+
+```
 $ cmake --build .
 ```
 
