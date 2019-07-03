@@ -19,6 +19,8 @@
 */
 
 #include "samplerintegrator.h"
+#include "core/bsdf/bxdf.h"
+#include "core/bsdf/bsdf.h"
 
 exrBEGIN_NAMESPACE
 
@@ -53,8 +55,8 @@ void SamplerIntegrator::Render(const Scene& scene)
                 // Foreach sample
                 for (exrU32 n = 0; n < m_NumSamplesPerPixel; ++n)
                 {
-                    exrFloat u = exrFloat(tileMin.x + x + Random::Uniform01()) / exrFloat(maxResolution.x);
-                    exrFloat v = exrFloat(tileMin.y + y + Random::Uniform01()) / exrFloat(maxResolution.y);
+                    exrFloat u = exrFloat(tileMin.x + x + Uniform01()) / exrFloat(maxResolution.x);
+                    exrFloat v = exrFloat(tileMin.y + y + Uniform01()) / exrFloat(maxResolution.y);
                     RayDifferential viewRay = m_Camera->GetViewRay(u, v);
                     
                     exrSpectrum L(0.0f);
@@ -70,5 +72,31 @@ void SamplerIntegrator::Render(const Scene& scene)
     film->WriteImage(1.0f / m_NumSamplesPerPixel);
 }
 
+exrSpectrum SamplerIntegrator::Reflect(const RayDifferential& ray, const SurfaceInteraction& intersect,
+    const Scene& scene, exrU32 depth) const
+{
+    exrVector3 wo = intersect.m_Wo;
+    exrVector3 wi;
+    exrFloat pdf;
+    BxDF::BxDFType type = BxDF::BxDFType(BxDF::BxDFType::BSDF_REFLECTION);
+    exrSpectrum f = intersect.m_BSDF->Sample(wo, &wi, &pdf, type);
+
+    const exrVector3& shadingNormals = intersect.m_ShadingInfo.m_Normal;
+    if (pdf > 0 && !f.IsBlack() && abs(Dot(wi, shadingNormals)) > 0)
+    {
+        RayDifferential reflRay = intersect.SpawnRay(wi);
+        return f * Evaluate(ray, scene, depth + 1) * abs(Dot(wi, shadingNormals)) / pdf;
+    }
+    else
+    {
+        return exrSpectrum(0.0f);
+    }
+}
+
+exrSpectrum SamplerIntegrator::Refract(const RayDifferential& ray, const SurfaceInteraction& intersect,
+    const Scene& scene, exrU32 depth) const
+{
+    throw "Not yet implemented!";
+}
 
 exrEND_NAMESPACE

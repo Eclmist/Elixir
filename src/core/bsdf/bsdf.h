@@ -37,10 +37,10 @@ public:
         , m_ShadingTangent((si.m_ShadingInfo.m_Dpdu).Normalized())
         , m_ShadingBitangent(Cross(m_ShadingNormal, m_ShadingTangent)) {};
 
-    void AddComponent(const BxDF* b);
-    exrU32 GetComponentCount(BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
-
+    void AddComponent(BxDF* b);
+    exrU32 GetNumComponents(BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
     exrSpectrum Evaluate(const exrVector3& worldWo, const exrVector3& worldWi, BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
+    exrSpectrum Sample(const exrVector3& worldWo, exrVector3* worldWi, exrFloat* pdf, BxDF::BxDFType flags);
 
     exrVector3 WorldToLocal(const exrVector3& v) const;
     exrVector3 LocalToWorld(const exrVector3& v) const;
@@ -49,11 +49,13 @@ public:
     const exrFloat m_ReflectiveIndex;
 
 private:
+    BxDF* GetRandomBxDF(BxDF::BxDFType type = BxDF::BxDFType::BSDF_ALL);
+
     const exrVector3 m_ShadingNormal, m_GeometricNormal;
     const exrVector3 m_ShadingTangent, m_ShadingBitangent;
 
     exrU32 m_NumBxDF = 0;
-    const BxDF* m_BxDFs[MaxBxDFs];
+    BxDF* m_BxDFs[MaxBxDFs];
 };
 
 exrEND_NAMESPACE

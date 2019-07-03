@@ -136,7 +136,7 @@ void BVHAccelerator::EqualCountSplit(std::unique_ptr<BVHNode>& currentRoot, exrU
     std::vector<Primitive*> temp = currentRoot->m_Primitives;
 
     // Get a random axis to split objects
-    switch (exrU32(Random::Uniform01() * 3))
+    switch (exrU32(Uniform01() * 3))
     {
     case 0:
         // Split along x axis

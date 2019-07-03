@@ -22,6 +22,7 @@
 
 #include "system/system.h"
 #include "math/math.h"
+#include "core/ray/ray.h"
 
 exrBEGIN_NAMESPACE
 
@@ -40,6 +41,12 @@ struct Interaction
         : m_Point(point)
         , m_Normal(normal)
         , m_Wo(wo) {};
+
+    Ray SpawnRay(const exrVector3& direction) const
+    {
+        exrPoint3 origin = m_Point + m_Normal * EXR_EPSILON;
+        return Ray(origin, direction);
+    };
 
     //! The point of intersection
     exrPoint3 m_Point;

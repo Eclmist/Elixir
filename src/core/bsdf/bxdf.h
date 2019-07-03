@@ -34,8 +34,7 @@ public:
         BSDF_TRANSMISSION = 1 << 1,
         BSDF_DIFFUSE      = 1 << 2,
         BSDF_GLOSSY       = 1 << 3,
-        BSDF_SPECULAR     = 1 << 4,
-        BSDF_ALL          = BSDF_REFLECTION | BSDF_TRANSMISSION | BSDF_DIFFUSE | BSDF_GLOSSY | BSDF_SPECULAR,
+        BSDF_ALL          = BSDF_REFLECTION | BSDF_TRANSMISSION | BSDF_DIFFUSE | BSDF_GLOSSY,
     };
 
     BxDF(BxDFType type)
@@ -44,7 +43,10 @@ public:
     exrBool MatchesFlags(BxDFType t) const { return m_BxDFType == t; };
 
     virtual exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const = 0;
-    // virtual exrSpectrum EvaluateDelta(const exrVector3& wo, exrVector3& wi, BxDFType& thisType) const;
+    virtual exrSpectrum Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const;
+    virtual exrFloat Pdf(const exrVector3& wo, const exrVector3& wi) const;
+
+    inline exrBool IsSameHemisphere(const exrVector3& wo, const exrVector3& wi) const { return wo.z * wi.z > 0; };
 private:
     BxDFType m_BxDFType;
 };

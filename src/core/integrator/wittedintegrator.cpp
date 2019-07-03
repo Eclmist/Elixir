@@ -58,9 +58,9 @@ exrSpectrum WittedIntegrator::Evaluate(const RayDifferential& ray, const Scene& 
             L += f * Li * abs(Dot(wi, normal)) / pdf;
     }
 
-    if (depth + 1 < m_MaxDepth)
+    if (depth + 1 < m_NumBouncePerPixel)
     {
-        //L += SpecularReflect(ray, interaction, scene, depth);
+        L += Reflect(ray, interaction, scene, depth);
         //L += SpecularTransmit(ray, interaction, scene, depth);
     }
 

@@ -19,6 +19,7 @@
 */
 
 #include "random.h"
+#include "sampling.h"
 
 exrBEGIN_NAMESPACE
 
@@ -27,7 +28,7 @@ exrVector3 Random::RandomInUnitSphere()
     exrVector3 p;
 
     do {
-        p = 2.0f * exrVector3(Random::Uniform01(), Random::Uniform01(), Random::Uniform01()) - exrVector3(1.0f);
+        p = 2.0f * exrVector3(Uniform01(), Uniform01(), Uniform01()) - exrVector3(1.0f);
     } while (p.MagnitudeSquared() >= 1.0f);
 
     return p;

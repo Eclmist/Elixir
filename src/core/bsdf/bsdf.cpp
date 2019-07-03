@@ -24,13 +24,13 @@
 
 exrBEGIN_NAMESPACE
 
-void BSDF::AddComponent(const BxDF* bxdf)
+void BSDF::AddComponent(BxDF* bxdf)
 {
     exrAssert(m_NumBxDF < MaxBxDFs, "Max number of BxDFs exceeded for material!");
     m_BxDFs[m_NumBxDF++] = bxdf;
 }
 
-exrU32 BSDF::GetComponentCount(BxDF::BxDFType flags) const
+exrU32 BSDF::GetNumComponents(BxDF::BxDFType flags) const
 {
     exrU32 res = 0;
     for (exrU32 i = 0; i < m_NumBxDF; ++i)
@@ -59,6 +59,48 @@ exrSpectrum BSDF::Evaluate(const exrVector3& worldWo, const exrVector3& worldWi,
     return res;
 }
 
+exrSpectrum BSDF::Sample(const exrVector3& worldWo, exrVector3* worldWi, exrFloat* pdf, BxDF::BxDFType flags)
+{
+    // We can only sample one bxdf at a time, but since we may have more than one bxdf we will randomly select
+    // one that matches the criteria.
+
+    BxDF* sampledBxDF = GetRandomBxDF(flags);
+
+    if (sampledBxDF == nullptr)
+    {
+        *pdf = 0.0f;
+        return exrSpectrum(0.0f);
+    }
+
+    exrU32 numMatchingBxdfs = GetNumComponents(flags);
+
+    exrVector3 wo = WorldToLocal(worldWo);
+    exrVector3 wi;
+    sampledBxDF->Sample(wo, &wi, pdf, flags);
+
+    if (pdf == 0)
+        return exrSpectrum(0.0f);
+
+    *worldWi = LocalToWorld(wi);
+
+    // The pdf have to be adjusted based on all the bxdf that could have been sampled
+    if (numMatchingBxdfs > 1)
+    {
+        for (BxDF* bxdf : m_BxDFs)
+        {
+            if (bxdf != sampledBxDF && bxdf->MatchesFlags(flags))
+            {
+                *pdf += bxdf->Pdf(wo, wi);
+            }
+        }
+
+        *pdf /= numMatchingBxdfs;
+    }
+
+    // now that we have the correct wi direction, evaluate this bsdf as per normal
+    return Evaluate(worldWo, *worldWi, flags);
+}
+
 exrVector3 BSDF::WorldToLocal(const exrVector3& v) const
 {
     return exrVector3(Dot(v, m_ShadingBitangent), Dot(v, m_ShadingTangent), Dot(v, m_ShadingNormal));
@@ -69,6 +111,21 @@ exrVector3 BSDF::LocalToWorld(const exrVector3& v) const
     return exrVector3(m_ShadingBitangent.x * v.x + m_ShadingTangent.x * v.y + m_ShadingNormal.x * v.z,
                       m_ShadingBitangent.y * v.x + m_ShadingTangent.y * v.y + m_ShadingNormal.y * v.z,
                       m_ShadingBitangent.z * v.x + m_ShadingTangent.z * v.y + m_ShadingNormal.z * v.z);
+}
+
+BxDF* BSDF::GetRandomBxDF(BxDF::BxDFType type)
+{
+    exrU32 numMatching = GetNumComponents(type);
+
+    exrU32 counter = exrU32(Uniform01() * numMatching);
+
+    for (exrU32 i = 0; i < m_NumBxDF; ++i)
+    {
+        if (m_BxDFs[i]->MatchesFlags(type) && counter-- == 0)
+            return m_BxDFs[i];
+    }
+
+    return nullptr;
 }
 
 

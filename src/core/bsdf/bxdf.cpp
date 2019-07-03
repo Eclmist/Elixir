@@ -20,27 +20,24 @@
 
 #pragma once
 
-#include "system/system.h"
-#include "math/math.h"
+#include "bxdf.h"
 
 exrBEGIN_NAMESPACE
 
-//! @brief A class that handles various pseudo random value generations
-class Random
+exrSpectrum BxDF::Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const
 {
-public:
-    //! @brief Seeds the random class
-    //! @param a                The value to seed the random class
-    static inline void Seed(exrU32 a) { srand(a); }
+    *wi = CosineSampleHemisphere(Uniform01Point2());
+    if (wo.z < 0)
+        wi->z *= -1;
 
-    //! @brief Generates a vector between length 0 - 1 in a random direction
-    //! @return A random vector inside a unit sphere
-    static exrVector3 RandomInUnitSphere();
+    *pdf = Pdf(wo, *wi);
+    return Evaluate(wo, *wi);
+}
 
-    //! @brief Generates a vector on the surface of a unit sphere
-    //! @return A random vector on the surface of a unit sphere
-    static exrVector3 RandomOnUnitSphere();
+exrFloat BxDF::Pdf(const exrVector3& wo, const exrVector3& wi) const
+{
+    return IsSameHemisphere(wo, wi) ? CosineHemispherePdf(abs(wi.z)) : 0;
+}
 
-};
 
 exrEND_NAMESPACE

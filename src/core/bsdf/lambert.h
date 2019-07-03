@@ -32,6 +32,7 @@ public:
         , m_Albedo(r) {};
 
     exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const override;
+
 private:
     exrSpectrum m_Albedo;
 };

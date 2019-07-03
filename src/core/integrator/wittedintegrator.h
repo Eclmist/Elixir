@@ -27,14 +27,10 @@ exrBEGIN_NAMESPACE
 class WittedIntegrator : public SamplerIntegrator
 {
 public:
-    WittedIntegrator(std::unique_ptr<Camera>& camera, exrU32 numSamplesPerPixel, exrU32 maxDepth)
-        : SamplerIntegrator(camera, numSamplesPerPixel)
-        , m_MaxDepth(maxDepth) {};
+    WittedIntegrator(std::unique_ptr<Camera>& camera, exrU32 numSamplesPerPixel, exrU32 numBouncePerPixel)
+        : SamplerIntegrator(camera, numSamplesPerPixel, numBouncePerPixel) {};
 
-    exrSpectrum Evaluate(const RayDifferential& ray, const Scene& scene, exrU32 depth) const override;
-
-private:
-    exrU32 m_MaxDepth;
+    exrSpectrum Evaluate(const RayDifferential& ray, const Scene& scene, exrU32 depth = 0) const override;
 };
 
 exrEND_NAMESPACE

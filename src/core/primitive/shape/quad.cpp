@@ -59,8 +59,8 @@ Interaction Quad::Sample(const exrPoint2& u) const
 {
     Interaction it;
 
-    exrFloat randomX = (Random::Uniform01() * 2 - 1) * m_HalfExtents.x;
-    exrFloat randomY = (Random::Uniform01() * 2 - 1) * m_HalfExtents.y;
+    exrFloat randomX = (Uniform01() * 2 - 1) * m_HalfExtents.x;
+    exrFloat randomY = (Uniform01() * 2 - 1) * m_HalfExtents.y;
 
     exrPoint3 samplePoint = m_Transform.GetMatrix() * exrPoint3(randomX, randomY, 0);
     it.m_Point = samplePoint;
