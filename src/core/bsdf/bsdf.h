@@ -30,12 +30,7 @@ static constexpr exrU32 MaxBxDFs = 8;
 class BSDF
 {
 public:
-    BSDF(const SurfaceInteraction& si, exrFloat ior = 1)
-        : m_ReflectiveIndex(ior)
-        , m_ShadingNormal(si.m_ShadingInfo.m_Normal)
-        , m_GeometricNormal(si.m_Normal)
-        , m_ShadingTangent((si.m_ShadingInfo.m_Dpdu).Normalized())
-        , m_ShadingBitangent(Cross(m_ShadingNormal, m_ShadingTangent)) {};
+    BSDF(const SurfaceInteraction& si, exrFloat ior = 1);
 
     void AddComponent(BxDF* b);
     exrU32 GetNumComponents(BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;

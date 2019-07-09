@@ -85,7 +85,7 @@ exrSpectrum SamplerIntegrator::Reflect(const RayDifferential& ray, const Surface
     if (pdf > 0 && !f.IsBlack() && abs(Dot(wi, shadingNormals)) > 0)
     {
         RayDifferential reflRay = intersect.SpawnRay(wi);
-        return f * Evaluate(ray, scene, depth + 1) * abs(Dot(wi, shadingNormals)) / pdf;
+        return f * Evaluate(reflRay, scene, depth + 1) * abs(Dot(wi, shadingNormals)) / pdf;
     }
     else
     {

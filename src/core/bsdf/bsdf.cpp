@@ -24,6 +24,15 @@
 
 exrBEGIN_NAMESPACE
 
+BSDF::BSDF(const SurfaceInteraction& si, exrFloat ior)
+    : m_ReflectiveIndex(ior)
+    , m_ShadingNormal(si.m_ShadingInfo.m_Normal)
+    , m_GeometricNormal(si.m_Normal)
+    , m_ShadingTangent(Cross(m_ShadingNormal, UniformSampleSphere(Uniform01Point2())))
+    , m_ShadingBitangent(Cross(m_ShadingNormal, m_ShadingTangent))
+{
+}
+
 void BSDF::AddComponent(BxDF* bxdf)
 {
     exrAssert(m_NumBxDF < MaxBxDFs, "Max number of BxDFs exceeded for material!");
@@ -49,9 +58,14 @@ exrSpectrum BSDF::Evaluate(const exrVector3& worldWo, const exrVector3& worldWi,
 
     for (exrU32 i = 0; i < m_NumBxDF; ++i)
     {
-        if (m_BxDFs[i]->MatchesFlags(flags) && (reflect && m_BxDFs[i]->MatchesFlags(BxDF::BSDF_REFLECTION)) &&
-            (!reflect && m_BxDFs[i]->MatchesFlags(BxDF::BSDF_TRANSMISSION)))
+        if (m_BxDFs[i]->MatchesFlags(flags))
         {
+            if (reflect && !m_BxDFs[i]->MatchesFlags(BxDF::BSDF_REFLECTION))
+                continue;
+            
+            if (!reflect && !m_BxDFs[i]->MatchesFlags(BxDF::BSDF_TRANSMISSION))
+                continue;
+
             res += m_BxDFs[i]->Evaluate(wo, wi);
         }
     }

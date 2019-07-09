@@ -109,13 +109,13 @@ void ElixirSetupDemo()
     Transform transform;
     transform.SetTranslation(exrVector3(0.0f, 0.0f, 0.0f));
     sphere->m_Shape = std::make_unique<Sphere>(transform, 1.0f);
-    sphere->m_Material = std::make_unique<Diffuse>(exrSpectrum());
+    sphere->m_Material = std::make_unique<Diffuse>(exrSpectrum(0.8f));
     std::unique_ptr<Primitive> p = std::move(sphere);
     CurrentRenderJob->m_Scene->AddPrimitive(p);
 
     CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 4;
+    const exrU32 numSamples = 128;
     const exrU32 numBounces = 4;
     CurrentRenderJob->m_Integrator = std::make_unique<WittedIntegrator>(CurrentRenderJob->m_Camera, numSamples, numBounces);
     CurrentAPIState = APIState::APISTATE_SCENE;
