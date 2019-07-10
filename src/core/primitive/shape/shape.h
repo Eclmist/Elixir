@@ -125,21 +125,10 @@ public:
     virtual exrFloat SolidAngle(const exrPoint3& p, exrU32 nbSamples = 512) const;
 
 public:
-    //! @brief Returns the bounding volume of the shape
-    //! @return                 A bounding volume of the shape
-    inline AABB GetBoundingVolume()
-    {
-        return m_BoundingVolume;
-    };
-
-protected:
     //! Computes a bounding volume that encapsulates the current geometry.
     virtual AABB ComputeBoundingVolume() const = 0;
 
 protected:
-    //! A bounding volume that contains the shape;
-    const AABB m_BoundingVolume;
-
     //! The transform of the shape
     const Transform m_Transform;
 };

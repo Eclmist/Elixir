@@ -107,7 +107,7 @@ void ElixirSetupDemo()
     // Scene objects to be added here.
     std::unique_ptr<GeometricPrimitive> sphere = std::make_unique<GeometricPrimitive>();
     Transform transform;
-    transform.SetTranslation(exrVector3(0.0f, 0.0f, 0.0f));
+    transform.SetTranslation(exrVector3(0.0f, 0.5f, 0.0f));
     sphere->m_Shape = std::make_unique<Sphere>(transform, 1.0f);
     sphere->m_Material = std::make_unique<Diffuse>(exrSpectrum(0.8f));
     std::unique_ptr<Primitive> p = std::move(sphere);
@@ -115,7 +115,7 @@ void ElixirSetupDemo()
 
     CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 128;
+    const exrU32 numSamples = 4;
     const exrU32 numBounces = 4;
     CurrentRenderJob->m_Integrator = std::make_unique<WittedIntegrator>(CurrentRenderJob->m_Camera, numSamples, numBounces);
     CurrentAPIState = APIState::APISTATE_SCENE;

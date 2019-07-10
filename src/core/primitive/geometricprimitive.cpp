@@ -26,7 +26,7 @@ exrBEGIN_NAMESPACE
 
 AABB GeometricPrimitive::GetBoundingVolume() const
 {
-    return m_Shape->GetBoundingVolume();
+    return m_Shape->ComputeBoundingVolume();
 }
 
 exrBool GeometricPrimitive::Intersect(const Ray& ray, SurfaceInteraction* interaction) const

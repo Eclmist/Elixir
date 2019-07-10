@@ -26,7 +26,6 @@ Quad::Quad(const Transform& transform, const exrVector2& scale)
     : Shape(transform)
 {
     m_HalfExtents = exrPoint3::Zero() + exrVector3(0.5f * scale.x, 0.5f * scale.y, EXR_EPSILON);
-    ComputeBoundingVolume();
 }
 
 exrBool Quad::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const
