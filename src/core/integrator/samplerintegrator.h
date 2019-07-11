@@ -36,8 +36,12 @@ public:
         , m_NumBouncePerPixel(numBouncePerPixel) {};
 
     virtual void Preprocess(const Scene& scene) {};
-    virtual exrSpectrum Reflect(const RayDifferential& ray, const SurfaceInteraction& intersect, const Scene& scene, exrU32 depth) const;
-    virtual exrSpectrum Refract(const RayDifferential& ray, const SurfaceInteraction& intersect, const Scene& scene, exrU32 depth) const;
+
+    virtual exrSpectrum SpecularReflect(const RayDifferential& ray, const SurfaceInteraction& intersect,
+        const Scene& scene, exrU32 depth) const;
+    virtual exrSpectrum SpecularRefract(const RayDifferential& ray, const SurfaceInteraction& intersect,
+        const Scene& scene, exrU32 depth) const;
+
     virtual exrSpectrum Evaluate(const RayDifferential& ray, const Scene& scene, exrU32 depth = 0) const = 0;
 
     void Render(const Scene& scene) override;

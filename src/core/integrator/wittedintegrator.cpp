@@ -30,7 +30,7 @@ exrSpectrum WittedIntegrator::Evaluate(const RayDifferential& ray, const Scene& 
     SurfaceInteraction interaction;
     if (!scene.Intersect(ray, &interaction))
     {
-        //return 0.0f;
+        return 0.0f;
         return scene.SampleSkyLight(ray);
     }
 
@@ -44,24 +44,38 @@ exrSpectrum WittedIntegrator::Evaluate(const RayDifferential& ray, const Scene& 
     // Add contribution of each light source
     for (const auto& light : scene.m_Lights)
     {
+        if (!light->IsDeltaLight())
+            continue;
+
         exrVector3 wi;
         exrFloat pdf;
         exrPoint2 uv; // TODO: support this param
         exrSpectrum Li = light->Sample(interaction, uv, wi, pdf);
+
+        exrAssert(Li.ToRGB().MagnitudeSquared() >= 0, "Light returning negative values somehow");
         
-        if (Li.IsBlack() || pdf == 0) continue;
+        if (Li.IsBlack() || pdf == 0)
+            continue;
         
         exrSpectrum f = interaction.m_BSDF->Evaluate(wo, wi);
+        exrAssert(f.ToRGB().MagnitudeSquared() >= 0, "BSDF returning negative values somehow");
 
-        // Check shadow ray
-        exrPoint3 lightspacePos = light->m_Transform.GetMatrix() * interaction.m_Point;
-        if (!f.IsBlack() && !scene.HasIntersect(Ray(interaction.m_Point, wi, (lightspacePos - exrPoint3::Zero()).Magnitude())))
-            L += f * Li * abs(Dot(wi, normal)) / pdf;
+        if (f.IsBlack())
+            continue;
+
+        SurfaceInteraction i;
+        scene.Intersect(Ray(), &i);
+        // scene.HasIntersect(Ray());
+
+        //if (scene.HasIntersect(Ray(interaction.m_Point, wi, (light->m_Transform.GetPosition() - interaction.m_Point).Magnitude())))
+        //    continue;
+
+        L += f * Li * abs(Dot(wi, normal)) / pdf;
     }
 
     if (depth + 1 < m_NumBouncePerPixel)
     {
-        L += Reflect(ray, interaction, scene, depth);
+        L += SpecularReflect(ray, interaction, scene, depth);
         //L += SpecularTransmit(ray, interaction, scene, depth);
     }
 

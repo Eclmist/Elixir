@@ -27,22 +27,15 @@ exrBEGIN_NAMESPACE
 class PointLight : public Light
 {
 public:
-    PointLight(const Transform& transform)
+    PointLight(const Transform& transform, const exrSpectrum& intensity = 1.0f)
         : Light(transform, LightFlags::LIGHTFLAGS_DELTAPOSITION) 
-        , m_Intensity(1.0f)
-        , m_Point(exrPoint3::Zero()) {};
-
-    PointLight(const exrPoint3& pos)
-        : Light(Transform(), LightFlags::LIGHTFLAGS_DELTAPOSITION) 
-        , m_Intensity(1.0f)
-        , m_Point(pos) {};
+        , m_Intensity(intensity) {};
 
     exrSpectrum Sample(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const override;
     exrSpectrum Power() const override;
 
 private:
     const exrSpectrum m_Intensity;
-    const exrPoint3 m_Point;
 };
 
 exrEND_NAMESPACE

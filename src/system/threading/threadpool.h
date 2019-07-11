@@ -46,13 +46,12 @@ struct ThreadTask
     exrFloat m_Priority;
 };
 
-template <exrU32 NumThreads>
 class ThreadPool
 {
 public:
-    ThreadPool() : m_Stop(false)
+    ThreadPool(exrU32 numThreads) : m_Stop(false)
     {
-        for (auto i = 0; i < NumThreads; ++i)
+        for (exrU32 i = 0; i < numThreads; ++i)
         {
             m_Threads.emplace_back([this]
             {

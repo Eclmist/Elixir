@@ -74,6 +74,9 @@ public:
     //! @brief Returns the inverse of the current local matrix
     const Matrix4x4& GetInverseMatrix() const { return m_InvGlobalMatrix; }
 
+    //! @brief Returns the final position of the of the current transform applied to origin
+    exrPoint3 GetPosition() const { return m_GlobalMatrix * exrPoint3::Zero(); }
+
 private:
     void RecomputeGlobalMatrix();
 

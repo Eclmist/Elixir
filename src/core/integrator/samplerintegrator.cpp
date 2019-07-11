@@ -37,7 +37,7 @@ void SamplerIntegrator::Render(const Scene& scene)
     const exrU32 totalNumTiles = numTiles.x * numTiles.y;
 
     { // let threadPool destructor join all threads
-        ThreadPool<12> threadPool; // TODO: replace 8 with min(requested, system thread count)
+        ThreadPool threadPool(1);
 
         // Loop in terms of x,y tiles so this can become async in the future
         for (exrU32 i = 0; i < totalNumTiles; ++i)
@@ -80,7 +80,7 @@ void SamplerIntegrator::Render(const Scene& scene)
     film->WriteImage(1.0f / m_NumSamplesPerPixel);
 }
 
-exrSpectrum SamplerIntegrator::Reflect(const RayDifferential& ray, const SurfaceInteraction& intersect,
+exrSpectrum SamplerIntegrator::SpecularReflect(const RayDifferential& ray, const SurfaceInteraction& intersect,
     const Scene& scene, exrU32 depth) const
 {
     exrVector3 wo = intersect.m_Wo;
@@ -101,7 +101,7 @@ exrSpectrum SamplerIntegrator::Reflect(const RayDifferential& ray, const Surface
     }
 }
 
-exrSpectrum SamplerIntegrator::Refract(const RayDifferential& ray, const SurfaceInteraction& intersect,
+exrSpectrum SamplerIntegrator::SpecularRefract(const RayDifferential& ray, const SurfaceInteraction& intersect,
     const Scene& scene, exrU32 depth) const
 {
     throw "Not yet implemented!";
