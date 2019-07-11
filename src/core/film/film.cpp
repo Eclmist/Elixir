@@ -37,6 +37,9 @@ Film::Film(const Point2<exrU32>& resolution, const exrString& filename, exrBool 
 
 void Film::AddSplat(const Point2<exrU32>& point, const exrSpectrum& value)
 {
+    exrAssert(point.x >= 0 && point.x <= m_Resolution.x, "Attempting to write to outside image bounds!");
+    exrAssert(point.y >= 0 && point.y <= m_Resolution.y, "Attempting to write to outside image bounds!");
+
     Pixel& pixel = GetPixel(point);
     exrVector3 xyz = value.ToXYZ();
 

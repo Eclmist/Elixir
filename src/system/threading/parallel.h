@@ -20,6 +20,9 @@
 
 #pragma once
 
+#include <atomic>
+#include "threadpool.h"
+
 exrBEGIN_NAMESPACE
 
 class AtomicFloat
@@ -45,6 +48,5 @@ public:
 private:
     std::atomic<exrU32> m_Bits;
 };
-
 
 exrEND_NAMESPACE

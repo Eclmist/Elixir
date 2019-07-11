@@ -26,11 +26,8 @@
 
 // The order of the following includes matter!
 #include <algorithm>
-#include <atomic>
-#include <condition_variable>
 #include <math.h>
 #include <memory>
-#include <mutex>
 #include <vector>
 #include <stdexcept>
 
@@ -38,4 +35,4 @@
 #include "system/error.h"
 #include "system/utils.h"
 #include "system/types.h"
-#include "system/parallel.h"
+#include "system/threading/parallel.h"

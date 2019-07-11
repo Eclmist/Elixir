@@ -25,7 +25,7 @@
 exrBEGIN_NAMESPACE
 
 template <class T>
-ParamSet::ParamSetItem<T>::ParamSetItem(const exrString& key, const T* value, exrU32 numValues /*= 1*/)
+ParamSet::ParamSetItem<T>::ParamSetItem(const exrString& key, const T* value, exrU32 numValues)
     : m_Key(key)
     , m_Values(std::make_unique<T[]>(numValues))
     , m_NumValues(numValues)

@@ -115,7 +115,7 @@ void ElixirSetupDemo()
 
     // Back wall
     geoPrimitive = std::make_unique<GeometricPrimitive>();
-    transform.SetTranslation(exrVector3(0.0f, 2.75f, -2.8f));
+    transform.SetTranslation(exrVector3(0.0f, 2.75f, -2.75f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
     geoPrimitive->m_Material = std::make_unique<Diffuse>(exrSpectrum(1.0f));
     p = std::move(geoPrimitive);
