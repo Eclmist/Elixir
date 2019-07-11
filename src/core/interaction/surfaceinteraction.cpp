@@ -27,53 +27,13 @@
 exrBEGIN_NAMESPACE
 
 SurfaceInteraction::SurfaceInteraction(const exrPoint3& point, const exrVector3& wo,
-    const exrVector3& dpdu, const exrVector3& dpdv,
-    const exrVector3& dndu, const exrVector3& dndv, const Shape* shape)
-    : Interaction(point, (Cross(dpdu, dpdv)).Normalized(), wo)
-    , m_Dpdu(dpdu)
-    , m_Dpdv(dpdv)
-    , m_Dndu(dndu)
-    , m_Dndv(dndv)
+    const exrVector3& normal, const Shape* shape)
+    : Interaction(point, normal, wo)
     , m_Shape(shape)
-    , m_BSDF(nullptr)
-{
-    m_ShadingInfo.m_Normal = m_Normal;
-    m_ShadingInfo.m_Dpdu = dpdu;
-    m_ShadingInfo.m_Dpdv = dpdv;
-    m_ShadingInfo.m_Dndu = dndu;
-    m_ShadingInfo.m_Dndv = dndv;
-};
-
-void SurfaceInteraction::SetShadingGeometry(const exrVector3& sDpdu, const exrVector3& sDpdv,
-    const exrVector3& sDndu, const exrVector3& sDndv)
-{
-    m_ShadingInfo.m_Normal = (Cross(sDpdu, sDpdv)).Normalized();
-    m_ShadingInfo.m_Dpdu = sDpdu;
-    m_ShadingInfo.m_Dpdv = sDpdv;
-    m_ShadingInfo.m_Dndu = sDndu;
-    m_ShadingInfo.m_Dndv = sDndv;
-}
-
-void SurfaceInteraction::ComputeDifferentials(const RayDifferential& ray)
-{
-    if (ray.m_HasDifferentials)
-    {
-        throw "Ray differentials have yet to be implemented!";
-    }
-    else
-    {
-        m_Dudx = 0;
-        m_Dvdx = 0;
-        m_Dudy = 0;
-        m_Dvdy = 0;
-        m_Dpdx = exrVector3::Zero();
-        m_Dpdy = exrVector3::Zero();
-    }
-}
+    , m_BSDF(nullptr) {};
 
 void SurfaceInteraction::ComputeScatteringFunctions(const RayDifferential& ray)
 {
-    ComputeDifferentials(ray);
     m_Primitive->ComputeScatteringFunctions(this);
 }
 

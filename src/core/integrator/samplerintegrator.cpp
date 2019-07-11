@@ -81,11 +81,11 @@ exrSpectrum SamplerIntegrator::Reflect(const RayDifferential& ray, const Surface
     BxDF::BxDFType type = BxDF::BxDFType(BxDF::BxDFType::BSDF_REFLECTION);
     exrSpectrum f = intersect.m_BSDF->Sample(wo, &wi, &pdf, type);
 
-    const exrVector3& shadingNormals = intersect.m_ShadingInfo.m_Normal;
-    if (pdf > 0 && !f.IsBlack() && abs(Dot(wi, shadingNormals)) > 0)
+    const exrVector3& normal = intersect.m_Normal;
+    if (pdf > 0 && !f.IsBlack() && abs(Dot(wi, normal)) > 0)
     {
         RayDifferential reflRay = intersect.SpawnRay(wi);
-        return f * Evaluate(reflRay, scene, depth + 1) * abs(Dot(wi, shadingNormals)) / pdf;
+        return f * Evaluate(reflRay, scene, depth + 1) * abs(Dot(wi, normal)) / pdf;
     }
     else
     {

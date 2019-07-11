@@ -53,10 +53,7 @@ exrBool Sphere::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* hi
     hit->m_Normal = static_cast<exrVector3>(localRay(t0)) / m_Radius;
     hit->m_Wo = -ray.m_Direction;
     hit->m_Shape = this;
-
-    // Shading info
-    // TODO: Set proper shading geometry here. For now just use geometric normal as shading normal
-    hit->m_ShadingInfo.m_Normal = hit->m_Normal;
+    hit->m_Normal = hit->m_Normal;
 
     return true;
 }

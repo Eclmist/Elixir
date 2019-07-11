@@ -46,8 +46,9 @@ public:
 private:
     BxDF* GetRandomBxDF(BxDF::BxDFType type = BxDF::BxDFType::BSDF_ALL);
 
-    const exrVector3 m_ShadingNormal, m_GeometricNormal;
-    const exrVector3 m_ShadingTangent, m_ShadingBitangent;
+    const exrVector3 m_Normal;
+    const exrVector3 m_Tangent;
+    const exrVector3 m_Bitangent;
 
     exrU32 m_NumBxDF = 0;
     BxDF* m_BxDFs[MaxBxDFs];

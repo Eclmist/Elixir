@@ -95,8 +95,8 @@ void ElixirParseFile(const exrString& filename)
 void ElixirSetupDemo()
 {
     exrAssert(CurrentAPIState == APIState::APISTATE_OPTIONS, "ElixirSetupDemo() called before initialization!");
-    exrPoint3 position(0.0f, 0.0f, 10.0f);
-    exrPoint3 lookat(0.0f, 0.0, 0.0f);
+    exrPoint3 position(0.0f, 2.75f, 10.0f);
+    exrPoint3 lookat(0.0f, 2.75f, 0.0f);
     exrFloat fov = 40.0f;
     exrFloat aspect = exrFloat(OutputWidth) / exrFloat(OutputHeight);
     exrFloat focusDist = (position - lookat).Magnitude();
@@ -105,14 +105,59 @@ void ElixirSetupDemo()
     CurrentRenderJob->m_Scene = std::make_unique<Scene>();
 
     // Scene objects to be added here.
-    std::unique_ptr<GeometricPrimitive> sphere = std::make_unique<GeometricPrimitive>();
+    std::unique_ptr<GeometricPrimitive> geoPrimitive = std::make_unique<GeometricPrimitive>();
     Transform transform;
-    transform.SetTranslation(exrVector3(0.0f, 0.5f, 0.0f));
-    sphere->m_Shape = std::make_unique<Sphere>(transform, 1.0f);
-    sphere->m_Material = std::make_unique<Diffuse>(exrSpectrum(0.8f));
-    std::unique_ptr<Primitive> p = std::move(sphere);
+    transform.SetTranslation(exrVector3(0.0f, 2.75f, 0.0f));
+    geoPrimitive->m_Shape = std::make_unique<Sphere>(transform, 1.0f);
+    geoPrimitive->m_Material = std::make_unique<Diffuse>(exrSpectrum(0.8f));
+    std::unique_ptr<Primitive> p = std::move(geoPrimitive);
     CurrentRenderJob->m_Scene->AddPrimitive(p);
 
+    // Back wall
+    geoPrimitive = std::make_unique<GeometricPrimitive>();
+    transform.SetTranslation(exrVector3(0.0f, 2.75f, -2.8f));
+    geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
+    geoPrimitive->m_Material = std::make_unique<Diffuse>(exrSpectrum(1.0f));
+    p = std::move(geoPrimitive);
+    CurrentRenderJob->m_Scene->AddPrimitive(p);
+
+    // left wall
+    geoPrimitive = std::make_unique<GeometricPrimitive>();
+    transform.SetTranslation(exrVector3(-2.75f, 2.75f, -0.0f));
+    transform.SetRotation(exrVector3(0.0f, EXR_M_PIOVER2, 0.0f));
+    geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
+    geoPrimitive->m_Material = std::make_unique<Diffuse>(exrSpectrum::FromRGB(exrVector3(1.0f, 0.0f, 0.0f), SpectrumType::Reflectance));
+    p = std::move(geoPrimitive);
+    CurrentRenderJob->m_Scene->AddPrimitive(p);
+
+    // right wall
+    geoPrimitive = std::make_unique<GeometricPrimitive>();
+    transform.SetTranslation(exrVector3(2.75f, 2.75f, -0.0f));
+    transform.SetRotation(exrVector3(0.0f, -EXR_M_PIOVER2, 0.0f));
+    geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
+    geoPrimitive->m_Material = std::make_unique<Diffuse>(exrSpectrum::FromRGB(exrVector3(0.0f, 1.0f, 0.0f), SpectrumType::Reflectance));
+    p = std::move(geoPrimitive);
+    CurrentRenderJob->m_Scene->AddPrimitive(p);
+
+    // ceiling
+    geoPrimitive = std::make_unique<GeometricPrimitive>();
+    transform.SetTranslation(exrVector3(0.0f, 5.5f, 0.0f));
+    transform.SetRotation(exrVector3(EXR_M_PIOVER2, 0.0f, 0.0f));
+    geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
+    geoPrimitive->m_Material = std::make_unique<Diffuse>(exrSpectrum(1.0f));
+    p = std::move(geoPrimitive);
+    CurrentRenderJob->m_Scene->AddPrimitive(p);
+
+    // right wall
+    geoPrimitive = std::make_unique<GeometricPrimitive>();
+    transform.SetTranslation(exrVector3(0.0f, 0.0f, 0.0f));
+    transform.SetRotation(exrVector3(-EXR_M_PIOVER2, 0.0f, 0.0f));
+    geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
+    geoPrimitive->m_Material = std::make_unique<Diffuse>(exrSpectrum(1.0f));
+    p = std::move(geoPrimitive);
+    CurrentRenderJob->m_Scene->AddPrimitive(p);
+
+    // Init accel
     CurrentRenderJob->m_Scene->InitAccelerator();
 
     const exrU32 numSamples = 4;

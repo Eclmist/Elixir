@@ -26,10 +26,9 @@ exrBEGIN_NAMESPACE
 
 BSDF::BSDF(const SurfaceInteraction& si, exrFloat ior)
     : m_ReflectiveIndex(ior)
-    , m_ShadingNormal(si.m_ShadingInfo.m_Normal)
-    , m_GeometricNormal(si.m_Normal)
-    , m_ShadingTangent(Cross(m_ShadingNormal, UniformSampleSphere(Uniform01Point2())))
-    , m_ShadingBitangent(Cross(m_ShadingNormal, m_ShadingTangent))
+    , m_Normal(si.m_Normal)
+    , m_Tangent(Cross(m_Normal, UniformSampleSphere(Uniform01Point2())).Normalized())
+    , m_Bitangent(Cross(m_Normal, m_Tangent).Normalized())
 {
 }
 
@@ -53,7 +52,7 @@ exrSpectrum BSDF::Evaluate(const exrVector3& worldWo, const exrVector3& worldWi,
     exrVector3 wi = WorldToLocal(worldWi);
     exrVector3 wo = WorldToLocal(worldWo);
 
-    exrBool reflect = ((Dot(worldWi, m_GeometricNormal) * Dot(worldWo, m_GeometricNormal)) > 0);
+    exrBool reflect = ((Dot(worldWi, m_Normal) * Dot(worldWo, m_Normal)) > 0);
     exrSpectrum res;
 
     for (exrU32 i = 0; i < m_NumBxDF; ++i)
@@ -117,14 +116,14 @@ exrSpectrum BSDF::Sample(const exrVector3& worldWo, exrVector3* worldWi, exrFloa
 
 exrVector3 BSDF::WorldToLocal(const exrVector3& v) const
 {
-    return exrVector3(Dot(v, m_ShadingBitangent), Dot(v, m_ShadingTangent), Dot(v, m_ShadingNormal));
+    return exrVector3(Dot(v, m_Bitangent), Dot(v, m_Tangent), Dot(v, m_Normal));
 }
 
 exrVector3 BSDF::LocalToWorld(const exrVector3& v) const
 {
-    return exrVector3(m_ShadingBitangent.x * v.x + m_ShadingTangent.x * v.y + m_ShadingNormal.x * v.z,
-                      m_ShadingBitangent.y * v.x + m_ShadingTangent.y * v.y + m_ShadingNormal.y * v.z,
-                      m_ShadingBitangent.z * v.x + m_ShadingTangent.z * v.y + m_ShadingNormal.z * v.z);
+    return exrVector3(m_Bitangent.x * v.x + m_Tangent.x * v.y + m_Normal.x * v.z,
+                      m_Bitangent.y * v.x + m_Tangent.y * v.y + m_Normal.y * v.z,
+                      m_Bitangent.z * v.x + m_Tangent.z * v.y + m_Normal.z * v.z);
 }
 
 BxDF* BSDF::GetRandomBxDF(BxDF::BxDFType type)

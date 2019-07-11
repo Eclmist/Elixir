@@ -46,6 +46,9 @@ exrBool Quad::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* inte
     interaction->m_Point = m_Transform.GetMatrix() * localRay(t);
     interaction->m_Normal = m_Transform.GetMatrix() * exrVector3::Forward();
     interaction->m_Shape = this;
+    interaction->m_Wo = -ray.m_Direction;
+    interaction->m_Normal = interaction->m_Normal;
+
     return true;
 }
 

@@ -30,6 +30,7 @@ exrSpectrum WittedIntegrator::Evaluate(const RayDifferential& ray, const Scene& 
     SurfaceInteraction interaction;
     if (!scene.Intersect(ray, &interaction))
     {
+        return 0.0f;
         return scene.SampleSkyLight(ray);
     }
 
