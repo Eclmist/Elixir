@@ -27,6 +27,25 @@
 
 exrBEGIN_NAMESPACE
 
+struct ThreadTask
+{
+    template <typename Func, typename... Args>
+    ThreadTask(exrFloat priority, Func&& func, Args&&... args)
+    {
+        // package task function with its arguments
+        auto pTask = std::make_shared<std::packaged_task<void()>>(std::bind(std::forward<Func>(func), std::forward<Args>(args)...));
+
+        // convert packaged task to a void std::function
+        m_Task = ([pTask]() { (*pTask)(); });
+        m_Priority = priority;
+    };
+
+    inline exrBool operator<(const ThreadTask& t) const { return m_Priority < t.m_Priority; }
+
+    std::function<void()> m_Task;
+    exrFloat m_Priority;
+};
+
 template <exrU32 NumThreads>
 class ThreadPool
 {
@@ -35,7 +54,8 @@ public:
     {
         for (auto i = 0; i < NumThreads; ++i)
         {
-            m_Threads.emplace_back([this] {
+            m_Threads.emplace_back([this]
+            {
                 while (true)
                 {
                     std::function<void()> task;
@@ -47,7 +67,7 @@ public:
                         if (this->m_Stop && this->m_Tasks.empty())
                             return;
 
-                        task = std::move(this->m_Tasks.front());
+                        task = std::move(this->m_Tasks.top().m_Task);
                         this->m_Tasks.pop();
                     }
 
@@ -70,25 +90,20 @@ public:
             thread.join();
     };
 
-    template <typename Func, typename... Args>
-    void ScheduleTask(Func&& task, Args&&... args)
+    template <typename Task, typename... Args>
+    void ScheduleTask(exrFloat priority, Task&& task, Args&&... args)
     {
         std::lock_guard<std::mutex> lock(m_QueueMutex);
 
         if (m_Stop)
             throw std::runtime_error("Task enqueued on a stopped ThreadPool!");
 
-        // package task function with its arguments
-        auto pTask = std::make_shared<std::packaged_task<void()>>(std::bind(std::forward<Func>(task), std::forward<Args>(args)...));
-
-        // convert packaged task to a void std::function
-        m_Tasks.emplace([pTask]() { (*pTask)(); });
-
+        m_Tasks.emplace(priority, std::forward<Task>(task), std::forward<Args>(args)...);
         m_Condition.notify_one();
     };
 
 private:
-    std::queue<std::function<void()>> m_Tasks;
+    std::priority_queue<ThreadTask> m_Tasks;
     std::mutex m_QueueMutex;
     std::condition_variable m_Condition;
     std::vector<std::thread> m_Threads;

@@ -29,7 +29,7 @@ void SamplerIntegrator::Render(const Scene& scene)
     Preprocess(scene);
 
     Film* film = m_Camera->m_Film.get();
-
+    
     // Compute number of tiles
     const Point2<exrU32> resolution = film->m_Resolution;
     const Point2<exrU32> numTiles((resolution.x + TileSize - 1) / TileSize, (resolution.y + TileSize - 1) / TileSize);
@@ -42,12 +42,14 @@ void SamplerIntegrator::Render(const Scene& scene)
         // Loop in terms of x,y tiles so this can become async in the future
         for (exrU32 i = 0; i < totalNumTiles; ++i)
         {
-            threadPool.ScheduleTask([&](exrU32 i)
+            const exrU32 tx = i % numTiles.x;
+            const exrU32 ty = exrU32(i / exrFloat(numTiles.x));
+            
+            const exrFloat priority = abs(exrFloat(tx - numTiles.x)) + abs(exrFloat(ty - numTiles.y));
+
+            threadPool.ScheduleTask(priority, [&](exrU32 tileX, exrU32 tileY)
             {
                 // Everything in here must be thread safe!!
-                exrU32 tileX = i % numTiles.x;
-                exrU32 tileY = exrU32(i / exrFloat(numTiles.x));
-
                 // Compute bounds for tile
                 Point2<exrU32> tileMin(tileX * TileSize, tileY * TileSize);
                 Point2<exrU32> tileMax(tileX * TileSize + TileSize, tileY * TileSize + TileSize);
@@ -71,7 +73,7 @@ void SamplerIntegrator::Render(const Scene& scene)
                         }
                     }
                 }
-            }, i);
+            }, tx, ty);
         }
     }
 
