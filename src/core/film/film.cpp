@@ -96,6 +96,8 @@ void Film::WriteImage(exrFloat splatScale)
 
 #ifdef EXR_PLATFORM_WIN
     system(filename.c_str());
+#elif defined EXR_PLATFORM_MAC
+    system(("open " + filename).c_str());
 #endif
 }
 

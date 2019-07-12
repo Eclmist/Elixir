@@ -52,27 +52,48 @@ int main(int argc, exrChar *argv[])
     for (exrS32 i = 1; i < argc; ++i)
     {
         if (!strcmp(argv[i], "--numthreads") || !strcmp(argv[i], "-t"))
+        {
             options.numThreads = atoi(argv[++i]);
+        }
         else if (!strcmp(argv[i], "--out") || !strcmp(argv[i], "-o"))
+        {
             options.outputFile = argv[++i];
+        }
         else if (!strcmp(argv[i], "--quick") || !strcmp(argv[i], "-q"))
+        {
             options.quickRender = true;
+        }
         else if (!strcmp(argv[i], "--quiet"))
+        {
             options.quiet = true;
+        }
         else if (!strcmp(argv[i], "--debug") || !strcmp(argv[i], "-d"))
+        {
             options.debug = true;
+        }
         else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h"))
+        {
             PrintUsage();
+            return -1;
+        }
         else 
+        {
             filenames.push_back(argv[i]);
+        }
     }
 
     ElixirInit(options);
 
     // Process scene description
-    if (filenames.size() == 0 || options.debug)
+    if (filenames.size() == 0)
     {
-        ElixirParseFile("-");
+        if (options.debug)
+            ElixirParseFile("-");
+        else
+        {
+            PrintUsage();
+            return -1;
+        }
     }
     else
     {

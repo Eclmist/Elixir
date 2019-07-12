@@ -27,6 +27,9 @@ _deps
 
 # This one need to figure out how to ge
 *.dir/
+*.DS_STORE
+*.vscode
+test*.png
 
 
 # User-specific files
