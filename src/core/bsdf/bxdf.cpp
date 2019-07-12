@@ -24,14 +24,13 @@
 
 exrBEGIN_NAMESPACE
 
-exrSpectrum BxDF::Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const
+void BxDF::Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const
 {
     *wi = CosineSampleHemisphere(Uniform01Point2());
     if (wo.z < 0)
         wi->z *= -1;
 
     *pdf = Pdf(wo, *wi);
-    return Evaluate(wo, *wi);
 }
 
 exrFloat BxDF::Pdf(const exrVector3& wo, const exrVector3& wi) const

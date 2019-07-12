@@ -20,16 +20,31 @@
 
 #pragma once
 
-#include "bxdf.h"
+#include "material.h"
+#include "core/bsdf/lambert.h"
+#include "core/bsdf/mirror.h"
+#include "core/bsdf/bsdf.h"
 
 exrBEGIN_NAMESPACE
 
-class Specular : public BxDF
+class WittedOpaque : public Material
 {
 public:
-    Specular(const exrSpectrum& r)
-        : BxDF(BxDFType(BSDF_SPECULAR | BSDF_REFLECTION)) {};
+    WittedOpaque(const exrSpectrum& albedo)
+        : m_Albedo(albedo) {}
 
-    exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const override;
+    void ComputeScatteringFunctions(SurfaceInteraction* si) const override
+    {
+        // TODO: Fix memory leak here!!! 
+        si->m_BSDF = new BSDF(*si);
+        // We need to create a new bxdf for each interaction because properties such as color may change based on 
+        // the material definition (textures, etc)
+        si->m_BSDF->AddComponent(new Lambert(m_Albedo));
+        si->m_BSDF->AddComponent(new Mirror(1));
+    }
+
+private:
+    exrSpectrum m_Albedo;
 };
+
 exrEND_NAMESPACE

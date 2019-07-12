@@ -157,7 +157,7 @@ void ElixirSetupDemo()
 
     const exrU32 numSamples = 4;
     const exrU32 numBounces = 4;
-    g_CurrentRenderJob->m_Integrator = std::make_unique<WittedIntegrator>(g_CurrentRenderJob->m_Camera, numBounces);
+    g_CurrentRenderJob->m_Integrator = std::make_unique<WittedIntegrator>(g_CurrentRenderJob->m_Camera, numSamples, numBounces);
     g_CurrentAPIState = APIState::APISTATE_SCENE;
     // Setup scene..
 }

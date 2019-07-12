@@ -38,7 +38,7 @@ void SamplerIntegrator::Render(const Scene& scene)
     AtomicFloat progress;
 
     { // let threadPool destructor join all threads
-        ThreadPool threadPool(12);
+        ThreadPool threadPool(1);
 
         // Loop in terms of x,y tiles so this can become async in the future
         for (exrU32 i = 0; i < totalNumTiles; ++i)

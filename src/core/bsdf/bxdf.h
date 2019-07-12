@@ -45,7 +45,7 @@ public:
     exrBool HasFlags(BxDFType t) const { return (m_BxDFType & t) == t; }
 
     virtual exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const = 0;
-    virtual exrSpectrum Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const;
+    virtual void Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const;
     virtual exrFloat Pdf(const exrVector3& wo, const exrVector3& wi) const;
 
     inline exrBool IsSameHemisphere(const exrVector3& wo, const exrVector3& wi) const { return wo.z * wi.z > 0; };

@@ -20,13 +20,21 @@
 
 #pragma once
 
-#include "specular.h"
+#include "bxdf.h"
 
 exrBEGIN_NAMESPACE
 
-exrSpectrum Specular::Evaluate(const exrVector3& wo, const exrVector3& wi) const
+class Mirror : public BxDF
 {
-    return EXR_M_INVPI;
-}
+public:
+    Mirror(const exrSpectrum& r)
+        : BxDF(BxDFType(BSDF_SPECULAR | BSDF_REFLECTION))
+        , m_SpecularTint(r) {};
 
+    exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const override;
+    void Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const override;
+
+protected:
+    exrSpectrum m_SpecularTint;
+};
 exrEND_NAMESPACE

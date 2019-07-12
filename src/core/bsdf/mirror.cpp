@@ -20,17 +20,24 @@
 
 #pragma once
 
-#include "samplerintegrator.h"
+#include "mirror.h"
 
 exrBEGIN_NAMESPACE
 
-class WittedIntegrator : public SamplerIntegrator
+exrSpectrum Mirror::Evaluate(const exrVector3& wo, const exrVector3& wi) const
 {
-public:
-    WittedIntegrator(std::unique_ptr<Camera>& camera, exrU32 numSamples, exrU32 numBouncePerPixel)
-        : SamplerIntegrator(camera, numSamples, numBouncePerPixel) {};
+    if ((wi - Reflect(wo, exrVector3::Forward())).Magnitude() <= EXR_EPSILON)
+        return m_SpecularTint;
 
-    exrSpectrum Evaluate(const RayDifferential& ray, const Scene& scene, exrU32 depth = 0) const override;
-};
+    return 0;
+}
+
+void Mirror::Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const
+{
+    // local space normal is always z forward
+    *wi = Reflect(wo, exrVector3::Forward());
+    *pdf = 1;
+}
 
 exrEND_NAMESPACE
+
