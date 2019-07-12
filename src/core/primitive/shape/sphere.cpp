@@ -30,30 +30,14 @@ Sphere::Sphere(const Transform& transform, exrFloat radius)
 
 exrBool Sphere::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* hit) const
 {
-    Ray localRay = m_Transform.GetInverseMatrix() * ray;
-    exrVector3 r0 = localRay.m_Origin - exrPoint3::Zero();
-    exrFloat a = Dot(localRay.m_Direction, localRay.m_Direction);
-    exrFloat b = 2 * Dot(r0, localRay.m_Direction);
-    exrFloat c = Dot(r0, r0) - (m_Radius * m_Radius);
-
-    // solve quadratic equation to find t
-    exrFloat t0, t1;
-    if (!exrQuadratic(a, b, c, &t0, &t1))
+    if (!HasIntersect(ray, tHit))
         return false;
 
-    if (t0 > ray.m_TMax || t1 <= EXR_EPSILON)
-        return false;
-
-    if (t0 <= EXR_EPSILON)
-        t0 = t1;
-
-    tHit = t0;
-    hit->m_Point = m_Transform.GetMatrix() * localRay(t0);
+    hit->m_Point = ray(tHit);
     // Normal vectors on sphere do not have to be transformed as sphere have no rotation and only uniform scale
-    hit->m_Normal = static_cast<exrVector3>(localRay(t0)) / m_Radius;
+    hit->m_Normal = (hit->m_Point - m_Transform.GetPosition()) / m_Radius;
     hit->m_Wo = -ray.m_Direction;
     hit->m_Shape = this;
-    hit->m_Normal = hit->m_Normal;
 
     return true;
 }

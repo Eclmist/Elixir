@@ -30,6 +30,20 @@ Quad::Quad(const Transform& transform, const exrVector2& scale)
 
 exrBool Quad::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const
 {
+    if (!HasIntersect(ray, tHit))
+        return false;
+
+    interaction->m_Point = ray(tHit);
+    interaction->m_Normal = m_Transform.GetMatrix() * exrVector3::Forward();
+    interaction->m_Shape = this;
+    interaction->m_Wo = -ray.m_Direction;
+    interaction->m_Normal = interaction->m_Normal;
+
+    return true;
+}
+
+exrBool Quad::HasIntersect(const Ray& ray, exrFloat& tHit) const
+{
     Ray localRay = m_Transform.GetInverseMatrix() * ray;
 
     exrFloat t = (-localRay.m_Origin.z) / localRay.m_Direction.z;
@@ -43,18 +57,8 @@ exrBool Quad::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* inte
         return false;
 
     tHit = t;
-    interaction->m_Point = m_Transform.GetMatrix() * localRay(t);
-    interaction->m_Normal = m_Transform.GetMatrix() * exrVector3::Forward();
-    interaction->m_Shape = this;
-    interaction->m_Wo = -ray.m_Direction;
-    interaction->m_Normal = interaction->m_Normal;
 
     return true;
-}
-
-exrBool Quad::HasIntersect(const Ray& ray, exrFloat& tHit) const
-{
-    throw "Not yet implemented";
 }
 
 Interaction Quad::Sample(const exrPoint2& u) const

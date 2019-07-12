@@ -53,22 +53,18 @@ exrSpectrum WittedIntegrator::Evaluate(const RayDifferential& ray, const Scene& 
         exrSpectrum Li = light->Sample(interaction, uv, wi, pdf);
 
         exrAssert(Li.ToRGB().MagnitudeSquared() >= 0, "Light returning negative values somehow");
-        
+
         if (Li.IsBlack() || pdf == 0)
             continue;
-        
+
         exrSpectrum f = interaction.m_BSDF->Evaluate(wo, wi);
         exrAssert(f.ToRGB().MagnitudeSquared() >= 0, "BSDF returning negative values somehow");
 
         if (f.IsBlack())
             continue;
 
-        SurfaceInteraction i;
-        scene.Intersect(Ray(), &i);
-        // scene.HasIntersect(Ray());
-
-        //if (scene.HasIntersect(Ray(interaction.m_Point, wi, (light->m_Transform.GetPosition() - interaction.m_Point).Magnitude())))
-        //    continue;
+        if (scene.HasIntersect(Ray(interaction.m_Point, wi, (light->m_Transform.GetPosition() - interaction.m_Point).Magnitude())))
+            continue;
 
         L += f * Li * abs(Dot(wi, normal)) / pdf;
     }
