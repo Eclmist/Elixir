@@ -24,6 +24,10 @@
 #include "core/primitive/primitive.h"
 #include "core/ray/raydifferential.h"
 
+// todo: fix memory leak hack 
+#include "core/bsdf/bsdf.h"
+
+
 exrBEGIN_NAMESPACE
 
 SurfaceInteraction::SurfaceInteraction(const exrPoint3& point, const exrVector3& wo,
@@ -31,6 +35,12 @@ SurfaceInteraction::SurfaceInteraction(const exrPoint3& point, const exrVector3&
     : Interaction(point, normal, wo)
     , m_Shape(shape)
     , m_BSDF(nullptr) {};
+
+
+SurfaceInteraction::~SurfaceInteraction()
+{
+    delete m_BSDF;
+}
 
 void SurfaceInteraction::ComputeScatteringFunctions(const RayDifferential& ray)
 {

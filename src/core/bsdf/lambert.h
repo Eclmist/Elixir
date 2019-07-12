@@ -28,7 +28,7 @@ class Lambert : public BxDF
 {
 public:
     Lambert(const exrSpectrum& r)
-        : BxDF(BxDFType(BxDFType::BSDF_REFLECTION | BxDFType::BSDF_DIFFUSE))
+        : BxDF(BxDFType(BxDFType::BSDF_DIFFUSE))
         , m_Albedo(r) {};
 
     exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const override;

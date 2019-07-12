@@ -31,6 +31,7 @@ class BSDF
 {
 public:
     BSDF(const SurfaceInteraction& si, exrFloat ior = 1);
+    ~BSDF();
 
     void AddComponent(BxDF* b);
     exrU32 GetNumComponents(BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;

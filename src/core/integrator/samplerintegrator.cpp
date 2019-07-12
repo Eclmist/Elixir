@@ -35,9 +35,10 @@ void SamplerIntegrator::Render(const Scene& scene)
     const Point2<exrU32> numTiles((resolution.x + TileSize - 1) / TileSize, (resolution.y + TileSize - 1) / TileSize);
 
     const exrU32 totalNumTiles = numTiles.x * numTiles.y;
+    AtomicFloat progress;
 
     { // let threadPool destructor join all threads
-        ThreadPool threadPool(1);
+        ThreadPool threadPool(12);
 
         // Loop in terms of x,y tiles so this can become async in the future
         for (exrU32 i = 0; i < totalNumTiles; ++i)
@@ -49,7 +50,7 @@ void SamplerIntegrator::Render(const Scene& scene)
 
             threadPool.ScheduleTask(priority, [&](exrU32 tileX, exrU32 tileY)
             {
-                // Everything in here must be thread safe!!
+                // Everything from this point must explicitly enforce thread safety!
                 // Compute bounds for tile
                 Point2<exrU32> tileMin(tileX * TileSize, tileY * TileSize);
                 Point2<exrU32> tileMax(tileX * TileSize + TileSize, tileY * TileSize + TileSize);
@@ -73,6 +74,7 @@ void SamplerIntegrator::Render(const Scene& scene)
                         }
                     }
                 }
+
             }, tx, ty);
         }
     }
@@ -86,7 +88,7 @@ exrSpectrum SamplerIntegrator::SpecularReflect(const RayDifferential& ray, const
     exrVector3 wo = intersect.m_Wo;
     exrVector3 wi;
     exrFloat pdf;
-    BxDF::BxDFType type = BxDF::BxDFType(BxDF::BxDFType::BSDF_REFLECTION);
+    BxDF::BxDFType type = BxDF::BxDFType(BxDF::BSDF_REFLECTION | BxDF::BSDF_SPECULAR);
     exrSpectrum f = intersect.m_BSDF->Sample(wo, &wi, &pdf, type);
 
     const exrVector3& normal = intersect.m_Normal;

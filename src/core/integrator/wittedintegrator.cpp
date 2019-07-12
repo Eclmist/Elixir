@@ -63,7 +63,9 @@ exrSpectrum WittedIntegrator::Evaluate(const RayDifferential& ray, const Scene& 
         if (f.IsBlack())
             continue;
 
-        if (scene.HasIntersect(Ray(interaction.m_Point, wi, (light->m_Transform.GetPosition() - interaction.m_Point).Magnitude())))
+        exrFloat rayDistance = (light->m_Transform.GetPosition() - interaction.m_Point).Magnitude();
+
+        if (scene.HasIntersect(Ray(interaction.m_Point, wi, rayDistance)))
             continue;
 
         L += f * Li * abs(Dot(wi, normal)) / pdf;

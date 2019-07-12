@@ -21,7 +21,6 @@
 #pragma once
 
 #include "system/system.h"
-#include "system/profiling/profiler.h"
 
 #include "math/math.h"
 #include "math/conversionutils.h"

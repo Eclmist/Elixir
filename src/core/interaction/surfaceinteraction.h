@@ -32,6 +32,7 @@ class SurfaceInteraction : public Interaction
 {
 public:
     SurfaceInteraction() {};
+    ~SurfaceInteraction();
     SurfaceInteraction(const exrPoint3& point, const exrVector3& wo, const exrVector3& normal, const Shape* shape);
     void ComputeScatteringFunctions(const RayDifferential& ray);
     exrSpectrum EvaluateEmission(const exrVector3& w) const;

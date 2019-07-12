@@ -53,7 +53,7 @@ public:
     {
         for (exrU32 i = 0; i < numThreads; ++i)
         {
-            m_Threads.emplace_back([this]
+            m_Threads.emplace_back([this, i]
             {
                 while (true)
                 {
@@ -64,7 +64,7 @@ public:
                         this->m_Condition.wait(lock, [this] { return this->m_Stop || !this->m_Tasks.empty(); });
 
                         if (this->m_Stop && this->m_Tasks.empty())
-                            return;
+                            break;
 
                         task = std::move(this->m_Tasks.top().m_Task);
                         this->m_Tasks.pop();
@@ -72,6 +72,9 @@ public:
 
                     task();
                 }
+
+                std::lock_guard<std::mutex> lock(m_QueueMutex);
+                exrDebugLine("Thread " << i << " exited with code 0.");
             });
         }
     }

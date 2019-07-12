@@ -36,3 +36,4 @@
 #include "system/utils.h"
 #include "system/types.h"
 #include "system/threading/parallel.h"
+#include "system/profiling/profiler.h"

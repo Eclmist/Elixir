@@ -49,6 +49,7 @@ void Film::AddSplat(const Point2<exrU32>& point, const exrSpectrum& value)
 
 void Film::WriteImage(exrFloat splatScale)
 {
+    exrProfile("Film Write Image");
     // PPM Headers
     exrString header = "P6\n" + std::to_string(m_Resolution.x) + " " + std::to_string(m_Resolution.y) + "\n255\n";
     std::vector<exrByte> buffer(header.begin(), header.end());
