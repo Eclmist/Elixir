@@ -23,6 +23,8 @@
 
 using namespace elixir;
 
+static ElixirOptions g_RuntimeOptions;
+
 void PrintUsage(const exrChar* msg = nullptr)
 {
     if (msg)
@@ -36,6 +38,7 @@ void PrintUsage(const exrChar* msg = nullptr)
     cout << "   -h, --help              Display this help page" << endl;
     cout << "   -t, --numthreads        Specify the number of rendering threads to use" << endl;
     cout << "   -o, --out <fname>       Write the output image to a specified filename" << endl;
+    cout << "   -s, --stamp             Stamp output filename with metadata";
     cout << "   -q, --quick             Reduce output quality for quick render" << endl;
     cout << "   -d, --debug             Render debug scene defined in code. To be deprecated." << endl;
     cout << "Logging Options: " << endl;
@@ -51,36 +54,28 @@ int main(int argc, exrChar *argv[])
     // Process command-line arguments
     for (exrS32 i = 1; i < argc; ++i)
     {
-        if (!strcmp(argv[i], "--numthreads") || !strcmp(argv[i], "-t"))
-        {
-            options.numThreads = atoi(argv[++i]);
-        }
-        else if (!strcmp(argv[i], "--out") || !strcmp(argv[i], "-o"))
-        {
-            options.outputFile = argv[++i];
-        }
-        else if (!strcmp(argv[i], "--quick") || !strcmp(argv[i], "-q"))
-        {
-            options.quickRender = true;
-        }
-        else if (!strcmp(argv[i], "--quiet"))
-        {
-            options.quiet = true;
-        }
-        else if (!strcmp(argv[i], "--debug") || !strcmp(argv[i], "-d"))
-        {
-            options.debug = true;
-        }
-        else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h"))
+        if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h"))
         {
             PrintUsage();
             return -1;
         }
+        else if (!strcmp(argv[i], "--numthreads") || !strcmp(argv[i], "-t"))
+            options.numThreads = exrMax(options.numThreads, exrU32(atoi(argv[++i])));
+        else if (!strcmp(argv[i], "--out") || !strcmp(argv[i], "-o"))
+            options.outputFile = argv[++i];
+        else if (!strcmp(argv[i], "--stamp") || !strcmp(argv[i], "-s"))
+            options.stampFile = true;
+        else if (!strcmp(argv[i], "--quick") || !strcmp(argv[i], "-q"))
+            options.quickRender = true;
+        else if (!strcmp(argv[i], "--quiet"))
+            options.quiet = true;
+        else if (!strcmp(argv[i], "--debug") || !strcmp(argv[i], "-d"))
+            options.debug = true;
         else 
-        {
             filenames.push_back(argv[i]);
-        }
     }
+
+    exrInfoLine("Running Elixir with " << options.numThreads << " thread(s)");
 
     ElixirInit(options);
 

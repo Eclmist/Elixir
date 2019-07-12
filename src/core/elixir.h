@@ -39,11 +39,14 @@ static constexpr exrU32 OutputHeight = 500;
 
 struct ElixirOptions
 {
-    exrU32          numThreads;
-    exrString       outputFile;
-    exrBool         quickRender;
-    exrBool         quiet;
-    exrBool         debug;
+    exrU32          numThreads = 1;
+    exrString       outputFile = "elixir_output";
+    exrBool         stampFile = false;
+    exrBool         quickRender = false;
+    exrBool         quiet = false;
+    exrBool         debug = false;
 };
+
+extern ElixirOptions g_RuntimeOptions;
 
 exrEND_NAMESPACE

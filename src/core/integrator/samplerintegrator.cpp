@@ -38,7 +38,8 @@ void SamplerIntegrator::Render(const Scene& scene)
     AtomicFloat progress;
 
     { // let threadPool destructor join all threads
-        ThreadPool threadPool(12);
+        exrAssert(g_RuntimeOptions.numThreads > 0, "Unable to start elixir with 0 threads!");
+        ThreadPool threadPool(g_RuntimeOptions.numThreads);
 
         // Loop in terms of x,y tiles so this can become async in the future
         for (exrU32 i = 0; i < totalNumTiles; ++i)

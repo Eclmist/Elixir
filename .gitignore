@@ -30,6 +30,7 @@ _deps
 *.DS_STORE
 *.vscode
 test*.png
+*.png
 
 
 # User-specific files

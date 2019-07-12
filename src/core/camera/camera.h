@@ -72,7 +72,7 @@ public:
         m_VerticalStep = 2.0f * halfHeight * focusDist * v;
 
         // TODO: replace these with values from renderjob
-        m_Film = std::make_unique<Film>(Point2<exrU32>(512, 512), "test", true);
+        m_Film = std::make_unique<Film>(Point2<exrU32>(512, 512), g_RuntimeOptions.outputFile, g_RuntimeOptions.stampFile);
     }
 
     //! @brief Creates a view ray based from a uv coordinate

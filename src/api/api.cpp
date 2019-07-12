@@ -37,6 +37,8 @@
 
 exrBEGIN_NAMESPACE
 
+ElixirOptions g_RuntimeOptions;
+
 struct RenderJob
 {
     std::unique_ptr<Camera> m_Camera;
@@ -52,7 +54,6 @@ enum class APIState
     APISTATE_RENDERING          // Currently rendering scene. No API calls are legal.
 };
 
-static ElixirOptions g_RuntimeOptions;
 static APIState g_CurrentAPIState = APIState::APISTATE_UNINITIALIZED;
 static std::unique_ptr<RenderJob> g_CurrentRenderJob = nullptr;
 
@@ -72,6 +73,7 @@ void ElixirCleanup()
     exrAssert(g_CurrentAPIState != APIState::APISTATE_UNINITIALIZED, "ElixirCleanup() called before initialization!");
     g_CurrentAPIState = APIState::APISTATE_UNINITIALIZED;
 }
+
 
 void ElixirParseFile(const exrString& filename)
 {
