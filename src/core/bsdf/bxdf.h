@@ -42,6 +42,7 @@ public:
         : m_BxDFType(type) {};
 
     exrBool MatchesFlags(BxDFType t) const { return (m_BxDFType & t) == m_BxDFType; };
+    exrBool HasFlags(BxDFType t) const { return (m_BxDFType & t) == t; }
 
     virtual exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const = 0;
     virtual exrSpectrum Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const;

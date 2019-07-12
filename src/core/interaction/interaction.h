@@ -42,10 +42,10 @@ struct Interaction
         , m_Normal(normal)
         , m_Wo(wo) {};
 
-    Ray SpawnRay(const exrVector3& direction) const
+    Ray SpawnRay(const exrVector3& direction, exrFloat tMax = MaxFloat) const
     {
         exrPoint3 origin = m_Point + m_Normal * EXR_EPSILON;
-        return Ray(origin, direction);
+        return Ray(origin, direction, tMax);
     };
 
     //! The point of intersection

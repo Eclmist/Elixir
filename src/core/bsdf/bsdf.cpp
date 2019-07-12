@@ -66,10 +66,10 @@ exrSpectrum BSDF::Evaluate(const exrVector3& worldWo, const exrVector3& worldWi,
     {
         if (m_BxDFs[i]->MatchesFlags(flags))
         {
-            if (reflect && !m_BxDFs[i]->MatchesFlags(BxDF::BSDF_REFLECTION))
+            if (reflect && !m_BxDFs[i]->HasFlags(BxDF::BSDF_REFLECTION))
                 continue;
             
-            if (!reflect && !m_BxDFs[i]->MatchesFlags(BxDF::BSDF_TRANSMISSION))
+            if (!reflect && !m_BxDFs[i]->HasFlags(BxDF::BSDF_TRANSMISSION))
                 continue;
 
             res += m_BxDFs[i]->Evaluate(wo, wi);

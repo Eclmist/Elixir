@@ -65,7 +65,7 @@ exrSpectrum WittedIntegrator::Evaluate(const RayDifferential& ray, const Scene& 
 
         exrFloat rayDistance = (light->m_Transform.GetPosition() - interaction.m_Point).Magnitude();
 
-        if (scene.HasIntersect(Ray(interaction.m_Point, wi, rayDistance)))
+        if (scene.HasIntersect(interaction.SpawnRay(wi, rayDistance)))
             continue;
 
         L += f * Li * abs(Dot(wi, normal)) / pdf;
@@ -74,7 +74,7 @@ exrSpectrum WittedIntegrator::Evaluate(const RayDifferential& ray, const Scene& 
     if (depth + 1 < m_NumBouncePerPixel)
     {
         L += SpecularReflect(ray, interaction, scene, depth);
-        //L += SpecularTransmit(ray, interaction, scene, depth);
+        // L += SpecularTransmit(ray, interaction, scene, depth);
     }
 
     return L;

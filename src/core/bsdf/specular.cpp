@@ -20,20 +20,13 @@
 
 #pragma once
 
-#include "bxdf.h"
+#include "specular.h"
 
 exrBEGIN_NAMESPACE
 
-class Lambert : public BxDF
+exrSpectrum Specular::Evaluate(const exrVector3& wo, const exrVector3& wi) const
 {
-public:
-    Lambert(const exrSpectrum& r)
-        : BxDF(BxDFType(BxDFType::BSDF_DIFFUSE | BxDFType::BSDF_REFLECTION))
-        , m_Albedo(r) {};
+    return EXR_M_INVPI;
+}
 
-    exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const override;
-
-private:
-    exrSpectrum m_Albedo;
-};
 exrEND_NAMESPACE

@@ -24,16 +24,12 @@
 
 exrBEGIN_NAMESPACE
 
-class Lambert : public BxDF
+class Specular : public BxDF
 {
 public:
-    Lambert(const exrSpectrum& r)
-        : BxDF(BxDFType(BxDFType::BSDF_DIFFUSE | BxDFType::BSDF_REFLECTION))
-        , m_Albedo(r) {};
+    Specular(const exrSpectrum& r)
+        : BxDF(BxDFType(BSDF_SPECULAR | BSDF_REFLECTION)) {};
 
     exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const override;
-
-private:
-    exrSpectrum m_Albedo;
 };
 exrEND_NAMESPACE
