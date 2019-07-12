@@ -27,10 +27,10 @@
 
 exrBEGIN_NAMESPACE
 
-class WittedOpaque : public Material
+class Glossy : public Material
 {
 public:
-    WittedOpaque(const exrSpectrum& albedo)
+    Glossy(const exrSpectrum& albedo)
         : m_Albedo(albedo) {}
 
     void ComputeScatteringFunctions(SurfaceInteraction* si) const override

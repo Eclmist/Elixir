@@ -27,7 +27,7 @@
 #include "core/integrator/samplerintegrator.h"
 #include "core/light/pointlight.h"
 #include "core/material/diffuse.h"
-#include "core/material/wittedopaque.h"
+#include "core/material/glossy.h"
 #include "core/primitive/geometricprimitive.h"
 #include "core/primitive/shape/box.h"
 #include "core/primitive/shape/quad.h"
@@ -98,7 +98,7 @@ void ElixirSetupDemo()
     Transform transform;
     transform.SetTranslation(exrVector3(0.0f, 2.75f, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Sphere>(transform, 1.0f);
-    geoPrimitive->m_Material = std::make_unique<WittedOpaque>(exrSpectrum(0.8f));
+    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum(0.8f));
     std::unique_ptr<Primitive> p = std::move(geoPrimitive);
     g_CurrentRenderJob->m_Scene->AddPrimitive(p);
 
@@ -106,7 +106,7 @@ void ElixirSetupDemo()
     geoPrimitive = std::make_unique<GeometricPrimitive>();
     transform.SetTranslation(exrVector3(0.0f, 2.75f, -2.75f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
-    geoPrimitive->m_Material = std::make_unique<WittedOpaque>(exrSpectrum(1.0f));
+    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum(1.0f));
     p = std::move(geoPrimitive);
     g_CurrentRenderJob->m_Scene->AddPrimitive(p);
 
@@ -115,7 +115,7 @@ void ElixirSetupDemo()
     transform.SetTranslation(exrVector3(-2.75f, 2.75f, -0.0f));
     transform.SetRotation(exrVector3(0.0f, EXR_M_PIOVER2, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
-    geoPrimitive->m_Material = std::make_unique<WittedOpaque>(exrSpectrum::FromRGB(exrVector3(1.0f, 0.0f, 0.0f), SpectrumType::Reflectance));
+    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum::FromRGB(exrVector3(1.0f, 0.0f, 0.0f), SpectrumType::Reflectance));
     p = std::move(geoPrimitive);
     g_CurrentRenderJob->m_Scene->AddPrimitive(p);
 
@@ -124,7 +124,7 @@ void ElixirSetupDemo()
     transform.SetTranslation(exrVector3(2.75f, 2.75f, -0.0f));
     transform.SetRotation(exrVector3(0.0f, -EXR_M_PIOVER2, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
-    geoPrimitive->m_Material = std::make_unique<WittedOpaque>(exrSpectrum::FromRGB(exrVector3(0.0f, 1.0f, 0.0f), SpectrumType::Reflectance));
+    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum::FromRGB(exrVector3(0.0f, 1.0f, 0.0f), SpectrumType::Reflectance));
     p = std::move(geoPrimitive);
     g_CurrentRenderJob->m_Scene->AddPrimitive(p);
 
@@ -133,7 +133,7 @@ void ElixirSetupDemo()
     transform.SetTranslation(exrVector3(0.0f, 5.5f, 0.0f));
     transform.SetRotation(exrVector3(EXR_M_PIOVER2, 0.0f, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
-    geoPrimitive->m_Material = std::make_unique<WittedOpaque>(exrSpectrum(1.0f));
+    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum(1.0f));
     p = std::move(geoPrimitive);
     g_CurrentRenderJob->m_Scene->AddPrimitive(p);
 
@@ -142,7 +142,7 @@ void ElixirSetupDemo()
     transform.SetTranslation(exrVector3(0.0f, 0.0f, 0.0f));
     transform.SetRotation(exrVector3(-EXR_M_PIOVER2, 0.0f, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
-    geoPrimitive->m_Material = std::make_unique<WittedOpaque>(exrSpectrum(1.0f));
+    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum(1.0f));
     p = std::move(geoPrimitive);
     g_CurrentRenderJob->m_Scene->AddPrimitive(p);
 
@@ -151,6 +151,18 @@ void ElixirSetupDemo()
     transform.SetTranslation(exrVector3(0.0f, 5.4f, 0.0f));
     std::unique_ptr<PointLight> pointLight = std::make_unique<PointLight>(transform, 10.0f);
     std::unique_ptr<Light> l = std::move(pointLight);
+    g_CurrentRenderJob->m_Scene->AddLight(l);
+
+    transform.SetRotation(exrVector3::Zero());
+    transform.SetTranslation(exrVector3(-1.5f, 0.4f, 0.0f));
+    pointLight = std::make_unique<PointLight>(transform, exrSpectrum::FromRGB(exrVector3(0.1f, 0.5f, 1.0f) * 10.0f, SpectrumType::llluminance));
+    l = std::move(pointLight);
+    g_CurrentRenderJob->m_Scene->AddLight(l);
+
+    transform.SetRotation(exrVector3::Zero());
+    transform.SetTranslation(exrVector3(1.5f, 0.4f, 0.0f));
+    pointLight = std::make_unique<PointLight>(transform, exrSpectrum::FromRGB(exrVector3(0.8f, 0.7f, 0.3f) * 10.0f, SpectrumType::llluminance));
+    l = std::move(pointLight);
     g_CurrentRenderJob->m_Scene->AddLight(l);
 
     // Init accel
