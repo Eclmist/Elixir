@@ -26,7 +26,7 @@ exrBEGIN_NAMESPACE
 
 exrSpectrum Mirror::Evaluate(const exrVector3& wo, const exrVector3& wi) const
 {
-    if ((wi - Reflect(wo, exrVector3::Forward())).Magnitude() <= EXR_EPSILON)
+    if ((wi - Reflect(-wo, exrVector3::Forward())).Magnitude() <= EXR_EPSILON)
         return m_SpecularTint;
 
     return 0;
@@ -35,7 +35,7 @@ exrSpectrum Mirror::Evaluate(const exrVector3& wo, const exrVector3& wi) const
 void Mirror::Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const
 {
     // local space normal is always z forward
-    *wi = Reflect(wo, exrVector3::Forward());
+    *wi = Reflect(-wo, exrVector3::Forward());
     *pdf = 1;
 }
 
