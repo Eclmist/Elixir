@@ -25,7 +25,7 @@
 
 exrBEGIN_NAMESPACE
 
-static constexpr exrU32 TileSize = 16;
+constexpr exrU32 TileSize = 16;
 
 class SamplerIntegrator : public Integrator
 {

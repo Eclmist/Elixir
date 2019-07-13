@@ -46,7 +46,7 @@ void Timer::EndTimer()
     m_HasEarlyExit = true;
 
     exrS64 endTime = clock();
-    exrS64 timeElapsed = exrS64(1000) * (endTime - m_StartTime) / CLOCKS_PER_SEC;
+    exrFloat timeElapsed = 1000.0f * (endTime - m_StartTime) / CLOCKS_PER_SEC;
 
     exrString hh, mm, ss;
     FormatTime(timeElapsed, hh, mm, ss);
@@ -54,7 +54,7 @@ void Timer::EndTimer()
     exrInfoLine(m_ProcessName << " completed \t\t\t" << "Total elapsed time: " << hh << ":" << mm << ":" << ss);
 }
 
-void Timer::FormatTime(exrS64 time, exrString& hh, exrString& mm, exrString& ss) 
+void Timer::FormatTime(exrFloat time, exrString& hh, exrString& mm, exrString& ss) 
 {
     //3600000 milliseconds in an hour
     exrS64 hr = time / 3600000;

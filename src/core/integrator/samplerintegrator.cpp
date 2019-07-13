@@ -37,6 +37,7 @@ void SamplerIntegrator::Render(const Scene& scene)
     const exrU32 totalNumTiles = numTiles.x * numTiles.y;
     AtomicFloat progress;
 
+    exrProfile("Rendering")
     { // let threadPool destructor join all threads
         exrAssert(g_RuntimeOptions.numThreads > 0, "Unable to start elixir with 0 threads!");
         ThreadPool threadPool(g_RuntimeOptions.numThreads);
@@ -80,6 +81,7 @@ void SamplerIntegrator::Render(const Scene& scene)
         }
     }
 
+    exrEndProfile();
     film->WriteImage(1.0f / m_NumSamplesPerPixel);
 }
 

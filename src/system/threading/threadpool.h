@@ -72,9 +72,6 @@ public:
 
                     task();
                 }
-
-                std::lock_guard<std::mutex> lock(m_QueueMutex);
-                exrDebugLine("Thread " << i << " exited with code 0.");
             });
         }
     }
