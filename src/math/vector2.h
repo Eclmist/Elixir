@@ -54,7 +54,7 @@ public:
 public:
     inline const float MagnitudeSquared() const { return x * x + y * y; }
     inline const float Magnitude() const { return sqrt(MagnitudeSquared()); }
-    inline Vector2<T> Normalized() const { return *this / Magnitude(); }
+    inline Vector2<T> Normalized() const { return MagnitudeSquared() == 0 ? *this : *this / Magnitude(); }
 
 public:
     static Vector2<T> Zero() { return Vector2<T>(0.0f); }

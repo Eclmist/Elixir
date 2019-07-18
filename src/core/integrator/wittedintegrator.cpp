@@ -28,6 +28,7 @@ exrSpectrum WittedIntegrator::Evaluate(const RayDifferential& ray, const Scene& 
 {
     exrSpectrum L(0.0);
     SurfaceInteraction interaction;
+
     if (!scene.Intersect(ray, &interaction))
     {
         return scene.SampleSkyLight(ray);
@@ -72,13 +73,13 @@ exrSpectrum WittedIntegrator::Evaluate(const RayDifferential& ray, const Scene& 
 
     if (depth + 1 < m_NumBouncePerPixel)
     {
-        exrFloat incidentAngle = CosAngle(normal, wo);
-        exrFloat fresnelProbability = SchlickFresnelReflectanceProbability(1.5f, 1.0f, incidentAngle);
-        L += SpecularReflect(ray, interaction, scene, depth) * fresnelProbability;
-        // L += SpecularTransmit(ray, interaction, scene, depth) * (1.0 - fresnelProbability);
+        L += SpecularReflect(ray, interaction, scene, depth);
+        // L += SpecularTransmit(ray, interaction, scene, depth);
     }
 
     return L;
 }
+
+
 
 exrEND_NAMESPACE

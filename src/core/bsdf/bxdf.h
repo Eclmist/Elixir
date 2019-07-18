@@ -53,4 +53,11 @@ private:
     BxDFType m_BxDFType;
 };
 
+// Introduction to "Physically Based Shading in Theory and Practice" by Naty Hoffman,
+// Siggraph 2015 - https://www.youtube.com/watch?v=j-A0mwsJRmk
+inline exrSpectrum MicrofacetFresnel(exrSpectrum f0, exrFloat vDotH)
+{
+    return f0 + (exrSpectrum(1) - f0) * exrPow(1 - (vDotH), 5);
+}
+
 exrEND_NAMESPACE

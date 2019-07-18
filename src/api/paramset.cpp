@@ -30,7 +30,8 @@ ParamSet::ParamSetItem<T>::ParamSetItem(const exrString& key, const T* value, ex
     , m_Values(std::make_unique<T[]>(numValues))
     , m_NumValues(numValues)
 {
-    std::copy(value, value + numValues, m_Values.get());
+    // TODO: what's wrong with std::copy that is unsafe?
+    //std::copy(value, value + numValues, m_Values.get());
 }
 
 void ParamSet::AddBool(const exrString& key, const exrBool* val, exrU32 numVals)

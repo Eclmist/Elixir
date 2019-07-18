@@ -29,12 +29,12 @@ class Mirror : public BxDF
 public:
     Mirror(const exrSpectrum& r)
         : BxDF(BxDFType(BSDF_SPECULAR | BSDF_REFLECTION))
-        , m_SpecularTint(r) {};
+        , m_Specular(r) {};
 
     exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const override;
     void Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const override;
 
 protected:
-    exrSpectrum m_SpecularTint;
+    exrSpectrum m_Specular;
 };
 exrEND_NAMESPACE
