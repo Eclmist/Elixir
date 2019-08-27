@@ -31,9 +31,9 @@
 
 ## Introduction
 
-Elixir is a cross-platform raytracing renderer written in C++, meant be used as a standalone program or used in 3D packages such as [Blender](https://www.blender.org/) and [Cauldron](https://github.com/DarkDestry/Cauldron) as a renderer plugin. 
+Elixir is a cross-platform raytracing renderer written in C++, meant to be used as a standalone program or used in 3D packages such as [Blender](https://www.blender.org/) and [Cauldron](https://github.com/DarkDestry/Cauldron) as a renderer plugin. 
 
-Inspired by previous works such as [PBRT](http://www.pbr-book.org/) and [SORT](http://sort-renderer.com/), Elixir is physically based and implements similar features such different integrators (witted, path tracing), special acceleration structures, and various BXDFs. The project is still very early in its development stages.
+Inspired by previous works such as [PBRT](http://www.pbr-book.org/) and [SORT](http://sort-renderer.com/), Elixir is physically based and implements similar features such as different integrators (witted, path tracing), special acceleration structures, and various BXDFs. The project is still very early in its development stages.
 
 Elixir is open-sourced, licensed under the [GNU General Public License v3](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
