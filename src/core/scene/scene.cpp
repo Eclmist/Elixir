@@ -27,7 +27,9 @@ exrBEGIN_NAMESPACE
 Scene::Scene(Accelerator::AcceleratorType accelType)
     : m_AcceleratorType(accelType) { }
 
-Scene::Scene(std::vector<std::unique_ptr<Primitive>>& primitives,std::vector<std::unique_ptr<Light>>& lights,
+Scene::Scene(
+    std::vector<std::unique_ptr<Primitive>>& primitives,
+    std::vector<std::unique_ptr<Light>>& lights,
     Accelerator::AcceleratorType accelType)
     : m_AcceleratorType(accelType)
 {
@@ -38,7 +40,7 @@ Scene::Scene(std::vector<std::unique_ptr<Primitive>>& primitives,std::vector<std
         m_SceneLights.push_back(std::move(lights[i]));
 }
 
-void Scene::AddPrimitive(std::unique_ptr<Primitive>& primitive)
+void Scene::AddPrimitive(std::unique_ptr<Primitive> primitive)
 {
     // If primitive is an area light, add it to the lights collection
     AreaLight* primitiveLight = primitive->GetAreaLight();
@@ -49,11 +51,24 @@ void Scene::AddPrimitive(std::unique_ptr<Primitive>& primitive)
     m_SceneChanged = true;
 }
 
-void Scene::AddLight(std::unique_ptr<Light>& light)
+void Scene::AddLight(std::unique_ptr<Light> light)
 {
     light->Preprocess(*this);
     m_Lights.push_back(light.get());
     m_SceneLights.push_back(std::move(light));
+}
+
+void Scene::AddMaterial(std::unique_ptr<Material> material)
+{
+    m_Materials.push_back(std::move(material));
+}
+
+Material* Scene::GetMaterial(exrU32 index)
+{
+    if (index >= m_Materials.size())
+        return nullptr;
+
+    return m_Materials[index].get();
 }
 
 void Scene::AddLight(Light& light)

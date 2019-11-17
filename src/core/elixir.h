@@ -32,8 +32,9 @@
 
 exrBEGIN_NAMESPACE
 
-static constexpr exrU32 OutputWidth = 500;
-static constexpr exrU32 OutputHeight = 500;
+// TODO: These should eventually be moved into camera settings.
+static constexpr exrU32 OutputWidth = 512;
+static constexpr exrU32 OutputHeight = 512;
 
 struct ElixirOptions
 {
@@ -45,6 +46,7 @@ struct ElixirOptions
     exrBool         debug = false;
 };
 
+// Global Varibles / Settings
 extern ElixirOptions g_RuntimeOptions;
 
 exrEND_NAMESPACE

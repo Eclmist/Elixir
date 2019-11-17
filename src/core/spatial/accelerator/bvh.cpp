@@ -43,10 +43,10 @@ BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const Spl
     {
     case BVHAccelerator::SplitMethod::SAH:
         m_RootNode->m_BoundingVolume = AABB::BoundPrimitives(objects);
-        SAHSplit(m_RootNode, MaxNodeDepth);
+        SAHSplit(*m_RootNode, MaxNodeDepth);
         break;
     case BVHAccelerator::SplitMethod::EqualCounts:
-        EqualCountSplit(m_RootNode, MaxNodeDepth);
+        EqualCountSplit(*m_RootNode, MaxNodeDepth);
         break;
     default:
         throw "Selected split method is not implemented!";
@@ -123,17 +123,17 @@ exrBool BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray, Surfac
     return false;
 }
 
-void BVHAccelerator::EqualCountSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 depth)
+void BVHAccelerator::EqualCountSplit(BVHNode& currentRoot, exrU16 depth)
 {
-    currentRoot->m_BoundingVolume = AABB::BoundPrimitives(currentRoot->m_Primitives);
+    currentRoot.m_BoundingVolume = AABB::BoundPrimitives(currentRoot.m_Primitives);
 
-    if (depth <= 0 || currentRoot->m_Primitives.size() <= MaxPrimitivesPerNode)
+    if (depth <= 0 || currentRoot.m_Primitives.size() <= MaxPrimitivesPerNode)
     {
         return;
     }
 
-    const exrU64 numObjects = static_cast<exrU64>(currentRoot->m_Primitives.size());
-    std::vector<Primitive*> temp = currentRoot->m_Primitives;
+    const exrU64 numObjects = static_cast<exrU64>(currentRoot.m_Primitives.size());
+    std::vector<Primitive*> temp = currentRoot.m_Primitives;
 
     // Get a random axis to split objects
     switch (exrU32(Uniform01() * 3))
@@ -159,27 +159,27 @@ void BVHAccelerator::EqualCountSplit(std::unique_ptr<BVHNode>& currentRoot, exrU
     }
 
     exrS64 halfSize = numObjects / 2;
-    currentRoot->m_LeftSubtree = std::make_unique<BVHNode>();
-    currentRoot->m_LeftSubtree->m_Primitives = std::vector<Primitive*>(temp.begin(), temp.begin() + halfSize);
+    currentRoot.m_LeftSubtree = std::make_unique<BVHNode>();
+    currentRoot.m_LeftSubtree->m_Primitives = std::vector<Primitive*>(temp.begin(), temp.begin() + halfSize);
 
-    currentRoot->m_RightSubtree = std::make_unique<BVHNode>();
-    currentRoot->m_RightSubtree->m_Primitives = std::vector<Primitive*>(temp.begin() + halfSize, temp.end());
+    currentRoot.m_RightSubtree = std::make_unique<BVHNode>();
+    currentRoot.m_RightSubtree->m_Primitives = std::vector<Primitive*>(temp.begin() + halfSize, temp.end());
 
-    EqualCountSplit(currentRoot->m_LeftSubtree, depth - 1);
-    EqualCountSplit(currentRoot->m_RightSubtree, depth - 1);
+    EqualCountSplit(*currentRoot.m_LeftSubtree, depth - 1);
+    EqualCountSplit(*currentRoot.m_RightSubtree, depth - 1);
 }
 
-void BVHAccelerator::SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 depth)
+void BVHAccelerator::SAHSplit(BVHNode& currentRoot, exrU16 depth)
 {
-    const auto numObjects = currentRoot->m_Primitives.size();
+    const auto numObjects = currentRoot.m_Primitives.size();
 
     if (depth <= 0 || numObjects <= MaxPrimitivesPerNode)
     {
         return;
     }
 
-    currentRoot->m_LeftSubtree = std::make_unique<BVHNode>();
-    currentRoot->m_RightSubtree = std::make_unique<BVHNode>();
+    currentRoot.m_LeftSubtree = std::make_unique<BVHNode>();
+    currentRoot.m_RightSubtree = std::make_unique<BVHNode>();
 
     const exrU32 splitsPerAxis = 32;
     exrFloat bestHeuristics = MaxFloat;
@@ -195,13 +195,13 @@ void BVHAccelerator::SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 dept
 
             for (exrU32 n = 0; n < numObjects; ++n)
             {
-                if ((currentRoot->m_Primitives[n]->GetBoundingVolume().Min()[axis] - currentRoot->m_BoundingVolume.Min()[axis]) / currentRoot->m_BoundingVolume.GetExtents()[axis] < splitValue)
+                if ((currentRoot.m_Primitives[n]->GetBoundingVolume().Min()[axis] - currentRoot.m_BoundingVolume.Min()[axis]) / currentRoot.m_BoundingVolume.GetExtents()[axis] < splitValue)
                 {
-                    leftObjects.push_back(currentRoot->m_Primitives[n]);
+                    leftObjects.push_back(currentRoot.m_Primitives[n]);
                 }
                 else
                 {
-                    rightObjects.push_back(currentRoot->m_Primitives[n]);
+                    rightObjects.push_back(currentRoot.m_Primitives[n]);
                 }
             }
 
@@ -209,7 +209,7 @@ void BVHAccelerator::SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 dept
             AABB rightBv = AABB::BoundPrimitives(rightObjects);
 
             // Get score
-            exrFloat sc = currentRoot->m_BoundingVolume.GetSurfaceArea();
+            exrFloat sc = currentRoot.m_BoundingVolume.GetSurfaceArea();
             exrFloat pa = leftBv.GetSurfaceArea() / sc;         // Probably of hitting A if hit parent
             exrFloat pb = rightBv.GetSurfaceArea() / sc;        // Probably of hitting B if hit parent
 
@@ -221,10 +221,10 @@ void BVHAccelerator::SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 dept
             if (heuristics < bestHeuristics)
             {
                 bestHeuristics = heuristics;
-                currentRoot->m_LeftSubtree->m_Primitives = leftObjects;
-                currentRoot->m_LeftSubtree->m_BoundingVolume = leftBv;
-                currentRoot->m_RightSubtree->m_Primitives = rightObjects;
-                currentRoot->m_RightSubtree->m_BoundingVolume = rightBv;
+                currentRoot.m_LeftSubtree->m_Primitives = leftObjects;
+                currentRoot.m_LeftSubtree->m_BoundingVolume = leftBv;
+                currentRoot.m_RightSubtree->m_Primitives = rightObjects;
+                currentRoot.m_RightSubtree->m_BoundingVolume = rightBv;
             }
 
             // if all objects already on left side, no need to continue testing bigger split values
@@ -235,8 +235,8 @@ void BVHAccelerator::SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 dept
         }
     }
 
-    SAHSplit(currentRoot->m_LeftSubtree, depth - 1);
-    SAHSplit(currentRoot->m_RightSubtree, depth - 1);
+    SAHSplit(*currentRoot.m_LeftSubtree, depth - 1);
+    SAHSplit(*currentRoot.m_RightSubtree, depth - 1);
 }
 
 exrEND_NAMESPACE

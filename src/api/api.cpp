@@ -24,6 +24,7 @@
 
 #include "core/camera/camera.h"
 #include "core/integrator/samplerintegrator.h"
+#include "core/integrator/pathtracer.h"
 #include "core/light/pointlight.h"
 #include "core/material/diffuse.h"
 #include "core/material/glossy.h"
@@ -38,6 +39,8 @@ exrBEGIN_NAMESPACE
 
 ElixirOptions g_RuntimeOptions;
 
+// These options PER RENDER options. Scenes, cameras, integrators, etc.
+// General elixir settings (number of threads, etc) should go into ElixirOptions.
 struct RenderJob
 {
     std::unique_ptr<Camera> m_Camera;
@@ -45,32 +48,18 @@ struct RenderJob
     std::unique_ptr<Integrator> m_Integrator;
 };
 
-enum class APIState
-{
-    APISTATE_UNINITIALIZED,     // Before ElixirInit() or after ElixirCleanup(). No API calls are legal.
-    APISTATE_OPTIONS,           // Scene-wide global options can be set
-    APISTATE_SCENE,             // Scene may be described
-    APISTATE_RENDERING          // Currently rendering scene. No API calls are legal.
-};
-
-static APIState g_CurrentAPIState = APIState::APISTATE_UNINITIALIZED;
 static std::unique_ptr<RenderJob> g_CurrentRenderJob = nullptr;
 
 void ElixirInit(const ElixirOptions& options)
 {
-    exrAssert(g_CurrentAPIState == APIState::APISTATE_UNINITIALIZED, "ElixirInit() has already been called!");
-
     g_RuntimeOptions = options;
     g_CurrentRenderJob = std::make_unique<RenderJob>();
-    g_CurrentAPIState = APIState::APISTATE_OPTIONS;
 }
 
 void ElixirCleanup()
 {
-    exrAssert(g_CurrentAPIState != APIState::APISTATE_UNINITIALIZED, "ElixirCleanup() called before initialization!");
-    g_CurrentAPIState = APIState::APISTATE_UNINITIALIZED;
+    // Nothing to clean up for now.
 }
-
 
 void ElixirParseFile(const exrString& filename)
 {
@@ -82,7 +71,6 @@ void ElixirParseFile(const exrString& filename)
 
 void ElixirSetupDemo()
 {
-    exrAssert(g_CurrentAPIState == APIState::APISTATE_OPTIONS, "ElixirSetupDemo() called before initialization!");
     exrPoint3 position(0.0f, 2.75f, 10.0f);
     exrPoint3 lookat(0.0f, 2.75f, 0.0f);
     exrFloat fov = 40.0f;
@@ -92,94 +80,85 @@ void ElixirSetupDemo()
     g_CurrentRenderJob->m_Camera = std::make_unique<Camera>(position, lookat, exrVector3::Up(), fov, aspect, aperture, focusDist);
     g_CurrentRenderJob->m_Scene = std::make_unique<Scene>();
 
-    // Scene objects to be added here.
+    // Setup materials in the scene
+    // 0 - White
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Glossy>(exrSpectrum(1.0), exrSpectrum(0.0)));
+    // 1 - Red
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Glossy>(exrSpectrum::FromRGB(exrVector3(1.0, 0.0, 0.0)), exrSpectrum(0)));
+    // 2 - Green
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Glossy>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0)), exrSpectrum(0)));
+
+    // Setup scene primitives
+    // Sphere
     std::unique_ptr<GeometricPrimitive> geoPrimitive = std::make_unique<GeometricPrimitive>();
     Transform transform;
     transform.SetTranslation(exrVector3(0.0f, 2.75f, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Sphere>(transform, 1.0f);
-    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum(1.0f), exrSpectrum(0.04f));
-    std::unique_ptr<Primitive> p = std::move(geoPrimitive);
-    g_CurrentRenderJob->m_Scene->AddPrimitive(p);
+    geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(0);
+    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     // Back wall
     geoPrimitive = std::make_unique<GeometricPrimitive>();
     transform.SetTranslation(exrVector3(0.0f, 2.75f, -2.75f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
-    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum(1.0f), exrSpectrum(0.04f));
-    p = std::move(geoPrimitive);
-    g_CurrentRenderJob->m_Scene->AddPrimitive(p);
+    geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(0);
+    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     // left wall
     geoPrimitive = std::make_unique<GeometricPrimitive>();
     transform.SetTranslation(exrVector3(-2.75f, 2.75f, -0.0f));
     transform.SetRotation(exrVector3(0.0f, EXR_M_PIOVER2, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
-    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum::FromRGB(exrVector3(1.0f, 0.0f, 0.0f)), exrSpectrum::FromRGB(exrVector3::Zero()));
-    p = std::move(geoPrimitive);
-    g_CurrentRenderJob->m_Scene->AddPrimitive(p);
+    geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(1);
+    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     // right wall
     geoPrimitive = std::make_unique<GeometricPrimitive>();
     transform.SetTranslation(exrVector3(2.75f, 2.75f, -0.0f));
     transform.SetRotation(exrVector3(0.0f, -EXR_M_PIOVER2, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
-    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum::FromRGB(exrVector3(0.0f, 1.0f, 0.0f)), exrSpectrum::FromRGB(exrVector3::Zero()));
-    p = std::move(geoPrimitive);
-    g_CurrentRenderJob->m_Scene->AddPrimitive(p);
+    geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(2);
+    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     // ceiling
     geoPrimitive = std::make_unique<GeometricPrimitive>();
     transform.SetTranslation(exrVector3(0.0f, 5.5f, 0.0f));
     transform.SetRotation(exrVector3(EXR_M_PIOVER2, 0.0f, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
-    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum(1.0f), exrSpectrum(0.04f));
-    p = std::move(geoPrimitive);
-    g_CurrentRenderJob->m_Scene->AddPrimitive(p);
+    geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(0);
+    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     // floor
     geoPrimitive = std::make_unique<GeometricPrimitive>();
     transform.SetTranslation(exrVector3(0.0f, 0.0f, 0.0f));
     transform.SetRotation(exrVector3(-EXR_M_PIOVER2, 0.0f, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
-    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum(1.0f), exrSpectrum(0.04f));
-    p = std::move(geoPrimitive);
-    g_CurrentRenderJob->m_Scene->AddPrimitive(p);
+    geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(0);
+    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     // Lights
     transform.SetRotation(exrVector3::Zero());
     transform.SetTranslation(exrVector3(0.0f, 5.4f, 0.0f));
-    std::unique_ptr<PointLight> pointLight = std::make_unique<PointLight>(transform, 10.0f);
-    std::unique_ptr<Light> l = std::move(pointLight);
-    g_CurrentRenderJob->m_Scene->AddLight(l);
+    g_CurrentRenderJob->m_Scene->AddLight(std::make_unique<PointLight>(transform, 10.0f));
 
     transform.SetRotation(exrVector3::Zero());
     transform.SetTranslation(exrVector3(-1.5f, 0.4f, 0.0f));
-    pointLight = std::make_unique<PointLight>(transform, exrSpectrum::FromRGB(exrVector3(0.1f, 0.5f, 1.0f) * 10.0f));
-    l = std::move(pointLight);
-    g_CurrentRenderJob->m_Scene->AddLight(l);
+    g_CurrentRenderJob->m_Scene->AddLight(std::make_unique<PointLight>(transform, exrSpectrum::FromRGB(exrVector3(0.1f, 0.5f, 1.0f) * 10.0f)));
 
     transform.SetRotation(exrVector3::Zero());
     transform.SetTranslation(exrVector3(1.5f, 0.4f, 0.0f));
-    pointLight = std::make_unique<PointLight>(transform, exrSpectrum::FromRGB(exrVector3(0.8f, 0.7f, 0.3f) * 10.0f));
-    l = std::move(pointLight);
-    g_CurrentRenderJob->m_Scene->AddLight(l);
+    g_CurrentRenderJob->m_Scene->AddLight(std::make_unique<PointLight>(transform, exrSpectrum::FromRGB(exrVector3(0.8f, 0.7f, 0.3f) * 10.0f)));
 
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
     const exrU32 numSamples = 1;
     const exrU32 numBounces = 2;
-    //g_CurrentRenderJob->m_Integrator = std::make_unique<SamplerIntegrator>(g_CurrentRenderJob->m_Camera, numSamples, numBounces);
-    g_CurrentAPIState = APIState::APISTATE_SCENE;
-    // Setup scene..
+    //g_CurrentRenderJob->m_Integrator = std::make_unique<PathTracer>(g_CurrentRenderJob->m_Camera, numSamples, numBounces);
 }
 
 void ElixirRender()
 {
-    exrAssert(g_CurrentAPIState == APIState::APISTATE_SCENE, "ElixirRendering() before scene has been described!");
-    exrAssert(!g_CurrentRenderJob->m_Scene->m_SceneChanged, "Did we forget to call InitAccelerator()?");
-    g_CurrentAPIState = APIState::APISTATE_RENDERING;
-
     // Do render/write file
     g_CurrentRenderJob->m_Integrator->Render(*g_CurrentRenderJob->m_Scene);
 }

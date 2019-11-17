@@ -30,7 +30,7 @@ constexpr exrU32 TileSize = 16;
 class SamplerIntegrator : public Integrator
 {
 public:
-    SamplerIntegrator(std::unique_ptr<Camera>& camera, exrU32 numSamplesPerPixel, exrU32 numBouncePerPixel)
+    SamplerIntegrator(std::unique_ptr<Camera> camera, exrU32 numSamplesPerPixel, exrU32 numBouncePerPixel)
         : m_Camera(std::move(camera))
         , m_NumSamplesPerPixel(numSamplesPerPixel)
         , m_NumBouncePerPixel(numBouncePerPixel) {};

@@ -59,7 +59,7 @@ AreaLight* GeometricPrimitive::GetAreaLight() const
 
 const Material* GeometricPrimitive::GetMaterial() const
 {
-    return m_Material.get();
+    return m_Material;
 }
 
 exrEND_NAMESPACE

@@ -100,7 +100,7 @@ private:
     //!
     //! @param currentRoot      The current root node, whose left and right subtree we will populate
     //! @param depth            The depth of the BVH tree, used to stop recursion when m_MaxNodeDepth is reached 
-    static void EqualCountSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 depth);
+    static void EqualCountSplit(BVHNode& currentRoot, exrU16 depth);
     
     //! @brief Recursively splits objects based on surface area heuristics
     //! 
@@ -108,7 +108,7 @@ private:
     //!
     //! @param currentRoot      The current root node, whose left and right subtree we will populate
     //! @param depth            The depth of the BVH tree, used to stop recursion when m_MaxNodeDepth is reached 
-    static void SAHSplit(std::unique_ptr<BVHNode>& currentRoot, exrU16 depth);
+    static void SAHSplit(BVHNode& currentRoot, exrU16 depth);
 
 private:
     //! The root node of the BVH

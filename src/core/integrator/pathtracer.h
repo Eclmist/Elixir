@@ -20,27 +20,12 @@
 
 #pragma once
 
-#include "primitive.h"
+#include "samplerintegrator.h"
 
 exrBEGIN_NAMESPACE
 
-class AABB;
-
-class GeometricPrimitive : public Primitive
+class PathTracer
 {
-public:
-    AABB GetBoundingVolume() const override;
-    exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const override;
-    exrBool HasIntersect(const Ray& r, exrFloat& tHit) const override;
-    void ComputeScatteringFunctions(SurfaceInteraction* interaction) const override;
-public:
-    AreaLight* GetAreaLight() const override;
-    const Material* GetMaterial() const override;
-
-public:
-    std::unique_ptr<Shape> m_Shape;
-    Material* m_Material;
-    std::unique_ptr<AreaLight> m_AreaLight;
 };
 
 exrEND_NAMESPACE

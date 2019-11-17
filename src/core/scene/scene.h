@@ -35,9 +35,12 @@ class Scene
 {
 public:
 
-    Scene(Accelerator::AcceleratorType accelType = Accelerator::AcceleratorType::ACCELERATORTYPE_BVH);
+    Scene(
+        Accelerator::AcceleratorType accelType = Accelerator::AcceleratorType::ACCELERATORTYPE_BVH);
 
-    Scene(std::vector<std::unique_ptr<Primitive>>& primitives, std::vector<std::unique_ptr<Light>>& lights,
+    Scene(
+        std::vector<std::unique_ptr<Primitive>>& primitives,
+        std::vector<std::unique_ptr<Light>>& lights,
         Accelerator::AcceleratorType accelType);
 
     //! @brief Adds a primitive to the scene
@@ -45,7 +48,7 @@ public:
     //! This function adds a new primitive to the scene's primitive collection
     //! 
     //! @param primitive        A pointer to the primitive
-    void AddPrimitive(std::unique_ptr<Primitive>& primitive);
+    void AddPrimitive(std::unique_ptr<Primitive> primitive);
 
     //! @brief Adds a light to the scene
     //! 
@@ -53,7 +56,17 @@ public:
     //! Lights will be importance sampled
     //! 
     //! @param light            A pointer to the light
-    void AddLight(std::unique_ptr<Light>& light);
+    void AddLight(std::unique_ptr<Light> light);
+
+    //! @brief Adds a material to the scene
+    //! 
+    //! This function adds a new material to the scene's material collection
+    //! 
+    //! @param material        A pointer to the material
+    void AddMaterial(std::unique_ptr<Material> material);
+
+    //! @brief Returns a material reference given the index
+    Material* GetMaterial(exrU32 index);
 
     //! @brief Initializes the scene's accelerator if it has yet to be initialized or needs to be updated
     void InitAccelerator();
@@ -114,6 +127,9 @@ private:
 
     //! A collection of pointers that points to primitives in the scene
     std::vector<std::unique_ptr<Primitive>> m_Primitives;
+
+    //! A collection of materials that primitives in this scene can use
+    std::vector<std::unique_ptr<Material>> m_Materials;
 };
 
 exrEND_NAMESPACE

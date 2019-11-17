@@ -44,6 +44,10 @@ void PrintUsage(const exrChar* msg = nullptr)
     cout << "Logging Options: " << endl;
     cout << "   --quiet                 Suppress all non-error messages" << endl;
     cout << "For documentations, please refer to <http://docs.elixir.moe/>" << endl;
+
+    #ifdef EXR_PLATFORM_WIN
+        system("PAUSE");
+    #endif
 }
 
 int main(int argc, exrChar *argv[])
@@ -75,8 +79,6 @@ int main(int argc, exrChar *argv[])
             filenames.push_back(argv[i]);
     }
 
-    exrInfoLine("Running Elixir with " << options.numThreads << " thread(s)");
-
     ElixirInit(options);
 
     // Process scene description
@@ -95,15 +97,15 @@ int main(int argc, exrChar *argv[])
         for (const exrString& f : filenames)
         {
             ElixirParseFile(f);
+            break; // Only render the first file. This is a temp solution until the command
+                   // args have been designed to make sense for multiple files (filename, etc.)
         }
     }
+
+    exrInfoLine("Running Elixir with " << options.numThreads << " thread(s)");
 
     ElixirRender();
     ElixirCleanup();
    
-#ifdef EXR_PLATFORM_WIN
-    system("PAUSE");
-#endif
-
     return 0;
 }
