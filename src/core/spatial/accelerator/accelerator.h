@@ -24,9 +24,7 @@
 
 exrBEGIN_NAMESPACE
 
-//! @brief Defines the base class for hierarchial and spacial accelerators
-//!
-//! TODO: Add description
+//! @brief Defines the base class for hierarchical and spacial accelerators
 class Accelerator
 {
 public:
@@ -34,7 +32,7 @@ public:
     enum AcceleratorType
     {
         ACCELERATORTYPE_BVH,
-        ACCELERATORTYPE_KDTREE
+        ACCELERATORTYPE_KDTREE // Not implemented (maybe no point? BVH is much faster.)
     };
 
     //! @brief Test the accelerator for intersections with a ray
