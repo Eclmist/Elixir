@@ -88,10 +88,4 @@ inline exrBool exrQuadratic(exrFloat a, exrFloat b, exrFloat c, exrFloat* t0, ex
     return true;
 }
 
-inline exrFloat SchlickFresnelReflectanceProbability(exrFloat n1, exrFloat n2, exrFloat cosTheta)
-{
-    exrFloat r0 = exrPow((n1 - n2) / (n1 + n2), 2);
-    return r0 + (1 - r0) * exrPow((1 - cosTheta), 5);
-}
-
 exrEND_NAMESPACE

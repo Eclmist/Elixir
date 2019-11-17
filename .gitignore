@@ -4,7 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # Elixir specific
-src/core/system/config.h
+src/system/config.h
 GenerateProjects.*
 vs-chromium-project.txt
 
@@ -28,6 +28,7 @@ _deps
 # This one need to figure out how to ge
 *.dir/
 *.DS_STORE
+Thumbs.db
 *.vscode
 test*.png
 *.png

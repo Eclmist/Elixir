@@ -30,8 +30,9 @@ exrBEGIN_NAMESPACE
 class Glossy : public Material
 {
 public:
-    Glossy(const exrSpectrum& albedo)
-        : m_Albedo(albedo) {}
+    Glossy(const exrSpectrum& albedo, const exrSpectrum& specular)
+        : m_Albedo(albedo)
+        , m_Specular(specular) {};
 
     void ComputeScatteringFunctions(SurfaceInteraction* si) const override
     {
@@ -40,11 +41,12 @@ public:
         // We need to create a new bxdf for each interaction because properties such as color may change based on 
         // the material definition (textures, etc)
         si->m_BSDF->AddComponent(new Lambert(m_Albedo));
-        si->m_BSDF->AddComponent(new Mirror(1));
+        si->m_BSDF->AddComponent(new Mirror(m_Specular));
     }
 
 private:
     exrSpectrum m_Albedo;
+    exrSpectrum m_Specular;
 };
 
 exrEND_NAMESPACE

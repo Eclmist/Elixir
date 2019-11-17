@@ -26,10 +26,14 @@ exrBEGIN_NAMESPACE
 
 exrSpectrum Mirror::Evaluate(const exrVector3& wo, const exrVector3& wi) const
 {
-    if ((wi - Reflect(-wo, exrVector3::Forward())).Magnitude() <= EXR_EPSILON)
-        return m_SpecularTint;
+    // If angle of incidence != angle of reflection
+    if ((wi - Reflect(-wo, exrVector3::Forward())).Magnitude() > EXR_EPSILON)
+        return 0;
 
-    return 0;
+    // Compute fresnel
+    exrVector3 halfVector = (wo + wi).Normalized();
+    exrFloat vDotH = Dot(wi, halfVector);
+    return MicrofacetFresnel(m_Specular, vDotH);
 }
 
 void Mirror::Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const
