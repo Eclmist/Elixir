@@ -31,15 +31,10 @@ public:
     RGBSpectrum(const Spectrum<3>& v) : Spectrum(v) {};
 
 public:
-    // virtual functions
-    exrVector3 ToXYZ() const;
     exrVector3 ToRGB() const;
 
 public:
-    // SpectrumType may not be used here, but since we may swap out which kind of spectrum
-    // objects to use on compile time, we need to have the same signature.
-    static RGBSpectrum FromRGB(const exrVector3& rgb, SpectrumType type);
-    static RGBSpectrum FromXYZ(const exrVector3& xyz, SpectrumType type);
+    static RGBSpectrum FromRGB(const exrVector3& rgb);
 };
 
 exrEND_NAMESPACE

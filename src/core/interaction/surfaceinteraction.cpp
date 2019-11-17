@@ -22,7 +22,6 @@
 
 #include "surfaceinteraction.h"
 #include "core/primitive/primitive.h"
-#include "core/ray/raydifferential.h"
 
 // todo: fix memory leak hack 
 #include "core/bsdf/bsdf.h"
@@ -42,7 +41,7 @@ SurfaceInteraction::~SurfaceInteraction()
     delete m_BSDF;
 }
 
-void SurfaceInteraction::ComputeScatteringFunctions(const RayDifferential& ray)
+void SurfaceInteraction::ComputeScatteringFunctions(const Ray& ray)
 {
     m_Primitive->ComputeScatteringFunctions(this);
 }

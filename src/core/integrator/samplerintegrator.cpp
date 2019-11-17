@@ -28,10 +28,10 @@ void SamplerIntegrator::Render(const Scene& scene)
 {
     Preprocess(scene);
 
-    Film* film = m_Camera->m_Film.get();
+    Exporter* exporter = m_Camera->m_Exporter.get();
     
     // Compute number of tiles
-    const Point2<exrU32> resolution = film->m_Resolution;
+    const Point2<exrU32> resolution = exporter->m_Resolution;
     const Point2<exrU32> numTiles((resolution.x + TileSize - 1) / TileSize, (resolution.y + TileSize - 1) / TileSize);
 
     const exrU32 totalNumTiles = numTiles.x * numTiles.y;
@@ -67,12 +67,12 @@ void SamplerIntegrator::Render(const Scene& scene)
                         {
                             exrFloat u = exrFloat(tileMin.x + x + Uniform01()) / exrFloat(resolution.x);
                             exrFloat v = exrFloat(tileMin.y + y + Uniform01()) / exrFloat(resolution.y);
-                            RayDifferential viewRay = m_Camera->GetViewRay(u, v);
+                            Ray viewRay = m_Camera->GetViewRay(u, v);
 
                             exrSpectrum L(0.0f);
                             L += Evaluate(viewRay, scene);
 
-                            film->AddSplat(Point2<exrU32>(tileMin.x + x, tileMin.y + y), L);
+                            exporter->WritePixel(Point2<exrU32>(tileMin.x + x, tileMin.y + y), L);
                         }
                     }
                 }
@@ -82,10 +82,10 @@ void SamplerIntegrator::Render(const Scene& scene)
     }
 
     exrEndProfile();
-    film->WriteImage(1.0f / m_NumSamplesPerPixel);
+    exporter->WriteImage(1.0f / m_NumSamplesPerPixel);
 }
 
-exrSpectrum SamplerIntegrator::SpecularReflect(const RayDifferential& ray, const SurfaceInteraction& intersect,
+exrSpectrum SamplerIntegrator::SpecularReflect(const Ray& ray, const SurfaceInteraction& intersect,
     const Scene& scene, exrU32 depth) const
 {
     exrVector3 wo = intersect.m_Wo;
@@ -97,7 +97,7 @@ exrSpectrum SamplerIntegrator::SpecularReflect(const RayDifferential& ray, const
     const exrVector3& normal = intersect.m_Normal;
     if (pdf > 0 && !f.IsBlack() && abs(Dot(wi, normal)) > 0)
     {
-        RayDifferential reflRay = intersect.SpawnRay(wi);
+        Ray reflRay = intersect.SpawnRay(wi);
         return f * Evaluate(reflRay, scene, depth + 1) * abs(Dot(wi, normal)) / pdf;
     }
     else
@@ -106,7 +106,7 @@ exrSpectrum SamplerIntegrator::SpecularReflect(const RayDifferential& ray, const
     }
 }
 
-exrSpectrum SamplerIntegrator::SpecularRefract(const RayDifferential& ray, const SurfaceInteraction& intersect,
+exrSpectrum SamplerIntegrator::SpecularRefract(const Ray& ray, const SurfaceInteraction& intersect,
     const Scene& scene, exrU32 depth) const
 {
     throw "Not yet implemented!";

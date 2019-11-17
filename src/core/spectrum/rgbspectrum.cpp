@@ -22,13 +22,6 @@
 
 exrBEGIN_NAMESPACE
 
-exrVector3 RGBSpectrum::ToXYZ() const
-{
-    exrVector3 xyz = exrVector3::Zero();
-    RGBToXYZ(m_Wavelengths, xyz.m_Data);
-    return xyz;
-}
-
 exrVector3 RGBSpectrum::ToRGB() const
 {
     exrVector3 rgb = exrVector3::Zero();
@@ -38,20 +31,13 @@ exrVector3 RGBSpectrum::ToRGB() const
     return rgb;
 }
 
-RGBSpectrum RGBSpectrum::FromRGB(const exrVector3& rgb, SpectrumType type)
+RGBSpectrum RGBSpectrum::FromRGB(const exrVector3& rgb)
 {
     RGBSpectrum s;
     s.m_Wavelengths[0] = rgb.r;
     s.m_Wavelengths[1] = rgb.g;
     s.m_Wavelengths[2] = rgb.b;
     return s;
-}
-
-RGBSpectrum RGBSpectrum::FromXYZ(const exrVector3& xyz, SpectrumType type)
-{
-    exrVector3 rgb = exrVector3::Zero();
-    XYZToRGB(xyz.m_Data, rgb.m_Data);
-    return FromRGB(rgb, type);
 }
 
 exrEND_NAMESPACE

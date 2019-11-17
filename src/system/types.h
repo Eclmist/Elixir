@@ -27,7 +27,6 @@ exrBEGIN_NAMESPACE
 class Matrix4x4;
 class Ray;
 class RGBSpectrum;
-class SampledSpectrum;
 
 template <class T> class Vector2;
 template <class T> class Vector3;

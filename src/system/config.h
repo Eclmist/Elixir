@@ -25,8 +25,8 @@
 
 #pragma once
 
-#define EXR_PLATFORM_NAME				"Mac OS"
-/* #undef EXR_PLATFORM_WIN */
-#define EXR_PLATFORM_MAC
+#define EXR_PLATFORM_NAME				"Windows"
+#define EXR_PLATFORM_WIN
+/* #undef EXR_PLATFORM_MAC */
 /* #undef EXR_PLATFORM_LINUX */
 #define EXR_USE_NAMESPACE

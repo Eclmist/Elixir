@@ -33,7 +33,7 @@
 #pragma once
 
 #include "core/elixir.h"
-#include "core/film/film.h"
+#include "core/exporter/exporter.h"
 
 exrBEGIN_NAMESPACE
 
@@ -72,19 +72,19 @@ public:
         m_VerticalStep = 2.0f * halfHeight * focusDist * v;
 
         // TODO: replace these with values from renderjob
-        m_Film = std::make_unique<Film>(Point2<exrU32>(512, 512), g_RuntimeOptions.outputFile, g_RuntimeOptions.stampFile);
+        // m_Film = std::make_unique<Film>(Point2<exrU32>(512, 512), g_RuntimeOptions.outputFile, g_RuntimeOptions.stampFile);
     }
 
     //! @brief Creates a view ray based from a uv coordinate
     //!
     //! @param s                The u coordinate of the ray in screen space
     //! @param t                The v coordinate of the ray in screen space
-    RayDifferential GetViewRay(exrFloat s, exrFloat t) 
+    Ray GetViewRay(exrFloat s, exrFloat t) 
     { 
         exrPoint2 randomDiscOffset = ConcentricSampleDisk(Uniform01Point2());
         exrVector3 rd = lensRadius * exrVector3(randomDiscOffset.x, randomDiscOffset.y, 0);
         exrVector3 offset = u * rd.x + v * rd.y;
-        return RayDifferential(m_Position + offset, m_Min + s * m_HorizontalStep + t * m_VerticalStep - m_Position - offset); 
+        return Ray(m_Position + offset, m_Min + s * m_HorizontalStep + t * m_VerticalStep - m_Position - offset); 
     }
 
     exrPoint3 m_Position;
@@ -95,7 +95,7 @@ public:
     exrVector3 u, v, w;
     exrFloat lensRadius;
 
-    std::unique_ptr<Film> m_Film;
+    std::unique_ptr<Exporter> m_Exporter;
 };
 
 exrEND_NAMESPACE

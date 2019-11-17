@@ -23,7 +23,6 @@
 #include "api.h"
 
 #include "core/camera/camera.h"
-#include "core/integrator/wittedintegrator.h"
 #include "core/integrator/samplerintegrator.h"
 #include "core/light/pointlight.h"
 #include "core/material/diffuse.h"
@@ -63,8 +62,6 @@ void ElixirInit(const ElixirOptions& options)
 
     g_RuntimeOptions = options;
     g_CurrentRenderJob = std::make_unique<RenderJob>();
-    SampledSpectrum::Init();
-
     g_CurrentAPIState = APIState::APISTATE_OPTIONS;
 }
 
@@ -117,7 +114,7 @@ void ElixirSetupDemo()
     transform.SetTranslation(exrVector3(-2.75f, 2.75f, -0.0f));
     transform.SetRotation(exrVector3(0.0f, EXR_M_PIOVER2, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
-    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum::FromRGB(exrVector3(1.0f, 0.0f, 0.0f), SpectrumType::Reflectance));
+    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum::FromRGB(exrVector3(1.0f, 0.0f, 0.0f)));
     p = std::move(geoPrimitive);
     g_CurrentRenderJob->m_Scene->AddPrimitive(p);
 
@@ -126,7 +123,7 @@ void ElixirSetupDemo()
     transform.SetTranslation(exrVector3(2.75f, 2.75f, -0.0f));
     transform.SetRotation(exrVector3(0.0f, -EXR_M_PIOVER2, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
-    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum::FromRGB(exrVector3(0.0f, 1.0f, 0.0f), SpectrumType::Reflectance));
+    geoPrimitive->m_Material = std::make_unique<Glossy>(exrSpectrum::FromRGB(exrVector3(0.0f, 1.0f, 0.0f) ));
     p = std::move(geoPrimitive);
     g_CurrentRenderJob->m_Scene->AddPrimitive(p);
 
@@ -157,13 +154,13 @@ void ElixirSetupDemo()
 
     transform.SetRotation(exrVector3::Zero());
     transform.SetTranslation(exrVector3(-1.5f, 0.4f, 0.0f));
-    pointLight = std::make_unique<PointLight>(transform, exrSpectrum::FromRGB(exrVector3(0.1f, 0.5f, 1.0f) * 10.0f, SpectrumType::llluminance));
+    pointLight = std::make_unique<PointLight>(transform, exrSpectrum::FromRGB(exrVector3(0.1f, 0.5f, 1.0f) * 10.0f));
     l = std::move(pointLight);
     g_CurrentRenderJob->m_Scene->AddLight(l);
 
     transform.SetRotation(exrVector3::Zero());
     transform.SetTranslation(exrVector3(1.5f, 0.4f, 0.0f));
-    pointLight = std::make_unique<PointLight>(transform, exrSpectrum::FromRGB(exrVector3(0.8f, 0.7f, 0.3f) * 10.0f, SpectrumType::llluminance));
+    pointLight = std::make_unique<PointLight>(transform, exrSpectrum::FromRGB(exrVector3(0.8f, 0.7f, 0.3f) * 10.0f));
     l = std::move(pointLight);
     g_CurrentRenderJob->m_Scene->AddLight(l);
 
@@ -172,7 +169,7 @@ void ElixirSetupDemo()
 
     const exrU32 numSamples = 1;
     const exrU32 numBounces = 2;
-    g_CurrentRenderJob->m_Integrator = std::make_unique<WittedIntegrator>(g_CurrentRenderJob->m_Camera, numSamples, numBounces);
+    //g_CurrentRenderJob->m_Integrator = std::make_unique<SamplerIntegrator>(g_CurrentRenderJob->m_Camera, numSamples, numBounces);
     g_CurrentAPIState = APIState::APISTATE_SCENE;
     // Setup scene..
 }

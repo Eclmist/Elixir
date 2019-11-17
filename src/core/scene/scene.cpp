@@ -103,7 +103,7 @@ exrSpectrum Scene::SampleSkyLight(const Ray& ray) const
     exrVector3 sunsetBlue(0.18f, 0.296f, 0.952f);
     exrVector3 direction = ray.m_Direction.Normalized();
     exrFloat t = (direction.y + 0.5f) / 1.2f;
-    return exrSpectrum::FromRGB(exrLerp(sunsetRed, sunsetBlue, exrSaturate(t)), SpectrumType::llluminance);
+    return exrSpectrum::FromRGB(exrLerp(sunsetRed, sunsetBlue, exrSaturate(t)));
 }
 
 

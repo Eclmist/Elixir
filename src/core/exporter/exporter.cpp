@@ -21,13 +21,13 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
-#include "film.h"
+#include "exporter.h"
 #include "stb/stb_image.h"
 #include "stb/stbi_image_write.h"
 
 exrBEGIN_NAMESPACE
 
-Film::Film(const Point2<exrU32>& resolution, const exrString& filename, exrBool stampFile)
+Exporter::Exporter(const Point2<exrU32>& resolution, const exrString& filename, exrBool stampFile)
     : m_Resolution(resolution)
     , m_FileName(filename)
     , m_StampFile(stampFile)
@@ -35,19 +35,19 @@ Film::Film(const Point2<exrU32>& resolution, const exrString& filename, exrBool 
     m_Pixels = std::make_unique<Pixel[]>(m_Resolution.x * m_Resolution.y);
 }
 
-void Film::AddSplat(const Point2<exrU32>& point, const exrSpectrum& value)
+void Exporter::WritePixel(const Point2<exrU32>& point, const exrSpectrum& value)
 {
     exrAssert(point.x >= 0 && point.x <= m_Resolution.x, "Attempting to write to outside image bounds!");
     exrAssert(point.y >= 0 && point.y <= m_Resolution.y, "Attempting to write to outside image bounds!");
 
     Pixel& pixel = GetPixel(point);
-    exrVector3 xyz = value.ToXYZ();
-
+    exrVector3 rgb = value.ToRGB();
+    
     for (exrU32 i = 0; i < 3; ++i)
-        pixel.m_SplatXYZ[i].Add(xyz[i]);
+        pixel.m_RGB[i].Add(rgb[i]);
 }
 
-void Film::WriteImage(exrFloat splatScale)
+void Exporter::WriteImage(exrFloat splatScale)
 {
     exrProfile("Film Write Image");
     // PPM Headers
@@ -63,8 +63,7 @@ void Film::WriteImage(exrFloat splatScale)
         for (exrU32 x = 0; x < m_Resolution.x; ++x)
         {
             Pixel& pixel = GetPixel(Point2<exrU32>(x, y));
-            exrVector3 xyz(pixel.m_SplatXYZ[0], pixel.m_SplatXYZ[1], pixel.m_SplatXYZ[2]);
-            exrVector3 rgb = exrSpectrum::FromXYZ(xyz, SpectrumType::llluminance).ToRGB();
+            exrVector3 rgb(pixel.m_RGB[0], pixel.m_RGB[1], pixel.m_RGB[2]);
 
             exrFloat r = exrSaturate(rgb.r * splatScale);
             exrFloat g = exrSaturate(rgb.g * splatScale);
@@ -101,7 +100,7 @@ void Film::WriteImage(exrFloat splatScale)
 #endif
 }
 
-Film::Pixel& Film::GetPixel(const Point2<exrU32>& point)
+Exporter::Pixel& Exporter::GetPixel(const Point2<exrU32>& point)
 {
     exrU32 offset = point.x + (point.y * m_Resolution.x);
     return m_Pixels[offset];

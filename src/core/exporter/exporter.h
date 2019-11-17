@@ -20,33 +20,35 @@
 
 #pragma once
 
-#include "ray.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 
-class RayDifferential : public Ray
+//! @brief A class writes the final image output of the renderer to a file
+class Exporter
 {
 public:
-    RayDifferential()
-        : Ray()
-        , m_HasDifferentials(false) {};
+    Exporter(const Point2<exrU32>& resolution, const exrString& filename, exrBool stampFile = true);
 
-    RayDifferential(const exrPoint3& origin, const exrVector3& direction, exrFloat tmax = MaxFloat)
-        : Ray(origin, direction, tmax)
-        , m_HasDifferentials(false) {};
-
-    RayDifferential(const Ray& ray)
-        : Ray(ray)
-        , m_HasDifferentials(false) {};
-
-    void ScaleDifferentials(exrFloat scale);
+    // Warning: WritePixel is an ADDITIVE operation! 
+    void WritePixel(const Point2<exrU32>& point, const exrSpectrum& value);
+    void WriteImage(exrFloat splatScale);
 
 public:
-    exrBool m_HasDifferentials;
-    exrPoint3 m_RxOrigin;
-    exrPoint3 m_RyOrigin;
-    exrVector3 m_RxDirection;
-    exrVector3 m_RyDirection;
+    Point2<exrU32> m_Resolution;
+    exrString m_FileName;
+
+private:
+    struct Pixel
+    {
+        AtomicFloat m_RGB[3];
+    };
+
+    Pixel& GetPixel(const Point2<exrU32>& point);
+
+private:
+    std::unique_ptr<Pixel[]> m_Pixels;
+    exrBool m_StampFile;
 };
 
 exrEND_NAMESPACE
