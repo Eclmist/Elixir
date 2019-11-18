@@ -42,11 +42,6 @@ Scene::Scene(
 
 void Scene::AddPrimitive(std::unique_ptr<Primitive> primitive)
 {
-    // If primitive is an area light, add it to the lights collection
-    AreaLight* primitiveLight = primitive->GetAreaLight();
-    if (primitiveLight) 
-        AddLight(*primitiveLight);
-
     m_Primitives.push_back(std::move(primitive));
     m_SceneChanged = true;
 }
@@ -103,7 +98,6 @@ exrBool Scene::Intersect(const Ray& ray, SurfaceInteraction* interaction) const
 {
     exrAssert(m_Accelerator, "Scene accelerator has not yet been initialized!");
     std::vector<Primitive*> possibleHits = m_Accelerator->Intersect(ray);
-
     exrBool hasIntersect = false;
 
     for (Primitive* pp : possibleHits) 

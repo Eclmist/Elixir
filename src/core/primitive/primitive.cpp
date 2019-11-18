@@ -24,4 +24,43 @@
 
 exrBEGIN_NAMESPACE
 
+AABB Primitive::GetBoundingVolume() const
+{
+    return m_Shape->ComputeBoundingVolume();
+}
+
+exrBool Primitive::Intersect(const Ray& ray, SurfaceInteraction* interaction) const
+{
+    exrFloat tHit;
+
+    if (!m_Shape->Intersect(ray, tHit, interaction)) return false;
+
+    ray.m_TMax = tHit;
+    interaction->m_Primitive = this;
+
+    return true;
+}
+
+exrBool Primitive::HasIntersect(const Ray& r, exrFloat& tHit) const
+{
+    return m_Shape->HasIntersect(r, tHit);
+}
+
+exrBool Primitive::HasIntersect(const Ray& r) const
+{
+    exrFloat temp;
+    return m_Shape->HasIntersect(r, temp);
+}
+
+void Primitive::ComputeScatteringFunctions(SurfaceInteraction* interaction) const
+{
+    if (m_Material)
+        m_Material->ComputeScatteringFunctions(interaction);
+}
+
+const Material* Primitive::GetMaterial() const
+{
+    return m_Material;
+}
+
 exrEND_NAMESPACE

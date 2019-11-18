@@ -35,7 +35,6 @@ public:
     ~SurfaceInteraction();
     SurfaceInteraction(const exrPoint3& point, const exrVector3& wo, const exrVector3& normal, const Shape* shape);
     void ComputeScatteringFunctions(const Ray& ray);
-    exrSpectrum EvaluateEmission(const exrVector3& w) const;
 
 public:
     //! The BRDF of the surface

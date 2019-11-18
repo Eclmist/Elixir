@@ -35,7 +35,7 @@ class Primitive
 public:
     //! @brief Returns the bounding volume of the primitive
     //! @return                 The bounding volume of the primitive
-    virtual AABB GetBoundingVolume() const = 0;
+    AABB GetBoundingVolume() const;
 
     //! @brief Test the geometry for intersections with a ray
     //! 
@@ -46,7 +46,7 @@ public:
     //! @param interaction      The output surface interaction struct
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const = 0;
+    exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const;
 
     //! @brief Test the geometry for intersections with a ray
     //! 
@@ -57,25 +57,26 @@ public:
     //! @param tHit             The t-value of the hitpoint along the ray
     //! 
     //! @return                 True if the there is an intersection
-    virtual exrBool HasIntersect(const Ray& r, exrFloat& tHit) const = 0;
+    exrBool HasIntersect(const Ray& r, exrFloat& tHit) const;
+
+    //! @brief An overload for HasIntersect for when the result of tHit is not needed
+    //! 
+    //! @param ray              The ray to test against
+    //! @return                 True if the there is an intersection
+    exrBool HasIntersect(const Ray& r) const;
 
     //! Initializes the BSDF and BSSRDF
-    virtual void ComputeScatteringFunctions(SurfaceInteraction* interaction) const = 0;
-
-    //! Returns the area light pointer if the primitive is a light source.
-    //! Returns nullptr otherwise. Not const because we may call Preprocess()
-    virtual AreaLight* GetAreaLight() const = 0;
+    void ComputeScatteringFunctions(SurfaceInteraction* interaction) const;
 
     //! Returns the material of the current primitive
-    virtual const Material* GetMaterial() const = 0;
+    const Material* GetMaterial() const;
 
 public:
-    //! @brief An overload for HasIntersect for when the result of tHit is not needed
-    exrBool HasIntersect(const Ray& r)
-    {
-        exrFloat temp;
-        return HasIntersect(r, temp);
-    }
+    //! The underlying shape that describes the primitive
+    std::unique_ptr<Shape> m_Shape;
+    
+    //! The material assigned to the primitive
+    Material* m_Material;
 };
 
 exrEND_NAMESPACE

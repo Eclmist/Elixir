@@ -28,7 +28,7 @@
 #include "core/light/pointlight.h"
 #include "core/material/diffuse.h"
 #include "core/material/glossy.h"
-#include "core/primitive/geometricprimitive.h"
+#include "core/primitive/primitive.h"
 #include "core/primitive/shape/box.h"
 #include "core/primitive/shape/quad.h"
 #include "core/primitive/shape/sphere.h"
@@ -90,7 +90,7 @@ void ElixirSetupDemo()
 
     // Setup scene primitives
     // Sphere
-    std::unique_ptr<GeometricPrimitive> geoPrimitive = std::make_unique<GeometricPrimitive>();
+    std::unique_ptr<Primitive> geoPrimitive = std::make_unique<Primitive>();
     Transform transform;
     transform.SetTranslation(exrVector3(0.0f, 2.75f, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Sphere>(transform, 1.0f);
@@ -98,14 +98,14 @@ void ElixirSetupDemo()
     g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     // Back wall
-    geoPrimitive = std::make_unique<GeometricPrimitive>();
+    geoPrimitive = std::make_unique<Primitive>();
     transform.SetTranslation(exrVector3(0.0f, 2.75f, -2.75f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
     geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(0);
     g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     // left wall
-    geoPrimitive = std::make_unique<GeometricPrimitive>();
+    geoPrimitive = std::make_unique<Primitive>();
     transform.SetTranslation(exrVector3(-2.75f, 2.75f, -0.0f));
     transform.SetRotation(exrVector3(0.0f, EXR_M_PIOVER2, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
@@ -113,7 +113,7 @@ void ElixirSetupDemo()
     g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     // right wall
-    geoPrimitive = std::make_unique<GeometricPrimitive>();
+    geoPrimitive = std::make_unique<Primitive>();
     transform.SetTranslation(exrVector3(2.75f, 2.75f, -0.0f));
     transform.SetRotation(exrVector3(0.0f, -EXR_M_PIOVER2, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
@@ -121,7 +121,7 @@ void ElixirSetupDemo()
     g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     // ceiling
-    geoPrimitive = std::make_unique<GeometricPrimitive>();
+    geoPrimitive = std::make_unique<Primitive>();
     transform.SetTranslation(exrVector3(0.0f, 5.5f, 0.0f));
     transform.SetRotation(exrVector3(EXR_M_PIOVER2, 0.0f, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
@@ -129,7 +129,7 @@ void ElixirSetupDemo()
     g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     // floor
-    geoPrimitive = std::make_unique<GeometricPrimitive>();
+    geoPrimitive = std::make_unique<Primitive>();
     transform.SetTranslation(exrVector3(0.0f, 0.0f, 0.0f));
     transform.SetRotation(exrVector3(-EXR_M_PIOVER2, 0.0f, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
