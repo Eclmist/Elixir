@@ -25,18 +25,6 @@
 
 exrBEGIN_NAMESPACE
 
-//! Return a random point in a unit disc with using the rejection sampling
-//! technique. While it may be tempting to just generate two x and y values,
-//! it would not have a uniform distribution across the disc.
-//!
-//! @return a random point on a unit disc
-inline exrVector2 RejectionSampleDisc()
-{
-
-
-
-}
-
 inline exrVector3 UniformSampleHemisphere(const exrPoint2& u) 
 {
     exrFloat z = u.x;
