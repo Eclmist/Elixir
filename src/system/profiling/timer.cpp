@@ -54,19 +54,20 @@ void Timer::EndTimer()
     exrInfoLine(m_ProcessName << " completed \t\t\t" << "Total elapsed time: " << hh << ":" << mm << ":" << ss);
 }
 
-void Timer::FormatTime(exrFloat time, exrString& hh, exrString& mm, exrString& ss) 
+void Timer::FormatTime(exrFloat ftime, exrString& hh, exrString& mm, exrString& ss) 
 {
+    exrS64 stime = static_cast<exrS64>(ftime);
     //3600000 milliseconds in an hour
-    exrS64 hr = time / 3600000;
-    time = time - 3600000 * hr;
+    exrS64 hr = stime / 3600000;
+    stime = stime - 3600000 * hr;
 
     //60000 milliseconds in a minute
-    exrS64 min = time / 60000;
-    time = time - 60000 * min;
+    exrS64 min = stime / 60000;
+    stime = stime - 60000 * min;
 
     //1000 milliseconds in a second
-    exrS64 sec = time / 1000;
-    time = time - 1000 * sec;
+    exrS64 sec = stime / 1000;
+    stime = stime - 1000 * sec;
 
     hh = exrString(hr < 10 ? 1 : 0, '0').append(std::to_string(hr));
     mm = exrString(min < 10 ? 1 : 0, '0').append(std::to_string(min));
