@@ -24,6 +24,10 @@
 
 exrBEGIN_NAMESPACE
 
+//! A representation of a surface shader unique to each primitive in the scene.
+//! This encompasses all the shading related properties of a *primitive*.
+//! Not to be confused with the BSDF class, which will be different for every
+//! shading *point*.
 class Material
 {
 public:
