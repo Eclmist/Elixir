@@ -26,7 +26,7 @@ exrBEGIN_NAMESPACE
 
 void BxDF::Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const
 {
-    *wi = CosineSampleHemisphere(Uniform01Point2());
+    *wi = CosineSampleHemisphere();
     if (wo.z < 0)
         wi->z *= -1;
 

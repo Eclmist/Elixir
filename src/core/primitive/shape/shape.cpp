@@ -22,9 +22,4 @@
 
 exrBEGIN_NAMESPACE
 
-exrFloat Shape::SolidAngle(const exrPoint3& p, exrU32 nbSamples /*= 512*/) const
-{
-    // TODO: use MC to calculate solid angle. Returning 0 obviously won't work.
-    return 0;
-}
 exrEND_NAMESPACE

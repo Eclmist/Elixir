@@ -73,20 +73,5 @@ AABB Sphere::ComputeBoundingVolume() const
     return AABB(min, max);
 }
 
-Interaction Sphere::Sample(const exrPoint2& u) const
-{
-    exrPoint3 pointOnSphere = exrPoint3::Zero() + m_Radius * Random::RandomOnUnitSphere();
-    Interaction it;
-    // Normal vectors on sphere do not have to be transformed as sphere have no rotation and only uniform scale
-    it.m_Normal = static_cast<exrVector3>(pointOnSphere).Normalized();
-    it.m_Point = m_Transform.GetMatrix() * pointOnSphere;
-    return it;
-}
-
-exrFloat Sphere::GetArea() const
-{
-    return 4 * EXR_M_PI * m_Radius * m_Radius;
-}
-
 exrEND_NAMESPACE
 

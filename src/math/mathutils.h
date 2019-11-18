@@ -30,6 +30,7 @@
 #define EXR_M_PIOVER4           0.78539816339f
 
 #define EXR_EPSILON             0.0001f
+#define EXR_ONE_MINUS_EPSILON   0.9999f
 
 #define exrSaturate(x)          exrClamp(x, 0, 1)
 #define exrPow(x, n)            pow(x, n)

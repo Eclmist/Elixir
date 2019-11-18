@@ -65,8 +65,8 @@ void SamplerIntegrator::Render(const Scene& scene)
                         // Foreach sample
                         for (exrU32 n = 0; n < m_NumSamplesPerPixel; ++n)
                         {
-                            exrFloat u = exrFloat(tileMin.x + x + Uniform01()) / exrFloat(resolution.x);
-                            exrFloat v = exrFloat(tileMin.y + y + Uniform01()) / exrFloat(resolution.y);
+                            exrFloat u = exrFloat(tileMin.x + x + Random::UniformFloat()) / exrFloat(resolution.x);
+                            exrFloat v = exrFloat(tileMin.y + y + Random::UniformFloat()) / exrFloat(resolution.y);
                             Ray viewRay = m_Camera->GetViewRay(u, v);
 
                             exrSpectrum L(0.0f);

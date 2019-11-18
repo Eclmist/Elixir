@@ -105,7 +105,7 @@ void BVHAccelerator::EqualCountSplit(BVHNode& currentRoot, exrU16 depth)
     std::vector<Primitive*> temp = currentRoot.m_Primitives;
 
     // Get a random axis to split objects
-    switch (exrU32(Uniform01() * 3))
+    switch (exrU32(Random::UniformUInt32(2)))
     {
     case 0:
         // Split along x axis
@@ -121,6 +121,7 @@ void BVHAccelerator::EqualCountSplit(BVHNode& currentRoot, exrU16 depth)
         break;
     default:
         // Split along z axis
+        exrAssert(false, "Remove this assert!"); // TODO: make sure this is removed
         sort(temp.begin(), temp.end(), [](Primitive* left, Primitive* right) {
             return left->GetBoundingVolume().Min().z < right->GetBoundingVolume().Min().z;
             });

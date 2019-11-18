@@ -25,14 +25,16 @@
 
 exrBEGIN_NAMESPACE
 
-inline exrFloat Uniform01()
-{ 
-    return (exrFloat)rand() / RAND_MAX;
-}
-
-inline exrPoint2 Uniform01Point2()
+//! Return a random point in a unit disc with using the rejection sampling
+//! technique. While it may be tempting to just generate two x and y values,
+//! it would not have a uniform distribution across the disc.
+//!
+//! @return a random point on a unit disc
+inline exrVector2 RejectionSampleDisc()
 {
-    return exrPoint2(Uniform01(), Uniform01()); 
+
+
+
 }
 
 inline exrVector3 UniformSampleHemisphere(const exrPoint2& u) 
@@ -60,9 +62,9 @@ inline exrFloat UniformSpherePdf()
     return EXR_M_INV2PI;
 }
 
-inline exrPoint2 ConcentricSampleDisk(const exrPoint2& u)
+inline exrPoint2 ConcentricSampleDisk()
 {
-    exrPoint2 uOffset = 2.0f * u - exrVector2(1, 1);
+    exrPoint2 uOffset = 2.0f * exrPoint2(Random::UniformFloat(), Random::UniformFloat()) - exrVector2(1, 1);
 
     if (uOffset.x == 0 && uOffset.y == 0)
         return exrPoint2(0, 0);
@@ -81,9 +83,9 @@ inline exrPoint2 ConcentricSampleDisk(const exrPoint2& u)
     return r * exrPoint2(cos(theta), sin(theta));
 }
 
-inline exrVector3 CosineSampleHemisphere(const exrPoint2& u)
+inline exrVector3 CosineSampleHemisphere()
 {
-    exrPoint2 d = ConcentricSampleDisk(u);
+    exrPoint2 d = ConcentricSampleDisk();
     exrFloat z = sqrt(exrMax(0.0f, 1.0f - d.x * d.x - d.y * d.y));
     return exrVector3(d.x, d.y, z);
 }

@@ -57,25 +57,6 @@ public:
     //! @return                 True if the there is an intersection
     exrBool HasIntersect(const Ray& ray, exrFloat& tHit) const override;
 
-    //! @brief Samples a point on the surface of the quad
-    //!
-    //! Chooses a point on the surface of the quad using a sampling distribution with respect
-    //! to the surface area of the quad and returns the local geometric information about the
-    //! sampled point in an Interaction
-    //!
-    //! @param u                The sampled point
-    //!
-    //! @return                 The interaction at the sampled point
-    Interaction Sample(const exrPoint2& u) const override;
-
-    //! @brief Returns the total surface area of the quad
-    //!
-    //! The total surface area of the quad. This can be used in constructing PDF and other
-    //! calculations
-    //!
-    //! @return                 The total surface area of the quad
-    exrFloat GetArea() const override;
-
     //! @brief Computes a bounding volume
     //! 
     //! Computes the a bounding volume that encapsulates the current box.

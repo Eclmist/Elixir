@@ -61,25 +61,6 @@ exrBool Quad::HasIntersect(const Ray& ray, exrFloat& tHit) const
     return true;
 }
 
-Interaction Quad::Sample(const exrPoint2& u) const
-{
-    Interaction it;
-
-    exrFloat randomX = (Uniform01() * 2 - 1) * m_HalfExtents.x;
-    exrFloat randomY = (Uniform01() * 2 - 1) * m_HalfExtents.y;
-
-    exrPoint3 samplePoint = m_Transform.GetMatrix() * exrPoint3(randomX, randomY, 0);
-    it.m_Point = samplePoint;
-    it.m_Normal = m_Transform.GetMatrix() * exrVector3::Forward();
-
-    return it;
-}
-
-exrFloat Quad::GetArea() const
-{
-    return m_HalfExtents.x * m_HalfExtents.y * 4;
-}
-
 AABB Quad::ComputeBoundingVolume() const
 {
     exrPoint3 globalMin = m_Transform.GetMatrix() * m_HalfExtents;

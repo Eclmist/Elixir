@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <random>
 #include "system/system.h"
 #include "math/math.h"
 
@@ -29,18 +30,25 @@ exrBEGIN_NAMESPACE
 class Random
 {
 public:
-    //! @brief Seeds the random class
-    //! @param a                The value to seed the random class
-    static inline void Seed(exrU32 a) { srand(a); }
+    static void Seed(exrU32 seed) { m_Rng = std::mt19937(seed); }
 
-    //! @brief Generates a vector between length 0 - 1 in a random direction
-    //! @return A random vector inside a unit sphere
-    static exrVector3 RandomInUnitSphere();
+    //! @return A random number in the range [0, 2^23 - 1].
+    static exrU32 UniformUInt32() { return m_Rng(); }
+    
+    //! @param b the upper bound of the generated number
+    //! @return A random number in the range [0, b].
+    static exrU32 UniformUInt32(exrU32 b) {
+        return (std::uniform_int_distribution<exrU32>(0, b))(m_Rng);
+    }
 
-    //! @brief Generates a vector on the surface of a unit sphere
-    //! @return A random vector on the surface of a unit sphere
-    static exrVector3 RandomOnUnitSphere();
+    //! @return A random floating-point number in the range [0,1).
+    static exrFloat UniformFloat() {
+        return (std::uniform_real_distribution<exrFloat>(0, 1))(m_Rng);
+    }
 
+private:
+    Random() {}
+    static std::mt19937 m_Rng;
 };
 
 exrEND_NAMESPACE

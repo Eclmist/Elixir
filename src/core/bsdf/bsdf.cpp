@@ -27,8 +27,9 @@ exrBEGIN_NAMESPACE
 BSDF::BSDF(const SurfaceInteraction& si, exrFloat ior)
     : m_ReflectiveIndex(ior)
     , m_Normal(si.m_Normal)
-    , m_Tangent(Cross(m_Normal, UniformSampleSphere(Uniform01Point2())).Normalized())
     , m_Bitangent(Cross(m_Normal, m_Tangent).Normalized())
+    , m_Tangent(Cross(m_Normal,
+            UniformSampleSphere(exrPoint2(Random::UniformFloat(), Random::UniformFloat())).Normalized()))
 {
 }
 
@@ -137,7 +138,7 @@ BxDF* BSDF::GetRandomBxDF(BxDF::BxDFType type)
 {
     exrU32 numMatching = GetNumComponents(type);
 
-    exrU32 counter = exrU32(Uniform01() * numMatching);
+    exrU32 counter = exrU32(Random::UniformFloat() * numMatching);
 
     for (exrU32 i = 0; i < m_NumBxDF; ++i)
     {
