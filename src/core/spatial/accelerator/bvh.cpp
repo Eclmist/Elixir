@@ -61,18 +61,6 @@ std::vector<Primitive*> BVHAccelerator::Intersect(const Ray& ray) const
     return TraverseNode(*m_RootNode, ray);
 }
 
-exrBool BVHAccelerator::HasIntersect(const Ray& ray) const
-{
-    std::vector<Primitive*> possibleHits = TraverseNode(*m_RootNode, ray);
-    for (Primitive* pp : possibleHits)
-    {
-        if (pp->HasIntersect(ray)) 
-            return true;
-    }
-
-    return false;
-}
-
 std::vector<Primitive*> BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray)
 {
     // If intersect bounding volume

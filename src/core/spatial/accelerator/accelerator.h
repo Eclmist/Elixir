@@ -45,15 +45,6 @@ public:
     //! @return                 The collection of objects that the ray could possibly
     //!                         intersect with.
     virtual std::vector<Primitive*> Intersect(const Ray& ray) const = 0;
-
-    //! @brief Test every primitive in the accelerator for intersection with input ray
-    //! 
-    //! Test every primitive for ray intersection, and output true if the ray passes
-    //! intersection tests with at least one primitive in the accelerator.
-    //! 
-    //! @param ray              The ray to test against
-    //! @return                 True if the there is an intersection
-    virtual exrBool HasIntersect(const Ray& ray) const = 0;
 };
 
 exrEND_NAMESPACE

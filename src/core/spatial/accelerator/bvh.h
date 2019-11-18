@@ -62,7 +62,6 @@ public:
 
 public:
     std::vector<Primitive*> Intersect(const Ray& ray) const override;
-    exrBool HasIntersect(const Ray& ray) const override;
 
 private:
     //! @brief A recursive function to recursively traverse nodes and check for intersection.
