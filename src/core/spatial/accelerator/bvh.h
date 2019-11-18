@@ -60,38 +60,19 @@ public:
     //! @param splitMethod      Splitting algorithm to use when building the BVH
     BVHAccelerator(const std::vector<Primitive*>& objects, const SplitMethod splitMethod = SplitMethod::SAH);
 
-    //! @brief Test the bvh for intersections with a ray
-    //! 
-    //! Test all geometry for intersection with the ray, and outputs the surface
-    //! intersection data in <interaction> 
-    //! 
-    //! @param ray              The ray to test against
-    //! @param interaction      Output struct that contains the interaction information
-    //! 
-    //! @return                 True if the there are any intersections
-    exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const override;
-
-    //! @brief Test the bvh for intersections with a ray
-    //! 
-    //! This function allows us to do intersection tests with a segment of a ray, but
-    //! does not initialize interaction or hit info. Useful for when checking if a ray
-    //! is obstructed, such as with shadow rays
-    //! 
-    //! @param ray              The ray to test against
-    //! 
-    //! @return                 True if the there is an intersection
+public:
+    std::vector<Primitive*> Intersect(const Ray& ray) const override;
     exrBool HasIntersect(const Ray& ray) const override;
 
 private:
-    //! @brief A recursive function to recursively traverse nodes and check for intersection
+    //! @brief A recursive function to recursively traverse nodes and check for intersection.
     //!
-    //! @param node             The node to traverse down from
-    //! @param ray              The ray to test against
-    //! @param interaction      Output struct that contains the interaction information
-    //! @param initInteraction  Should use HasInteract() instead of Interact()
+    //! @param node             The node to traverse down from.
+    //! @param ray              The ray to test against.
     //!
-    //! @return                 True if the there are any intersections
-    static exrBool TraverseNode(const BVHNode& node, const Ray& ray, SurfaceInteraction* interaction, exrBool initInteraction);
+    //! @return                 A collection of primitives that may pass intersection test
+    //!                         against the input ray.
+    static std::vector<Primitive*> TraverseNode(const BVHNode& node, const Ray& ray);
 
     //! @brief Recursively splits objects into equal subtrees
     //! 

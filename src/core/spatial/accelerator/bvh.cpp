@@ -56,17 +56,24 @@ BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const Spl
     exrEndProfile();
 }
 
-exrBool BVHAccelerator::Intersect(const Ray& ray, SurfaceInteraction* interaction) const
+std::vector<Primitive*> BVHAccelerator::Intersect(const Ray& ray) const
 {
-    return TraverseNode(*m_RootNode, ray, interaction, true);
+    return TraverseNode(*m_RootNode, ray);
 }
 
 exrBool BVHAccelerator::HasIntersect(const Ray& ray) const
 {
-    return TraverseNode(*m_RootNode, ray, nullptr, false);
+    std::vector<Primitive*> possibleHits = TraverseNode(*m_RootNode, ray);
+    for (Primitive* pp : possibleHits)
+    {
+        if (pp->HasIntersect(ray)) 
+            return true;
+    }
+
+    return false;
 }
 
-exrBool BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray, SurfaceInteraction* interaction, exrBool initInteraction)
+std::vector<Primitive*> BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray)
 {
     // If intersect bounding volume
     if (node.m_BoundingVolume.Intersect(ray))
@@ -74,53 +81,27 @@ exrBool BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray, Surfac
         // reached the end of tree, return hit with primitive
         if (node.m_LeftSubtree == nullptr || node.m_RightSubtree == nullptr)
         {
-            exrBool hasHit = false;
-
-            if (initInteraction)
-            {
-                // We may have a list of primitive, test all of them for intersection and return the closest hit
-                for (Primitive* primitives : node.m_Primitives)
-                {
-                    // Ray's tmax will automatically be reduced so we don't have to worry about hitting occluded geometry
-                    if (primitives->Intersect(ray, interaction))
-                    {
-                        hasHit = true;
-                    }
-                }
-            }
-            else
-            {
-                // keep track of the closest tHit manually since hasIntersect will not touch the ray's tmax
-                exrFloat closestHit = ray.m_TMax;
-
-                // We may have a list of primitive, test all of them for intersection and return the closest hit
-                for (Primitive* primitives : node.m_Primitives)
-                {
-                    exrFloat tHit;
-                    if (primitives->HasIntersect(ray, tHit) && tHit < closestHit)
-                    {
-                        closestHit = tHit;
-                        hasHit = true;
-                    }
-                }
-            }
-
-            return hasHit;
+            return node.m_Primitives;
         }
 
         // Check left and right node
-        if (TraverseNode(*node.m_LeftSubtree, ray, interaction, initInteraction))
+        std::vector<Primitive*> leftPrims = TraverseNode(*node.m_LeftSubtree, ray);
+        std::vector<Primitive*> rightPrims = TraverseNode(*node.m_RightSubtree, ray);
+
+        if (leftPrims.size() == 0)
+            return rightPrims;
+        if (rightPrims.size() == 0)
+            return leftPrims;
+        if (leftPrims.size() == 0 && rightPrims.size() == 0)
         {
-            TraverseNode(*node.m_RightSubtree, ray, interaction, initInteraction);
-            return true;
+            exrWarningLine("DO NOT REMOVE THIS BRANCH! If you see this error, remove the error.");
+            return leftPrims; //both is empty so just return either one
         }
-        else
-        {
-            return TraverseNode(*node.m_RightSubtree, ray, interaction, initInteraction);
-        }
+        return node.m_Primitives; // both is not empty so return parent collection
     }
 
-    return false;
+    // Did not intersect with parent, so return an empty collection
+    return std::vector<Primitive*>();
 }
 
 void BVHAccelerator::EqualCountSplit(BVHNode& currentRoot, exrU16 depth)

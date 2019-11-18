@@ -102,7 +102,21 @@ void Scene::InitAccelerator()
 exrBool Scene::Intersect(const Ray& ray, SurfaceInteraction* interaction) const
 {
     exrAssert(m_Accelerator, "Scene accelerator has not yet been initialized!");
-    return m_Accelerator->Intersect(ray, interaction);
+    std::vector<Primitive*> possibleHits = m_Accelerator->Intersect(ray);
+
+    exrBool hasIntersect = false;
+
+    for (Primitive* pp : possibleHits) 
+    {
+        // Ray's tmax will be automatically reduced so we don't have to worry about hitting
+        // occluded geometry
+        if (pp->Intersect(ray, interaction))
+        {
+            hasIntersect = true;
+        }
+    }
+
+    return hasIntersect;
 }
 
 exrBool Scene::HasIntersect(const Ray& ray) const

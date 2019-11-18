@@ -68,6 +68,14 @@ public:
 
     //! Returns the material of the current primitive
     virtual const Material* GetMaterial() const = 0;
+
+public:
+    //! @brief An overload for HasIntersect for when the result of tHit is not needed
+    exrBool HasIntersect(const Ray& r)
+    {
+        exrFloat temp;
+        return HasIntersect(r, temp);
+    }
 };
 
 exrEND_NAMESPACE

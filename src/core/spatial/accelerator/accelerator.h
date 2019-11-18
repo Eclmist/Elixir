@@ -37,23 +37,21 @@ public:
 
     //! @brief Test the accelerator for intersections with a ray
     //! 
-    //! Test all geometry for intersection with the ray, and outputs the surface
-    //! intersection data in <interaction> 
+    //! Test all accelerator nodes for intersections with ray, and output a
+    //! smaller set of primitives that the caller can manually test intersections
+    //! with.
     //! 
-    //! @param ray              The ray to test against
-    //! @param interaction      Output struct that contains the interaction information
-    //! 
-    //! @return                 True if the there are any intersections
-    virtual exrBool Intersect(const Ray& ray, SurfaceInteraction* interaction) const = 0;
+    //! @param ray              The ray to test against.
+    //! @return                 The collection of objects that the ray could possibly
+    //!                         intersect with.
+    virtual std::vector<Primitive*> Intersect(const Ray& ray) const = 0;
 
-    //! @brief Test the accelerator for intersections with a ray
+    //! @brief Test every primitive in the accelerator for intersection with input ray
     //! 
-    //! This function allows us to do intersection tests with a segment of a ray, but
-    //! does not initialize interaction or hit info. Useful for when checking if a ray
-    //! is obstructed, such as with shadow rays
+    //! Test every primitive for ray intersection, and output true if the ray passes
+    //! intersection tests with at least one primitive in the accelerator.
     //! 
     //! @param ray              The ray to test against
-    //! 
     //! @return                 True if the there is an intersection
     virtual exrBool HasIntersect(const Ray& ray) const = 0;
 };
