@@ -49,7 +49,7 @@ void Exporter::WritePixel(const Point2<exrU32>& point, const exrSpectrum& value)
 
 void Exporter::WriteImage(exrFloat splatScale)
 {
-    exrProfile("Film Write Image");
+    exrProfile("Image File Export");
     // PPM Headers
     exrString header = "P6\n" + std::to_string(m_Resolution.x) + " " + std::to_string(m_Resolution.y) + "\n255\n";
     std::vector<exrByte> buffer(header.begin(), header.end());

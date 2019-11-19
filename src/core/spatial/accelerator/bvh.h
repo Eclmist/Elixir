@@ -87,8 +87,7 @@ private:
     //! Computes the split based on Surface Area Heuristics
     //!
     //! @param currentRoot      The current root node, whose left and right subtree we will populate
-    //! @param depth            The depth of the BVH tree, used to stop recursion when m_MaxNodeDepth is reached 
-    static void SAHSplit(BVHNode& currentRoot, exrU16 depth);
+    static void SAHSplit(BVHNode& currentRoot);
 
 private:
     //! The root node of the BVH

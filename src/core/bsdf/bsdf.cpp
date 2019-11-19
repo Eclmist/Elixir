@@ -66,7 +66,7 @@ exrSpectrum BSDF::f(const exrVector3& worldWo, const exrVector3& worldWi, BxDF::
     {
         if (m_BxDFs[i]->MatchesFlags(flags))
         {
-            if (reflect && !m_BxDFs[i]->HasFlags(BxDF::BSDF_DIFFUSE))
+            if (reflect && !(m_BxDFs[i]->HasFlags(BxDF::BSDF_DIFFUSE) || m_BxDFs[i]->HasFlags(BxDF::BSDF_REFLECTION)))
                 continue;
             
             if (!reflect && !m_BxDFs[i]->HasFlags(BxDF::BSDF_TRANSMISSION))

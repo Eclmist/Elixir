@@ -45,7 +45,16 @@ public:
     BxDF(BxDFType type)
         : m_BxDFType(type) {};
 
+    //! Checks if the input flags matches the BxDF flags exactly
+    //! @param t                The input type to check against
+    //! @return                 True if the input flags matches the BxDF flags exactly;
+    //!                         False otherwise.
     exrBool MatchesFlags(BxDFType t) const { return (m_BxDFType & t) == m_BxDFType; };
+
+    //! Checks if the BxDF flags have at least all the flags in the input type
+    //! @param t                The input type to check against
+    //! @return                 True if the BxDF flags have at least the flags in the input;
+    //!                         False otherwise.
     exrBool HasFlags(BxDFType t) const { return (m_BxDFType & t) == t; }
 
     //! @brief Computes the value of the distribution given a pair of directions

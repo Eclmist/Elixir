@@ -25,15 +25,20 @@ using namespace elixir;
 
 static ElixirOptions g_RuntimeOptions;
 
+void PrintTitle()
+{
+    using namespace std;
+    cout << "Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH << EXR_VERSION_PRERELEASEID;
+    cout << ", Copyright (c) 2019 Samuel Van Allen" << endl << endl;
+}
+
 void PrintUsage(const exrChar* msg = nullptr)
 {
     if (msg)
         fprintf(stderr, "elixir: %s\n\n", msg);
 
     using namespace std;
-    cout << "Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH << EXR_VERSION_PRERELEASEID;
-    cout << ", Copyright (c) 2019 Samuel Van Allen" << endl << endl;
-    cout << "Usage: elixir [options] <One or more scene files>" << endl << endl;
+    cout << "Usage: elixir [options] <One or more scene files>" << endl;
     cout << "Rendering Options: " << endl;
     cout << "   -h, --help              Display this help page" << endl;
     cout << "   -t, --numthreads        Specify the number of rendering threads to use" << endl;
@@ -54,6 +59,8 @@ int main(int argc, exrChar *argv[])
 {
     ElixirOptions options;
     std::vector<exrString> filenames;
+
+    PrintTitle();
 
     // Process command-line arguments
     for (exrS32 i = 1; i < argc; ++i)

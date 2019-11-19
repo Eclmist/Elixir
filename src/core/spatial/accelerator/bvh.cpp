@@ -23,11 +23,10 @@
 
 exrBEGIN_NAMESPACE
 
-//! Maximum primitives in a leaf node
-static constexpr exrU16 MaxPrimitivesPerNode = 8;
-
-//! Maximum depth of BVH tree
-static constexpr exrU16 MaxNodeDepth = 16;
+//! Maximum primitives in a leaf node (only used by ECS)
+static constexpr exrU16 MaxPrimitivesPerNode = 1;
+//! Maximum depth of BVH tree (only used by ECS)
+static constexpr exrU16 MaxNodeDepth = 8;
 
 BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const SplitMethod splitMethod)
 {
@@ -43,7 +42,7 @@ BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const Spl
     {
     case BVHAccelerator::SplitMethod::SAH:
         m_RootNode->m_BoundingVolume = AABB::BoundPrimitives(objects);
-        SAHSplit(*m_RootNode, MaxNodeDepth);
+        SAHSplit(*m_RootNode);
         break;
     case BVHAccelerator::SplitMethod::EqualCounts:
         EqualCountSplit(*m_RootNode, MaxNodeDepth);
@@ -139,20 +138,17 @@ void BVHAccelerator::EqualCountSplit(BVHNode& currentRoot, exrU16 depth)
     EqualCountSplit(*currentRoot.m_RightSubtree, depth - 1);
 }
 
-void BVHAccelerator::SAHSplit(BVHNode& currentRoot, exrU16 depth)
+void BVHAccelerator::SAHSplit(BVHNode& currentRoot)
 {
     const auto numObjects = currentRoot.m_Primitives.size();
 
-    if (depth <= 0 || numObjects <= MaxPrimitivesPerNode)
-    {
+    // Nothing to split
+    if (numObjects <= 1)
         return;
-    }
-
-    currentRoot.m_LeftSubtree = std::make_unique<BVHNode>();
-    currentRoot.m_RightSubtree = std::make_unique<BVHNode>();
 
     const exrU32 splitsPerAxis = 32;
     exrFloat bestHeuristics = MaxFloat;
+    exrBool hasSplit = false;
 
     // for each axis
     for (exrU32 axis = 0; axis < 3; ++axis)
@@ -165,7 +161,8 @@ void BVHAccelerator::SAHSplit(BVHNode& currentRoot, exrU16 depth)
 
             for (exrU32 n = 0; n < numObjects; ++n)
             {
-                if ((currentRoot.m_Primitives[n]->GetBoundingVolume().Min()[axis] - currentRoot.m_BoundingVolume.Min()[axis]) / currentRoot.m_BoundingVolume.GetExtents()[axis] < splitValue)
+                if ((currentRoot.m_Primitives[n]->GetBoundingVolume().Min()[axis] - 
+                    currentRoot.m_BoundingVolume.Min()[axis]) / currentRoot.m_BoundingVolume.GetExtents()[axis] < splitValue)
                 {
                     leftObjects.push_back(currentRoot.m_Primitives[n]);
                 }
@@ -175,38 +172,55 @@ void BVHAccelerator::SAHSplit(BVHNode& currentRoot, exrU16 depth)
                 }
             }
 
+            // if all objects already on left side, no need to continue testing bigger split values
+            if (leftObjects.size() == numObjects)
+            {
+                break;
+            }
+
             AABB leftBv = AABB::BoundPrimitives(leftObjects);
             AABB rightBv = AABB::BoundPrimitives(rightObjects);
 
             // Get score
             exrFloat sc = currentRoot.m_BoundingVolume.GetSurfaceArea();
-            exrFloat pa = leftBv.GetSurfaceArea() / sc;         // Probably of hitting A if hit parent
-            exrFloat pb = rightBv.GetSurfaceArea() / sc;        // Probably of hitting B if hit parent
+            exrFloat aa = leftBv.GetSurfaceArea();
+            exrFloat ab = rightBv.GetSurfaceArea();
+            exrFloat pa = aa / sc;         // Probably of hitting A if hit parent
+            exrFloat pb = ab / sc;        // Probably of hitting B if hit parent
 
             auto ia = leftObjects.size();                       // Cost of intersection test on A (we assume all primitives are the same cost, like PBRT)
             auto ib = rightObjects.size();                      // Cost of intersection test on B (we assume all primitives are the same cost, like PBRT)
 
             exrFloat heuristics = 1 /*Ttrav*/ + pa * ia + pb * ib;
 
+            // Determine if doing a split is worth it
+            // A split is not worth it if it doesn't yield a lower cost than the parent
+            if (aa * ia + ab * ib >= sc * numObjects)
+                continue;
+
             if (heuristics < bestHeuristics)
             {
+                hasSplit = true;
+
+                if (currentRoot.m_LeftSubtree == nullptr)
+                    currentRoot.m_LeftSubtree = std::make_unique<BVHNode>();
+                if (currentRoot.m_RightSubtree == nullptr)
+                    currentRoot.m_RightSubtree = std::make_unique<BVHNode>();
+
                 bestHeuristics = heuristics;
                 currentRoot.m_LeftSubtree->m_Primitives = leftObjects;
                 currentRoot.m_LeftSubtree->m_BoundingVolume = leftBv;
                 currentRoot.m_RightSubtree->m_Primitives = rightObjects;
                 currentRoot.m_RightSubtree->m_BoundingVolume = rightBv;
             }
-
-            // if all objects already on left side, no need to continue testing bigger split values
-            if (leftObjects.size() == numObjects)
-            {
-                break;
-            }
         }
     }
 
-    SAHSplit(*currentRoot.m_LeftSubtree, depth - 1);
-    SAHSplit(*currentRoot.m_RightSubtree, depth - 1);
+    if (!hasSplit)
+        return;
+
+    SAHSplit(*currentRoot.m_LeftSubtree);
+    SAHSplit(*currentRoot.m_RightSubtree);
 }
 
 exrEND_NAMESPACE
