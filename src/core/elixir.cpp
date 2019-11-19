@@ -29,7 +29,7 @@ void PrintTitle()
 {
     using namespace std;
     cout << "Elixir Version " << EXR_VERSION_MAJOR << "." << EXR_VERSION_MINOR << "." << EXR_VERSION_PATCH << EXR_VERSION_PRERELEASEID;
-    cout << ", Copyright (c) 2019 Samuel Van Allen" << endl << endl;
+    cout << ", Copyright (c) 2019 Samuel Van Allen" << endl;
 }
 
 void PrintUsage(const exrChar* msg = nullptr)
@@ -38,7 +38,7 @@ void PrintUsage(const exrChar* msg = nullptr)
         fprintf(stderr, "elixir: %s\n\n", msg);
 
     using namespace std;
-    cout << "Usage: elixir [options] <One or more scene files>" << endl;
+    cout << "Usage: elixir [options] <One or more scene files>" << endl << endl;
     cout << "Rendering Options: " << endl;
     cout << "   -h, --help              Display this help page" << endl;
     cout << "   -t, --numthreads        Specify the number of rendering threads to use" << endl;

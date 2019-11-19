@@ -87,7 +87,7 @@ private:
     //! Computes the split based on Surface Area Heuristics
     //!
     //! @param currentRoot      The current root node, whose left and right subtree we will populate
-    static void SAHSplit(BVHNode& currentRoot);
+    static void SAHSplit(BVHNode& currentRoot, exrU16 depth);
 
 private:
     //! The root node of the BVH

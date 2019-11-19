@@ -24,9 +24,9 @@
 exrBEGIN_NAMESPACE
 
 //! Maximum primitives in a leaf node (only used by ECS)
-static constexpr exrU16 MaxPrimitivesPerNode = 1;
-//! Maximum depth of BVH tree (only used by ECS)
-static constexpr exrU16 MaxNodeDepth = 8;
+static constexpr exrU16 MaxPrimitivesPerNode = 8;
+//! Maximum depth of BVH tree
+static constexpr exrU16 MaxNodeDepth = 64;
 
 BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const SplitMethod splitMethod)
 {
@@ -42,7 +42,7 @@ BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const Spl
     {
     case BVHAccelerator::SplitMethod::SAH:
         m_RootNode->m_BoundingVolume = AABB::BoundPrimitives(objects);
-        SAHSplit(*m_RootNode);
+        SAHSplit(*m_RootNode, MaxNodeDepth);
         break;
     case BVHAccelerator::SplitMethod::EqualCounts:
         EqualCountSplit(*m_RootNode, MaxNodeDepth);
@@ -138,12 +138,12 @@ void BVHAccelerator::EqualCountSplit(BVHNode& currentRoot, exrU16 depth)
     EqualCountSplit(*currentRoot.m_RightSubtree, depth - 1);
 }
 
-void BVHAccelerator::SAHSplit(BVHNode& currentRoot)
+void BVHAccelerator::SAHSplit(BVHNode& currentRoot, exrU16 depth)
 {
     const auto numObjects = currentRoot.m_Primitives.size();
 
     // Nothing to split
-    if (numObjects <= 1)
+    if (numObjects <= 1 || depth <= 0)
         return;
 
     const exrU32 splitsPerAxis = 32;
@@ -195,7 +195,7 @@ void BVHAccelerator::SAHSplit(BVHNode& currentRoot)
 
             // Determine if doing a split is worth it
             // A split is not worth it if it doesn't yield a lower cost than the parent
-            if (aa * ia + ab * ib >= sc * numObjects)
+            if (1 + aa * ia + ab * ib >= sc * numObjects)
                 continue;
 
             if (heuristics < bestHeuristics)
@@ -219,8 +219,8 @@ void BVHAccelerator::SAHSplit(BVHNode& currentRoot)
     if (!hasSplit)
         return;
 
-    SAHSplit(*currentRoot.m_LeftSubtree);
-    SAHSplit(*currentRoot.m_RightSubtree);
+    SAHSplit(*currentRoot.m_LeftSubtree, depth - 1);
+    SAHSplit(*currentRoot.m_RightSubtree, depth - 1);
 }
 
 exrEND_NAMESPACE
