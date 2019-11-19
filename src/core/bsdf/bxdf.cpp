@@ -24,19 +24,20 @@
 
 exrBEGIN_NAMESPACE
 
-void BxDF::Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const
+exrSpectrum BxDF::Sample_f(const exrVector3& wo, exrVector3* wi, exrFloat* pdf) const
 {
     *wi = CosineSampleHemisphere();
     if (wo.z < 0)
         wi->z *= -1;
 
     *pdf = Pdf(wo, *wi);
+
+    return f(wo, *wi) / *pdf;
 }
 
 exrFloat BxDF::Pdf(const exrVector3& wo, const exrVector3& wi) const
 {
     return IsSameHemisphere(wo, wi) ? CosineHemispherePdf(abs(wi.z)) : 0;
 }
-
 
 exrEND_NAMESPACE

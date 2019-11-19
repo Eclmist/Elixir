@@ -30,13 +30,13 @@ static constexpr exrU32 MaxBxDFs = 8;
 class BSDF
 {
 public:
-    BSDF(const SurfaceInteraction& si, exrFloat ior = 1);
+    BSDF(const SurfaceInteraction& si, exrFloat ior = 1.0f);
     ~BSDF();
 
     void AddComponent(BxDF* b);
     exrU32 GetNumComponents(BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
-    exrSpectrum Evaluate(const exrVector3& worldWo, const exrVector3& worldWi, BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
-    exrSpectrum Sample(const exrVector3& worldWo, exrVector3* worldWi, exrFloat* pdf, BxDF::BxDFType flags);
+    exrSpectrum f(const exrVector3& worldWo, const exrVector3& worldWi, BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
+    exrSpectrum Sample_f(const exrVector3& worldWo, exrVector3* worldWi, exrFloat* pdf, BxDF::BxDFType flags);
 
     exrVector3 WorldToLocal(const exrVector3& v) const;
     exrVector3 LocalToWorld(const exrVector3& v) const;

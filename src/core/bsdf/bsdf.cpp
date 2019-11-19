@@ -28,8 +28,7 @@ BSDF::BSDF(const SurfaceInteraction& si, exrFloat ior)
     : m_ReflectiveIndex(ior)
     , m_Normal(si.m_Normal)
     , m_Bitangent(Cross(m_Normal, m_Tangent).Normalized())
-    , m_Tangent(Cross(m_Normal,
-            UniformSampleSphere(exrPoint2(Random::UniformFloat(), Random::UniformFloat())).Normalized()))
+    , m_Tangent(Cross(m_Normal, UniformSampleSphere().Normalized()))
 {
 }
 
@@ -55,7 +54,7 @@ exrU32 BSDF::GetNumComponents(BxDF::BxDFType flags) const
     return res;
 }
 
-exrSpectrum BSDF::Evaluate(const exrVector3& worldWo, const exrVector3& worldWi, BxDF::BxDFType flags) const
+exrSpectrum BSDF::f(const exrVector3& worldWo, const exrVector3& worldWi, BxDF::BxDFType flags) const
 {
     exrVector3 wi = WorldToLocal(worldWi);
     exrVector3 wo = WorldToLocal(worldWo);
@@ -67,20 +66,20 @@ exrSpectrum BSDF::Evaluate(const exrVector3& worldWo, const exrVector3& worldWi,
     {
         if (m_BxDFs[i]->MatchesFlags(flags))
         {
-            if (reflect && !m_BxDFs[i]->HasFlags(BxDF::BSDF_REFLECTION))
+            if (reflect && !m_BxDFs[i]->HasFlags(BxDF::BSDF_DIFFUSE))
                 continue;
             
             if (!reflect && !m_BxDFs[i]->HasFlags(BxDF::BSDF_TRANSMISSION))
                 continue;
 
-            res += m_BxDFs[i]->Evaluate(wo, wi);
+            res += m_BxDFs[i]->f(wo, wi);
         }
     }
 
     return res;
 }
 
-exrSpectrum BSDF::Sample(const exrVector3& worldWo, exrVector3* worldWi, exrFloat* pdf, BxDF::BxDFType flags)
+exrSpectrum BSDF::Sample_f(const exrVector3& worldWo, exrVector3* worldWi, exrFloat* pdf, BxDF::BxDFType flags)
 {
     // We can only sample one bxdf at a time, but since we may have more than one bxdf we will randomly select
     // one that matches the criteria.
@@ -97,7 +96,7 @@ exrSpectrum BSDF::Sample(const exrVector3& worldWo, exrVector3* worldWi, exrFloa
 
     exrVector3 wo = WorldToLocal(worldWo);
     exrVector3 wi;
-    sampledBxDF->Sample(wo, &wi, pdf, flags);
+    sampledBxDF->Sample_f(wo, &wi, pdf);
 
     if (pdf == 0)
         return exrSpectrum(0.0f);
@@ -119,7 +118,7 @@ exrSpectrum BSDF::Sample(const exrVector3& worldWo, exrVector3* worldWi, exrFloa
     }
 
     // now that we have the correct wi direction, evaluate this bsdf as per normal
-    return Evaluate(worldWo, *worldWi, flags);
+    return f(worldWo, *worldWi, flags);
 }
 
 exrVector3 BSDF::WorldToLocal(const exrVector3& v) const
@@ -138,7 +137,7 @@ BxDF* BSDF::GetRandomBxDF(BxDF::BxDFType type)
 {
     exrU32 numMatching = GetNumComponents(type);
 
-    exrU32 counter = exrU32(Random::UniformFloat() * numMatching);
+    exrU32 counter = Random::UniformUInt32(numMatching - 1);
 
     for (exrU32 i = 0; i < m_NumBxDF; ++i)
     {
@@ -148,6 +147,5 @@ BxDF* BSDF::GetRandomBxDF(BxDF::BxDFType type)
 
     return nullptr;
 }
-
 
 exrEND_NAMESPACE

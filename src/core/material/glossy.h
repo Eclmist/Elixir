@@ -36,7 +36,6 @@ public:
 
     void ComputeScatteringFunctions(SurfaceInteraction* si) const override
     {
-        // TODO: Fix memory leak here!!! 
         si->m_BSDF = new BSDF(*si);
         // We need to create a new bxdf for each interaction because properties such as color may change based on 
         // the material definition (textures, etc)

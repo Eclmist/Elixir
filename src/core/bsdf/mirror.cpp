@@ -24,7 +24,7 @@
 
 exrBEGIN_NAMESPACE
 
-exrSpectrum Mirror::Evaluate(const exrVector3& wo, const exrVector3& wi) const
+exrSpectrum Mirror::f(const exrVector3& wo, const exrVector3& wi) const
 {
     // If angle of incidence != angle of reflection
     if ((wi - Reflect(-wo, exrVector3::Forward())).Magnitude() > EXR_EPSILON)
@@ -36,11 +36,18 @@ exrSpectrum Mirror::Evaluate(const exrVector3& wo, const exrVector3& wi) const
     return MicrofacetFresnel(m_Specular, vDotH);
 }
 
-void Mirror::Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const
+exrSpectrum Mirror::Sample_f(const exrVector3& wo, exrVector3* wi, exrFloat* pdf) const
 {
     // local space normal is always z forward
     *wi = Reflect(-wo, exrVector3::Forward());
     *pdf = 1;
+
+    return f(wo, *wi);
+}
+
+exrSpectrum Mirror::rho(const exrVector3& wo, exrU32 numSamples) const
+{
+    return m_Specular * EXR_M_INVPI;
 }
 
 exrEND_NAMESPACE

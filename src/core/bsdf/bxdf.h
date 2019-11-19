@@ -24,17 +24,21 @@
 
 exrBEGIN_NAMESPACE
 
+//! @brief A base class for different bidirectional distribution functions.
+//!
+//! Handles the basic operations that all BxDF should support, including evaluation,
+//! sampling, etc. Named BxDF to generalize between BRDFs, BTDFs, BSSRDFs, etc.
 class BxDF
 {
 public:
 
     enum BxDFType
     {
-        BSDF_REFLECTION   = 1 << 0,
-        BSDF_TRANSMISSION = 1 << 1,
-        BSDF_DIFFUSE      = 1 << 2,
-        BSDF_GLOSSY       = 1 << 3,
-        BSDF_SPECULAR     = 1 << 4,
+        BSDF_REFLECTION   = 1 << 0, // In progress ( Mirror reflection )
+        BSDF_TRANSMISSION = 1 << 1, // Not implemented
+        BSDF_DIFFUSE      = 1 << 2, // Working
+        BSDF_GLOSSY       = 1 << 3, // (Sharp vs 
+        BSDF_SPECULAR     = 1 << 4, // (Specular color)
         BSDF_ALL          = BSDF_REFLECTION | BSDF_TRANSMISSION | BSDF_DIFFUSE | BSDF_GLOSSY | BSDF_SPECULAR,
     };
 
@@ -44,11 +48,58 @@ public:
     exrBool MatchesFlags(BxDFType t) const { return (m_BxDFType & t) == m_BxDFType; };
     exrBool HasFlags(BxDFType t) const { return (m_BxDFType & t) == t; }
 
-    virtual exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const = 0;
-    virtual void Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const;
+    //! @brief Computes the value of the distribution given a pair of directions
+    //!
+    //! Given two input directions, determine the color based on the BxDF. This is
+    //! the f(p, wo, wi) term in the rendering equation. This function does not support
+    //! delta BxDFs (i.e., mirror reflection) unless the exact wo is known.
+    //! 
+    //! @param wo               The outgoing direction of the BxDF
+    //! @param wi               The incoming direction of the BxDF
+    //! @return                 The output value of the BxDF
+    virtual exrSpectrum f(const exrVector3& wo, const exrVector3& wi) const = 0;
+
+    //! @brief Computes the direction of incident light given an outgoing direction
+    //! 
+    //! Given an outgoing direction, compute a possible incoming direction of incident light.
+    //! The pdf of the associated incoming direction is also returned. This function allows
+    //! the computation of wi for evaluating delta BxDFs. The output direction is chosen 
+    //! according to a distribution that is similar to the BxDF's scattering function.
+    //!
+    //! @param wo               The outgoing direction of the BxDF
+    //! @param wi               Outputs a possible incoming direction given wo
+    //! @param pdf              Outputs the pdf associated with wi->wo
+    //! @return                 The output value of the BxDF
+    virtual exrSpectrum Sample_f(const exrVector3& wo, exrVector3* wi, exrFloat* pdf) const;
+
+    //! @brief Computes the hemispherical-directional reflectance of a outgoing direction.
+    //! 
+    //! Computes the total reflection in a given direction due to constant illumination over
+    //! the hemisphere, or equivalently, the total reflection over the hemisphere given
+    //! light from a given direction. Some BxDF can compute this value in closed form but
+    //! most should perform monte-carlo integration over the hemisphere.
+    //!
+    //! @param wo               The input direction
+    //! @param numSamples       The number of samples should monte-carlo integration be used
+    //! @return                 The output value of the BxDF
+    virtual exrSpectrum rho(const exrVector3& wo, exrU32 numSamples) const = 0;
+
+    //! @brief Computes the pdf given a pair of directions
+    //! 
+    //! @param wo               The outgoing direction of the BxDF
+    //! @param wi               The incoming direction of the BxDF
+    //! @return                 The pdf associated with wi->wo
     virtual exrFloat Pdf(const exrVector3& wo, const exrVector3& wi) const;
 
+protected:
+
+    //! @brief Checks if a pair of directions is in the same hemisphere
+    //! 
+    //! @param wo               The outgoing direction of the BxDF
+    //! @param wi               The incoming direction of the BxDF
+    //! @return                 True if wo and wi are in the same hemisphere; false otherwise
     inline exrBool IsSameHemisphere(const exrVector3& wo, const exrVector3& wi) const { return wo.z * wi.z > 0; };
+
 private:
     BxDFType m_BxDFType;
 };

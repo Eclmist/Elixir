@@ -86,6 +86,28 @@ void SamplerIntegrator::Render(const Scene& scene)
     exporter->WriteImage(1.0f / m_NumSamplesPerPixel);
 }
 
+exrSpectrum SamplerIntegrator::Scatter(const Ray& ray, const SurfaceInteraction& intersect,
+    const Scene& scene, exrU32 depth) const
+{
+    exrVector3 wo = intersect.m_Wo;
+    exrVector3 wi;
+    exrFloat pdf;
+    BxDF::BxDFType type = BxDF::BxDFType(BxDF::BSDF_DIFFUSE);
+    exrSpectrum f = intersect.m_BSDF->Sample_f(wo, &wi, &pdf, type);
+
+    const exrVector3& normal = intersect.m_Normal;
+    if (pdf > 0 && !f.IsBlack() && abs(Dot(wi, normal)) > 0)
+    {
+        Ray reflRay = intersect.SpawnRay(wi);
+        return f * Evaluate(reflRay, scene, depth - 1) * abs(Dot(wi, normal)) / pdf;
+    }
+    else
+    {
+        return exrSpectrum(0.0f);
+    }
+
+}
+
 exrSpectrum SamplerIntegrator::SpecularReflect(const Ray& ray, const SurfaceInteraction& intersect,
     const Scene& scene, exrU32 depth) const
 {
@@ -93,13 +115,13 @@ exrSpectrum SamplerIntegrator::SpecularReflect(const Ray& ray, const SurfaceInte
     exrVector3 wi;
     exrFloat pdf;
     BxDF::BxDFType type = BxDF::BxDFType(BxDF::BSDF_REFLECTION | BxDF::BSDF_SPECULAR);
-    exrSpectrum f = intersect.m_BSDF->Sample(wo, &wi, &pdf, type);
+    exrSpectrum f = intersect.m_BSDF->Sample_f(wo, &wi, &pdf, type);
 
     const exrVector3& normal = intersect.m_Normal;
     if (pdf > 0 && !f.IsBlack() && abs(Dot(wi, normal)) > 0)
     {
         Ray reflRay = intersect.SpawnRay(wi);
-        return f * Evaluate(reflRay, scene, depth + 1) * abs(Dot(wi, normal)) / pdf;
+        return f * Evaluate(reflRay, scene, depth - 1) * abs(Dot(wi, normal)) / pdf;
     }
     else
     {

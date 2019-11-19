@@ -31,8 +31,9 @@ public:
         : BxDF(BxDFType(BSDF_SPECULAR | BSDF_REFLECTION))
         , m_Specular(r) {};
 
-    exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const override;
-    void Sample(const exrVector3& wo, exrVector3* wi, exrFloat* pdf, BxDFType flags) const override;
+    exrSpectrum f(const exrVector3& wo, const exrVector3& wi) const override;
+    exrSpectrum Sample_f(const exrVector3& wo, exrVector3* wi, exrFloat* pdf) const override;
+    exrSpectrum rho(const exrVector3& wo, exrU32 numSamples) const override;
 
 protected:
     exrSpectrum m_Specular;

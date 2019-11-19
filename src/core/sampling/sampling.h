@@ -37,11 +37,11 @@ inline exrFloat UniformHemispherePdf() {
     return EXR_M_INV2PI;
 }
 
-inline exrVector3 UniformSampleSphere(const exrPoint2& u)
+inline exrVector3 UniformSampleSphere()
 {
-    exrFloat z = 1 - 2 * u.x;
+    exrFloat z = 1 - 2 * Random::UniformFloat();
     exrFloat r = sqrt(exrMax(0.0f, 1.0f - z * z));
-    exrFloat phi = 2 * EXR_M_PI * u.y;
+    exrFloat phi = 2 * EXR_M_PI * Random::UniformFloat();
     return exrVector3(r * cos(phi), r * sin(phi), z);
 }
 

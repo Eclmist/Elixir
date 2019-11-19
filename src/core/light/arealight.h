@@ -33,9 +33,9 @@ public:
     AreaLight(const AreaLight& copy)
         : Light(copy.m_Transform, copy.m_Flags) {}
 
-    virtual exrSpectrum Sample(const Interaction& interaction, const exrVector3& w) const = 0;
+    virtual exrSpectrum Sample_f(const Interaction& interaction, const exrVector3& w) const = 0;
 
-    exrSpectrum Sample(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const override
+    exrSpectrum Sample_f(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const override
     {
         throw std::logic_error("The method or operation is not implemented.");
     }

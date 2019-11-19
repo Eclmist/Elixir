@@ -37,6 +37,10 @@ public:
 
     virtual void Preprocess(const Scene& scene) {};
 
+public:
+    // General helpers that computes future rays, could be reused in different integrators
+    virtual exrSpectrum Scatter(const Ray& ray, const SurfaceInteraction& intersect,
+        const Scene& scene, exrU32 depth) const;
     virtual exrSpectrum SpecularReflect(const Ray& ray, const SurfaceInteraction& intersect,
         const Scene& scene, exrU32 depth) const;
     virtual exrSpectrum SpecularRefract(const Ray& ray, const SurfaceInteraction& intersect,

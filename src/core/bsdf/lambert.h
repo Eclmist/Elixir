@@ -28,10 +28,14 @@ class Lambert : public BxDF
 {
 public:
     Lambert(const exrSpectrum& r)
-        : BxDF(BxDFType(BxDFType::BSDF_DIFFUSE | BxDFType::BSDF_REFLECTION))
+        : BxDF(BxDFType(BxDFType::BSDF_DIFFUSE))
         , m_Albedo(r) {};
 
-    exrSpectrum Evaluate(const exrVector3& wo, const exrVector3& wi) const override;
+    exrSpectrum f(const exrVector3& wo, const exrVector3& wi) const override;
+
+    // Lambertian reflection is equal in all directions, so its hemispherical directional
+    // reflectance is available in closed form.
+    exrSpectrum rho(const exrVector3& wo, exrU32 numSamples) const override { return m_Albedo; }
 
 private:
     exrSpectrum m_Albedo;

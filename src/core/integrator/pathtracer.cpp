@@ -26,13 +26,23 @@ exrBEGIN_NAMESPACE
 
 exrSpectrum PathTracer::Evaluate(const Ray& ray, const Scene& scene, exrU32 depth) const
 {
-    SurfaceInteraction hitRec;
+    if (depth < 0)
+        return exrSpectrum(0.0f);
 
-    if (scene.Intersect(ray, &hitRec)) {
-        return exrSpectrum::FromRGB(hitRec.m_Normal);
+    SurfaceInteraction hitRec;
+    exrSpectrum Lo(0.0f);
+
+    if (!scene.Intersect(ray, &hitRec)) {
+        return scene.SampleSkyLight(ray);
     }
 
-    return scene.SampleSkyLight(ray);
+    // Init BSDF
+    hitRec.ComputeScatteringFunctions(ray);
+
+    // TODO: Handle emission
+
+    Lo += Scatter(ray, hitRec, scene, depth);
+    return Lo;
 }
 
 exrEND_NAMESPACE

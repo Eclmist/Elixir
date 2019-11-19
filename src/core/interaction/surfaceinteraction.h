@@ -24,23 +24,19 @@
 
 exrBEGIN_NAMESPACE
 
-class Shape;
 class BSDF;
+class Shape;
 class Ray;
 
 class SurfaceInteraction : public Interaction
 {
 public:
     SurfaceInteraction() {};
-    ~SurfaceInteraction();
     SurfaceInteraction(const exrPoint3& point, const exrVector3& wo, const exrVector3& normal, const Shape* shape);
     void ComputeScatteringFunctions(const Ray& ray);
 
 public:
-    //! The BRDF of the surface
     BSDF* m_BSDF = nullptr;
-
-    //! A reference to the shape that the interaction lies on
     const Primitive* m_Primitive = nullptr;
     const Shape* m_Shape = nullptr;
 };
