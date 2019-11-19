@@ -24,8 +24,13 @@
 
 exrBEGIN_NAMESPACE
 
-class PathTracer
+class PathTracer : public SamplerIntegrator
 {
+public:
+    PathTracer(Camera* camera, exrU32 numSamplesPerPixel, exrU32 numBouncePerPixel)
+        : SamplerIntegrator(camera, numSamplesPerPixel, numBouncePerPixel) {};
+
+    exrSpectrum Evaluate(const Ray& ray, const Scene& scene, exrU32 depth = 0) const override;
 };
 
 exrEND_NAMESPACE

@@ -19,7 +19,20 @@
 */
 
 #include "pathtracer.h"
+#include "core/interaction/surfaceinteraction.h"
+#include "core/scene/scene.h"
 
 exrBEGIN_NAMESPACE
+
+exrSpectrum PathTracer::Evaluate(const Ray& ray, const Scene& scene, exrU32 depth) const
+{
+    SurfaceInteraction hitRec;
+
+    if (scene.Intersect(ray, &hitRec)) {
+        return exrSpectrum::FromRGB(hitRec.m_Normal);
+    }
+
+    return scene.SampleSkyLight(ray);
+}
 
 exrEND_NAMESPACE

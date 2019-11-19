@@ -32,7 +32,8 @@ public:
 
     enum IntegratorType
     {
-        INTEGRATOR_WITTED,
+        INTEGRATOR_WITTED, // Deprecated TODO: Remove or re-implement
+        INTEGRATOR_PATHTRACER,
     };
 
     virtual void Render(const Scene& scene) = 0;

@@ -23,7 +23,6 @@
 #include "api.h"
 
 #include "core/camera/camera.h"
-#include "core/integrator/samplerintegrator.h"
 #include "core/integrator/pathtracer.h"
 #include "core/light/pointlight.h"
 #include "core/material/diffuse.h"
@@ -153,8 +152,8 @@ void ElixirSetupDemo()
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
     const exrU32 numSamples = 1;
-    const exrU32 numBounces = 2;
-    //g_CurrentRenderJob->m_Integrator = std::make_unique<PathTracer>(g_CurrentRenderJob->m_Camera, numSamples, numBounces);
+    const exrU32 numBounces = 8;
+    g_CurrentRenderJob->m_Integrator = std::make_unique<PathTracer>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }
 
 void ElixirRender()
@@ -162,4 +161,5 @@ void ElixirRender()
     // Do render/write file
     g_CurrentRenderJob->m_Integrator->Render(*g_CurrentRenderJob->m_Scene);
 }
+
 exrEND_NAMESPACE
