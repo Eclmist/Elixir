@@ -52,6 +52,7 @@ void SamplerIntegrator::Render(const Scene& scene)
 
             threadPool.ScheduleTask(priority, [&](exrU32 tileX, exrU32 tileY)
             {
+                MemoryArena memoryArena;
                 // Everything from this point must explicitly enforce thread safety!
                 // Compute bounds for tile
                 Point2<exrU32> tileMin(tileX * TileSize, tileY * TileSize);
@@ -71,9 +72,17 @@ void SamplerIntegrator::Render(const Scene& scene)
                             Ray viewRay = m_Camera->GetViewRay(u, v);
 
                             exrSpectrum L(0.0f);
-                            L += Evaluate(viewRay, scene);
+                            L += Evaluate(viewRay, scene, memoryArena);
+
+                            // Issue warnings if unexpected radiance is returned
+                            if (L.HasNaNs())
+                            {
+                                exrError("NaNs radiance returned by integrator.");
+                                L = exrSpectrum::FromRGB(exrVector3(1, 0, 1));
+                            }
 
                             exporter->WritePixel(Point2<exrU32>(tileMin.x + x, tileMin.y + y), L);
+                            memoryArena.Release();
                         }
                     }
                 }
@@ -87,7 +96,7 @@ void SamplerIntegrator::Render(const Scene& scene)
 }
 
 exrSpectrum SamplerIntegrator::Scatter(const Ray& ray, const SurfaceInteraction& intersect,
-    const Scene& scene, exrU32 depth) const
+    const Scene& scene, MemoryArena& arena, exrU32 depth) const
 {
     exrVector3 wo = intersect.m_Wo;
     exrVector3 wi;
@@ -99,7 +108,7 @@ exrSpectrum SamplerIntegrator::Scatter(const Ray& ray, const SurfaceInteraction&
     if (pdf > 0 && !f.IsBlack() && abs(Dot(wi, normal)) > 0)
     {
         Ray reflRay = intersect.SpawnRay(wi);
-        return f * Evaluate(reflRay, scene, depth - 1) * abs(Dot(wi, normal)) / pdf;
+        return f * Evaluate(reflRay, scene, arena, depth - 1) * abs(Dot(wi, normal)) / pdf;
     }
     else
     {
@@ -109,7 +118,7 @@ exrSpectrum SamplerIntegrator::Scatter(const Ray& ray, const SurfaceInteraction&
 }
 
 exrSpectrum SamplerIntegrator::SpecularReflect(const Ray& ray, const SurfaceInteraction& intersect,
-    const Scene& scene, exrU32 depth) const
+    const Scene& scene, MemoryArena& arena, exrU32 depth) const
 {
     exrVector3 wo = intersect.m_Wo;
     exrVector3 wi;
@@ -121,7 +130,7 @@ exrSpectrum SamplerIntegrator::SpecularReflect(const Ray& ray, const SurfaceInte
     if (pdf > 0 && !f.IsBlack() && abs(Dot(wi, normal)) > 0)
     {
         Ray reflRay = intersect.SpawnRay(wi);
-        return f * Evaluate(reflRay, scene, depth - 1) * abs(Dot(wi, normal)) / pdf;
+        return f * Evaluate(reflRay, scene, arena, depth - 1) * abs(Dot(wi, normal)) / pdf;
     }
     else
     {
@@ -130,7 +139,7 @@ exrSpectrum SamplerIntegrator::SpecularReflect(const Ray& ray, const SurfaceInte
 }
 
 exrSpectrum SamplerIntegrator::SpecularRefract(const Ray& ray, const SurfaceInteraction& intersect,
-    const Scene& scene, exrU32 depth) const
+    const Scene& scene, MemoryArena& arena, exrU32 depth) const
 {
     throw "Not yet implemented!";
 }

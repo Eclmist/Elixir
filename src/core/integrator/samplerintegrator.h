@@ -40,13 +40,13 @@ public:
 public:
     // General helpers that computes future rays, could be reused in different integrators
     virtual exrSpectrum Scatter(const Ray& ray, const SurfaceInteraction& intersect,
-        const Scene& scene, exrU32 depth) const;
+        const Scene& scene, MemoryArena& arena, exrU32 depth) const;
     virtual exrSpectrum SpecularReflect(const Ray& ray, const SurfaceInteraction& intersect,
-        const Scene& scene, exrU32 depth) const;
+        const Scene& scene, MemoryArena& arena, exrU32 depth) const;
     virtual exrSpectrum SpecularRefract(const Ray& ray, const SurfaceInteraction& intersect,
-        const Scene& scene, exrU32 depth) const;
+        const Scene& scene, MemoryArena& arena, exrU32 depth) const;
 
-    virtual exrSpectrum Evaluate(const Ray& ray, const Scene& scene, exrU32 depth = 0) const = 0;
+    virtual exrSpectrum Evaluate(const Ray& ray, const Scene& scene, MemoryArena& arena, exrU32 depth = 0) const = 0;
 
     void Render(const Scene& scene) override;
 

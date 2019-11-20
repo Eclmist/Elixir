@@ -34,13 +34,13 @@ public:
         : m_Albedo(albedo)
         , m_Specular(specular) {};
 
-    void ComputeScatteringFunctions(SurfaceInteraction* si) const override
+    void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena) const override
     {
-        si->m_BSDF = new BSDF(*si);
+        si->m_BSDF = EXR_ARENA_ALLOC(arena, BSDF)(*si);
         // We need to create a new bxdf for each interaction because properties such as color may change based on 
         // the material definition (textures, etc)
-        si->m_BSDF->AddComponent(new Lambert(m_Albedo));
-        si->m_BSDF->AddComponent(new Mirror(m_Specular));
+        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Lambert)(m_Albedo));
+        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Mirror)(m_Specular));
     }
 
 private:

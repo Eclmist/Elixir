@@ -58,6 +58,37 @@ elseif ( UNIX )
     set ( EXR_PLATFORM_NAME "\"Linux\"" ) 
 endif ()
 
+# Check if aligned memory allocators available
+INCLUDE (CheckCXXSourceCompiles)
+
+CHECK_CXX_SOURCE_COMPILES ( "
+#include <malloc.h>
+int main() { void * ptr = _aligned_malloc(1024, 32); }
+" HAVE_ALIGNED_MALLOC )
+
+CHECK_CXX_SOURCE_COMPILES ( "
+#include <stdlib.h>
+int main() {
+  void *ptr;
+  posix_memalign(&ptr, 32, 1024);
+} " HAVE_POSIX_MEMALIGN )
+
+CHECK_CXX_SOURCE_COMPILES ( "
+#include <malloc.h>
+int main() {
+    void *ptr = memalign(32, 1024);
+} " HAVE_MEMALIGN )
+
+if ( HAVE_ALIGNED_MALLOC )
+  set ( EXR_HAVE_ALIGNED_MALLOC true )
+elseif ( HAVE_POSIX_MEMALIGN )
+  set ( EXR_HAVE_POSIX_MEMALIGN true )
+elseif ( HAVE_MEMALIGN )
+  set ( EXR_HAVE_MEMALIGN true )
+else ()
+  message ( SEND_ERROR "Unable to find a way to allocate aligned memory" )
+endif ()
+
 # Send the variables to the source code header
 configure_file (
     "${PROJECT_SOURCE_DIR}/src/system/config.h.in"

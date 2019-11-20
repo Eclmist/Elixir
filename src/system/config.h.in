@@ -30,3 +30,6 @@
 #cmakedefine EXR_PLATFORM_MAC
 #cmakedefine EXR_PLATFORM_LINUX
 #cmakedefine EXR_USE_NAMESPACE
+#cmakedefine EXR_HAVE_ALIGNED_MALLOC
+#cmakedefine EXR_HAVE_POSIX_MEMALIGN
+#cmakedefine EXR_HAVE_MEMALIGN

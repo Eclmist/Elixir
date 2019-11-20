@@ -30,9 +30,9 @@ SurfaceInteraction::SurfaceInteraction(const exrPoint3& point, const exrVector3&
     : Interaction(point, normal, wo)
     , m_Shape(shape) {};
 
-void SurfaceInteraction::ComputeScatteringFunctions(const Ray& ray)
+void SurfaceInteraction::ComputeScatteringFunctions(const Ray& ray, MemoryArena& arena)
 {
-    m_Primitive->ComputeScatteringFunctions(this);
+    m_Primitive->GetMaterial()->ComputeScatteringFunctions(this, arena);
 }
 
 exrEND_NAMESPACE

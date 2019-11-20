@@ -65,9 +65,6 @@ public:
     //! @return                 True if the there is an intersection
     exrBool HasIntersect(const Ray& r) const;
 
-    //! Initializes the BSDF and BSSRDF
-    void ComputeScatteringFunctions(SurfaceInteraction* interaction) const;
-
     //! Returns the material of the current primitive
     const Material* GetMaterial() const;
 

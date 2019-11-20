@@ -31,7 +31,7 @@ exrBEGIN_NAMESPACE
 class Material
 {
 public:
-    virtual void ComputeScatteringFunctions(SurfaceInteraction* si) const = 0;
+    virtual void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena) const = 0;
 };
 
 exrEND_NAMESPACE

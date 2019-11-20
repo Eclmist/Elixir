@@ -30,3 +30,6 @@
 /* #undef EXR_PLATFORM_MAC */
 /* #undef EXR_PLATFORM_LINUX */
 #define EXR_USE_NAMESPACE
+#define EXR_HAVE_ALIGNED_MALLOC
+/* #undef EXR_HAVE_POSIX_MEMALIGN */
+/* #undef EXR_HAVE_MEMALIGN */

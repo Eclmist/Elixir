@@ -33,7 +33,7 @@ class SurfaceInteraction : public Interaction
 public:
     SurfaceInteraction() {};
     SurfaceInteraction(const exrPoint3& point, const exrVector3& wo, const exrVector3& normal, const Shape* shape);
-    void ComputeScatteringFunctions(const Ray& ray);
+    void ComputeScatteringFunctions(const Ray& ray, MemoryArena& arena);
 
 public:
     BSDF* m_BSDF = nullptr;

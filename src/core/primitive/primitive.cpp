@@ -52,12 +52,6 @@ exrBool Primitive::HasIntersect(const Ray& r) const
     return m_Shape->HasIntersect(r, temp);
 }
 
-void Primitive::ComputeScatteringFunctions(SurfaceInteraction* interaction) const
-{
-    if (m_Material)
-        m_Material->ComputeScatteringFunctions(interaction);
-}
-
 const Material* Primitive::GetMaterial() const
 {
     return m_Material;

@@ -24,7 +24,7 @@
 
 exrBEGIN_NAMESPACE
 
-exrSpectrum PathTracer::Evaluate(const Ray& ray, const Scene& scene, exrU32 depth) const
+exrSpectrum PathTracer::Evaluate(const Ray& ray, const Scene& scene, MemoryArena& arena, exrU32 depth) const
 {
     if (depth < 0)
         return exrSpectrum(0.0f);
@@ -37,11 +37,11 @@ exrSpectrum PathTracer::Evaluate(const Ray& ray, const Scene& scene, exrU32 dept
     }
 
     // Init BSDF
-    hitRec.ComputeScatteringFunctions(ray);
+    hitRec.ComputeScatteringFunctions(ray, arena);
 
     // TODO: Handle emission
 
-    Lo += Scatter(ray, hitRec, scene, depth);
+    Lo += Scatter(ray, hitRec, scene, arena, depth);
     return Lo;
 }
 
