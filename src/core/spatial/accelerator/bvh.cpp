@@ -55,40 +55,33 @@ BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const Spl
     exrEndProfile();
 }
 
-std::vector<Primitive*> BVHAccelerator::Intersect(const Ray& ray) const
+const std::vector<Primitive*>* BVHAccelerator::Intersect(const Ray& ray) const
 {
     return TraverseNode(*m_RootNode, ray);
 }
 
-std::vector<Primitive*> BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray)
+const std::vector<Primitive*>* BVHAccelerator::TraverseNode(const BVHNode& node, const Ray& ray)
 {
     // If intersect bounding volume
     if (node.m_BoundingVolume.Intersect(ray))
     {
         // reached the end of tree, return hit with primitive
         if (node.m_LeftSubtree == nullptr || node.m_RightSubtree == nullptr)
-        {
-            return node.m_Primitives;
-        }
+            return &node.m_Primitives;
 
-        // Check left and right node
-        std::vector<Primitive*> leftPrims = TraverseNode(*node.m_LeftSubtree, ray);
-        std::vector<Primitive*> rightPrims = TraverseNode(*node.m_RightSubtree, ray);
+        const std::vector<Primitive*>* left = TraverseNode(*node.m_LeftSubtree, ray);
+        const std::vector<Primitive*>* right = TraverseNode(*node.m_RightSubtree, ray);
 
-        if (leftPrims.size() == 0)
-            return rightPrims;
-        if (rightPrims.size() == 0)
-            return leftPrims;
-        if (leftPrims.size() == 0 && rightPrims.size() == 0)
-        {
-            exrWarningLine("DO NOT REMOVE THIS BRANCH! If you see this error, remove the error.");
-            return leftPrims; //both is empty so just return either one
-        }
-        return node.m_Primitives; // both is not empty so return parent collection
+        if (left == nullptr)
+            return right;
+        if (right == nullptr)
+            return left;
+        
+        return &node.m_Primitives; // both is not empty so return parent collection
     }
 
     // Did not intersect with parent, so return an empty collection
-    return std::vector<Primitive*>();
+    return nullptr;
 }
 
 void BVHAccelerator::EqualCountSplit(BVHNode& currentRoot, exrU16 depth)

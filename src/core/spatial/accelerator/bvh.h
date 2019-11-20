@@ -61,7 +61,7 @@ public:
     BVHAccelerator(const std::vector<Primitive*>& objects, const SplitMethod splitMethod = SplitMethod::SAH);
 
 public:
-    std::vector<Primitive*> Intersect(const Ray& ray) const override;
+    const std::vector<Primitive*>* Intersect(const Ray& ray) const override;
 
 private:
     //! @brief A recursive function to recursively traverse nodes and check for intersection.
@@ -71,7 +71,7 @@ private:
     //!
     //! @return                 A collection of primitives that may pass intersection test
     //!                         against the input ray.
-    static std::vector<Primitive*> TraverseNode(const BVHNode& node, const Ray& ray);
+    static const std::vector<Primitive*>* TraverseNode(const BVHNode& node, const Ray& ray);
 
     //! @brief Recursively splits objects into equal subtrees
     //! 

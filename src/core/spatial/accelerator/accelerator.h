@@ -44,7 +44,7 @@ public:
     //! @param ray              The ray to test against.
     //! @return                 The collection of objects that the ray could possibly
     //!                         intersect with.
-    virtual std::vector<Primitive*> Intersect(const Ray& ray) const = 0;
+    virtual const std::vector<Primitive*>* Intersect(const Ray& ray) const = 0;
 };
 
 exrEND_NAMESPACE
