@@ -120,7 +120,6 @@ void BVHAccelerator::EqualCountSplit(BVHNode& currentRoot, exrU16 depth)
         break;
     default:
         // Split along z axis
-        exrAssert(false, "Remove this assert!"); // TODO: make sure this is removed
         sort(temp.begin(), temp.end(), [](Primitive* left, Primitive* right) {
             return left->GetBoundingVolume().Min().z < right->GetBoundingVolume().Min().z;
             });

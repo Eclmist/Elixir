@@ -32,13 +32,6 @@ BSDF::BSDF(const SurfaceInteraction& si, exrFloat ior)
 {
 }
 
-//TODO: delete hack
-BSDF::~BSDF()
-{
-    for (exrU32 i = 0; i < m_NumBxDF; ++i)
-        delete m_BxDFs[i];
-}
-
 void BSDF::AddComponent(BxDF* bxdf)
 {
     exrAssert(m_NumBxDF < MaxBxDFs, "Max number of BxDFs exceeded for material!");
