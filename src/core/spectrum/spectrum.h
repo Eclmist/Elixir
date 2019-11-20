@@ -280,6 +280,10 @@ exrBool Spectrum<N>::IsBlack() const
 template <exrU32 N>
 exrBool Spectrum<N>::HasNaNs() const
 {
+#ifndef isnan
+    using std::isnan;
+#endif
+
     for (exrU32 i = 0; i < N; ++i)
         if (isnan(m_Wavelengths[i])) return true;
 
