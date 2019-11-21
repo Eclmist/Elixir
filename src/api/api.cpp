@@ -119,13 +119,13 @@ void ElixirSetupDemo()
     geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(2);
     g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
-    //// ceiling
-    //geoPrimitive = std::make_unique<Primitive>();
-    //transform.SetTranslation(exrVector3(0.0f, 5.5f, 0.0f));
-    //transform.SetRotation(exrVector3(EXR_M_PIOVER2, 0.0f, 0.0f));
-    //geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
-    //geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(0);
-    //g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
+    // ceiling
+    geoPrimitive = std::make_unique<Primitive>();
+    transform.SetTranslation(exrVector3(0.0f, 5.5f, 0.0f));
+    transform.SetRotation(exrVector3(EXR_M_PIOVER2, 0.0f, 0.0f));
+    geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(5.5f));
+    geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(0);
+    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     // floor
     geoPrimitive = std::make_unique<Primitive>();
