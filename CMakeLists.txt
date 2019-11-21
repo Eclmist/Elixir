@@ -38,7 +38,9 @@ set ( EXR_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
 set ( EXR_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} )
 
 # Setting on project generation
-SET ( EXR_USE_NAMESPACE "YES" CACHE BOOL "Enable generating Elixir namespace. This is true by default." )
+SET ( EXR_USE_NAMESPACE "YES" CACHE BOOL "Enable generating Elixir namespace. This is enabled by default." )
+SET ( EXR_USE_FASTMATH "NO" CACHE BOOL "Enable fast math. May introduce arithmetic error. This is disabled by default" )
+SET ( EXR_USE_WHOLE_PROGRAMME_OPTIMIZATION "YES" CACHE BOOL "Enable whole programme optimizations. This is enabled by default." )
 
 # Define platform
 if ( WIN32 )
@@ -99,8 +101,7 @@ configure_file (
 if ( EXR_PLATFORM_WIN )
     include( ProcessorCount )
     ProcessorCount( N )
-    SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP${N}" )
-    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N}" )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N}" )
 endif ( EXR_PLATFORM_WIN )
 
 # Include directories
@@ -158,18 +159,28 @@ set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${EXR_SOURCE_DIR}/bin/debug" )
 add_executable ( Elixir ${all_files} )
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT "Elixir")
 
-# Enable Whole Programme Optimization & Link Time Optimizations (/GL, /LTCG)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    set_target_properties ( Elixir PROPERTIES COMPILE_FLAGS "/GL" )
-    set_target_properties ( Elixir PROPERTIES COMPILE_FLAGS "/fp:fast" )
-    set_target_properties ( Elixir PROPERTIES COMPILE_FLAGS "/MD" )
-    set_target_properties ( Elixir PROPERTIES LINK_FLAGS "/LTCG")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244 /wd4305 /wd4800" )
+    # Enable Whole Programme Optimization & Link Time Optimizations (/GL, /LTCG)
+    if ( EXR_USE_WHOLE_PROGRAMME_OPTIMIZATION )
+        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GL" )
+        set_target_properties( Elixir PROPERTIES LINK_FLAGS_RELEASE "/LTCG")
+    endif ( EXR_USE_WHOLE_PROGRAMME_OPTIMIZATION )
+
+    # Enables low precision fast math
+    if ( EXR_USE_FASTMATH )
+        set_target_properties( Elixir PROPERTIES COMPILE_FLAGS "/fp:fast" )
+    endif ( EXR_USE_FASTMATH )
 else ()
 	set_source_files_properties(${all_files} PROPERTIES COMPILE_FLAGS -w)
-	set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -pthread")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+
+    if( EXR_ENABLE_WHOLE_PROGRAMME_OPTIMIZATION )
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
+    endif()
+
+    if( EXR_USE_FASTMATH )
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math")
+    endif()
 endif()
 
 # Set output name for different configs

@@ -51,7 +51,7 @@ public:
     //! @param hh               Zero padded output hour string (00 - 24)
     //! @param mm               Zero padded output minute string (00 - 60)
     //! @param ss               Zero padded output second string (00 - 60)
-    static void FormatTime(exrFloat time, exrString& hh, exrString& mm, exrString& ss);
+    static void FormatTime(exrS64 time, exrString& hh, exrString& mm, exrString& ss);
 
     //! @brief Computes the number of milliseconds past since Epoch
     //!

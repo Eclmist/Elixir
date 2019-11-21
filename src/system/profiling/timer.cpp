@@ -46,7 +46,7 @@ void Timer::EndTimer()
     m_HasEarlyExit = true;
 
     std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
-    exrFloat timeElapsed = (endTime - m_StartTime) / std::chrono::milliseconds(1);
+    exrS64 timeElapsed = static_cast<exrS64>((endTime - m_StartTime) / std::chrono::milliseconds(1));
 
     exrString hh, mm, ss;
     FormatTime(timeElapsed, hh, mm, ss);
@@ -54,7 +54,7 @@ void Timer::EndTimer()
     exrInfoLine("\t   ↳" << "Total elapsed time: " << hh << ":" << mm << ":" << ss);
 }
 
-void Timer::FormatTime(exrFloat ftime, exrString& hh, exrString& mm, exrString& ss) 
+void Timer::FormatTime(exrS64 ftime, exrString& hh, exrString& mm, exrString& ss) 
 {
     //3600000 milliseconds in an hour
     exrS64 hr = ftime / 3600000;
