@@ -24,7 +24,7 @@
 
 exrBEGIN_NAMESPACE
 
-exrSpectrum PointLight::Sample_f(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const
+exrSpectrum PointLight::Sample_f(const Interaction& interaction, exrVector3& wi, exrFloat& pdf) const
 {
     wi = (m_Transform.GetPosition() - interaction.m_Point).Normalized();
     pdf = 1.0f;
@@ -35,5 +35,4 @@ exrSpectrum PointLight::Power() const
 {
     return m_Intensity * 4 * EXR_M_PI;
 }
-
 exrEND_NAMESPACE

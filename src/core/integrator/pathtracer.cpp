@@ -19,16 +19,13 @@
 */
 
 #include "pathtracer.h"
+#include "core/bsdf/bsdf.h"
 #include "core/interaction/surfaceinteraction.h"
 #include "core/scene/scene.h"
-
 exrBEGIN_NAMESPACE
 
-exrSpectrum PathTracer::Evaluate(const Ray& ray, const Scene& scene, MemoryArena& arena, exrU32 depth) const
+exrSpectrum PathTracer::Li(const Ray& ray, const Scene& scene, MemoryArena& arena, exrU32 depth) const
 {
-    if (depth < 0)
-        return exrSpectrum(0.0f);
-
     SurfaceInteraction hitRec;
     exrSpectrum Lo(0.0f);
 
@@ -39,9 +36,34 @@ exrSpectrum PathTracer::Evaluate(const Ray& ray, const Scene& scene, MemoryArena
     // Init BSDF
     hitRec.ComputeScatteringFunctions(ray, arena);
 
-    // TODO: Handle emission
+    // Sample light sources
+    for (const Light* light : scene.m_Lights) 
+    {
+        exrVector3 wi;
+        exrFloat pdf;
+        exrSpectrum attenuation = light->Sample_f(hitRec, wi, pdf);
+        exrSpectrum col = hitRec.m_BSDF->f(hitRec.m_Wo, wi) * attenuation * Dot(hitRec.m_Normal, wi);
 
-    Lo += Scatter(ray, hitRec, scene, arena, depth);
+        Ray shadowRay = hitRec.SpawnRay(wi, Distance(light->m_Transform.GetPosition(), hitRec.m_Point));
+        if (scene.HasIntersect(shadowRay))
+             continue;
+
+        Lo += col;
+    }
+
+    // Spawning secondary ray
+    exrVector3 wi;
+    exrFloat pdf;
+    BxDF::BxDFType type = BxDF::BxDFType(BxDF::BSDF_ALL);
+    exrSpectrum f = hitRec.m_BSDF->Sample_f(hitRec.m_Wo, &wi, &pdf, type);
+
+    exrFloat ndotwi = Dot(wi, hitRec.m_Normal);
+    if (pdf > 0 && !f.IsBlack() && ndotwi > 0 && depth > 0)
+    {
+        Ray reflRay = hitRec.SpawnRay(wi);
+        return Lo + f * Li(reflRay, scene, arena, depth - 1) * abs(ndotwi) / pdf;
+    }
+
     return Lo;
 }
 

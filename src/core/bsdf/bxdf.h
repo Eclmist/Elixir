@@ -39,7 +39,7 @@ public:
         BSDF_DIFFUSE      = 1 << 2, // Working
         BSDF_GLOSSY       = 1 << 3, // (Sharp vs 
         BSDF_SPECULAR     = 1 << 4, // (Specular color)
-        BSDF_ALL          = BSDF_REFLECTION | BSDF_TRANSMISSION | BSDF_DIFFUSE | BSDF_GLOSSY | BSDF_SPECULAR,
+        BSDF_ALL          = BSDF_REFLECTION | BSDF_TRANSMISSION | BSDF_DIFFUSE | BSDF_GLOSSY | BSDF_SPECULAR
     };
 
     BxDF(BxDFType type)
