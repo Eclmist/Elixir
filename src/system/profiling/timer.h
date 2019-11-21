@@ -63,7 +63,7 @@ private:
     exrString m_ProcessName;
 
     //! Time when the timer first began ticking
-    exrS64 m_StartTime;
+    std::chrono::steady_clock::time_point m_StartTime;
 
     //! A flag that will be set by EndTimer() to prevent destructor from logging again
     exrBool m_HasEarlyExit;

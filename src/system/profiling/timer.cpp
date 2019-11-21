@@ -27,7 +27,7 @@ exrBEGIN_NAMESPACE
 
 Timer::Timer(exrString processName)
     : m_ProcessName(processName)
-    , m_StartTime(clock())
+    , m_StartTime(std::chrono::steady_clock::now())
     , m_HasEarlyExit(false)
 {
     exrInfoLine(processName);
@@ -45,29 +45,28 @@ void Timer::EndTimer()
 {
     m_HasEarlyExit = true;
 
-    exrS64 endTime = clock();
-    exrFloat timeElapsed = 1000.0f * (endTime - m_StartTime) / CLOCKS_PER_SEC;
+    std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+    exrFloat timeElapsed = (endTime - m_StartTime) / std::chrono::milliseconds(1);
 
     exrString hh, mm, ss;
     FormatTime(timeElapsed, hh, mm, ss);
 
-    exrInfoLine(m_ProcessName << " completed \t\t\t" << "Total elapsed time: " << hh << ":" << mm << ":" << ss);
+    exrInfoLine("\t   ↳" << "Total elapsed time: " << hh << ":" << mm << ":" << ss);
 }
 
 void Timer::FormatTime(exrFloat ftime, exrString& hh, exrString& mm, exrString& ss) 
 {
-    exrS64 stime = static_cast<exrS64>(ftime);
     //3600000 milliseconds in an hour
-    exrS64 hr = stime / 3600000;
-    stime = stime - 3600000 * hr;
+    exrS64 hr = ftime / 3600000;
+    ftime = ftime - 3600000 * hr;
 
     //60000 milliseconds in a minute
-    exrS64 min = stime / 60000;
-    stime = stime - 60000 * min;
+    exrS64 min = ftime / 60000;
+    ftime = ftime - 60000 * min;
 
     //1000 milliseconds in a second
-    exrS64 sec = stime / 1000;
-    stime = stime - 1000 * sec;
+    exrS64 sec = ftime / 1000;
+    ftime = ftime - 1000 * sec;
 
     hh = exrString(hr < 10 ? 1 : 0, '0').append(std::to_string(hr));
     mm = exrString(min < 10 ? 1 : 0, '0').append(std::to_string(min));
@@ -80,5 +79,6 @@ exrU64 Timer::TimeSinceEpochMillisec()
     exrU64 time = static_cast<exrU64>(system_clock::now().time_since_epoch() / milliseconds(1));
     return time;
 }
+
 exrEND_NAMESPACE
 
