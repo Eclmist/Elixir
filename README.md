@@ -50,7 +50,7 @@ $ cmake -B build -S . -DCMAKE_CONFIGURATION_TYPES:STRING="Debug;Release;"
 ```
 
 ```
-$ cmake --build .
+$ cmake --build ./build/
 ```
 
 This will generate OS specific project in the `/build/` folder, and will build the Elixir binaries into `/bin/`.
