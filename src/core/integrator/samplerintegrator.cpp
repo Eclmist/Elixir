@@ -90,8 +90,8 @@ void SamplerIntegrator::Render(const Scene& scene)
             }, tx, ty);
         }
     }
-    exrEndProfile();
 
+    exrEndProfile();
     exporter->WriteImage(1.0f / m_NumSamplesPerPixel);
 }
 
