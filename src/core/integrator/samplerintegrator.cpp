@@ -37,7 +37,7 @@ void SamplerIntegrator::Render(const Scene& scene)
     const exrU32 totalNumTiles = numTiles.x * numTiles.y;
     AtomicFloat progress;
 
-    exrProfile("Rendering")
+    exrProfile("Rendering Scene");
     { // let threadPool destructor join all threads
         exrAssert(g_RuntimeOptions.numThreads > 0, "Unable to start elixir with 0 threads!");
         ThreadPool threadPool(g_RuntimeOptions.numThreads);
@@ -72,7 +72,7 @@ void SamplerIntegrator::Render(const Scene& scene)
                             Ray viewRay = m_Camera->GetViewRay(u, v);
 
                             exrSpectrum L(0.0f);
-                            L += Evaluate(viewRay, scene, memoryArena);
+                            L += Li(viewRay, scene, memoryArena, m_NumBouncePerPixel);
 
                             // Issue warnings if unexpected radiance is returned
                             if (L.HasNaNs())
@@ -95,28 +95,6 @@ void SamplerIntegrator::Render(const Scene& scene)
     exporter->WriteImage(1.0f / m_NumSamplesPerPixel);
 }
 
-exrSpectrum SamplerIntegrator::Scatter(const Ray& ray, const SurfaceInteraction& intersect,
-    const Scene& scene, MemoryArena& arena, exrU32 depth) const
-{
-    exrVector3 wo = intersect.m_Wo;
-    exrVector3 wi;
-    exrFloat pdf;
-    BxDF::BxDFType type = BxDF::BxDFType(BxDF::BSDF_DIFFUSE);
-    exrSpectrum f = intersect.m_BSDF->Sample_f(wo, &wi, &pdf, type);
-
-    const exrVector3& normal = intersect.m_Normal;
-    if (pdf > 0 && !f.IsBlack() && abs(Dot(wi, normal)) > 0)
-    {
-        Ray reflRay = intersect.SpawnRay(wi);
-        return f * Evaluate(reflRay, scene, arena, depth - 1) * abs(Dot(wi, normal)) / pdf;
-    }
-    else
-    {
-        return exrSpectrum(0.0f);
-    }
-
-}
-
 exrSpectrum SamplerIntegrator::SpecularReflect(const Ray& ray, const SurfaceInteraction& intersect,
     const Scene& scene, MemoryArena& arena, exrU32 depth) const
 {
@@ -130,7 +108,7 @@ exrSpectrum SamplerIntegrator::SpecularReflect(const Ray& ray, const SurfaceInte
     if (pdf > 0 && !f.IsBlack() && abs(Dot(wi, normal)) > 0)
     {
         Ray reflRay = intersect.SpawnRay(wi);
-        return f * Evaluate(reflRay, scene, arena, depth - 1) * abs(Dot(wi, normal)) / pdf;
+        return f * Li(reflRay, scene, arena, depth - 1) * abs(Dot(wi, normal)) / pdf;
     }
     else
     {

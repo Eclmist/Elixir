@@ -51,7 +51,7 @@ public:
     //! @param hh               Zero padded output hour string (00 - 24)
     //! @param mm               Zero padded output minute string (00 - 60)
     //! @param ss               Zero padded output second string (00 - 60)
-    static void FormatTime(exrFloat time, exrString& hh, exrString& mm, exrString& ss);
+    static void FormatTime(exrS64 time, exrString& hh, exrString& mm, exrString& ss);
 
     //! @brief Computes the number of milliseconds past since Epoch
     //!
@@ -63,7 +63,7 @@ private:
     exrString m_ProcessName;
 
     //! Time when the timer first began ticking
-    exrS64 m_StartTime;
+    std::chrono::steady_clock::time_point m_StartTime;
 
     //! A flag that will be set by EndTimer() to prevent destructor from logging again
     exrBool m_HasEarlyExit;

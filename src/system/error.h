@@ -22,12 +22,12 @@
 
 #ifdef EXR_ENABLE_LOGGING
 #include <iostream>
-#define exrDebugLine(msg)                           std::cout << "[Debug] "   << msg << '\n';
-#define exrDebug(msg)                               std::cout << "[Debug] "   << msg;
-#define exrInfoLine(msg)                            std::cout << "[Info] "    << msg << '\n';
-#define exrInfo(msg)                                std::cout << "[Info] "    << msg;
-#define exrWarningLine(msg)                         std::cout << "[Warning] " << msg << '\n';
-#define exrWarning(msg)                             std::cout << "[Warning] " << msg;
+#define exrDebugLine(msg)                           std::cout << "[Debug] "   << msg << '\n' << std::flush;
+#define exrDebug(msg)                               std::cout << "[Debug] "   << msg << std::flush;
+#define exrInfoLine(msg)                            std::cout << "[Info] "    << msg << '\n' << std::flush;
+#define exrInfo(msg)                                std::cout << "[Info] "    << msg << std::flush;
+#define exrWarningLine(msg)                         std::cout << "[Warning] " << msg << '\n' << std::flush;
+#define exrWarning(msg)                             std::cout << "[Warning] " << msg << std::flush;
 #else
 #define exrDebug(msg)                               ((void)0)
 #define exrInfo(msg)                                ((void)0)

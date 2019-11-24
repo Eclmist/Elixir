@@ -47,7 +47,7 @@ public:
 
 public:
     virtual void Preprocess(const Scene& scene) {};
-    virtual exrSpectrum Sample_f(const Interaction& interaction, const exrPoint2& uv, exrVector3& wi, exrFloat& pdf) const = 0;
+    virtual exrSpectrum Sample_f(const Interaction& interaction, exrVector3& wi, exrFloat& pdf) const = 0;
     virtual exrSpectrum Power() const = 0;
 
     // TODO: make this protected once we have proper way to trace shadow rays

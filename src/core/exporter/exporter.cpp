@@ -55,6 +55,7 @@ void Exporter::WriteImage(exrFloat splatScale)
     std::vector<exrByte> buffer(header.begin(), header.end());
     const auto headerOffset = buffer.size();
 
+
     buffer.resize(buffer.size() + m_Resolution.x * m_Resolution.y * sizeof(exrByte) * 3);
     memcpy(buffer.data(), header.c_str(), strlen(header.c_str()));
 
@@ -98,6 +99,79 @@ void Exporter::WriteImage(exrFloat splatScale)
 #elif defined EXR_PLATFORM_MAC
     system(("open " + filename).c_str());
 #endif
+}
+
+void Exporter::FilterImage(exrU32 numIteration)
+{
+    exrProfile("Filtering Image (median)");
+
+    for (exrU32 it = 0; it < numIteration; ++it)
+    {
+        const int size = m_Resolution.x * m_Resolution.y;
+        std::vector<exrVector3> copy(size);
+
+        for (exrU32 y = 0; y < m_Resolution.y; ++y)
+        {
+            for (exrU32 x = 0; x < m_Resolution.x; ++x)
+            {
+                exrU32 offset = x + y * m_Resolution.x;
+                copy.emplace_back(m_Pixels[offset].m_RGB[0], m_Pixels[offset].m_RGB[1], m_Pixels[offset].m_RGB[2]);
+            }
+        }
+
+        for (exrU32 y = 0; y < m_Resolution.y; ++y)
+        {
+            for (exrU32 x = 0; x < m_Resolution.x; ++x)
+            {
+                std::priority_queue<exrFloat> rChannel;
+                std::priority_queue<exrFloat> gChannel;
+                std::priority_queue<exrFloat> bChannel;
+
+                for (exrS32 i = -1; i <= 1; ++i)
+                {
+                    for (exrS32 j = -1; j <= 1; ++j)
+                    {
+                        exrU32 samplePosX = x + i;
+                        exrU32 samplePosY = y + j;
+
+                        if (samplePosX < 0 || samplePosX >= m_Resolution.x || samplePosY < 0 || samplePosY >= m_Resolution.y)
+                            continue;
+
+                        exrVector3 pixel = copy[samplePosX + samplePosY * m_Resolution.x];
+                        rChannel.push(pixel[0]);
+                        gChannel.push(pixel[1]);
+                        bChannel.push(pixel[2]);
+                    }
+                }
+
+                exrFloat medianR, medianG, medianB;
+                exrBool isEven = rChannel.size() % 2 == 0;
+
+                for (exrU32 i = 0; i < rChannel.size() / 2; ++i)
+                {
+                    rChannel.pop();
+                    gChannel.pop();
+                    bChannel.pop();
+                }
+
+                medianR = rChannel.top(); rChannel.pop();
+                medianG = gChannel.top(); gChannel.pop();
+                medianB = bChannel.top(); bChannel.pop();
+
+                if (isEven)
+                {
+                    medianR = (medianR + rChannel.top()) / 2;
+                    medianG = (medianG + gChannel.top()) / 2;
+                    medianB = (medianB + bChannel.top()) / 2;
+                }
+
+                Pixel& currentPixel = GetPixel(Point2<exrU32>(x, y));
+                currentPixel.m_RGB[0] = medianR;
+                currentPixel.m_RGB[1] = medianG;
+                currentPixel.m_RGB[2] = medianB;
+            }
+        }
+    }
 }
 
 Exporter::Pixel& Exporter::GetPixel(const Point2<exrU32>& point)

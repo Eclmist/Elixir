@@ -21,7 +21,6 @@
 #pragma once
 
 #include "core/elixir.h"
-#include "core/light/arealight.h"
 #include "core/material/material.h"
 #include "core/primitive/shape/shape.h"
 
