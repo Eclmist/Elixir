@@ -22,13 +22,15 @@
 
 #include "system/system.h"
 
+exrBEGIN_NAMESPACE
+
 class ProgressBar
 {
 public:
     ProgressBar(int maxVal, int barLength)
         : m_MaxValue(maxVal) 
         , m_BarLength(barLength)
-        , m_StartTime(elixir::Timer::TimeSinceEpochMillisec()) {};
+        , m_StartTime(Timer::TimeSinceEpochMillisec()) {};
 
     void Increment(int value) 
     {
@@ -42,7 +44,7 @@ public:
 
         m_IsUpdating = true;
 
-        std::cout << "[Info] [";
+        std::cout << "[Info]\t   [";
         float progress = m_CurrentValue / static_cast<float>(m_MaxValue);
 
         for (int i = 0; i < m_BarLength; ++i) 
@@ -56,11 +58,11 @@ public:
 
         std::cout << "] " << static_cast<int>(progress * 100) << "% ";
 
-        auto endTime = elixir::Timer::TimeSinceEpochMillisec();
+        auto endTime = Timer::TimeSinceEpochMillisec();
         auto timeLeftMilli = ((endTime - m_StartTime) / m_CurrentValue) * (m_MaxValue - m_CurrentValue);
 
         std::string hh, mm, ss;
-        elixir::Timer::FormatTime(static_cast<long>(timeLeftMilli), hh, mm, ss);
+        Timer::FormatTime(static_cast<long>(timeLeftMilli), hh, mm, ss);
 
         std::cout << "- Estimated Time Remaining: " << hh << ":" << mm << ":" << ss << "\t";
 
@@ -80,3 +82,5 @@ private:
     std::atomic<bool> m_IsUpdating;
     std::atomic<int> m_CurrentValue;
 };
+
+exrEND_NAMESPACE
