@@ -99,7 +99,7 @@ void ElixirSetupDemo()
     g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     geoPrimitive = std::make_unique<Primitive>();
-    transform.SetTranslation(exrVector3(1.0f, 2.75f, 1.5f));
+    transform.SetTranslation(exrVector3(1.5f, 2.75f, -1.5f));
     geoPrimitive->m_Shape = std::make_unique<Sphere>(transform, 0.7f);
     geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(3);
     g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
@@ -167,7 +167,7 @@ void ElixirSetupDemo()
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 50;
+    const exrU32 numSamples = 32;
     const exrU32 numBounces = 16;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }

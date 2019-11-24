@@ -22,6 +22,7 @@
 #include "core/bsdf/bxdf.h"
 #include "core/bsdf/bsdf.h"
 #include "core/scene/scene.h"
+#include "system/progress.h"
 
 exrBEGIN_NAMESPACE
 
@@ -32,9 +33,9 @@ void SamplerIntegrator::Render(const Scene& scene)
     // Compute number of tiles
     const Point2<exrU32> resolution = exporter->m_Resolution;
     const Point2<exrU32> numTiles((resolution.x + TileSize - 1) / TileSize, (resolution.y + TileSize - 1) / TileSize);
-
     const exrU32 totalNumTiles = numTiles.x * numTiles.y;
-    AtomicFloat progress;
+
+    ProgressBar progressMonitor(totalNumTiles, 40);
 
     exrProfile("Rendering Scene");
     { // let threadPool destructor join all threads
@@ -88,9 +89,15 @@ void SamplerIntegrator::Render(const Scene& scene)
                     }
                 }
 
+                // Add 1 to the number of tiles completed
+                progressMonitor.Increment(1);
+                progressMonitor.Print();
+
             }, tx, ty);
         }
     }
+
+    std::cout << std::endl;
 
     exrEndProfile();
     exporter->WriteImage(1.0f / m_NumSamplesPerPixel);

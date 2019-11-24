@@ -30,11 +30,13 @@ class AtomicFloat
 public:
     explicit AtomicFloat(exrFloat v = 0) { m_Bits = FloatToBits(v); }
     operator exrFloat() const { return BitsToFloat(m_Bits); }
+
     exrFloat operator=(exrFloat v)
     {
         m_Bits = FloatToBits(v);
         return v;
     }
+
     void Add(exrFloat v)
     {
         exrU32 oldBits = m_Bits, newBits;
