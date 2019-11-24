@@ -120,6 +120,12 @@ inline float Dot(const Vector3<T>& v1, const Vector3<T>& v2)
 }
 
 template<class T>
+inline float AbsDot(const Vector3<T>& v1, const Vector3<T>& v2)
+{
+    return abs(Dot(v1, v2));
+}
+
+template<class T>
 inline Vector3<T> Cross(const Vector3<T>& v1, const Vector3<T>& v2)
 {
     return Vector3<T>((v1.y * v2.z - v1.z * v2.y),

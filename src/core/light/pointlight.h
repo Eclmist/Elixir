@@ -31,7 +31,7 @@ public:
         : Light(transform, LightFlags::LIGHTFLAGS_DELTAPOSITION) 
         , m_Intensity(intensity) {};
 
-    exrSpectrum Sample_f(const Interaction& interaction, exrVector3& wi, exrFloat& pdf) const override;
+    exrSpectrum Sample_Li(const Interaction& interaction, exrVector3& wi, exrFloat& pdf, VisibilityTester* vis) const override;
     exrSpectrum Power() const override;
 
 private:

@@ -22,6 +22,7 @@
 
 #include "core/elixir.h"
 #include "core/primitive/transform.h"
+#include "core/light/visibilitytester.h"
 
 exrBEGIN_NAMESPACE
 
@@ -47,7 +48,7 @@ public:
 
 public:
     virtual void Preprocess(const Scene& scene) {};
-    virtual exrSpectrum Sample_f(const Interaction& interaction, exrVector3& wi, exrFloat& pdf) const = 0;
+    virtual exrSpectrum Sample_Li(const Interaction& interaction, exrVector3& wi, exrFloat& pdf, VisibilityTester* vis) const = 0;
     virtual exrSpectrum Power() const = 0;
 
     // TODO: make this protected once we have proper way to trace shadow rays

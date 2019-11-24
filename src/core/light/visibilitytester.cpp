@@ -20,32 +20,14 @@
 
 #pragma once
 
-#include "material.h"
-#include "core/bsdf/lambert.h"
-#include "core/bsdf/mirror.h"
-#include "core/bsdf/bsdf.h"
+#include "visibilitytester.h"
+#include "core/scene/scene.h"
 
 exrBEGIN_NAMESPACE
 
-class Glossy : public Material
+exrBool VisibilityTester::IsOccluded(const Scene& scene) const
 {
-public:
-    Glossy(const exrSpectrum& albedo, const exrSpectrum& specular)
-        : m_Albedo(albedo)
-        , m_Specular(specular) {};
-
-    void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena) const override
-    {
-        si->m_BSDF = EXR_ARENA_ALLOC(arena, BSDF)(*si);
-        // We need to create a new bxdf for each interaction because properties such as color may change based on 
-        // the material definition (textures, etc)
-        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Lambert)(m_Albedo));
-        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Mirror)(m_Specular));
-    }
-
-private:
-    exrSpectrum m_Albedo;
-    exrSpectrum m_Specular;
-};
+    return scene.HasIntersect(m_P0.SpawnRayTo(m_P1));
+}
 
 exrEND_NAMESPACE

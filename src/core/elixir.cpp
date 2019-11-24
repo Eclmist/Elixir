@@ -113,6 +113,10 @@ int main(int argc, exrChar *argv[])
 
     ElixirRender();
     ElixirCleanup();
+
+#ifdef EXR_PLATFORM_WIN
+    system("Pause");
+#endif
    
     return 0;
 }

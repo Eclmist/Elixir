@@ -34,12 +34,16 @@ public:
 
     enum BxDFType
     {
-        BSDF_REFLECTION   = 1 << 0, // In progress ( Mirror reflection )
-        BSDF_TRANSMISSION = 1 << 1, // Not implemented
-        BSDF_DIFFUSE      = 1 << 2, // Working
-        BSDF_GLOSSY       = 1 << 3, // (Sharp vs 
-        BSDF_SPECULAR     = 1 << 4, // (Specular color)
-        BSDF_ALL          = BSDF_REFLECTION | BSDF_TRANSMISSION | BSDF_DIFFUSE | BSDF_GLOSSY | BSDF_SPECULAR
+        BXDFTYPE_HAS_REFLECTANCE   = 1 << 0,
+        BXDFTYPE_HAS_TRANSMISSION  = 1 << 1, // Not yet implemented
+        BXDFTYPE_DIFFUSE           = 1 << 2, // Working
+        BXDFTYPE_GLOSSY            = 1 << 3, // Glossy specular lobe
+        BXDFTYPE_SPECULAR          = 1 << 4, // Perfect specular lobe (mirror)
+        BXDFTYPE_ALL               = BXDFTYPE_HAS_REFLECTANCE |
+                                     BXDFTYPE_HAS_TRANSMISSION | 
+                                     BXDFTYPE_DIFFUSE | 
+                                     BXDFTYPE_GLOSSY | 
+                                     BXDFTYPE_SPECULAR
     };
 
     BxDF(BxDFType type)

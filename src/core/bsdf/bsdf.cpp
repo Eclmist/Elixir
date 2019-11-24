@@ -59,10 +59,10 @@ exrSpectrum BSDF::f(const exrVector3& worldWo, const exrVector3& worldWi, BxDF::
     {
         if (m_BxDFs[i]->MatchesFlags(flags))
         {
-            if (reflect && !(m_BxDFs[i]->HasFlags(BxDF::BSDF_DIFFUSE) || m_BxDFs[i]->HasFlags(BxDF::BSDF_REFLECTION)))
+            if (reflect && !(m_BxDFs[i]->HasFlags(BxDF::BXDFTYPE_HAS_REFLECTANCE)))
                 continue;
             
-            if (!reflect && !m_BxDFs[i]->HasFlags(BxDF::BSDF_TRANSMISSION))
+            if (!reflect && !m_BxDFs[i]->HasFlags(BxDF::BXDFTYPE_HAS_TRANSMISSION))
                 continue;
 
             res += m_BxDFs[i]->f(wo, wi);
@@ -99,11 +99,11 @@ exrSpectrum BSDF::Sample_f(const exrVector3& worldWo, exrVector3* worldWi, exrFl
     // The pdf have to be adjusted based on all the bxdf that could have been sampled
     if (numMatchingBxdfs > 1)
     {
-        for (BxDF* bxdf : m_BxDFs)
+        for (exrU32 i = 0; i < m_NumBxDF; ++i)
         {
-            if (bxdf != sampledBxDF && bxdf->MatchesFlags(flags))
+            if (m_BxDFs[i] != sampledBxDF && m_BxDFs[i]->MatchesFlags(flags))
             {
-                *pdf += bxdf->Pdf(wo, wi);
+                *pdf += m_BxDFs[i]->Pdf(wo, wi);
             }
         }
 

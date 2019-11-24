@@ -32,6 +32,7 @@ public:
 
     // Warning: WritePixel is an ADDITIVE operation! 
     void WritePixel(const Point2<exrU32>& point, const exrSpectrum& value);
+    void WriteErrorPixel(const Point2<exrU32>& point);
     void WriteImage(exrFloat splatScale);
     void FilterImage(exrU32 numIteration);
 

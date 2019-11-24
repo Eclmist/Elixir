@@ -47,6 +47,18 @@ void Exporter::WritePixel(const Point2<exrU32>& point, const exrSpectrum& value)
         pixel.m_RGB[i].Add(rgb[i]);
 }
 
+void Exporter::WriteErrorPixel(const Point2<exrU32>& point)
+{
+    exrAssert(point.x >= 0 && point.x <= m_Resolution.x, "Attempting to write to outside image bounds!");
+    exrAssert(point.y >= 0 && point.y <= m_Resolution.y, "Attempting to write to outside image bounds!");
+
+    Pixel& pixel = GetPixel(point);
+    pixel.m_RGB[0] = 1;
+    pixel.m_RGB[1] = 0;
+    pixel.m_RGB[2] = 1;
+}
+
+
 void Exporter::WriteImage(exrFloat splatScale)
 {
     exrProfile("Image File Export");

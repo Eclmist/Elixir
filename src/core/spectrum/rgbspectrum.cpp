@@ -40,5 +40,13 @@ RGBSpectrum RGBSpectrum::FromRGB(const exrVector3& rgb)
     return s;
 }
 
+exrFloat RGBSpectrum::GetLuminance() const
+{
+    return 0.2126f * m_Wavelengths[0] +
+           0.7152f * m_Wavelengths[1] + 
+           0.0722f * m_Wavelengths[2];
+
+}
+
 exrEND_NAMESPACE
 

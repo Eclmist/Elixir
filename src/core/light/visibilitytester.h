@@ -20,17 +20,28 @@
 
 #pragma once
 
-#include "samplerintegrator.h"
+#include "core/elixir.h"
 
 exrBEGIN_NAMESPACE
 
-class PathTracer : public SamplerIntegrator
+class Scene;
+
+//! A closure that allows light to return a radiance under the assumption that the
+//! reference point and light source are mutually visible. This can allow us to
+//! ignore shadow rays if the illumination is irrelevant.
+class VisibilityTester
 {
 public:
-    PathTracer(Camera* camera, exrU32 numSamplesPerPixel, exrU32 numBouncePerPixel)
-        : SamplerIntegrator(camera, numSamplesPerPixel, numBouncePerPixel) {};
+    VisibilityTester() {};
+    VisibilityTester(const Interaction &p0, const Interaction& p1)
+        : m_P0(p0)
+        , m_P1(p1) {};
 
-    exrSpectrum Li(const Ray& ray, const Scene& scene, MemoryArena& arena, exrU32 depth = 0) const override;
+    exrBool IsOccluded(const Scene& scene) const;
+
+public:
+    Interaction m_P0;
+    Interaction m_P1;
 };
 
 exrEND_NAMESPACE

@@ -20,22 +20,17 @@
 
 #pragma once
 
-#include "bxdf.h"
+#include "samplerintegrator.h"
 
 exrBEGIN_NAMESPACE
 
-class Mirror : public BxDF
+class PathIntegrator : public SamplerIntegrator
 {
 public:
-    Mirror(const exrSpectrum& r)
-        : BxDF(BxDFType(BXDFTYPE_HAS_REFLECTANCE | BXDFTYPE_SPECULAR))
-        , m_Specular(r) {};
+    PathIntegrator(Camera* camera, exrU32 numSamplesPerPixel, exrU32 numBouncePerPixel)
+        : SamplerIntegrator(camera, numSamplesPerPixel, numBouncePerPixel) {};
 
-    exrSpectrum f(const exrVector3& wo, const exrVector3& wi) const override;
-    exrSpectrum Sample_f(const exrVector3& wo, exrVector3* wi, exrFloat* pdf) const override;
-    exrSpectrum rho(const exrVector3& wo, exrU32 numSamples) const override;
-
-protected:
-    exrSpectrum m_Specular;
+    exrSpectrum Li(const Ray& ray, const Scene& scene, MemoryArena& arena, exrU32 depth = 0) const override;
 };
+
 exrEND_NAMESPACE

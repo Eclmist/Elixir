@@ -32,6 +32,7 @@ public:
 
 public:
     exrVector3 ToRGB() const;
+    exrFloat GetLuminance() const override;
 
 public:
     static RGBSpectrum FromRGB(const exrVector3& rgb);

@@ -35,17 +35,20 @@ public:
         , m_NumSamplesPerPixel(numSamplesPerPixel)
         , m_NumBouncePerPixel(numBouncePerPixel) {};
 
-    virtual void Preprocess(const Scene& scene) {};
-
-public:
-    virtual exrSpectrum SpecularReflect(const Ray& ray, const SurfaceInteraction& intersect,
-        const Scene& scene, MemoryArena& arena, exrU32 depth) const;
-    virtual exrSpectrum SpecularRefract(const Ray& ray, const SurfaceInteraction& intersect,
-        const Scene& scene, MemoryArena& arena, exrU32 depth) const;
-
     virtual exrSpectrum Li(const Ray& ray, const Scene& scene, MemoryArena& arena, exrU32 depth = 0) const = 0;
 
     void Render(const Scene& scene) override;
+
+protected:
+    virtual exrSpectrum SpecularReflect(const Ray& ray, const SurfaceInteraction& intersect,
+        const Scene& scene, MemoryArena& arena, exrU32 depth) const;
+
+    virtual exrSpectrum SpecularRefract(const Ray& ray, const SurfaceInteraction& intersect,
+        const Scene& scene, MemoryArena& arena, exrU32 depth) const;
+
+    exrSpectrum UniformSampleOneLight(const Interaction& it, const Scene& scene,
+        MemoryArena& arena) const;
+
 
 protected:
     Camera* m_Camera;

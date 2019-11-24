@@ -63,6 +63,8 @@ public:
     Spectrum GetPow(exrU32 e) const;
     Spectrum GetClamped(exrFloat low, exrFloat high) const;
 
+    virtual exrFloat GetLuminance() const;
+
 protected:
     exrFloat m_Wavelengths[numSpectrumSamples];
 };
@@ -313,6 +315,22 @@ Spectrum<N> Spectrum<N>::GetExp() const
     for (exrU32 i = 0; i < N; ++i)
         ret.m_Wavelengths[i] = exp(m_Wavelengths[i]);
     return ret;
+}
+
+template <exrU32 N>
+Spectrum<N> Spectrum<N>::GetClamped(exrFloat low, exrFloat high) const
+{
+    Spectrum<N> ret;
+    for (exrU32 i = 0; i < N; ++i)
+        ret.m_Wavelengths[i] = exrClamp(m_Wavelengths[i], low, high);
+    return ret;
+}
+
+template <exrU32 N>
+exrFloat Spectrum<N>::GetLuminance() const
+{
+    exrAssert(false, "We don't have a good way to compute luminance for spectrum yet!");
+    return 0.0f;
 }
 
 exrEND_NAMESPACE

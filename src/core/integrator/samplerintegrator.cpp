@@ -21,13 +21,12 @@
 #include "samplerintegrator.h"
 #include "core/bsdf/bxdf.h"
 #include "core/bsdf/bsdf.h"
+#include "core/scene/scene.h"
 
 exrBEGIN_NAMESPACE
 
 void SamplerIntegrator::Render(const Scene& scene)
 {
-    Preprocess(scene);
-
     Exporter* exporter = m_Camera->m_Exporter.get();
     
     // Compute number of tiles
@@ -77,9 +76,11 @@ void SamplerIntegrator::Render(const Scene& scene)
                             // Issue warnings if unexpected radiance is returned
                             if (L.HasNaNs())
                             {
-                                exrError("NaNs radiance returned by integrator.");
-                                L = exrSpectrum::FromRGB(exrVector3(1, 0, 1));
-                            }
+                                exrError("NaN radiance returned by integrator");
+                                exporter->WriteErrorPixel(Point2<exrU32>(tileMin.x + x, tileMin.y + y));
+                                memoryArena.Release();
+                                break;
+                            } 
 
                             exporter->WritePixel(Point2<exrU32>(tileMin.x + x, tileMin.y + y), L);
                             memoryArena.Release();
@@ -101,14 +102,14 @@ exrSpectrum SamplerIntegrator::SpecularReflect(const Ray& ray, const SurfaceInte
     exrVector3 wo = intersect.m_Wo;
     exrVector3 wi;
     exrFloat pdf;
-    BxDF::BxDFType type = BxDF::BxDFType(BxDF::BSDF_REFLECTION | BxDF::BSDF_SPECULAR);
+    BxDF::BxDFType type = BxDF::BxDFType(BxDF::BXDFTYPE_HAS_REFLECTANCE | BxDF::BXDFTYPE_SPECULAR);
     exrSpectrum f = intersect.m_BSDF->Sample_f(wo, &wi, &pdf, type);
 
     const exrVector3& normal = intersect.m_Normal;
-    if (pdf > 0 && !f.IsBlack() && abs(Dot(wi, normal)) > 0)
+    if (depth > 0 && pdf > 0 && !f.IsBlack() && Dot(wi, normal) > 0)
     {
         Ray reflRay = intersect.SpawnRay(wi);
-        return f * Li(reflRay, scene, arena, depth - 1) * abs(Dot(wi, normal)) / pdf;
+        return f * Li(reflRay, scene, arena, depth - 1) * AbsDot(wi, normal) / pdf;
     }
     else
     {
@@ -120,6 +121,30 @@ exrSpectrum SamplerIntegrator::SpecularRefract(const Ray& ray, const SurfaceInte
     const Scene& scene, MemoryArena& arena, exrU32 depth) const
 {
     throw "Not yet implemented!";
+}
+
+exrSpectrum SamplerIntegrator::UniformSampleOneLight(const Interaction& it, const Scene& scene,
+    MemoryArena& arena) const
+{
+    exrU32 numLights = static_cast<exrU32>(scene.m_Lights.size());
+
+    exrVector3 wi;
+    VisibilityTester visibility;
+    const SurfaceInteraction& hitRec = (const SurfaceInteraction&)it;
+
+    exrFloat pdf;
+    exrSpectrum Li = scene.m_Lights[Random::UniformUInt32(numLights - 1)]->Sample_Li(hitRec, wi, pdf, &visibility);
+    exrSpectrum f = hitRec.m_BSDF->f(hitRec.m_Wo, wi);
+
+    if (!f.IsBlack())
+    {
+        if (!visibility.IsOccluded(scene))
+        {
+            return Li * f * AbsDot(hitRec.m_Normal, wi);
+        }
+    }
+
+    return 0;
 }
 
 exrEND_NAMESPACE

@@ -23,10 +23,10 @@
 #include "api.h"
 
 #include "core/camera/camera.h"
-#include "core/integrator/pathtracer.h"
+#include "core/integrator/pathintegrator.h"
 #include "core/light/pointlight.h"
-#include "core/material/diffuse.h"
-#include "core/material/glossy.h"
+#include "core/material/matte.h"
+#include "core/material/plastic.h"
 #include "core/primitive/primitive.h"
 #include "core/primitive/shape/box.h"
 #include "core/primitive/shape/quad.h"
@@ -81,11 +81,13 @@ void ElixirSetupDemo()
 
     // Setup materials in the scene
     // 0 - White
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Diffuse>(exrSpectrum(1.0)));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum(1.0)));
     // 1 - Red
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Diffuse>(exrSpectrum::FromRGB(exrVector3(1.0, 0.0, 0.0))));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(1.0, 0.0, 0.0))));
     // 2 - Green
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Diffuse>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0))));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0))));
+    // 3 - Glossy
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Plastic>(exrSpectrum(1.0), exrSpectrum(1.0)));
 
     // Setup scene primitives
     // Sphere
@@ -94,6 +96,12 @@ void ElixirSetupDemo()
     transform.SetTranslation(exrVector3(0.0f, 2.75f, 0.0f));
     geoPrimitive->m_Shape = std::make_unique<Sphere>(transform, 1.0f);
     geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(0);
+    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
+
+    geoPrimitive = std::make_unique<Primitive>();
+    transform.SetTranslation(exrVector3(1.0f, 2.75f, 1.5f));
+    geoPrimitive->m_Shape = std::make_unique<Sphere>(transform, 0.7f);
+    geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(3);
     g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     // Back wall
@@ -159,9 +167,9 @@ void ElixirSetupDemo()
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 32;
-    const exrU32 numBounces = 4;
-    g_CurrentRenderJob->m_Integrator = std::make_unique<PathTracer>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
+    const exrU32 numSamples = 50;
+    const exrU32 numBounces = 16;
+    g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }
 
 void ElixirRender()

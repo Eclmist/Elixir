@@ -37,6 +37,8 @@ struct Interaction
     Interaction() {};
 
     //! Constructor
+    Interaction(const exrPoint3& point) : m_Point(point) {};
+
     Interaction(const exrPoint3& point, const exrVector3& normal, const exrVector3& wo)
         : m_Point(point)
         , m_Normal(normal)
@@ -46,6 +48,13 @@ struct Interaction
     {
         exrPoint3 origin = m_Point + m_Normal * EXR_EPSILON;
         return Ray(origin, direction, tMax);
+    };
+
+    Ray SpawnRayTo(const Interaction& to) const
+    {
+        exrPoint3 origin = m_Point + m_Normal * EXR_EPSILON;
+        exrVector3 direction = to.m_Point - m_Point;
+        return Ray(origin, direction, direction.Magnitude());
     };
 
     //! The point of intersection

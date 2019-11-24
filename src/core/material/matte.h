@@ -26,10 +26,10 @@
 
 exrBEGIN_NAMESPACE
 
-class Diffuse : public Material
+class Matte : public Material
 {
 public:
-    Diffuse(const exrSpectrum& albedo)
+    Matte(const exrSpectrum& albedo)
         : m_Albedo(albedo) {}
 
     void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena) const override

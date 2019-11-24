@@ -33,8 +33,8 @@ public:
     BSDF(const SurfaceInteraction& si, exrFloat ior = 1.0f);
 
     void AddComponent(BxDF* b);
-    exrU32 GetNumComponents(BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
-    exrSpectrum f(const exrVector3& worldWo, const exrVector3& worldWi, BxDF::BxDFType flags = BxDF::BxDFType::BSDF_ALL) const;
+    exrU32 GetNumComponents(BxDF::BxDFType flags = BxDF::BxDFType::BXDFTYPE_ALL) const;
+    exrSpectrum f(const exrVector3& worldWo, const exrVector3& worldWi, BxDF::BxDFType flags = BxDF::BxDFType::BXDFTYPE_ALL) const;
     exrSpectrum Sample_f(const exrVector3& worldWo, exrVector3* worldWi, exrFloat* pdf, BxDF::BxDFType flags);
 
     exrVector3 WorldToLocal(const exrVector3& v) const;
@@ -44,7 +44,7 @@ public:
     const exrFloat m_ReflectiveIndex;
 
 private:
-    BxDF* GetRandomBxDF(BxDF::BxDFType type = BxDF::BxDFType::BSDF_ALL);
+    BxDF* GetRandomBxDF(BxDF::BxDFType type = BxDF::BxDFType::BXDFTYPE_ALL);
 
     const exrVector3 m_Normal;
     const exrVector3 m_Tangent;

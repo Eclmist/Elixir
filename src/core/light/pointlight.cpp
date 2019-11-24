@@ -24,11 +24,13 @@
 
 exrBEGIN_NAMESPACE
 
-exrSpectrum PointLight::Sample_f(const Interaction& interaction, exrVector3& wi, exrFloat& pdf) const
+exrSpectrum PointLight::Sample_Li(const Interaction& ref, exrVector3& wi, exrFloat& pdf,
+    VisibilityTester* vis) const
 {
-    wi = (m_Transform.GetPosition() - interaction.m_Point).Normalized();
+    *vis = VisibilityTester(ref, Interaction(m_Transform.GetPosition()));
+    wi = (m_Transform.GetPosition() - ref.m_Point).Normalized();
     pdf = 1.0f;
-    return m_Intensity / DistanceSquared(m_Transform.GetPosition(), interaction.m_Point);
+    return m_Intensity / DistanceSquared(m_Transform.GetPosition(), ref.m_Point);
 }
 
 exrSpectrum PointLight::Power() const
