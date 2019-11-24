@@ -46,7 +46,7 @@ Elixir uses CMake to build it's binaries. If you would like to build Elixir your
 
 
 ```shell
-$ cmake -B build -S . -DCMAKE_CONFIGURATION_TYPES:STRING="Debug;Release;"
+$ cmake -B build -S . -DCMAKE_CONFIGURATION_TYPES:STRING="Debug;Release;" -DCMAKE_BUILD_TYPE=Release
 ```
 
 ```
