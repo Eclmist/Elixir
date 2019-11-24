@@ -50,6 +50,16 @@ inline exrFloat UniformSpherePdf()
     return EXR_M_INV2PI;
 }
 
+inline exrPoint2 RejectionSampleDisk()
+{
+    exrPoint2 p;
+    do {
+        p.x = 1 - 2 * Random::UniformFloat();
+        p.y = 1 - 2 * Random::UniformFloat();
+    } while (p.x * p.x + p.y * p.y > 1);
+    return p;
+}
+
 inline exrPoint2 ConcentricSampleDisk()
 {
     exrPoint2 uOffset = 2.0f * exrPoint2(Random::UniformFloat(), Random::UniformFloat()) - exrVector2(1, 1);

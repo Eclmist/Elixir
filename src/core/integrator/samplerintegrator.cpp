@@ -66,7 +66,7 @@ void SamplerIntegrator::Render(const Scene& scene)
                         // Foreach sample
                         for (exrU32 n = 0; n < m_NumSamplesPerPixel; ++n)
                         {
-                            exrPoint2 randomInDisc = ConcentricSampleDisk();
+                            exrPoint2 randomInDisc = RejectionSampleDisk();
                             exrFloat u = exrFloat(tileMin.x + x + randomInDisc.x) / exrFloat(resolution.x);
                             exrFloat v = exrFloat(tileMin.y + y + randomInDisc.y) / exrFloat(resolution.y);
                             Ray viewRay = m_Camera->GetViewRay(u, v);
