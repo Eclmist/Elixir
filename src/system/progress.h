@@ -30,7 +30,10 @@ public:
     ProgressBar(int maxVal, int barLength)
         : m_MaxValue(maxVal) 
         , m_BarLength(barLength)
-        , m_StartTime(Timer::TimeSinceEpochMillisec()) {};
+        , m_StartTime(Timer::TimeSinceEpochMillisec()) 
+        {
+            Print();
+        };
 
     void Increment(int value) 
     {

@@ -87,19 +87,19 @@ void ElixirSetupDemo()
     // 2 - Green
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0))));
     // 3 - Glossy
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Plastic>(exrSpectrum(1.0), exrSpectrum(1.0)));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Plastic>(exrSpectrum::FromRGB(exrVector3(1.022, 0.782, 0.344)), exrSpectrum::FromRGB(exrVector3(1.022, 0.782, 0.344))));
 
     // Setup scene primitives
     // Sphere
     std::unique_ptr<Primitive> geoPrimitive = std::make_unique<Primitive>();
     Transform transform;
-    transform.SetTranslation(exrVector3(0.0f, 2.75f, 0.0f));
+    transform.SetTranslation(exrVector3(-0.6f, 1.0f, -0.1f));
     geoPrimitive->m_Shape = std::make_unique<Sphere>(transform, 1.0f);
     geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(0);
     g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
 
     geoPrimitive = std::make_unique<Primitive>();
-    transform.SetTranslation(exrVector3(1.5f, 2.75f, -1.5f));
+    transform.SetTranslation(exrVector3(1.0f, 0.7f, 1.0f));
     geoPrimitive->m_Shape = std::make_unique<Sphere>(transform, 0.7f);
     geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(3);
     g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
@@ -167,8 +167,8 @@ void ElixirSetupDemo()
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 32;
-    const exrU32 numBounces = 16;
+    const exrU32 numSamples = 20000;
+    const exrU32 numBounces = 4;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }
 
