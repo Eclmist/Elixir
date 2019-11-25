@@ -87,7 +87,7 @@ void ElixirSetupDemo()
     // 2 - Green
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0))));
     // 3 - Glossy
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Plastic>(exrSpectrum::FromRGB(exrVector3(1.022, 0.782, 0.344)), exrSpectrum::FromRGB(exrVector3(1.022, 0.782, 0.344))));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Plastic>(exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f)), exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f))));
 
     // Setup scene primitives
     // Sphere

@@ -21,19 +21,21 @@
 #pragma once
 
 #include "system/system.h"
+#include <sstream>
+#include <iomanip>
 
 exrBEGIN_NAMESPACE
 
 #ifdef EXR_PLATFORM_WIN
-#define PROGRESSBAR_BLOCK_CHAR         "#"
-#define PROGRESSBAR_BOX_CHAR           "-"
-#define PROGRESSBAR_LEFTHANDLE_CHAR    "["
-#define PROGRESSBAR_RIGHTHANDLE_CHAR   "]"
+#define PROGRESSBAR_BLOCK_CHAR         std::string("#")
+#define PROGRESSBAR_BOX_CHAR           std::string("-")
+#define PROGRESSBAR_LEFTHANDLE_CHAR    std::string("[")
+#define PROGRESSBAR_RIGHTHANDLE_CHAR   std::string("]")
 #else
-#define PROGRESSBAR_BLOCK_CHAR         "█"
-#define PROGRESSBAR_BOX_CHAR           "░"
-#define PROGRESSBAR_LEFTHANDLE_CHAR    ""
-#define PROGRESSBAR_RIGHTHANDLE_CHAR   ""
+#define PROGRESSBAR_BLOCK_CHAR         std::string("█")
+#define PROGRESSBAR_BOX_CHAR           std::string("░")
+#define PROGRESSBAR_LEFTHANDLE_CHAR    std::string("")
+#define PROGRESSBAR_RIGHTHANDLE_CHAR   std::string("")
 #endif
 
 class ProgressBar
@@ -56,19 +58,21 @@ public:
 
         m_IsUpdating = true;
 
-        std::cout << "[Info]\t   " << PROGRESSBAR_LEFTHANDLE_CHAR;
+        std::string progString = "[Info]\t   " + PROGRESSBAR_LEFTHANDLE_CHAR;
         float progress = m_CurrentValue / static_cast<float>(m_MaxValue);
 
         for (int i = 0; i < m_BarLength; ++i) 
         {
             float barProgress = i / static_cast<float>(m_BarLength);
             if (barProgress <= progress)
-                std::cout << PROGRESSBAR_BLOCK_CHAR;
+                progString += PROGRESSBAR_BLOCK_CHAR;
             else
-                std::cout << PROGRESSBAR_BOX_CHAR;
+                progString += PROGRESSBAR_BOX_CHAR;
         }
 
-        std::cout << PROGRESSBAR_RIGHTHANDLE_CHAR << " " << static_cast<int>(progress * 100) << "% ";
+        std::stringstream progressStr;
+        progressStr << std::fixed << std::setprecision(2) << (progress * 100);
+        progString += PROGRESSBAR_RIGHTHANDLE_CHAR + " " + progressStr.str() + "% ";
 
         auto endTime = Timer::TimeSinceEpochMillisec();
         auto timeLeftMilli = ((endTime - m_StartTime) / m_CurrentValue) * (m_MaxValue - m_CurrentValue);
@@ -76,12 +80,9 @@ public:
         std::string hh, mm, ss;
         Timer::FormatTime(static_cast<long>(timeLeftMilli), hh, mm, ss);
 
-        std::cout << "- Estimated Time Remaining: " << hh << ":" << mm << ":" << ss << "\t";
+        progString += "- Estimated Time Remaining: " + hh + ":" + mm + ":" + ss + "\t\r";
 
-        if (progress < 1)
-            std::cout << "\r";
-
-        std::cout << std::flush;
+        std::cout << progString << std::flush;
 
         m_IsUpdating = false;
     }
