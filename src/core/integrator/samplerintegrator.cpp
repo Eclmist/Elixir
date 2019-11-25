@@ -100,6 +100,7 @@ void SamplerIntegrator::Render(const Scene& scene)
     std::cout << std::endl;
 
     exrEndProfile();
+    exporter->FilterImage(1, 3);
     exporter->WriteImage(1.0f / m_NumSamplesPerPixel);
 }
 

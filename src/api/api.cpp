@@ -167,7 +167,7 @@ void ElixirSetupDemo()
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 20000;
+    const exrU32 numSamples = 32;
     const exrU32 numBounces = 4;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }

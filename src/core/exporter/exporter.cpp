@@ -113,7 +113,7 @@ void Exporter::WriteImage(exrFloat splatScale)
 #endif
 }
 
-void Exporter::FilterImage(exrU32 numIteration)
+void Exporter::FilterImage(exrU32 numIteration, exrU32 kernelRadius)
 {
     exrProfile("Filtering Image (median)");
 
@@ -127,7 +127,9 @@ void Exporter::FilterImage(exrU32 numIteration)
             for (exrU32 x = 0; x < m_Resolution.x; ++x)
             {
                 exrU32 offset = x + y * m_Resolution.x;
-                copy.emplace_back(m_Pixels[offset].m_RGB[0], m_Pixels[offset].m_RGB[1], m_Pixels[offset].m_RGB[2]);
+                copy[offset].r = m_Pixels[offset].m_RGB[0];
+                copy[offset].g = m_Pixels[offset].m_RGB[1];
+                copy[offset].b = m_Pixels[offset].m_RGB[2];
             }
         }
 
@@ -139,17 +141,18 @@ void Exporter::FilterImage(exrU32 numIteration)
                 std::priority_queue<exrFloat> gChannel;
                 std::priority_queue<exrFloat> bChannel;
 
-                for (exrS32 i = -1; i <= 1; ++i)
+                for (exrS32 i = -((exrS32)kernelRadius); i <= (exrS32)kernelRadius; ++i)
                 {
-                    for (exrS32 j = -1; j <= 1; ++j)
+                    for (exrS32 j = -((exrS32)kernelRadius); j <= (exrS32)kernelRadius; ++j)
                     {
-                        exrU32 samplePosX = x + i;
-                        exrU32 samplePosY = y + j;
+                        exrU32 samplePosX = static_cast<exrU32>(x + i);
+                        exrU32 samplePosY = static_cast<exrU32>(y + j);
 
                         if (samplePosX < 0 || samplePosX >= m_Resolution.x || samplePosY < 0 || samplePosY >= m_Resolution.y)
                             continue;
 
-                        exrVector3 pixel = copy[samplePosX + samplePosY * m_Resolution.x];
+                        exrU32 index = samplePosX + samplePosY * m_Resolution.x;
+                        exrVector3 pixel = copy[index];
                         rChannel.push(pixel[0]);
                         gChannel.push(pixel[1]);
                         bChannel.push(pixel[2]);
