@@ -24,6 +24,18 @@
 
 exrBEGIN_NAMESPACE
 
+#ifdef EXR_PLATFORM_WIN
+#define PROGRESSBAR_BLOCK_CHAR         "#"
+#define PROGRESSBAR_BOX_CHAR           "-"
+#define PROGRESSBAR_LEFTHANDLE_CHAR    "["
+#define PROGRESSBAR_RIGHTHANDLE_CHAR   "]"
+#else
+#define PROGRESSBAR_BLOCK_CHAR         "█"
+#define PROGRESSBAR_BOX_CHAR           "░"
+#define PROGRESSBAR_LEFTHANDLE_CHAR    ""
+#define PROGRESSBAR_RIGHTHANDLE_CHAR   ""
+#endif
+
 class ProgressBar
 {
 public:
@@ -44,19 +56,19 @@ public:
 
         m_IsUpdating = true;
 
-        std::cout << "[Info]\t   [";
+        std::cout << "[Info]\t   " << PROGRESSBAR_LEFTHANDLE_CHAR;
         float progress = m_CurrentValue / static_cast<float>(m_MaxValue);
 
         for (int i = 0; i < m_BarLength; ++i) 
         {
             float barProgress = i / static_cast<float>(m_BarLength);
             if (barProgress <= progress)
-                std::cout << "#";
+                std::cout << PROGRESSBAR_BLOCK_CHAR;
             else
-                std::cout << " ";
+                std::cout << PROGRESSBAR_BOX_CHAR;
         }
 
-        std::cout << "] " << static_cast<int>(progress * 100) << "% ";
+        std::cout << PROGRESSBAR_RIGHTHANDLE_CHAR << " " << static_cast<int>(progress * 100) << "% ";
 
         auto endTime = Timer::TimeSinceEpochMillisec();
         auto timeLeftMilli = ((endTime - m_StartTime) / m_CurrentValue) * (m_MaxValue - m_CurrentValue);

@@ -51,7 +51,11 @@ void Timer::EndTimer()
     exrString hh, mm, ss;
     FormatTime(timeElapsed, hh, mm, ss);
 
-    exrInfoLine("\t   ↳" << "Total elapsed time: " << hh << ":" << mm << ":" << ss);
+#ifdef EXR_PLATFORM_WIN
+    exrInfoLine("\t   -> " << "Total elapsed time: " << hh << ":" << mm << ":" << ss);
+#else
+    exrInfoLine("\t   ↳ " << "Total elapsed time: " << hh << ":" << mm << ":" << ss);
+#endif // EXR_PLATFORM_WIN
 }
 
 void Timer::FormatTime(exrS64 ftime, exrString& hh, exrString& mm, exrString& ss) 
