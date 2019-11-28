@@ -19,12 +19,12 @@
 */
 
 #include "sphere.h"
+#include "core/primitive/primitive.h"
 
 exrBEGIN_NAMESPACE
 
-Sphere::Sphere(const Transform& transform, exrFloat radius)
-    : Shape(transform)
-    , m_Radius(radius)
+Sphere::Sphere(exrFloat radius)
+    : m_Radius(radius)
 {
 }
 
@@ -35,7 +35,7 @@ exrBool Sphere::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* hi
 
     hit->m_Point = ray(tHit);
     // Normal vectors on sphere do not have to be transformed as sphere have no rotation and only uniform scale
-    hit->m_Normal = (hit->m_Point - m_Transform.GetPosition()) / m_Radius;
+    hit->m_Normal = (hit->m_Point - m_Primitive->GetPosition()) / m_Radius;
     hit->m_Wo = -ray.m_Direction;
     hit->m_Shape = this;
 
@@ -44,7 +44,7 @@ exrBool Sphere::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* hi
 
 exrBool Sphere::HasIntersect(const Ray& ray, exrFloat& tHit) const
 {
-    Ray localRay = m_Transform.GetInverseMatrix() * ray;
+    Ray localRay = m_Primitive->GetWorldToObjectMatrix() * ray;
     exrVector3 r0 = localRay.m_Origin - exrPoint3::Zero();
     exrFloat a = Dot(localRay.m_Direction, localRay.m_Direction);
     exrFloat b = 2 * Dot(r0, localRay.m_Direction);
@@ -68,8 +68,8 @@ exrBool Sphere::HasIntersect(const Ray& ray, exrFloat& tHit) const
 
 AABB Sphere::ComputeBoundingVolume() const
 {
-    exrPoint3 min = m_Transform.GetMatrix() * exrPoint3(-m_Radius);
-    exrPoint3 max = m_Transform.GetMatrix() * exrPoint3(m_Radius);
+    exrPoint3 min = m_Primitive->GetObjectToWorldMatrix() * exrPoint3(-m_Radius);
+    exrPoint3 max = m_Primitive->GetObjectToWorldMatrix() * exrPoint3(m_Radius);
     return AABB(min, max);
 }
 

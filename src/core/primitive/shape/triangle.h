@@ -21,20 +21,15 @@
 #pragma once
 
 #include "shape.h"
+#include "core/primitive/mesh.h"
 
 exrBEGIN_NAMESPACE
 
-//! @brief A class that defines a sphere shape.
-//! 
-//! A class that defines a sphere shape and handles ray-sphere interactions
-class Sphere: public Shape
+class Triangle : public Shape
 {
 public:
-    //! @brief Constructs a sphere with a center, scale and material
-    //! @param center           The origin of the sphere in world space
-    //! @param radius           The radius of the sphere
-    //! @param material         The material of the sphere
-    Sphere(exrFloat radius);
+    Triangle(const std::shared_ptr<Mesh>& mesh, exrU32 indices[3])
+        : m_SharedMesh(mesh) {};
 
     exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const override;
     exrBool HasIntersect(const Ray& ray, exrFloat& tHit) const override;
@@ -43,9 +38,8 @@ protected:
     AABB ComputeBoundingVolume() const override;
 
 private:
-    //! The radius of the sphere
-    exrFloat m_Radius;
-
+    std::shared_ptr<Mesh> m_SharedMesh;
+    exrU32 m_Indices[3];
 };
 
 exrEND_NAMESPACE

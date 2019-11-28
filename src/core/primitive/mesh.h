@@ -20,32 +20,32 @@
 
 #pragma once
 
-#include "shape.h"
+#include "primitive.h"
 
 exrBEGIN_NAMESPACE
 
-//! @brief A class that defines a sphere shape.
-//! 
-//! A class that defines a sphere shape and handles ray-sphere interactions
-class Sphere: public Shape
+struct Vertex
+{
+    exrPoint3 m_Position;
+    exrVector3 m_Normal;
+    exrVector3 m_Tangent;
+    exrVector2 m_TexCoord;
+};
+
+//! A class that stores all the information that triangles in a mesh might need
+//! access to. This allows multiple triangles in a mesh to share the same vertex
+//! and reduce the overall amount of memory required to store a mesh in memory.
+class Mesh
 {
 public:
-    //! @brief Constructs a sphere with a center, scale and material
-    //! @param center           The origin of the sphere in world space
-    //! @param radius           The radius of the sphere
-    //! @param material         The material of the sphere
-    Sphere(exrFloat radius);
+    Mesh(std::vector<exrU32>& indices, std::vector<Vertex>& vertices);
 
-    exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const override;
-    exrBool HasIntersect(const Ray& ray, exrFloat& tHit) const override;
-
-protected:
-    AABB ComputeBoundingVolume() const override;
+    exrU32 GetNumTriangle() { return (exrU32)m_IndexBuffer.size() % 3; };
+    exrU32 GetNumVertices() { return (exrU32)m_VertexBuffer.size(); }
 
 private:
-    //! The radius of the sphere
-    exrFloat m_Radius;
-
+    std::vector<exrU32> m_IndexBuffer;
+    std::vector<Vertex> m_VertexBuffer;
 };
 
 exrEND_NAMESPACE

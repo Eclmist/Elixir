@@ -18,34 +18,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "shape.h"
+#include "triangle.h"
 
 exrBEGIN_NAMESPACE
 
-//! @brief A class that defines a sphere shape.
-//! 
-//! A class that defines a sphere shape and handles ray-sphere interactions
-class Sphere: public Shape
-{
-public:
-    //! @brief Constructs a sphere with a center, scale and material
-    //! @param center           The origin of the sphere in world space
-    //! @param radius           The radius of the sphere
-    //! @param material         The material of the sphere
-    Sphere(exrFloat radius);
-
-    exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const override;
-    exrBool HasIntersect(const Ray& ray, exrFloat& tHit) const override;
-
-protected:
-    AABB ComputeBoundingVolume() const override;
-
-private:
-    //! The radius of the sphere
-    exrFloat m_Radius;
-
-};
-
 exrEND_NAMESPACE
+

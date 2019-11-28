@@ -37,6 +37,11 @@ public:
         : m_GlobalMatrix(Matrix4x4::Identity())
         , m_InvGlobalMatrix(Matrix4x4::Identity()) {};
 
+    //! @brief Copy constructor
+    Transform(const Transform& copy)
+        : m_GlobalMatrix(copy.m_GlobalMatrix)
+        , m_InvGlobalMatrix(copy.m_InvGlobalMatrix) {};
+
     //! @brief Translate the current transform
     //! @param delta            The translation vector
     void Translate(const exrVector3& delta);

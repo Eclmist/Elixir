@@ -21,11 +21,12 @@
 #pragma once
 
 #include "core/elixir.h"
-#include "core/primitive/transform.h"
-#include "core/spatial/utils/aabb.h"
 #include "core/material/material.h"
+#include "core/spatial/utils/aabb.h"
 
 exrBEGIN_NAMESPACE
+
+class Primitive;
 
 //! @brief A base class that all shapes should inherit from
 //! 
@@ -34,10 +35,6 @@ exrBEGIN_NAMESPACE
 //! such as for computing its bounding volume and handling ray intersections
 class Shape
 {
-public:
-    //! Constructor
-    Shape(const Transform& transform) : m_Transform(transform) {};
-
 public:
     //! @brief Test the geometry for intersections with a ray
     //! 
@@ -68,8 +65,11 @@ public:
     virtual AABB ComputeBoundingVolume() const = 0;
 
 protected:
-    //! The transform of the shape
-    const Transform m_Transform;
+    friend class Primitive;
+
+    //! Reference to the primitive that is holding this shape.
+    //! This is needed because we often need the transform stored in the primitive.
+    Primitive* m_Primitive;
 };
 
 exrEND_NAMESPACE

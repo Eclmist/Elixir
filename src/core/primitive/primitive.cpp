@@ -52,6 +52,37 @@ exrBool Primitive::HasIntersect(const Ray& r) const
     return m_Shape->HasIntersect(r, temp);
 }
 
+void Primitive::SetShape(std::unique_ptr<Shape> shape)
+{
+    m_Shape = std::move(shape);
+    m_Shape->m_Primitive = this;
+}
+
+void Primitive::SetTransform(std::unique_ptr<Transform> transform)
+{
+    m_Transform = std::move(transform);
+}
+
+void Primitive::SetMaterial(const Material* material)
+{
+    m_Material = material;
+}
+
+exrPoint3 Primitive::GetPosition()
+{
+    return m_Transform->GetPosition();
+}
+
+Matrix4x4 Primitive::GetObjectToWorldMatrix()
+{
+    return m_Transform->GetMatrix();
+}
+
+Matrix4x4 Primitive::GetWorldToObjectMatrix()
+{
+    return m_Transform->GetInverseMatrix();
+}
+
 const Material* Primitive::GetMaterial() const
 {
     return m_Material;

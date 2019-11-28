@@ -19,11 +19,11 @@
 */
 
 #include "quad.h"
+#include "core/primitive/primitive.h"
 
 exrBEGIN_NAMESPACE
 
-Quad::Quad(const Transform& transform, const exrVector2& scale)
-    : Shape(transform)
+Quad::Quad(const exrVector2& scale)
 {
     m_HalfExtents = exrPoint3::Zero() + exrVector3(0.5f * scale.x, 0.5f * scale.y, EXR_EPSILON);
 }
@@ -34,7 +34,7 @@ exrBool Quad::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* inte
         return false;
 
     interaction->m_Point = ray(tHit);
-    interaction->m_Normal = m_Transform.GetMatrix() * exrVector3::Forward();
+    interaction->m_Normal = m_Primitive->GetObjectToWorldMatrix() * exrVector3::Forward();
     interaction->m_Shape = this;
     interaction->m_Wo = -ray.m_Direction;
     interaction->m_Normal = interaction->m_Normal;
@@ -44,14 +44,14 @@ exrBool Quad::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* inte
 
 exrBool Quad::HasIntersect(const Ray& ray, exrFloat& tHit) const
 {
-    Ray localRay = m_Transform.GetInverseMatrix() * ray;
+    Ray localRay = m_Primitive->GetWorldToObjectMatrix() * ray;
 
     exrFloat t = (-localRay.m_Origin.z) / localRay.m_Direction.z;
     if (t < EXR_EPSILON || t > ray.m_TMax)
         return false;
 
-    float x = localRay(t).x;
-    float y = localRay(t).y;
+    exrFloat x = localRay(t).x;
+    exrFloat y = localRay(t).y;
 
     if (x < -m_HalfExtents.x || x > m_HalfExtents.x || y < -m_HalfExtents.y || y > m_HalfExtents.y)
         return false;
@@ -63,8 +63,8 @@ exrBool Quad::HasIntersect(const Ray& ray, exrFloat& tHit) const
 
 AABB Quad::ComputeBoundingVolume() const
 {
-    exrPoint3 globalMin = m_Transform.GetMatrix() * m_HalfExtents;
-    exrPoint3 globalMax = m_Transform.GetMatrix() * -m_HalfExtents;
+    exrPoint3 globalMin = m_Primitive->GetObjectToWorldMatrix() * m_HalfExtents;
+    exrPoint3 globalMax = m_Primitive->GetObjectToWorldMatrix() * -m_HalfExtents;
 
     // Swap ensure min is min and max is actually max, since we may have rotated the points above
     exrPoint3 realMin = exrPoint3(exrMin(globalMin.x, globalMax.x), exrMin(globalMin.y, globalMax.y), exrMin(globalMin.z, globalMax.z));

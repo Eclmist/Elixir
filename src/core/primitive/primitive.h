@@ -23,6 +23,7 @@
 #include "core/elixir.h"
 #include "core/material/material.h"
 #include "core/primitive/shape/shape.h"
+#include "core/primitive/transform.h"
 
 exrBEGIN_NAMESPACE
 
@@ -64,15 +65,58 @@ public:
     //! @return                 True if the there is an intersection
     exrBool HasIntersect(const Ray& r) const;
 
+    //! @brief Sets the shape of the primitive
+    //! 
+    //! Assign a shape to the primitive. A reference to the primitive is also set in
+    //! the shape object. Ownership of the shape will be transfered to the primitive
+    //!
+    //! @param shape            A pointer to the shape
+    void SetShape(std::unique_ptr<Shape> shape);
+
+    //! @brief Sets the transform of the primitive
+    //! 
+    //! Assign a transform to the primitive. Ownership of the shape will be 
+    //! transfered to the primitive
+    //!
+    //! @param transform        A pointer to the transform
+    void SetTransform(std::unique_ptr<Transform> transform);
+
+    //! @brief Sets the material of the primitive
+    //! @param material         A pointer to the shape
+    void SetMaterial(const Material* material);
+
+    //! @brief Returns the position of the current primitive
+    //! @return                 The position of the primitive
+    exrPoint3 GetPosition();
+
+    //! @brief Returns the object to world transformation matrix of the primitive
+    //! 
+    //! Returns the object to world transformation matrix associated with the
+    //! transform of the current primitive.
+    //!
+    //! @return                 The transformation matrix of the primitive
+    Matrix4x4 GetObjectToWorldMatrix();
+
+    //! @brief Returns the world to object transformation matrix of the primitive
+    //! 
+    //! Returns the world to object transformation matrix associated with the
+    //! transform of the current primitive.
+    //!
+    //! @return                 The inverse matrix of the primitive
+    Matrix4x4 GetWorldToObjectMatrix();
+
     //! Returns the material of the current primitive
     const Material* GetMaterial() const;
-
-public:
+    
+protected:
     //! The underlying shape that describes the primitive
     std::unique_ptr<Shape> m_Shape;
-    
-    //! The material assigned to the primitive
-    Material* m_Material;
+
+    //! The tranform of the primitive
+    std::unique_ptr<Transform> m_Transform;
+
+    //! The material assigned to the primitive (Owned by scene)
+    const Material* m_Material;
 };
 
 exrEND_NAMESPACE
