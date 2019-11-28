@@ -22,5 +22,38 @@
 
 exrBEGIN_NAMESPACE
 
+exrBool Triangle::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const
+{
+
+}
+
+exrBool Triangle::HasIntersect(const Ray& ray, exrFloat& tHit) const
+{
+    const Vertex* v1 = m_SharedMesh->GetVertexAtIndex(m_Indices[0]);
+    const Vertex* v2 = m_SharedMesh->GetVertexAtIndex(m_Indices[1]);
+    const Vertex* v3 = m_SharedMesh->GetVertexAtIndex(m_Indices[2]);
+
+    exrPoint3 p0t = v1->m_Position - exrVector3(ray.m_Origin);
+    exrPoint3 p1t = v2->m_Position - exrVector3(ray.m_Origin);
+    exrPoint3 p2t = v3->m_Position - exrVector3(ray.m_Origin);
+}
+
+AABB Triangle::ComputeBoundingVolume() const
+{
+    const Vertex* v1 = m_SharedMesh->GetVertexAtIndex(m_Indices[0]);
+    const Vertex* v2 = m_SharedMesh->GetVertexAtIndex(m_Indices[1]);
+    const Vertex* v3 = m_SharedMesh->GetVertexAtIndex(m_Indices[2]);
+
+    exrFloat xMin = exrMin(exrMin(v1->m_Position.x, v2->m_Position.x), v3->m_Position.x);
+    exrFloat yMin = exrMin(exrMin(v1->m_Position.y, v2->m_Position.y), v3->m_Position.y);
+    exrFloat zMin = exrMin(exrMin(v1->m_Position.z, v2->m_Position.z), v3->m_Position.z);
+
+    exrFloat xMax = exrMax(exrMax(v1->m_Position.x, v2->m_Position.x), v3->m_Position.x);
+    exrFloat yMax = exrMax(exrMax(v1->m_Position.y, v2->m_Position.y), v3->m_Position.y);
+    exrFloat zMax = exrMax(exrMax(v1->m_Position.z, v2->m_Position.z), v3->m_Position.z);
+
+    return AABB(exrPoint3(xMin, yMin, zMin), exrPoint3(xMax, yMax, zMax));
+}
+
 exrEND_NAMESPACE
 
