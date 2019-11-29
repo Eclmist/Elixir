@@ -30,7 +30,6 @@ struct Vertex
     exrPoint3 m_Position;
 
     exrVector3 m_Normal;
-    exrVector3 m_Tangent;
     exrVector2 m_TexCoord;
 };
 
@@ -44,7 +43,7 @@ public:
 
     exrU32 GetNumTriangle() const;
     exrU32 GetNumVertices() const;
-    const Vertex* GetVertexAtIndex(exrU32 index) const;
+    const exrBool GetVertexAtIndex(exrU32 faceIndex, Vertex& v1, Vertex& v2, Vertex& v3) const;
 
 private:
     std::vector<exrU32> m_IndexBuffer;

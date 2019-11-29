@@ -22,35 +22,110 @@
 
 exrBEGIN_NAMESPACE
 
+// Möller–Trumbore ray triangle intersection:
+// https://cadxfem.org/inf/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf
 exrBool Triangle::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const
 {
+    exrVector3 e1, e2, p, q, t;
+    Vertex v0, v1, v2;
+    m_SharedMesh->GetVertexAtIndex(m_IndexInMesh, v0, v1, v2);
 
+    e1 = v1.m_Position - v0.m_Position;
+    e2 = v2.m_Position - v0.m_Position;
+
+    p = Cross(ray.m_Direction, e2);
+    exrFloat det = Dot(e1, p);
+
+    if (abs(det) < EXR_EPSILON)
+        return false;
+
+    exrFloat invDet = 1 / det;
+    
+    // Calculate distance from v0 to ray origin
+    t = ray.m_Origin - v0.m_Position;
+
+    // Barycentric coordinates
+    exrFloat u, v;
+
+    u = Dot(t, p) * invDet;
+    // Barycentric coordinates lie outside bounds (no intersect)
+    if (u < 0 || u > 1)
+        return false;
+
+    q = Cross(t, e1);
+
+    v = Dot(ray.m_Direction, q) * invDet;
+    // Barycentric coordinates lie outside bounds (no intersect)
+    if (v < 0 || u + v > 1)
+        return false;
+
+    // Compute normal vector TODO: cache the normal vector per face in mesh
+    exrVector3 normal = 
+        (1 - u - v) * v0.m_Normal +
+        u * v1.m_Normal +
+        v * v2.m_Normal;
+                        
+    tHit = Dot(e2, q) * invDet;
+    interaction->m_Point = ray(tHit);
+    interaction->m_Normal = normal.Normalized();
+    interaction->m_Wo = -ray.m_Direction;
+    interaction->m_Shape = this;
+
+    return true;
 }
 
 exrBool Triangle::HasIntersect(const Ray& ray, exrFloat& tHit) const
 {
-    const Vertex* v1 = m_SharedMesh->GetVertexAtIndex(m_Indices[0]);
-    const Vertex* v2 = m_SharedMesh->GetVertexAtIndex(m_Indices[1]);
-    const Vertex* v3 = m_SharedMesh->GetVertexAtIndex(m_Indices[2]);
+    exrVector3 e1, e2, p, q, t;
 
-    exrPoint3 p0t = v1->m_Position - exrVector3(ray.m_Origin);
-    exrPoint3 p1t = v2->m_Position - exrVector3(ray.m_Origin);
-    exrPoint3 p2t = v3->m_Position - exrVector3(ray.m_Origin);
+    Vertex v0, v1, v2;
+    m_SharedMesh->GetVertexAtIndex(m_IndexInMesh, v0, v1, v2);
+
+    e1 = v1.m_Position - v0.m_Position;
+    e2 = v2.m_Position - v0.m_Position;
+
+    p = Cross(ray.m_Direction, e2);
+    exrFloat det = Dot(e1, p);
+
+    if (abs(det) < EXR_EPSILON)
+        return false;
+
+    exrFloat invDet = 1 / det;
+    
+    // Calculate distance from v0 to ray origin
+    t = ray.m_Origin - v0.m_Position;
+
+    // Barycentric coordinates
+    exrFloat u, v;
+
+    u = Dot(t, p) * invDet;
+    // Barycentric coordinates lie outside bounds (no intersect)
+    if (u < 0 || u > 1)
+        return false;
+
+    q = Cross(t, e1);
+
+    v = Dot(ray.m_Direction, q) * invDet;
+    // Barycentric coordinates lie outside bounds (no intersect)
+    if (v < 0 || u + v > 1)
+        return false;
+
+    tHit = Dot(e2, q) * invDet;
+    return true;
 }
 
 AABB Triangle::ComputeBoundingVolume() const
 {
-    const Vertex* v1 = m_SharedMesh->GetVertexAtIndex(m_Indices[0]);
-    const Vertex* v2 = m_SharedMesh->GetVertexAtIndex(m_Indices[1]);
-    const Vertex* v3 = m_SharedMesh->GetVertexAtIndex(m_Indices[2]);
+    Vertex v0, v1, v2;
+    m_SharedMesh->GetVertexAtIndex(m_IndexInMesh, v0, v1, v2);
 
-    exrFloat xMin = exrMin(exrMin(v1->m_Position.x, v2->m_Position.x), v3->m_Position.x);
-    exrFloat yMin = exrMin(exrMin(v1->m_Position.y, v2->m_Position.y), v3->m_Position.y);
-    exrFloat zMin = exrMin(exrMin(v1->m_Position.z, v2->m_Position.z), v3->m_Position.z);
+    exrFloat xMin = exrMin(exrMin(v0.m_Position.x, v1.m_Position.x), v2.m_Position.x);
+    exrFloat yMin = exrMin(exrMin(v0.m_Position.y, v1.m_Position.y), v2.m_Position.y);
+    exrFloat zMin = exrMin(exrMin(v0.m_Position.z, v1.m_Position.z), v2.m_Position.z);
 
-    exrFloat xMax = exrMax(exrMax(v1->m_Position.x, v2->m_Position.x), v3->m_Position.x);
-    exrFloat yMax = exrMax(exrMax(v1->m_Position.y, v2->m_Position.y), v3->m_Position.y);
-    exrFloat zMax = exrMax(exrMax(v1->m_Position.z, v2->m_Position.z), v3->m_Position.z);
+    exrFloat xMax = exrMax(exrMax(v0.m_Position.x, v1.m_Position.x), v2.m_Position.x);
+    exrFloat yMax = exrMax(exrMax(v0.m_Position.y, v1.m_Position.y), v2.m_Position.y);
+    exrFloat zMax = exrMax(exrMax(v0.m_Position.z, v1.m_Position.z), v2.m_Position.z);
 
     return AABB(exrPoint3(xMin, yMin, zMin), exrPoint3(xMax, yMax, zMax));
 }

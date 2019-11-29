@@ -28,13 +28,9 @@ exrBEGIN_NAMESPACE
 class Triangle : public Shape
 {
 public:
-    Triangle(const std::shared_ptr<Mesh>& mesh, exrU32 indices[3])
+    Triangle(const std::shared_ptr<Mesh>& mesh, exrU32 index)
         : m_SharedMesh(mesh)
-    {
-        m_Indices[0] = indices[0];
-        m_Indices[1] = indices[1];
-        m_Indices[2] = indices[2];
-    };
+        , m_IndexInMesh(index) {};
 
     exrBool Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* interaction) const override;
     exrBool HasIntersect(const Ray& ray, exrFloat& tHit) const override;
@@ -44,7 +40,7 @@ protected:
 
 private:
     std::shared_ptr<Mesh> m_SharedMesh;
-    exrU32 m_Indices[3];
+    exrU32 m_IndexInMesh;
 };
 
 exrEND_NAMESPACE

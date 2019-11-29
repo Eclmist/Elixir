@@ -36,9 +36,7 @@ public:
     //! @brief Constructor from two points
     //! @param min              The minimum extents of the bounding volume in world space
     //! @param max              The maximum extents of the bounding volume in world space
-    AABB(const exrPoint3& min = exrPoint3(-1.0f), const exrPoint3& max = exrPoint3(1.0f))
-        : m_Min(min)
-        , m_Max(max) {};
+    AABB(const exrPoint3& min = exrPoint3(-1.0f), const exrPoint3& max = exrPoint3(1.0f));
 
     //! @brief Copy Constructor
     //! @param copy             The bounding volume to copy from

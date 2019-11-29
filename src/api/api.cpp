@@ -27,9 +27,11 @@
 #include "core/light/pointlight.h"
 #include "core/material/matte.h"
 #include "core/material/plastic.h"
+#include "core/primitive/mesh.h"
 #include "core/primitive/primitive.h"
 #include "core/primitive/shape/quad.h"
 #include "core/primitive/shape/sphere.h"
+#include "core/primitive/shape/triangle.h"
 #include "core/scene/scene.h"
 #include "core/spatial/accelerator/accelerator.h"
 
@@ -74,14 +76,13 @@ void ElixirSetupDemo()
     exrFloat fov = 40.0f;
     exrFloat aspect = exrFloat(OutputWidth) / exrFloat(OutputHeight);
     exrFloat focusDist = (position - lookat).Magnitude();
-    exrFloat aperture = 0.05f;
+    exrFloat aperture = 1 / 20.0f;
     g_CurrentRenderJob->m_Camera = std::make_unique<Camera>(position, lookat, exrVector3::Up(), fov, aspect, aperture, focusDist);
     g_CurrentRenderJob->m_Scene = std::make_unique<Scene>();
 
     // Setup materials in the scene
     // 0 - White
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum(1.0)));
-
     // 1 - Red
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(1.0, 0.0, 0.0))));
     // 2 - Green
@@ -94,15 +95,38 @@ void ElixirSetupDemo()
     std::unique_ptr<Primitive> primitive = std::make_unique<Primitive>();
     Transform transform;
     transform.SetTranslation(exrVector3(-0.6f, 1.0f, -0.1f));
-    primitive->SetShape(std::make_unique<Sphere>(1.0f));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(0));
-    primitive->SetTransform(std::make_unique<Transform>(transform));
-    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
+    //primitive->SetShape(std::make_unique<Sphere>(1.0f));
+    //primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(0));
+    //primitive->SetTransform(std::make_unique<Transform>(transform));
+    //g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
+
+    //primitive = std::make_unique<Primitive>();
+    //transform.SetTranslation(exrVector3(1.0f, 0.7f, 1.5f));
+    //primitive->SetShape(std::make_unique<Sphere>(0.7f));
+    //primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(3));
+    //primitive->SetTransform(std::make_unique<Transform>(transform));
+    //g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
+
+    Vertex v1;
+    v1.m_Position = exrPoint3(0.0f, 4.0f, 0.0f);
+    v1.m_Normal = exrVector3(0.0f, 0.0f, 1.0f);
+
+    Vertex v2;
+    v2.m_Position = exrPoint3(-2.0f, 1.0f, 0.0f);
+    v2.m_Normal = exrVector3(0.0f, 0.0f, 1.0f);
+
+    Vertex v3;
+    v3.m_Position = exrPoint3(2.0f, 1.0f, 0.0f);
+    v3.m_Normal = exrVector3(0.0f, 0.0f, 1.0f);
+
+    std::vector<Vertex> vertices{ v1, v2, v3 };
+    std::vector<exrU32> indices{ 0, 1, 2};
+    std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(indices, vertices);
 
     primitive = std::make_unique<Primitive>();
-    transform.SetTranslation(exrVector3(1.0f, 0.7f, 1.0f));
-    primitive->SetShape(std::make_unique<Sphere>(0.7f));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(3));
+    transform.SetTranslation(exrVector3(0.0f, 0.0f, 0.0f));
+    primitive->SetShape(std::make_unique<Triangle>(mesh, 0));
+    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(0));
     primitive->SetTransform(std::make_unique<Transform>(transform));
     g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
 
@@ -174,7 +198,7 @@ void ElixirSetupDemo()
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 4;
+    const exrU32 numSamples = 12;
     const exrU32 numBounces = 4;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }

@@ -23,6 +23,17 @@
 
 exrBEGIN_NAMESPACE
 
+AABB::AABB(const exrPoint3& min, const exrPoint3& max)
+{
+    exrPoint3 rMax = max;
+    for (exrU32 i = 0; i < 3; ++i)
+        if (abs(rMax[i] - m_Min[i]) < EXR_EPSILON)
+            rMax[i] = m_Min[i] + EXR_EPSILON;
+    m_Min = min;
+    m_Max = rMax;
+}
+
+
 exrBool AABB::Intersect(const Ray& r) const
 {
     exrFloat tMin = EXR_EPSILON;

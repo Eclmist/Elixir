@@ -39,12 +39,16 @@ exrU32 Mesh::GetNumVertices() const
     return (exrU32)m_VertexBuffer.size();
 }
 
-const Vertex* Mesh::GetVertexAtIndex(exrU32 index) const
+const exrBool Mesh::GetVertexAtIndex(exrU32 faceIndex, Vertex& v1, Vertex& v2, Vertex& v3) const
 {
-    if (index >= m_VertexBuffer.size())
-        return nullptr;
+    if (faceIndex * 3 >= m_IndexBuffer.size())
+        return false;
 
-    return &m_VertexBuffer[index];
+    v1 = m_VertexBuffer[faceIndex];
+    v2 = m_VertexBuffer[faceIndex + 1];
+    v3 = m_VertexBuffer[faceIndex + 2];
+
+    return true;
 }
 
 exrEND_NAMESPACE
