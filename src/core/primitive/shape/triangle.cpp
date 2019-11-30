@@ -64,8 +64,13 @@ exrBool Triangle::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* 
         (1 - u - v) * v0.m_Normal +
         u * v1.m_Normal +
         v * v2.m_Normal;
-                        
-    tHit = Dot(e2, q) * invDet;
+
+    exrFloat temp = Dot(e2, q) * invDet;
+
+    if (temp < 0 || temp > ray.m_TMax)
+        return false;
+
+    tHit = temp;
     interaction->m_Point = ray(tHit);
     interaction->m_Normal = normal.Normalized();
     interaction->m_Wo = -ray.m_Direction;

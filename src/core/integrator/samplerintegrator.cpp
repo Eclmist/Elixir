@@ -135,6 +135,8 @@ exrSpectrum SamplerIntegrator::UniformSampleOneLight(const Interaction& it, cons
     MemoryArena& arena) const
 {
     exrU32 numLights = static_cast<exrU32>(scene.m_Lights.size());
+    if (numLights <= 0)
+        return 0;
 
     exrVector3 wi;
     VisibilityTester visibility;

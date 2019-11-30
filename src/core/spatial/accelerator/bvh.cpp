@@ -24,9 +24,9 @@
 exrBEGIN_NAMESPACE
 
 //! Maximum primitives in a leaf node (only used by ECS)
-static constexpr exrU16 MaxPrimitivesPerNode = 8;
+static constexpr exrU16 MaxPrimitivesPerNode = 4;
 //! Maximum depth of BVH tree
-static constexpr exrU16 MaxNodeDepth = 64;
+static constexpr exrU16 MaxNodeDepth = 32;
 
 BVHAccelerator::BVHAccelerator(const std::vector<Primitive*>& objects, const SplitMethod splitMethod)
 {

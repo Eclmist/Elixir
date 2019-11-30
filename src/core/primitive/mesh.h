@@ -26,9 +26,7 @@ exrBEGIN_NAMESPACE
 
 struct Vertex
 {
-    //! World space position of the vertex
     exrPoint3 m_Position;
-
     exrVector3 m_Normal;
     exrVector2 m_TexCoord;
 };
@@ -39,15 +37,18 @@ struct Vertex
 class Mesh
 {
 public:
-    Mesh(std::vector<exrU32>& indices, std::vector<Vertex>& vertices);
+    static Mesh LoadFromFile(const exrChar* fileName);
 
-    exrU32 GetNumTriangle() const;
-    exrU32 GetNumVertices() const;
     const exrBool GetVertexAtIndex(exrU32 faceIndex, Vertex& v1, Vertex& v2, Vertex& v3) const;
+
+    exrU32 m_NumVertices = 0;
+    exrU32 m_NumFaces = 0;
 
 private:
     std::vector<exrU32> m_IndexBuffer;
-    std::vector<Vertex> m_VertexBuffer;
+    std::vector<exrPoint3> m_PositionBuffer;
+    std::vector<exrVector2> m_TexCoordBuffer;
+    std::vector<exrVector3> m_NormalBuffer;
 };
 
 exrEND_NAMESPACE

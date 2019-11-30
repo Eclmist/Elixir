@@ -41,7 +41,7 @@ public:
     exrVector3 LocalToWorld(const exrVector3& v) const;
 
 public:
-    const exrFloat m_ReflectiveIndex;
+    const exrFloat m_RefractiveIndex;
 
 private:
     BxDF* GetRandomBxDF(BxDF::BxDFType type = BxDF::BxDFType::BXDFTYPE_ALL);

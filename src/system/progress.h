@@ -91,9 +91,8 @@ private:
     int m_MaxValue;
     int m_BarLength;
     unsigned long m_StartTime;
-    bool m_HasUpdated;
-    std::atomic<bool> m_IsUpdating;
-    std::atomic<int> m_CurrentValue;
+    std::atomic<bool> m_IsUpdating = false;
+    std::atomic<int> m_CurrentValue = 0;
 };
 
 exrEND_NAMESPACE
