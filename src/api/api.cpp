@@ -68,7 +68,7 @@ void ElixirParseFile(const exrString& filename)
 
     // Load obj file
     exrPoint3 position(0.0f, 2.75f, 10.0f);
-    exrPoint3 lookat(0.0f, 2.75f, 0.0f);
+    exrPoint3 lookat(0.0f, 10.5f, 0.0f);
     exrFloat fov = 40.0f;
     exrFloat aspect = exrFloat(OutputWidth) / exrFloat(OutputHeight);
     exrFloat focusDist = (position - lookat).Magnitude();
@@ -101,68 +101,11 @@ void ElixirParseFile(const exrString& filename)
         g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
     }
 
-    // Back wall
-    primitive = std::make_unique<Primitive>();
-    transform.SetTranslation(exrVector3(0.0f, 2.75f, -2.75f));
-    primitive->SetShape(std::make_unique<Quad>(exrVector2(5.5f)));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(0));
-    primitive->SetTransform(std::make_unique<Transform>(transform));
-    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
-
-    // left wall
-    primitive = std::make_unique<Primitive>();
-    transform.SetTranslation(exrVector3(-2.75f, 2.75f, -0.0f));
-    transform.SetRotation(exrVector3(0.0f, EXR_M_PIOVER2, 0.0f));
-    primitive->SetShape(std::make_unique<Quad>(exrVector2(5.5f)));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(1));
-    primitive->SetTransform(std::make_unique<Transform>(transform));
-    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
-
-    // right wall
-    primitive = std::make_unique<Primitive>();
-    transform.SetTranslation(exrVector3(2.75f, 2.75f, -0.0f));
-    transform.SetRotation(exrVector3(0.0f, -EXR_M_PIOVER2, 0.0f));
-    primitive->SetShape(std::make_unique<Quad>(exrVector2(5.5f)));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(2));
-    primitive->SetTransform(std::make_unique<Transform>(transform));
-    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
-
-    // ceiling
-    primitive = std::make_unique<Primitive>();
-    transform.SetTranslation(exrVector3(0.0f, 5.5f, 0.0f));
-    transform.SetRotation(exrVector3(EXR_M_PIOVER2, 0.0f, 0.0f));
-    primitive->SetShape(std::make_unique<Quad>(exrVector2(5.5f)));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(0));
-    primitive->SetTransform(std::make_unique<Transform>(transform));
-    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
-
-    // floor
-    primitive = std::make_unique<Primitive>();
-    transform.SetTranslation(exrVector3(0.0f, 0.0f, 0.0f));
-    transform.SetRotation(exrVector3(-EXR_M_PIOVER2, 0.0f, 0.0f));
-    primitive->SetShape(std::make_unique<Quad>(exrVector2(5.5f)));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(0));
-    primitive->SetTransform(std::make_unique<Transform>(transform));
-    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
-
-    // Lights
-    transform.SetRotation(exrVector3::Zero());
-    transform.SetTranslation(exrVector3(0.0f, 5.2f, 0.0f));
-    g_CurrentRenderJob->m_Scene->AddLight(std::make_unique<PointLight>(transform, 3.0f));
-
-    // transform.SetRotation(exrVector3::Zero());
-    // transform.SetTranslation(exrVector3(-1.5f, 0.4f, 0.0f));
-    // g_CurrentRenderJob->m_Scene->AddLight(std::make_unique<PointLight>(transform, exrSpectrum::FromRGB(exrVector3(0.1f, 0.5f, 1.0f) * 10.0f)));
-
-    // transform.SetRotation(exrVector3::Zero());
-    // transform.SetTranslation(exrVector3(1.5f, 0.4f, 0.0f));
-    // g_CurrentRenderJob->m_Scene->AddLight(std::make_unique<PointLight>(transform, exrSpectrum::FromRGB(exrVector3(0.8f, 0.7f, 0.3f) * 10.0f)));
-
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 10;
-    const exrU32 numBounces = 2;
+    const exrU32 numSamples = 64;
+    const exrU32 numBounces = 4;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }
 

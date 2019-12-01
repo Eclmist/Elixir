@@ -44,7 +44,9 @@ public:
     ProgressBar(int maxVal, int barLength)
         : m_MaxValue(maxVal) 
         , m_BarLength(barLength)
-        , m_StartTime(Timer::TimeSinceEpochMillisec()) { };
+        , m_StartTime(Timer::TimeSinceEpochMillisec()) 
+        , m_IsUpdating(false)
+        , m_CurrentValue(0) {};
 
     void Increment(int value) 
     {
@@ -91,8 +93,8 @@ private:
     int m_MaxValue;
     int m_BarLength;
     unsigned long m_StartTime;
-    std::atomic<bool> m_IsUpdating = false;
-    std::atomic<int> m_CurrentValue = 0;
+    std::atomic<bool> m_IsUpdating;
+    std::atomic<int> m_CurrentValue;
 };
 
 exrEND_NAMESPACE
