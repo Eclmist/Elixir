@@ -35,7 +35,7 @@ exrSpectrum PathIntegrator::Li(const Ray& r, const Scene& scene, MemoryArena& ar
         SurfaceInteraction hitRec;
 
         if (!scene.Intersect(ray, &hitRec)) {
-            Lo += scene.SampleSkyLight(ray);
+            Lo += beta * scene.SampleSkyLight(ray);
             break;
         }
 

@@ -64,7 +64,7 @@ void ElixirCleanup()
 void ElixirParseFile(const exrString& filename)
 {
     if (filename == "-")
-        ElixirSetupDemo();
+        return ElixirSetupDemo();
 
     // Load obj file
     exrPoint3 position(0.0f, 2.75f, 10.0f);
@@ -215,7 +215,7 @@ void ElixirSetupDemo()
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 12;
+    const exrU32 numSamples = 16;
     const exrU32 numBounces = 4;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }
