@@ -141,12 +141,9 @@ exrBool Scene::HasIntersect(const Ray& ray) const
 
 exrSpectrum Scene::SampleSkyLight(const Ray& ray) const
 {
-    // Hard coded values for now
-    exrVector3 sunsetRed(0.725f, 0.268f, 0.152f);
-    exrVector3 sunsetBlue(0.18f, 0.296f, 0.952f);
     exrVector3 direction = ray.m_Direction.Normalized();
     exrFloat t = (direction.y + 0.5f) / 1.2f;
-    return exrSpectrum::FromRGB(exrLerp(sunsetRed, sunsetBlue, exrSaturate(t)));
+    return exrSpectrum::FromRGB(exrLerp(exrVector3(0.125f, 0.05f, 0.173f), exrVector3(0.733f, 0.706f, 0.831f), exrSaturate(t)));
 }
 
 

@@ -30,7 +30,7 @@ exrSpectrum PathIntegrator::Li(const Ray& r, const Scene& scene, MemoryArena& ar
     exrSpectrum beta(1.0f); // path throughput weight, the product of the BSDF values and cosine terms so far
     Ray ray(r); // Copies the original ray, we will be updating this value at every bounce.
 
-    for (exrU32 bounces = 0; bounces < depth ; ++bounces)
+    for (exrU32 bounces = 0; bounces <= depth ; ++bounces)
     {
         SurfaceInteraction hitRec;
 

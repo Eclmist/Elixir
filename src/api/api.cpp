@@ -67,13 +67,12 @@ void ElixirParseFile(const exrString& filename)
         return ElixirSetupDemo();
 
     // Load obj file
-    exrPoint3 position(0.0f, 2.75f, 10.0f);
-    exrPoint3 lookat(0.0f, 10.5f, 0.0f);
+    exrPoint3 position(0.0f, 4.75f, 10.0f);
+    exrPoint3 lookat(0.0f, 1.0f, 0.0f);
     exrFloat fov = 40.0f;
-    exrFloat aspect = exrFloat(OutputWidth) / exrFloat(OutputHeight);
     exrFloat focusDist = (position - lookat).Magnitude();
     exrFloat aperture = 1 / 20.0f;
-    g_CurrentRenderJob->m_Camera = std::make_unique<Camera>(position, lookat, exrVector3::Up(), fov, aspect, aperture, focusDist);
+    g_CurrentRenderJob->m_Camera = std::make_unique<Camera>(position, lookat, exrVector3::Up(), fov, aperture, focusDist);
     g_CurrentRenderJob->m_Scene = std::make_unique<Scene>();
 
     // Setup materials in the scene
@@ -104,8 +103,8 @@ void ElixirParseFile(const exrString& filename)
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 64;
-    const exrU32 numBounces = 4;
+    const exrU32 numSamples = 16;
+    const exrU32 numBounces = 16;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }
 
@@ -114,10 +113,9 @@ void ElixirSetupDemo()
     exrPoint3 position(0.0f, 2.75f, 10.0f);
     exrPoint3 lookat(0.0f, 2.75f, 0.0f);
     exrFloat fov = 40.0f;
-    exrFloat aspect = exrFloat(OutputWidth) / exrFloat(OutputHeight);
     exrFloat focusDist = (position - lookat).Magnitude();
     exrFloat aperture = 1 / 20.0f;
-    g_CurrentRenderJob->m_Camera = std::make_unique<Camera>(position, lookat, exrVector3::Up(), fov, aspect, aperture, focusDist);
+    g_CurrentRenderJob->m_Camera = std::make_unique<Camera>(position, lookat, exrVector3::Up(), fov, aperture, focusDist);
     g_CurrentRenderJob->m_Scene = std::make_unique<Scene>();
 
     // Setup materials in the scene
@@ -215,8 +213,8 @@ void ElixirSetupDemo()
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 16;
-    const exrU32 numBounces = 4;
+    const exrU32 numSamples = 1;
+    const exrU32 numBounces = 1;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }
 

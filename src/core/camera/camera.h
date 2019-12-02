@@ -18,24 +18,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* ========================================================================================== /
-         ######\  ##\      ########\  ######\  ##\   ##\       ##\      ##\ ########\
-        ##  __##\ ## |     ##  _____|##  __##\ ###\  ## |      ###\    ### |##  _____|
-        ## /  \__|## |     ## |      ## /  ## |####\ ## |      ####\  #### |## |
-        ## |      ## |     #####\    ######## |## ##\## |      ##\##\## ## |#####\
-        ## |      ## |     ##  __|   ##  __## |## \#### |      ## \###  ## |##  __|
-        ## |  ##\ ## |     ## |      ## |  ## |## |\### |      ## |\#  /## |## |
-        \######  |########\########\ ## |  ## |## | \## |      ## | \_/ ## |########\
-         \______/ \________\________|\__|  \__|\__|  \__|      \__|     \__|\________|
-                 Banner of shame. Remove when this file is no longer ghetto.
-=========================================================================================== */
-
 #pragma once
 
 #include "core/elixir.h"
 #include "core/exporter/exporter.h"
 
 exrBEGIN_NAMESPACE
+
+static constexpr exrU32 WIDTH = 512;
+static constexpr exrU32 HEIGHT = 512;
 
 //! @brief A simple look-at camera that handles view rays generatino
 //!
@@ -54,39 +45,18 @@ public:
     //! @param aspect            The aspect ratio of the expected output
     //! @param aperture          The aperture of the camera
     //! @param focusDist         The distance away from the camera's focus plane
-    Camera(exrPoint3 position, exrPoint3 lookat, exrVector3 up, exrFloat vfov, exrFloat aspect, exrFloat aperture, exrFloat focusDist) {
-        // virtual lens to simulate defocus blur
-        lensRadius = aperture / 2.0f;
-               
-        exrFloat theta = vfov * exrFloat(EXR_M_PI) / 180.f;
-        exrFloat halfHeight = tan(theta / 2.0f);
-        exrFloat halfWidth = aspect * halfHeight;
-
-        m_Position = position;
-        w = (lookat - position).Normalized(); // look in positive -z axis, RH coordinate system
-        u = (Cross(w, up)).Normalized();
-        v = Cross(u, w);
-
-        m_Min = position - halfWidth * focusDist * u - halfHeight * focusDist * v + w * focusDist;
-        m_HorizontalStep = 2.0f * halfWidth * focusDist* u;
-        m_VerticalStep = 2.0f * halfHeight * focusDist * v;
-
-        // TODO: replace these with values from renderjob
-        m_Exporter = std::make_unique<Exporter>(Point2<exrU32>(512, 512), g_RuntimeOptions.outputFile, g_RuntimeOptions.stampFile);
-    }
+    Camera(exrPoint3 position, exrPoint3 lookat, exrVector3 up, exrFloat vfov, exrFloat aperture, exrFloat focusDist);
 
     //! @brief Creates a view ray based from a uv coordinate
     //!
     //! @param s                The u coordinate of the ray in screen space
     //! @param t                The v coordinate of the ray in screen space
-    Ray GetViewRay(exrFloat s, exrFloat t) 
-    { 
-        exrPoint2 randomDiscOffset = RejectionSampleDisk();
-        exrVector3 rd = lensRadius * exrVector3(randomDiscOffset.x, randomDiscOffset.y, 0);
-        exrVector3 offset = u * rd.x + v * rd.y;
-        return Ray(m_Position + offset, m_Min + s * m_HorizontalStep + t * m_VerticalStep - m_Position - offset); 
-    }
+    Ray GetViewRay(exrFloat s, exrFloat t);
 
+public:
+    std::unique_ptr<Exporter> m_Exporter;
+
+private:
     exrPoint3 m_Position;
     exrPoint3 m_Min;
     exrVector3 m_HorizontalStep;
@@ -94,8 +64,6 @@ public:
 
     exrVector3 u, v, w;
     exrFloat lensRadius;
-
-    std::unique_ptr<Exporter> m_Exporter;
 };
 
 exrEND_NAMESPACE

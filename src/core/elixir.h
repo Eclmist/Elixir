@@ -32,10 +32,6 @@
 
 exrBEGIN_NAMESPACE
 
-// TODO: These should eventually be moved into camera settings.
-static constexpr exrU32 OutputWidth = 512;
-static constexpr exrU32 OutputHeight = 512;
-
 struct ElixirOptions
 {
     exrU32          numThreads = 1;

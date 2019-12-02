@@ -48,7 +48,7 @@ void SamplerIntegrator::Render(const Scene& scene)
             const exrU32 tx = i % numTiles.x;
             const exrU32 ty = exrU32(i / exrFloat(numTiles.x));
             
-            const exrFloat priority = abs(exrFloat(tx - numTiles.x)) + abs(exrFloat(ty - numTiles.y));
+            const exrFloat priority = abs(exrFloat(tx - numTiles.x / 2)) + abs(exrFloat(ty - numTiles.y / 2));
 
             threadPool.ScheduleTask(priority, [&](exrU32 tileX, exrU32 tileY)
             {
@@ -63,6 +63,9 @@ void SamplerIntegrator::Render(const Scene& scene)
                 {
                     for (exrU32 y = 0; y < TileSize; ++y)
                     {
+                        if (tileMin.x + x >= resolution.x || tileMin.y + y >= resolution.y)
+                            break;
+                            
                         // Foreach sample
                         for (exrU32 n = 0; n < m_NumSamplesPerPixel; ++n)
                         {
@@ -100,7 +103,7 @@ void SamplerIntegrator::Render(const Scene& scene)
     std::cout << std::endl;
     exrEndProfile();
 
-    exporter->FilterImage(1, 1);
+    exporter->FilterImage(1, 0);
     exporter->WriteImage(1.0f / m_NumSamplesPerPixel);
 }
 
