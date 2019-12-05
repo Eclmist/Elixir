@@ -115,7 +115,12 @@ exrBool Triangle::HasIntersect(const Ray& ray, exrFloat& tHit) const
     if (v < 0 || u + v > 1)
         return false;
 
-    tHit = Dot(e2, q) * invDet;
+    exrFloat temp = Dot(e2, q) * invDet;
+
+    if (temp < 0 || temp > ray.m_TMax)
+        return false;
+
+    tHit = temp;
     return true;
 }
 

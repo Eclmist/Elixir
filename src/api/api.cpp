@@ -25,6 +25,7 @@
 #include "core/camera/camera.h"
 #include "core/integrator/pathintegrator.h"
 #include "core/light/pointlight.h"
+#include "core/light/directionallight.h"
 #include "core/material/matte.h"
 #include "core/material/plastic.h"
 #include "core/primitive/mesh.h"
@@ -67,8 +68,8 @@ void ElixirParseFile(const exrString& filename)
         return ElixirSetupDemo();
 
     // Load obj file
-    exrPoint3 position(0.0f, 4.75f, 10.0f);
-    exrPoint3 lookat(0.0f, 1.0f, 0.0f);
+    exrPoint3 position(2.0f, 3.75f, 10.0f);
+    exrPoint3 lookat(-0.6f, 2.0f, 0.0f);
     exrFloat fov = 40.0f;
     exrFloat focusDist = (position - lookat).Magnitude();
     exrFloat aperture = 1 / 20.0f;
@@ -100,11 +101,15 @@ void ElixirParseFile(const exrString& filename)
         g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
     }
 
+    transform.SetTranslation(exrVector3(0,100,0));
+    transform.SetRotation(exrVector3(exrDegToRad(0), exrDegToRad(0), exrDegToRad(40)));
+    g_CurrentRenderJob->m_Scene->AddLight(std::make_unique<DirectionalLight>(transform, 1.0f));
+
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 16;
-    const exrU32 numBounces = 16;
+    const exrU32 numSamples = 32;
+    const exrU32 numBounces = 8;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }
 

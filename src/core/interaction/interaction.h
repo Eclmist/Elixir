@@ -53,7 +53,7 @@ struct Interaction
     Ray SpawnRayTo(const Interaction& to) const
     {
         exrPoint3 origin = m_Point + m_Normal * EXR_EPSILON;
-        exrVector3 direction = to.m_Point - m_Point;
+        exrVector3 direction = to.m_Point - origin;
         return Ray(origin, direction, direction.Magnitude());
     };
 

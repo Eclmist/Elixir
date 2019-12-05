@@ -29,8 +29,8 @@
 #define EXR_M_PIOVER2           1.57079632679f
 #define EXR_M_PIOVER4           0.78539816339f
 
-#define EXR_EPSILON             0.0001f
-#define EXR_ONE_MINUS_EPSILON   0.9999f
+#define EXR_EPSILON             0.00001f
+#define EXR_ONE_MINUS_EPSILON   0.99999f
 
 #define exrSaturate(x)          exrClamp(x, 0, 1)
 #define exrPow(x, n)            pow(x, n)
