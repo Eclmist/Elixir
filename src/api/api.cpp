@@ -103,12 +103,12 @@ void ElixirParseFile(const exrString& filename)
 
     transform.SetTranslation(exrVector3(0,100,0));
     transform.SetRotation(exrVector3(exrDegToRad(0), exrDegToRad(0), exrDegToRad(40)));
-    g_CurrentRenderJob->m_Scene->AddLight(std::make_unique<DirectionalLight>(transform, 1.0f));
+    g_CurrentRenderJob->m_Scene->AddLight(std::make_unique<DirectionalLight>(transform, exrSpectrum::FromRGB(exrVector3(1,0.7,0.2)) * 2));
 
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 32;
+    const exrU32 numSamples = 1024;
     const exrU32 numBounces = 8;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }

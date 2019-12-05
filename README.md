@@ -60,5 +60,8 @@ This will generate OS specific project in the `/build/` folder, and will build t
   <img src="https://raw.githubusercontent.com/Eclmist/Elixir/master/docs/output1.png" width=700>
 </p>
 <p align="center">
+  <img src="https://raw.githubusercontent.com/Eclmist/Elixir/master/docs/output3.png" width=700>
+</p>
+<p align="center">
   <img src="https://raw.githubusercontent.com/Eclmist/Elixir/master/docs/output2.png" width=700>
 </p>

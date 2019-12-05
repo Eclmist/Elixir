@@ -40,7 +40,7 @@ struct ThreadTask
         m_Priority = priority;
     };
 
-    inline exrBool operator<(const ThreadTask& t) const { return m_Priority < t.m_Priority; }
+    inline exrBool operator<(const ThreadTask& t) const { return t.m_Priority < m_Priority; }
 
     std::function<void()> m_Task;
     exrFloat m_Priority;
