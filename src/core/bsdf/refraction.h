@@ -24,18 +24,20 @@
 
 exrBEGIN_NAMESPACE
 
-class Mirror : public BxDF
+class Lambert : public BxDF
 {
 public:
-    Mirror(const exrSpectrum& r)
-        : BxDF(BxDFType(BXDFTYPE_HAS_REFLECTANCE | BXDFTYPE_SPECULAR))
-        , m_Specular(r) {};
+    Lambert(const exrSpectrum& r)
+        : BxDF(BxDFType(BXDFTYPE_HAS_REFLECTANCE | BXDFTYPE_DIFFUSE))
+        , m_Albedo(r) {};
 
     exrSpectrum f(const exrVector3& wo, const exrVector3& wi) const override;
-    exrSpectrum Sample_f(const exrVector3& wo, exrVector3* wi, exrFloat* pdf) const override;
-    exrSpectrum rho(const exrVector3& wo, exrU32 numSamples) const override;
 
-protected:
-    exrSpectrum m_Specular;
+    // Lambertian reflection is equal in all directions, so its hemispherical directional
+    // reflectance is available in closed form.
+    exrSpectrum rho(const exrVector3& wo, exrU32 numSamples) const override { return m_Albedo; }
+
+private:
+    exrSpectrum m_Albedo;
 };
 exrEND_NAMESPACE

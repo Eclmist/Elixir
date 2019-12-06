@@ -20,30 +20,22 @@
 
 #pragma once
 
-#include "material.h"
-#include "core/bsdf/lambert.h"
-#include "core/bsdf/mirror.h"
-#include "core/bsdf/bsdf.h"
+#include "bxdf.h"
 
 exrBEGIN_NAMESPACE
 
-class Plastic : public Material
+class Reflection : public BxDF
 {
 public:
-    Plastic(const exrSpectrum& albedo, const exrSpectrum& specular)
-        : m_Albedo(albedo)
-        , m_Specular(specular) {};
+    Reflection(const exrSpectrum& r)
+        : BxDF(BxDFType(BXDFTYPE_HAS_REFLECTANCE | BXDFTYPE_SPECULAR))
+        , m_Specular(r) {};
 
-    void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena) const override
-    {
-        si->m_BSDF = EXR_ARENA_ALLOC(arena, BSDF)(*si);
-        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Lambert)(m_Albedo));
-        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Reflection)(m_Specular));
-    }
+    exrSpectrum f(const exrVector3& wo, const exrVector3& wi) const override;
+    exrSpectrum Sample_f(const exrVector3& wo, exrVector3* wi, exrFloat* pdf) const override;
+    exrSpectrum rho(const exrVector3& wo, exrU32 numSamples) const override;
 
-private:
-    exrSpectrum m_Albedo;
+protected:
     exrSpectrum m_Specular;
 };
-
 exrEND_NAMESPACE

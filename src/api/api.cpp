@@ -108,7 +108,7 @@ void ElixirParseFile(const exrString& filename)
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 1024;
+    const exrU32 numSamples = 8;
     const exrU32 numBounces = 8;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }

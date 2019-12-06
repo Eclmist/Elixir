@@ -59,7 +59,7 @@ exrBool Triangle::Intersect(const Ray& ray, exrFloat& tHit, SurfaceInteraction* 
     if (v < 0 || u + v > 1)
         return false;
 
-    // Compute normal vector TODO: cache the normal vector per face in mesh
+    // Compute normal vector
     exrVector3 normal = 
         (1 - u - v) * v0.m_Normal +
         u * v1.m_Normal +

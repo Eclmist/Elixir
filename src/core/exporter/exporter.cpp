@@ -58,7 +58,6 @@ void Exporter::WriteErrorPixel(const Point2<exrU32>& point)
     pixel.m_RGB[2] = 1;
 }
 
-
 void Exporter::WriteImage(exrFloat splatScale)
 {
     exrProfile("Image File Export");

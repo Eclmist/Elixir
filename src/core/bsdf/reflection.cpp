@@ -20,30 +20,35 @@
 
 #pragma once
 
-#include "material.h"
-#include "core/bsdf/lambert.h"
-#include "core/bsdf/mirror.h"
-#include "core/bsdf/bsdf.h"
+#include "reflection.h"
 
 exrBEGIN_NAMESPACE
 
-class Plastic : public Material
+exrSpectrum Reflection::f(const exrVector3& wo, const exrVector3& wi) const
 {
-public:
-    Plastic(const exrSpectrum& albedo, const exrSpectrum& specular)
-        : m_Albedo(albedo)
-        , m_Specular(specular) {};
+    exrVector3 reflectDir = Reflect(-wo, exrVector3::Forward()).Normalized();
+    // If angle of incidence != angle of reflection
+    if (Dot(reflectDir, wi.Normalized()) < 1 - EXR_EPSILON)
+        return 0;
 
-    void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena) const override
-    {
-        si->m_BSDF = EXR_ARENA_ALLOC(arena, BSDF)(*si);
-        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Lambert)(m_Albedo));
-        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Reflection)(m_Specular));
-    }
+    // Compute fresnel
+    exrFloat vDotH = Dot(wi, exrVector3::Forward());
+    return MicrofacetFresnel(m_Specular, vDotH);
+}
 
-private:
-    exrSpectrum m_Albedo;
-    exrSpectrum m_Specular;
-};
+exrSpectrum Reflection::Sample_f(const exrVector3& wo, exrVector3* wi, exrFloat* pdf) const
+{
+    // local space normal is always z forward
+    *wi = Reflect(-wo, exrVector3::Forward());
+    *pdf = 1;
+
+    return f(wo, *wi);
+}
+
+exrSpectrum Reflection::rho(const exrVector3& wo, exrU32 numSamples) const
+{
+    return m_Specular * EXR_M_INVPI;
+}
 
 exrEND_NAMESPACE
+

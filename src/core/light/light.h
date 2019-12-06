@@ -51,10 +51,9 @@ public:
     virtual exrSpectrum Sample_Li(const Interaction& interaction, exrVector3& wi, exrFloat& pdf, VisibilityTester* vis) const = 0;
     virtual exrSpectrum Power() const = 0;
 
-    // TODO: make this protected once we have proper way to trace shadow rays
-    const Transform m_Transform;
 protected:
     const exrU32 m_Flags;
+    const Transform m_Transform;
 };
 
 exrEND_NAMESPACE
