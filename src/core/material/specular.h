@@ -20,13 +20,30 @@
 
 #pragma once
 
-#include "lambert.h"
+#include "material.h"
+#include "core/bsdf/lambert.h"
+#include "core/bsdf/reflection.h"
+#include "core/bsdf/bsdf.h"
 
 exrBEGIN_NAMESPACE
 
-exrSpectrum Lambert::f(const exrVector3& wo, const exrVector3& wi) const
+class Specular : public Material
 {
-    return m_Albedo * EXR_M_INVPI;
-}
+public:
+    Specular(const exrSpectrum& albedo, const exrSpectrum& specular)
+        : m_Albedo(albedo)
+        , m_Specular(specular) {};
+
+    void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena) const override
+    {
+        si->m_BSDF = EXR_ARENA_ALLOC(arena, BSDF)(*si);
+        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Lambert)(m_Albedo));
+        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Reflection)(m_Specular));
+    }
+
+private:
+    exrSpectrum m_Albedo;
+    exrSpectrum m_Specular;
+};
 
 exrEND_NAMESPACE

@@ -20,30 +20,24 @@
 
 #pragma once
 
-#include "material.h"
-#include "core/bsdf/orennayar.h"
-#include "core/bsdf/bsdf.h"
+#include "bxdf.h"
 
 exrBEGIN_NAMESPACE
 
-class Matte : public Material
+class Microfacet : public BxDF
 {
 public:
-    Matte(const exrSpectrum& albedo, exrFloat roughness)
-        : m_Albedo(albedo)
-        , m_Roughness(roughness) {}
+    Microfacet(const exrSpectrum& r)
+        : BxDF(BxDFType(BXDFTYPE_HAS_REFLECTANCE | BXDFTYPE_DIFFUSE))
+        , m_Albedo(r) {};
 
-    void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena) const override
-    {
-        si->m_BSDF = EXR_ARENA_ALLOC(arena, BSDF)(*si);
-        // We need to create a new bxdf for each interaction because properties such as color may change based on 
-        // the material definition (textures, etc)
-        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, OrenNayar)(m_Albedo, m_Roughness));
-    }
+    exrSpectrum f(const exrVector3& wo, const exrVector3& wi) const override;
+
+    // Lambertian reflection is equal in all directions, so its hemispherical directional
+    // reflectance is available in closed form.
+    exrSpectrum rho(const exrVector3& wo, exrU32 numSamples) const override { return m_Albedo; }
 
 private:
     exrSpectrum m_Albedo;
-    exrFloat m_Roughness;
 };
-
 exrEND_NAMESPACE

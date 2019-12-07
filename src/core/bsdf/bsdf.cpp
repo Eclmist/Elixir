@@ -24,9 +24,8 @@
 
 exrBEGIN_NAMESPACE
 
-BSDF::BSDF(const SurfaceInteraction& si, exrFloat ior)
-    : m_RefractiveIndex(ior)
-    , m_Normal(si.m_Normal)
+BSDF::BSDF(const SurfaceInteraction& si)
+    : m_Normal(si.m_Normal)
     , m_Tangent(Cross(m_Normal, UniformSampleSphere().Normalized()))
     , m_Bitangent(Cross(m_Normal, m_Tangent).Normalized())
 {

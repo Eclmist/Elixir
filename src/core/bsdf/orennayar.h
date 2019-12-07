@@ -24,20 +24,26 @@
 
 exrBEGIN_NAMESPACE
 
-class Lambert : public BxDF
+class OrenNayar : public BxDF
 {
 public:
-    Lambert(const exrSpectrum& r)
+    OrenNayar(const exrSpectrum& r, exrFloat sigma)
         : BxDF(BxDFType(BXDFTYPE_HAS_REFLECTANCE | BXDFTYPE_DIFFUSE))
-        , m_Albedo(r) {};
+        , m_Albedo(r)
+        , m_Sigma(exrDegToRad(sigma))
+    {
+        exrFloat sigma2 = exrDegToRad(sigma);
+        m_A = 1.0f - (sigma2 / (2.0f * (sigma2 + 0.33f)));
+        m_B = 0.45f * sigma2 / (sigma2 + 0.09f);
+    };
 
     exrSpectrum f(const exrVector3& wo, const exrVector3& wi) const override;
-
-    // Lambertian reflection is equal in all directions, so its hemispherical directional
-    // reflectance is available in closed form.
     exrSpectrum rho(const exrVector3& wo, exrU32 numSamples) const override { return m_Albedo; }
 
 private:
+    exrFloat m_Sigma;
+    exrFloat m_A;
+    exrFloat m_B;
     exrSpectrum m_Albedo;
 };
 exrEND_NAMESPACE

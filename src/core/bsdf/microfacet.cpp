@@ -20,30 +20,13 @@
 
 #pragma once
 
-#include "material.h"
-#include "core/bsdf/lambert.h"
-#include "core/bsdf/mirror.h"
-#include "core/bsdf/bsdf.h"
+#include "microfacet.h"
 
 exrBEGIN_NAMESPACE
 
-class Plastic : public Material
+exrSpectrum Microfacet::f(const exrVector3& wo, const exrVector3& wi) const
 {
-public:
-    Plastic(const exrSpectrum& albedo, const exrSpectrum& specular)
-        : m_Albedo(albedo)
-        , m_Specular(specular) {};
-
-    void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena) const override
-    {
-        si->m_BSDF = EXR_ARENA_ALLOC(arena, BSDF)(*si);
-        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Lambert)(m_Albedo));
-        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Reflection)(m_Specular));
-    }
-
-private:
-    exrSpectrum m_Albedo;
-    exrSpectrum m_Specular;
-};
+    return m_Albedo * EXR_M_INVPI;
+}
 
 exrEND_NAMESPACE

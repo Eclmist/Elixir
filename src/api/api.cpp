@@ -27,7 +27,7 @@
 #include "core/light/pointlight.h"
 #include "core/light/directionallight.h"
 #include "core/material/matte.h"
-#include "core/material/plastic.h"
+#include "core/material/specular.h"
 #include "core/primitive/mesh.h"
 #include "core/primitive/primitive.h"
 #include "core/primitive/shape/quad.h"
@@ -78,13 +78,13 @@ void ElixirParseFile(const exrString& filename)
 
     // Setup materials in the scene
     // 0 - White
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum(1.0)));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum(1.0), 20));
     // 1 - Red
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(1.0, 0.0, 0.0))));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(1.0, 0.0, 0.0)), 20));
     // 2 - Green
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0))));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0)), 20));
     // 3 - Glossy
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Plastic>(exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f)), exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f))));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Specular>(exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f)), exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f))));
 
     // Setup scene primitives
     // Sphere
@@ -125,13 +125,13 @@ void ElixirSetupDemo()
 
     // Setup materials in the scene
     // 0 - White
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum(1.0)));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum(1.0), 20));
     // 1 - Red
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(1.0, 0.0, 0.0))));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(1.0, 0.0, 0.0)), 20));
     // 2 - Green
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0))));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0)), 20));
     // 3 - Glossy
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Plastic>(exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f)), exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f))));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Specular>(exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f)), exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f))));
 
     // Setup scene primitives
     // Sphere
