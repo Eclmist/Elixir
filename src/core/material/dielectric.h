@@ -20,25 +20,30 @@
 
 #pragma once
 
-#include "core/elixir.h"
-
-/*
-    API function declarations
-    Make sure to increment API version when there are changes
-    Format: Major.Minor.Patch-PreleaseID
-    For more versioning information, see <https://semver.org/>
-*/
-#define EXR_VERSION_MAJOR 0
-#define EXR_VERSION_MINOR 1
-#define EXR_VERSION_PATCH 0
-#define EXR_VERSION_PRERELEASEID "dev" 
+#include "material.h"
+#include "core/bsdf/lambert.h"
+#include "core/bsdf/reflection.h"
+#include "core/bsdf/bsdf.h"
 
 exrBEGIN_NAMESPACE
 
-void ElixirInit(const ElixirOptions& options);
-void ElixirParseFile(const exrString& filename);
-void ElixirSetupCornellBox();
-void ElixirRender();
-void ElixirCleanup();
+class Dielectric : public Material
+{
+public:
+    Dielectric(const exrSpectrum& diffuse, const exrFloat& specular)
+        : m_Diffuse(diffuse)
+        , m_Specular(specular) {};
+
+    void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena) const override
+    {
+        si->m_BSDF = EXR_ARENA_ALLOC(arena, BSDF)(*si);
+        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Lambert)(m_Diffuse));
+        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Reflection)(m_Specular));
+    }
+
+private:
+    exrSpectrum m_Diffuse;
+    exrFloat m_Specular;
+};
 
 exrEND_NAMESPACE

@@ -25,7 +25,7 @@
 
 exrBEGIN_NAMESPACE
 
-static constexpr exrU32 WIDTH = 800;
+static constexpr exrU32 WIDTH = 500;
 static constexpr exrU32 HEIGHT = 500;
 
 //! @brief A simple look-at camera that handles view rays generatino

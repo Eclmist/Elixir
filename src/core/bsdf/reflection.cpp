@@ -21,6 +21,7 @@
 #pragma once
 
 #include "reflection.h"
+#include "core/bsdf/fresnel.h"
 
 exrBEGIN_NAMESPACE
 
@@ -33,7 +34,7 @@ exrSpectrum Reflection::f(const exrVector3& wo, const exrVector3& wi) const
 
     // Compute fresnel
     exrFloat vDotH = Dot(wi, exrVector3::Forward());
-    return MicrofacetFresnel(m_Specular, vDotH);
+    return Fresnel::FrSchlick(m_Specular, vDotH);
 }
 
 exrSpectrum Reflection::Sample_f(const exrVector3& wo, exrVector3* wi, exrFloat* pdf) const

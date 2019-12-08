@@ -22,23 +22,33 @@
 
 #include "core/elixir.h"
 
-/*
-    API function declarations
-    Make sure to increment API version when there are changes
-    Format: Major.Minor.Patch-PreleaseID
-    For more versioning information, see <https://semver.org/>
-*/
-#define EXR_VERSION_MAJOR 0
-#define EXR_VERSION_MINOR 1
-#define EXR_VERSION_PATCH 0
-#define EXR_VERSION_PRERELEASEID "dev" 
-
 exrBEGIN_NAMESPACE
 
-void ElixirInit(const ElixirOptions& options);
-void ElixirParseFile(const exrString& filename);
-void ElixirSetupCornellBox();
-void ElixirRender();
-void ElixirCleanup();
+class Fresnel
+{
+public:
+    virtual exrSpectrum Evaluate(exrFloat cosThetaI) const = 0;
+
+    static exrFloat FrDielectric(exrFloat cosThetaI, exrFloat etaI, exrFloat etaT);
+
+    static exrFloat FrConductor(exrFloat cosThetaI, const exrSpectrum& etaI, const exrSpectrum& etaT,
+        const exrSpectrum& k);
+
+    static exrSpectrum FrSchlick(exrSpectrum f0, exrFloat vDotH);
+};
+
+class FresnelDielectric : public Fresnel
+{
+public:
+    FresnelDielectric(exrFloat etaI, exrFloat etaT)
+        : m_EtaI(etaI)
+        , m_EtaT(etaT) {};
+
+    exrSpectrum Evaluate(exrFloat cosThetaI) const override;
+
+private:
+    exrFloat m_EtaI;
+    exrFloat m_EtaT;
+};
 
 exrEND_NAMESPACE

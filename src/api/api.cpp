@@ -26,8 +26,9 @@
 #include "core/integrator/pathintegrator.h"
 #include "core/light/pointlight.h"
 #include "core/light/directionallight.h"
+#include "core/material/dielectric.h"
 #include "core/material/matte.h"
-#include "core/material/specular.h"
+#include "core/material/metal.h"
 #include "core/primitive/mesh.h"
 #include "core/primitive/primitive.h"
 #include "core/primitive/shape/quad.h"
@@ -65,7 +66,7 @@ void ElixirCleanup()
 void ElixirParseFile(const exrString& filename)
 {
     if (filename == "-")
-        return ElixirSetupDemo();
+        return ElixirSetupCornellBox();
 
     // Load obj file
     exrPoint3 position(2.0f, 3.75f, 10.0f);
@@ -84,7 +85,7 @@ void ElixirParseFile(const exrString& filename)
     // 2 - Green
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0)), 20));
     // 3 - Glossy
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Specular>(exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f)), exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f))));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Metal>(exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f))));
 
     // Setup scene primitives
     // Sphere
@@ -113,7 +114,7 @@ void ElixirParseFile(const exrString& filename)
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }
 
-void ElixirSetupDemo()
+void ElixirSetupCornellBox()
 {
     exrPoint3 position(0.0f, 2.75f, 10.0f);
     exrPoint3 lookat(0.0f, 2.75f, 0.0f);
@@ -131,7 +132,9 @@ void ElixirSetupDemo()
     // 2 - Green
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0)), 20));
     // 3 - Glossy
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Specular>(exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f)), exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f))));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Metal>(exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f) * 2)));
+    // 4 - Plastic
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Dielectric>(exrSpectrum::FromRGB(exrVector3(0,1,1)), 0.4));
 
     // Setup scene primitives
     // Sphere
@@ -139,7 +142,7 @@ void ElixirSetupDemo()
     Transform transform;
     transform.SetTranslation(exrVector3(-0.6f, 1.0f, -0.1f));
     primitive->SetShape(std::make_unique<Sphere>(1.0f));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(0));
+    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(4));
     primitive->SetTransform(std::make_unique<Transform>(transform));
     g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
 
@@ -187,7 +190,7 @@ void ElixirSetupDemo()
 
     // ceiling light
     // geoPrimitive = std::make_unique<Primitive>();
-    // transform.SetTranslation(exrVector3(0.0f, 5.5f, 0.0f));
+    // transform.SetTranslation(exrVector3(0.0f, 5.5f, 0.0f));64
     // transform.SetRotation(exrVector3(EXR_M_PIOVER2, 0.0f, 0.0f));
     // geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(1.5f));
     // geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(3);
@@ -218,8 +221,8 @@ void ElixirSetupDemo()
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 1;
-    const exrU32 numBounces = 1;
+    const exrU32 numSamples = 512;
+    const exrU32 numBounces = 16;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }
 
