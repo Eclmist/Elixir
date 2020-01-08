@@ -142,7 +142,7 @@ inline float CosAngle(const Vector3<T>& v1, const Vector3<T>& v2)
 template<class T>
 inline float Angle(const Vector3<T>& v1, const Vector3<T>& v2)
 {
-    return acos(CosAngle(v1, v1));
+    return acos(CosAngle(v1, v2));
 }
 
 template<class T>
