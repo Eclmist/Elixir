@@ -37,7 +37,6 @@ exrBEGIN_NAMESPACE
 
 void ElixirInit(const ElixirOptions& options);
 void ElixirParseFile(const exrString& filename);
-void ElixirSetupCornellBox();
 void ElixirRender();
 void ElixirCleanup();
 

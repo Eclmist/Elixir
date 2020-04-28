@@ -65,9 +65,6 @@ void ElixirCleanup()
 
 void ElixirParseFile(const exrString& filename)
 {
-    if (filename == "-")
-        return ElixirSetupCornellBox();
-
     // Load obj file
     exrPoint3 position(2.0f, 3.75f, 10.0f);
     exrPoint3 lookat(-0.6f, 2.0f, 0.0f);
@@ -79,11 +76,11 @@ void ElixirParseFile(const exrString& filename)
 
     // Setup materials in the scene
     // 0 - White
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum(1.0), 20));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(1.0f, 1.0f, 1.0f)), 20.0f));
     // 1 - Red
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(1.0, 0.0, 0.0)), 20));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(1.0f, 0.0f, 0.0f)), 20.0f));
     // 2 - Green
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0)), 20));
+    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(0.0f, 1.0f, 0.0f)), 20.0f));
     // 3 - Glossy
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Metal>(exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f))));
 
@@ -111,118 +108,6 @@ void ElixirParseFile(const exrString& filename)
 
     const exrU32 numSamples = 8;
     const exrU32 numBounces = 8;
-    g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
-}
-
-void ElixirSetupCornellBox()
-{
-    exrPoint3 position(0.0f, 2.75f, 10.0f);
-    exrPoint3 lookat(0.0f, 2.75f, 0.0f);
-    exrFloat fov = 40.0f;
-    exrFloat focusDist = (position - lookat).Magnitude();
-    exrFloat aperture = 1 / 20.0f;
-    g_CurrentRenderJob->m_Camera = std::make_unique<Camera>(position, lookat, exrVector3::Up(), fov, aperture, focusDist);
-    g_CurrentRenderJob->m_Scene = std::make_unique<Scene>();
-
-    // Setup materials in the scene
-    // 0 - White
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum(1.0), 20));
-    // 1 - Red
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(1.0, 0.0, 0.0)), 20));
-    // 2 - Green
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0)), 20));
-    // 3 - Glossy
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Metal>(exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f) * 2)));
-    // 4 - Plastic
-    g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Dielectric>(exrSpectrum::FromRGB(exrVector3(0,1,1)), 0.4));
-
-    // Setup scene primitives
-    // Sphere
-    std::unique_ptr<Primitive> primitive = std::make_unique<Primitive>();
-    Transform transform;
-    transform.SetTranslation(exrVector3(-0.6f, 1.0f, -0.1f));
-    primitive->SetShape(std::make_unique<Sphere>(1.0f));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(4));
-    primitive->SetTransform(std::make_unique<Transform>(transform));
-    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
-
-    primitive = std::make_unique<Primitive>();
-    transform.SetTranslation(exrVector3(1.0f, 0.7f, 1.5f));
-    primitive->SetShape(std::make_unique<Sphere>(0.7f));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(3));
-    primitive->SetTransform(std::make_unique<Transform>(transform));
-    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
-
-    // Back wall
-    primitive = std::make_unique<Primitive>();
-    transform.SetTranslation(exrVector3(0.0f, 2.75f, -2.75f));
-    primitive->SetShape(std::make_unique<Quad>(exrVector2(5.5f)));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(0));
-    primitive->SetTransform(std::make_unique<Transform>(transform));
-    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
-
-    // left wall
-    primitive = std::make_unique<Primitive>();
-    transform.SetTranslation(exrVector3(-2.75f, 2.75f, -0.0f));
-    transform.SetRotation(exrVector3(0.0f, EXR_M_PIOVER2, 0.0f));
-    primitive->SetShape(std::make_unique<Quad>(exrVector2(5.5f)));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(1));
-    primitive->SetTransform(std::make_unique<Transform>(transform));
-    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
-
-    // right wall
-    primitive = std::make_unique<Primitive>();
-    transform.SetTranslation(exrVector3(2.75f, 2.75f, -0.0f));
-    transform.SetRotation(exrVector3(0.0f, -EXR_M_PIOVER2, 0.0f));
-    primitive->SetShape(std::make_unique<Quad>(exrVector2(5.5f)));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(2));
-    primitive->SetTransform(std::make_unique<Transform>(transform));
-    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
-
-    // ceiling
-    primitive = std::make_unique<Primitive>();
-    transform.SetTranslation(exrVector3(0.0f, 5.5f, 0.0f));
-    transform.SetRotation(exrVector3(EXR_M_PIOVER2, 0.0f, 0.0f));
-    primitive->SetShape(std::make_unique<Quad>(exrVector2(5.5f)));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(0));
-    primitive->SetTransform(std::make_unique<Transform>(transform));
-    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
-
-    // ceiling light
-    // geoPrimitive = std::make_unique<Primitive>();
-    // transform.SetTranslation(exrVector3(0.0f, 5.5f, 0.0f));64
-    // transform.SetRotation(exrVector3(EXR_M_PIOVER2, 0.0f, 0.0f));
-    // geoPrimitive->m_Shape = std::make_unique<Quad>(transform, exrVector2(1.5f));
-    // geoPrimitive->m_Material = g_CurrentRenderJob->m_Scene->GetMaterial(3);
-    // g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(geoPrimitive));
-
-    // floor
-    primitive = std::make_unique<Primitive>();
-    transform.SetTranslation(exrVector3(0.0f, 0.0f, 0.0f));
-    transform.SetRotation(exrVector3(-EXR_M_PIOVER2, 0.0f, 0.0f));
-    primitive->SetShape(std::make_unique<Quad>(exrVector2(5.5f)));
-    primitive->SetMaterial(g_CurrentRenderJob->m_Scene->GetMaterial(0));
-    primitive->SetTransform(std::make_unique<Transform>(transform));
-    g_CurrentRenderJob->m_Scene->AddPrimitive(std::move(primitive));
-
-    // Lights
-    transform.SetRotation(exrVector3::Zero());
-    transform.SetTranslation(exrVector3(0.0f, 5.2f, 0.0f));
-    g_CurrentRenderJob->m_Scene->AddLight(std::make_unique<PointLight>(transform, 3.0f));
-
-    // transform.SetRotation(exrVector3::Zero());
-    // transform.SetTranslation(exrVector3(-1.5f, 0.4f, 0.0f));
-    // g_CurrentRenderJob->m_Scene->AddLight(std::make_unique<PointLight>(transform, exrSpectrum::FromRGB(exrVector3(0.1f, 0.5f, 1.0f) * 10.0f)));
-
-    // transform.SetRotation(exrVector3::Zero());
-    // transform.SetTranslation(exrVector3(1.5f, 0.4f, 0.0f));
-    // g_CurrentRenderJob->m_Scene->AddLight(std::make_unique<PointLight>(transform, exrSpectrum::FromRGB(exrVector3(0.8f, 0.7f, 0.3f) * 10.0f)));
-
-    // Init accel
-    g_CurrentRenderJob->m_Scene->InitAccelerator();
-
-    const exrU32 numSamples = 512;
-    const exrU32 numBounces = 16;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }
 

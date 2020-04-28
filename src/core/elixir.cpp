@@ -38,14 +38,13 @@ void PrintUsage(const exrChar* msg = nullptr)
         fprintf(stderr, "elixir: %s\n\n", msg);
 
     using namespace std;
-    cout << "Usage: elixir [options] <One or more scene files>" << endl << endl;
+    cout << "Usage: elixir [options] <scene file>" << endl << endl;
     cout << "Rendering Options: " << endl;
     cout << "   -h, --help              Display this help page" << endl;
     cout << "   -t, --numthreads        Specify the number of rendering threads to use" << endl;
     cout << "   -o, --out <fname>       Write the output image to a specified filename" << endl;
 	cout << "   -s, --stamp             Stamp output filename with metadata" << endl;
     cout << "   -q, --quick             Reduce output quality for quick render" << endl;
-    cout << "   -d, --debug             Render debug scene defined in code. To be deprecated." << endl;
     cout << "Logging Options: " << endl;
     cout << "   --quiet                 Suppress all non-error messages" << endl;
     cout << "For documentations, please refer to <http://docs.elixir.moe/>" << endl;
@@ -58,7 +57,7 @@ void PrintUsage(const exrChar* msg = nullptr)
 int main(int argc, exrChar *argv[])
 {
     ElixirOptions options;
-    std::vector<exrString> filenames;
+    exrString filename = "";
 
     PrintTitle();
 
@@ -82,32 +81,19 @@ int main(int argc, exrChar *argv[])
             options.quiet = true;
         else if (!strcmp(argv[i], "--debug") || !strcmp(argv[i], "-d"))
             options.debug = true;
-        else 
-            filenames.push_back(argv[i]);
+        else if (filename != "")
+            filename = argv[i];
     }
 
     ElixirInit(options);
 
-    // Process scene description
-    if (filenames.size() == 0)
+    if (filename == "")
     {
-        if (options.debug)
-            ElixirParseFile("-");
-        else
-        {
-            PrintUsage();
-            return -1;
-        }
+        PrintUsage();
+        return -1;
     }
-    else
-    {
-        for (const exrString& f : filenames)
-        {
-            ElixirParseFile(f);
-            break; // Only render the first file. This is a temp solution until the command
-                   // args have been designed to make sense for multiple files (filename, etc.)
-        }
-    }
+
+    ElixirParseFile(filename);
 
     exrInfoLine("Running Elixir with " << options.numThreads << " thread(s)");
 
