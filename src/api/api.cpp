@@ -230,7 +230,7 @@ void ElixirSetupCornellBox()
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 32;
+    const exrU32 numSamples = 128;
     const exrU32 numBounces = 16;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }

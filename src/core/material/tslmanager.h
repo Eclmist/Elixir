@@ -36,10 +36,10 @@ class Material;
 using namespace Tsl_Namespace;
 
 DECLARE_TSLGLOBAL_BEGIN(TslGlobal)
-DECLARE_TSLGLOBAL_VAR(exrVector3,   albedo)         // base color of the material
-DECLARE_TSLGLOBAL_VAR(exrVector3,   specular)       // specular color of the material
-DECLARE_TSLGLOBAL_VAR(exrVector3,   position)       // fragment position in world space
-DECLARE_TSLGLOBAL_VAR(exrFloat,     roughness)      // roughness of the material
+DECLARE_TSLGLOBAL_VAR(float3,   albedo)         // base color of the material
+DECLARE_TSLGLOBAL_VAR(float3,   specular)       // specular color of the material
+DECLARE_TSLGLOBAL_VAR(float3,   position)       // fragment position in world space
+DECLARE_TSLGLOBAL_VAR(float,     roughness)      // roughness of the material
 DECLARE_TSLGLOBAL_END()
 
 // Initialize tiny shading language system
@@ -50,6 +50,6 @@ DECLARE_TSLGLOBAL_END()
 void initialize_tsl_system();
 void initialize_tsl_material(Material* matte);
 
-BxDF* GetBxDF(const SurfaceInteraction& si, MemoryArena& arena);
+BxDF* GetBxDF(const Material* const material, const SurfaceInteraction& si, MemoryArena& arena);
 
 exrEND_NAMESPACE

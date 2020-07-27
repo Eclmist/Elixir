@@ -30,10 +30,10 @@ exrBEGIN_NAMESPACE
 using namespace Tsl_Namespace;
 
 IMPLEMENT_TSLGLOBAL_BEGIN(TslGlobal)
-IMPLEMENT_TSLGLOBAL_VAR(exrVector3, albedo)
-IMPLEMENT_TSLGLOBAL_VAR(exrVector3, specular)
-IMPLEMENT_TSLGLOBAL_VAR(exrVector3, position)
-IMPLEMENT_TSLGLOBAL_VAR(exrFloat,   roughness)
+IMPLEMENT_TSLGLOBAL_VAR(float3, albedo)
+IMPLEMENT_TSLGLOBAL_VAR(float3, specular)
+IMPLEMENT_TSLGLOBAL_VAR(float3, position)
+IMPLEMENT_TSLGLOBAL_VAR(float,   roughness)
 IMPLEMENT_TSLGLOBAL_END()
 
 IMPLEMENT_CLOSURE_TYPE_BEGIN(ClosureTypeOrenNayar)
@@ -47,22 +47,12 @@ static TslGlobal g_tsl_global;
 // The closure ids
 static ClosureID g_ClosureOrenNayar = INVALID_CLOSURE_ID;
 
-// This is just a random big number that avoids memory running out.
-constexpr int BUF_MEM_SIZE = 16866;
-// The current buffer offset, needs to be reset before at the beginning of evaluating every single pixel.
-static thread_local int  buf_index = 0;
-// The pre-allocated buffer.
-static thread_local char buf[BUF_MEM_SIZE];
-
 // This is the call back function for handling things like compiling errors and texture loading stuff.
 class ShadingSystemInterfaceSimple : public Tsl_Namespace::ShadingSystemInterface {
 public:
     // Simply fetch some memory from the memory pool
     void* allocate(unsigned int size) const override {
-        assert(buf_index + size < BUF_MEM_SIZE);
-        void* ret = buf + buf_index;
-        buf_index += size;
-        return ret;
+        return malloc(size);
     }
 
     // No error will be output since there are invalid unit tests.
@@ -88,9 +78,9 @@ bool initialize_matte_material(Material* matte) {
             color roughness = global_value<roughness>;
             vector position = global_value<position>;
 
-            albedo.r = position.x;
-            albedo.g = position.y;
-            albedo.b = position.z;
+            albedo.r = position.x / 10.0;
+            albedo.g = position.y / 10.0;
+            albedo.b = position.z / 10.0;
 
             bxdf = make_closure<orennayar>(albedo, roughness);
         }
@@ -165,25 +155,26 @@ void initialize_tsl_material(Material* matte)
     initialize_matte_material(matte);
 }
 
-BxDF* GetBxDF(const SurfaceInteraction& si, MemoryArena& arena)
+BxDF* GetBxDF(const Material* const material, const SurfaceInteraction& si, MemoryArena& arena)
 {
     TslGlobal tslGlobal;
 
     //exrVector3 albedo = material->GetAlbedo().ToRGB();
-    tslGlobal.albedo = exrVector3(1.0);
-    //tslGlobal.albedo = make_float3(1.0);
+    // tslGlobal.albedo = exrVector3(1.0);
+    tslGlobal.albedo = make_float3(1.0);
 
     //exrVector3 specular = material->GetSpecular().ToRGB();
-    tslGlobal.specular = exrVector3(1.0);
-    //tslGlobal.specular = make_float3(1.0);
+    // tslGlobal.specular = exrVector3(1.0);
+    tslGlobal.specular = make_float3(1.0);
 
     tslGlobal.roughness = 0.5f;// material->GetRoughness();
 
     exrPoint3 position = si.m_Point;
-    tslGlobal.position = exrVector3(position.x, position.y, position.z);
-    //tslGlobal.position = make_float3(position.x, position.y, position.z);
+    // tslGlobal.position = exrVector3(position.x, position.y, position.z);
+    tslGlobal.position = make_float3(position.x, position.y, position.z);
 
     ClosureTreeNodeBase* closure = nullptr;
+    material->m_ShaderFunction(&closure, &tslGlobal);
     // TODO: Run TSL here to get the closure
 
     if (closure->m_id == g_ClosureOrenNayar)

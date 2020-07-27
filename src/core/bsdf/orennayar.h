@@ -27,7 +27,7 @@ exrBEGIN_NAMESPACE
 
 // closure for oren nayar type
 DECLARE_CLOSURE_TYPE_BEGIN(ClosureTypeOrenNayar, "orennayar")
-DECLARE_CLOSURE_TYPE_VAR(ClosureTypeOrenNayar, exrVector3, albedo);
+DECLARE_CLOSURE_TYPE_VAR(ClosureTypeOrenNayar, float3, albedo);
 DECLARE_CLOSURE_TYPE_VAR(ClosureTypeOrenNayar, float, roughness);
 DECLARE_CLOSURE_TYPE_END(ClosureTypeOrenNayar)
 

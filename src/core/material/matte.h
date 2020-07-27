@@ -48,7 +48,7 @@ public:
         // TSL shader.
 
         // si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, OrenNayar)(m_Albedo, m_Roughness));
-        si->m_BSDF->AddComponent(GetBxDF(*si, arena));
+        si->m_BSDF->AddComponent(GetBxDF(this, *si, arena));
     }
 };
 
