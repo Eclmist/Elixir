@@ -107,7 +107,7 @@ endif ()
 
 # Include directories
 # In GCC, this will invoke the "-I" command
-include_directories (include)
+include_directories(include)
 
 # Options to choose configuration type
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -143,6 +143,7 @@ source_group_by_dir(all_files)
 file(GLOB_RECURSE extern_headers include/*.h)
 file(GLOB_RECURSE extern_cpps include/*.cpp)
 set(extern_files ${extern_headers} ${extern_cpps})
+link_directories("${EXR_SOURCE_DIR}/include")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${EXR_SOURCE_DIR}/bin/release")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${EXR_SOURCE_DIR}/bin/debug")
@@ -179,4 +180,4 @@ set_target_properties (Elixir PROPERTIES RELEASE_OUTPUT_NAME "elixir_r")
 set_target_properties (Elixir PROPERTIES DEBUG_OUTPUT_NAME "elixir_d")
 
 # Link TSL
-target_link_libraries(Elixir tsl_r.lib)
+target_link_libraries(Elixir "${EXR_INCLUDE_DIR}/tsl/tsl_r.lib")

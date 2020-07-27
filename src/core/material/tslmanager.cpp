@@ -30,10 +30,10 @@ exrBEGIN_NAMESPACE
 using namespace Tsl_Namespace;
 
 IMPLEMENT_TSLGLOBAL_BEGIN(TslGlobal)
-IMPLEMENT_TSLGLOBAL_VAR(float3, albedo)
-IMPLEMENT_TSLGLOBAL_VAR(float3, specular)
-IMPLEMENT_TSLGLOBAL_VAR(float,  roughness)
-IMPLEMENT_TSLGLOBAL_VAR(float3, position)
+IMPLEMENT_TSLGLOBAL_VAR(exrVector3, albedo)
+IMPLEMENT_TSLGLOBAL_VAR(exrVector3, specular)
+IMPLEMENT_TSLGLOBAL_VAR(exrVector3, position)
+IMPLEMENT_TSLGLOBAL_VAR(exrFloat,   roughness)
 IMPLEMENT_TSLGLOBAL_END()
 
 IMPLEMENT_CLOSURE_TYPE_BEGIN(ClosureTypeOrenNayar)
@@ -170,17 +170,18 @@ BxDF* GetBxDF(const SurfaceInteraction& si, MemoryArena& arena)
     TslGlobal tslGlobal;
 
     //exrVector3 albedo = material->GetAlbedo().ToRGB();
-    //tslGlobal.albedo = exrVector3(albedo.r, albedo.g, albedo.b);
-    tslGlobal.albedo = make_float3(1.0);
+    tslGlobal.albedo = exrVector3(1.0);
+    //tslGlobal.albedo = make_float3(1.0);
 
     //exrVector3 specular = material->GetSpecular().ToRGB();
-    //tslGlobal.specular = exrVector3(specular.r, specular.g, specular.b);
-    tslGlobal.specular = make_float3(1.0);
+    tslGlobal.specular = exrVector3(1.0);
+    //tslGlobal.specular = make_float3(1.0);
 
-    //tslGlobal.roughness = material->GetRoughness();
+    tslGlobal.roughness = 0.5f;// material->GetRoughness();
 
     exrPoint3 position = si.m_Point;
-    tslGlobal.position = make_float3(position.x, position.y, position.z);
+    tslGlobal.position = exrVector3(position.x, position.y, position.z);
+    //tslGlobal.position = make_float3(position.x, position.y, position.z);
 
     ClosureTreeNodeBase* closure = nullptr;
     // TODO: Run TSL here to get the closure

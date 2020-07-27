@@ -25,12 +25,9 @@
 
 exrBEGIN_NAMESPACE
 
-DECLARE_TSLGLOBAL_BEGIN(TslGlobal)
-DECLARE_TSLGLOBAL_VAR(Tsl_Namespace::float3,   albedo)         // base color of the material
-DECLARE_TSLGLOBAL_VAR(Tsl_Namespace::float3,   specular)       // specular color of the material
-DECLARE_TSLGLOBAL_VAR(float,                   roughness)      // roughness of the material
-DECLARE_TSLGLOBAL_VAR(Tsl_Namespace::float3,   position)       // fragment position in world space
-DECLARE_TSLGLOBAL_END()
+using namespace Tsl_Namespace;
+
+extern struct TslGlobal;
 
 // The raw function pointer of all surface shaders.
 using shader_raw_func = void(*)(Tsl_Namespace::ClosureTreeNodeBase**, TslGlobal*);

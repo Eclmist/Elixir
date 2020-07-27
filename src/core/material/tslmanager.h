@@ -33,6 +33,15 @@ exrBEGIN_NAMESPACE
 class BxDF;
 class Material;
 
+using namespace Tsl_Namespace;
+
+DECLARE_TSLGLOBAL_BEGIN(TslGlobal)
+DECLARE_TSLGLOBAL_VAR(exrVector3,   albedo)         // base color of the material
+DECLARE_TSLGLOBAL_VAR(exrVector3,   specular)       // specular color of the material
+DECLARE_TSLGLOBAL_VAR(exrVector3,   position)       // fragment position in world space
+DECLARE_TSLGLOBAL_VAR(exrFloat,     roughness)      // roughness of the material
+DECLARE_TSLGLOBAL_END()
+
 // Initialize tiny shading language system
 // It basically takes the chances to initialize all necessary data structure, like registering callback,
 // closure type, tsl global data structure.
