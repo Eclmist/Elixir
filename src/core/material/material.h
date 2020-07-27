@@ -21,8 +21,19 @@
 #pragma once
 
 #include "core/elixir.h"
+#include "core/material/tslmanager.h"
 
 exrBEGIN_NAMESPACE
+
+DECLARE_TSLGLOBAL_BEGIN(TslGlobal)
+DECLARE_TSLGLOBAL_VAR(Tsl_Namespace::float3,   albedo)         // base color of the material
+DECLARE_TSLGLOBAL_VAR(Tsl_Namespace::float3,   specular)       // specular color of the material
+DECLARE_TSLGLOBAL_VAR(float,                   roughness)      // roughness of the material
+DECLARE_TSLGLOBAL_VAR(Tsl_Namespace::float3,   position)       // fragment position in world space
+DECLARE_TSLGLOBAL_END()
+
+// The raw function pointer of all surface shaders.
+using shader_raw_func = void(*)(Tsl_Namespace::ClosureTreeNodeBase**, TslGlobal*);
 
 //! A representation of a surface shader unique to each primitive in the scene.
 //! This encompasses all the shading related properties of a *primitive*.
@@ -32,6 +43,22 @@ class Material
 {
 public:
     virtual void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena) const = 0;
+
+public:
+    // TODO: These are all TSL related stuff, should move them to somewhere else probably.
+    std::shared_ptr<Tsl_Namespace::ShaderUnitTemplate> m_ShaderTemplate;
+    std::shared_ptr<Tsl_Namespace::ShaderInstance> m_ShaderInstance;
+    shader_raw_func m_ShaderFunction;
+
+public:
+    inline exrSpectrum GetAlbedo() const { return m_Albedo; };
+    inline exrSpectrum GetSpecular() const { return m_Specular; };
+    inline exrFloat GetRoughness() const { return m_Roughness; };
+
+protected:
+    exrSpectrum m_Albedo;
+    exrSpectrum m_Specular;
+    exrFloat    m_Roughness;
 };
 
 exrEND_NAMESPACE

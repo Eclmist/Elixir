@@ -26,6 +26,7 @@
 #include "core/integrator/pathintegrator.h"
 #include "core/light/pointlight.h"
 #include "core/light/directionallight.h"
+#include "core/material/tslmanager.h"
 #include "core/material/dielectric.h"
 #include "core/material/matte.h"
 #include "core/material/metal.h"
@@ -56,6 +57,7 @@ void ElixirInit(const ElixirOptions& options)
 {
     g_RuntimeOptions = options;
     g_CurrentRenderJob = std::make_unique<RenderJob>();
+    initialize_tsl_system();
 }
 
 void ElixirCleanup()
@@ -80,12 +82,16 @@ void ElixirParseFile(const exrString& filename)
     // Setup materials in the scene
     // 0 - White
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum(1.0), 20));
+    initialize_tsl_material(g_CurrentRenderJob->m_Scene->GetMaterial(0));
     // 1 - Red
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(1.0, 0.0, 0.0)), 20));
+    initialize_tsl_material(g_CurrentRenderJob->m_Scene->GetMaterial(1));
     // 2 - Green
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0)), 20));
+    initialize_tsl_material(g_CurrentRenderJob->m_Scene->GetMaterial(2));
     // 3 - Glossy
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Metal>(exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f))));
+
 
     // Setup scene primitives
     // Sphere
@@ -127,10 +133,13 @@ void ElixirSetupCornellBox()
     // Setup materials in the scene
     // 0 - White
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum(1.0), 20));
+    initialize_tsl_material(g_CurrentRenderJob->m_Scene->GetMaterial(0));
     // 1 - Red
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(1.0, 0.0, 0.0)), 20));
+    initialize_tsl_material(g_CurrentRenderJob->m_Scene->GetMaterial(1));
     // 2 - Green
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Matte>(exrSpectrum::FromRGB(exrVector3(0.0, 1.0, 0.0)), 20));
+    initialize_tsl_material(g_CurrentRenderJob->m_Scene->GetMaterial(2));
     // 3 - Glossy
     g_CurrentRenderJob->m_Scene->AddMaterial(std::make_unique<Metal>(exrSpectrum::FromRGB(exrVector3(1.022f, 0.782f, 0.344f) * 2)));
     // 4 - Plastic
@@ -221,7 +230,7 @@ void ElixirSetupCornellBox()
     // Init accel
     g_CurrentRenderJob->m_Scene->InitAccelerator();
 
-    const exrU32 numSamples = 512;
+    const exrU32 numSamples = 32;
     const exrU32 numBounces = 16;
     g_CurrentRenderJob->m_Integrator = std::make_unique<PathIntegrator>(g_CurrentRenderJob->m_Camera.get(), numSamples, numBounces);
 }

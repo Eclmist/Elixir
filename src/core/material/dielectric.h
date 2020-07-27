@@ -31,19 +31,17 @@ class Dielectric : public Material
 {
 public:
     Dielectric(const exrSpectrum& diffuse, const exrFloat& specular)
-        : m_Diffuse(diffuse)
-        , m_Specular(specular) {};
+    {
+        m_Albedo = diffuse;
+        m_Specular = exrSpectrum(specular);
+    };
 
     void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena) const override
     {
         si->m_BSDF = EXR_ARENA_ALLOC(arena, BSDF)(*si);
-        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Lambert)(m_Diffuse));
+        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Lambert)(m_Albedo));
         si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Reflection)(m_Specular));
     }
-
-private:
-    exrSpectrum m_Diffuse;
-    exrFloat m_Specular;
 };
 
 exrEND_NAMESPACE

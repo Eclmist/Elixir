@@ -23,6 +23,7 @@
 #include "material.h"
 #include "core/bsdf/orennayar.h"
 #include "core/bsdf/bsdf.h"
+#include "core/material/tslmanager.h"
 
 exrBEGIN_NAMESPACE
 
@@ -30,20 +31,25 @@ class Matte : public Material
 {
 public:
     Matte(const exrSpectrum& albedo, exrFloat roughness)
-        : m_Albedo(albedo)
-        , m_Roughness(roughness) {}
+    {
+        m_Albedo = albedo;
+        m_Roughness = roughness;
+    }
 
     void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena) const override
     {
         si->m_BSDF = EXR_ARENA_ALLOC(arena, BSDF)(*si);
         // We need to create a new bxdf for each interaction because properties such as color may change based on 
         // the material definition (textures, etc)
-        si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, OrenNayar)(m_Albedo, m_Roughness));
-    }
 
-private:
-    exrSpectrum m_Albedo;
-    exrFloat m_Roughness;
+        // This was the original way of creating and assigning a new brdf into the bsdf wrapper.
+        // However, with TSL, the bsdf will be created based on output of the TSL shader, wrapped
+        // by their closure object. This means that m_Albedo and m_Roughness should be passed directly into the 
+        // TSL shader.
+
+        // si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, OrenNayar)(m_Albedo, m_Roughness));
+        si->m_BSDF->AddComponent(GetBxDF(*si, arena));
+    }
 };
 
 exrEND_NAMESPACE

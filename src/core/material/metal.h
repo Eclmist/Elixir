@@ -31,16 +31,15 @@ class Metal : public Material
 {
 public:
     Metal(const exrSpectrum& specular)
-        : m_Specular(specular) {};
+    {
+        m_Specular = specular;
+    };
 
     void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena) const override
     {
         si->m_BSDF = EXR_ARENA_ALLOC(arena, BSDF)(*si);
         si->m_BSDF->AddComponent(EXR_ARENA_ALLOC(arena, Reflection)(m_Specular));
     }
-
-private:
-    exrSpectrum m_Specular;
 };
 
 exrEND_NAMESPACE

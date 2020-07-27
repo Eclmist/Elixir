@@ -22,8 +22,8 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
 #include "exporter.h"
-#include "stb/stb_image.h"
-#include "stb/stbi_image_write.h"
+#include <stb/stb_image.h>
+#include <stb/stbi_image_write.h>
 
 exrBEGIN_NAMESPACE
 
