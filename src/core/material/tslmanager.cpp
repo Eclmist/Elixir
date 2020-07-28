@@ -55,7 +55,6 @@ public:
         return EXR_STATIC_ALLOC_ARRAY(char, size);
     }
 
-    // No error will be output since there are invalid unit tests.
     void catch_debug(const TSL_DEBUG_LEVEL level, const char* error) const override {
         printf("%s\n", error);
     }
@@ -78,11 +77,15 @@ bool initialize_matte_material(Material* matte) {
             color roughness = global_value<roughness>;
             vector position = global_value<position>;
 
-            albedo.r = position.x / 10.0;
-            albedo.g = position.y / 10.0;
-            albedo.b = position.z / 10.0;
+            float u = position.x / 5.5f + 0.51;
+            float z = position.y / 5.5f;
 
-            bxdf = make_closure<orennayar>(albedo, roughness);
+            color temp;
+            temp.r = u;
+            temp.g = z;
+            temp.b = 0.5;
+
+            bxdf = make_closure<orennayar>(temp, roughness);
         }
     )";
 
