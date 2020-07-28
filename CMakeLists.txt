@@ -98,11 +98,33 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/src/system/config.h"
 )
 
-# Enable multi-thread compiling on Windows.
+# Libraries
+# TSL
+# loading llvm library, this is mandatory for compiling tsl, make sure it looks for a local llvm library
+set(TSL_DIR ${EXR_SOURCE_DIR}/extern/tsl/)
+
+# find llvm library
+find_package(TSL REQUIRED CONFIG)
+
+# output tsl library version
+message(STATUS "Tiny Shading Langauge version: ${TSL_VERSION}")
+
+include_directories("${TSL_INCLUDE_DIR}")
+link_directories("${TSL_LIBRARY_DIR}")
+
+# Windows specific flags
 if (EXR_PLATFORM_WIN)
+    # Enable multi-thread compiling on Windows.
     include(ProcessorCount)
     ProcessorCount(N)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N}")
+
+    # Copy TSL dll to bin folder
+    tsl_runtime_copy("${EXR_SOURCE_DIR}/bin/debug")
+    tsl_runtime_copy("${EXR_SOURCE_DIR}/bin/release")
+
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MD")
 endif ()
 
 # Include directories
@@ -122,7 +144,7 @@ include_directories ("${EXR_SOURCE_DIR}/src")
 # Find all source files and group them by directory
 # I have no clue how this actually works, this macro was taken from SORT
 macro (source_group_by_dir source_files)
-    set(sgbd_cur_dir ${ETH_SOURCE_DIR}/src)
+    set(sgbd_cur_dir ${EXR_SOURCE_DIR}/src)
     foreach (sgbd_file ${${source_files}})
 	    string(REGEX REPLACE ${sgbd_cur_dir}/\(.*\) \\1 sgbd_fpath ${sgbd_file})
 	    string(REGEX REPLACE "\(.*\)/.*" \\1 sgbd_group_name ${sgbd_fpath})
@@ -142,13 +164,18 @@ source_group_by_dir(all_files)
 
 file(GLOB_RECURSE extern_headers include/*.h)
 file(GLOB_RECURSE extern_cpps include/*.cpp)
-set(extern_files ${extern_headers} ${extern_cpps})
+file(GLOB_RECURSE extern_lib_headers extern/*.h)
+file(GLOB_RECURSE extern_lib_cpps extern/*.cpp)
+set(extern_files ${extern_headers} ${extern_cpps} ${extern_lib_headers} ${extern_lib_cpps})
 link_directories("${EXR_SOURCE_DIR}/include")
+link_directories("${EXR_SOURCE_DIR}/extern")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${EXR_SOURCE_DIR}/bin/release")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${EXR_SOURCE_DIR}/bin/debug")
 
 add_executable (Elixir ${all_files})
+target_link_libraries(Elixir ${TSL_LIBS})
+
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT Elixir)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -178,6 +205,3 @@ endif()
 # Set output name for different configs
 set_target_properties (Elixir PROPERTIES RELEASE_OUTPUT_NAME "elixir_r")
 set_target_properties (Elixir PROPERTIES DEBUG_OUTPUT_NAME "elixir_d")
-
-# Link TSL
-target_link_libraries(Elixir "${EXR_INCLUDE_DIR}/tsl/tsl_r.lib")

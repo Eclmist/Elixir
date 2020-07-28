@@ -1,0 +1,3 @@
+[submodule "extern/tsl"]
+	path = extern/tsl
+	url = https://github.com/JiayinCao/Tiny-Shading-Language

@@ -20,10 +20,10 @@
 
 #pragma once
 
-#include <tsl/tsl_version.h>
-#include <tsl/tsl_args.h>
-#include <tsl/tsl_system.h>
-#include <tsl/tsl_define.h>
+#include <tsl_version.h>
+#include <tsl_args.h>
+#include <tsl_system.h>
+#include <tsl_define.h>
 
 #include "core/elixir.h"
 #include "core/material/material.h"
@@ -36,10 +36,10 @@ class Material;
 using namespace Tsl_Namespace;
 
 DECLARE_TSLGLOBAL_BEGIN(TslGlobal)
-DECLARE_TSLGLOBAL_VAR(float3,   albedo)         // base color of the material
-DECLARE_TSLGLOBAL_VAR(float3,   specular)       // specular color of the material
-DECLARE_TSLGLOBAL_VAR(float3,   position)       // fragment position in world space
-DECLARE_TSLGLOBAL_VAR(float,     roughness)      // roughness of the material
+DECLARE_TSLGLOBAL_VAR(Tsl_float3,   albedo)         // base color of the material
+DECLARE_TSLGLOBAL_VAR(Tsl_float3,   specular)       // specular color of the material
+DECLARE_TSLGLOBAL_VAR(Tsl_float3,   position)       // fragment position in world space
+DECLARE_TSLGLOBAL_VAR(Tsl_float,    roughness)      // roughness of the material
 DECLARE_TSLGLOBAL_END()
 
 // Initialize tiny shading language system

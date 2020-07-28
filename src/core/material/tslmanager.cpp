@@ -30,15 +30,15 @@ exrBEGIN_NAMESPACE
 using namespace Tsl_Namespace;
 
 IMPLEMENT_TSLGLOBAL_BEGIN(TslGlobal)
-IMPLEMENT_TSLGLOBAL_VAR(float3, albedo)
-IMPLEMENT_TSLGLOBAL_VAR(float3, specular)
-IMPLEMENT_TSLGLOBAL_VAR(float3, position)
-IMPLEMENT_TSLGLOBAL_VAR(float,   roughness)
+IMPLEMENT_TSLGLOBAL_VAR(Tsl_float3, albedo)
+IMPLEMENT_TSLGLOBAL_VAR(Tsl_float3, specular)
+IMPLEMENT_TSLGLOBAL_VAR(Tsl_float3, position)
+IMPLEMENT_TSLGLOBAL_VAR(Tsl_float,  roughness)
 IMPLEMENT_TSLGLOBAL_END()
 
 IMPLEMENT_CLOSURE_TYPE_BEGIN(ClosureTypeOrenNayar)
-IMPLEMENT_CLOSURE_TYPE_VAR(ClosureTypeOrenNayar, float3, albedo)
-IMPLEMENT_CLOSURE_TYPE_VAR(ClosureTypeOrenNayar, float, roughness)
+IMPLEMENT_CLOSURE_TYPE_VAR(ClosureTypeOrenNayar, Tsl_float3, albedo)
+IMPLEMENT_CLOSURE_TYPE_VAR(ClosureTypeOrenNayar, Tsl_float, roughness)
 IMPLEMENT_CLOSURE_TYPE_END(ClosureTypeOrenNayar)
 
 // Although it is possible to have different tsl global registered for different material types, this sample only uses one.
@@ -142,6 +142,8 @@ bool initialize_matte_material(Material* matte) {
  *   - Create all materials by compiling its shader and cache the raw function pointer to be used later.
  */
 void initialize_tsl_system() {
+    exrProfile("Initializing Tiny Shading Language");
+
     // get the instance of tsl shading system
     auto& shading_system = ShadingSystem::get_instance();
 

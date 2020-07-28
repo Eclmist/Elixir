@@ -48,7 +48,6 @@ test*.png
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
-[Ee]xtern/
 x64/
 x86/
 bld/
@@ -56,7 +55,6 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Bb]uild/
-[Ee]xtern/
 [Oo]utputs/
 
 # Visual Studio 2015/2017 cache/options directory
