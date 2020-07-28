@@ -48,20 +48,20 @@ static TslGlobal g_tsl_global;
 static ClosureID g_ClosureOrenNayar = INVALID_CLOSURE_ID;
 
 // This is the call back function for handling things like compiling errors and texture loading stuff.
-class ShadingSystemInterfaceSimple : public Tsl_Namespace::ShadingSystemInterface {
+class ShadingSystemInterfaceSimple : public ShadingSystemInterface {
 public:
     // Simply fetch some memory from the memory pool
     void* allocate(unsigned int size) const override {
-        return malloc(size);
+        return EXR_STATIC_ALLOC_ARRAY(char, size);
     }
 
     // No error will be output since there are invalid unit tests.
-    void catch_debug(const Tsl_Namespace::TSL_DEBUG_LEVEL level, const char* error) const override {
+    void catch_debug(const TSL_DEBUG_LEVEL level, const char* error) const override {
         printf("%s\n", error);
     }
 
     // Sample texture 2d
-    void    sample_2d(const void* texture, float u, float v, Tsl_Namespace::float3& color) const override {
+    void    sample_2d(const void* texture, float u, float v, float3& color) const override {
         // not implemented
     }
 
@@ -140,7 +140,7 @@ bool initialize_matte_material(Material* matte) {
  */
 void initialize_tsl_system() {
     // get the instance of tsl shading system
-    auto& shading_system = Tsl_Namespace::ShadingSystem::get_instance();
+    auto& shading_system = ShadingSystem::get_instance();
 
     // register the call back functions
     std::unique_ptr<ShadingSystemInterfaceSimple> ssis = std::make_unique< ShadingSystemInterfaceSimple>();
@@ -159,23 +159,19 @@ BxDF* GetBxDF(const Material* const material, const SurfaceInteraction& si, Memo
 {
     TslGlobal tslGlobal;
 
-    //exrVector3 albedo = material->GetAlbedo().ToRGB();
-    // tslGlobal.albedo = exrVector3(1.0);
-    tslGlobal.albedo = make_float3(1.0);
+    exrVector3 albedo = material->GetAlbedo().ToRGB();
+    tslGlobal.albedo = make_float3(albedo.r, albedo.g, albedo.b);
 
-    //exrVector3 specular = material->GetSpecular().ToRGB();
-    // tslGlobal.specular = exrVector3(1.0);
-    tslGlobal.specular = make_float3(1.0);
+    exrVector3 specular = material->GetSpecular().ToRGB();
+    tslGlobal.specular = make_float3(specular.r, specular.g, specular.b);
 
-    tslGlobal.roughness = 0.5f;// material->GetRoughness();
+    tslGlobal.roughness = material->GetRoughness();
 
     exrPoint3 position = si.m_Point;
-    // tslGlobal.position = exrVector3(position.x, position.y, position.z);
     tslGlobal.position = make_float3(position.x, position.y, position.z);
 
     ClosureTreeNodeBase* closure = nullptr;
     material->m_ShaderFunction(&closure, &tslGlobal);
-    // TODO: Run TSL here to get the closure
 
     if (closure->m_id == g_ClosureOrenNayar)
     {

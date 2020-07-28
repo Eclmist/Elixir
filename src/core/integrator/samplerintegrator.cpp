@@ -88,6 +88,8 @@ void SamplerIntegrator::Render(const Scene& scene)
 
                             exporter->WritePixel(Point2<exrU32>(tileMin.x + x, tileMin.y + y), L);
                             memoryArena.Release();
+                            
+                            EXR_CLEAR_STATIC_MEMPOOL();
                         }
                     }
                 }

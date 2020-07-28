@@ -29,6 +29,10 @@ exrBEGIN_NAMESPACE
 // "Placement new" syntax - https://isocpp.org/wiki/faq/dtors#placement-new
 #define EXR_ARENA_ALLOC(arena, Type) new ((arena).Allocate(sizeof(Type))) Type
 
+#define EXR_STATIC_ALLOC(Type)              new (GetStaticAllocator().Allocate(sizeof(Type)) Type
+#define EXR_STATIC_ALLOC_ARRAY(Type, count) new (GetStaticAllocator().Allocate(sizeof(Type) * count)) Type
+#define EXR_CLEAR_STATIC_MEMPOOL()               GetStaticAllocator().Release()
+
 class MemoryArena 
 {
 public:
@@ -133,6 +137,13 @@ private:
     uint8_t* m_CurrentBlock = nullptr;
     std::list<std::pair<size_t, uint8_t*>> m_UsedBlocks;
     std::list<std::pair<size_t, uint8_t*>> m_AvailableBlocks;
+};
+
+inline MemoryArena& GetStaticAllocator()
+{
+    // Each thread has their own memory arena
+    static thread_local MemoryArena staticGlobalArena;
+    return staticGlobalArena;
 };
 
 exrEND_NAMESPACE
