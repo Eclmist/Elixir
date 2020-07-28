@@ -63,7 +63,6 @@ endif ()
 # =========================================================================== #
 
 # TSL
-# loading llvm library, this is mandatory for compiling tsl, make sure it looks for a local llvm library
 set(TSL_DIR ${EXR_SOURCE_DIR}/extern/tsl/)
 
 # find llvm library
