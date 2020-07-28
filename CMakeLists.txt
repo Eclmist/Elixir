@@ -40,10 +40,9 @@ set(CMAKE_SUPPRESS_REGENERATION true)
 
 # Set the project source directories. This is set when running the CMake GUI
 set(EXR_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(EXR_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${EXR_SOURCE_DIR}/bin/release")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${EXR_SOURCE_DIR}/bin/debug")
+# Set the output of the elixir binary to /bin
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${EXR_SOURCE_DIR}/bin")
 
 # Setting on project generation
 set(EXR_USE_NAMESPACE "YES" CACHE BOOL "Enable generating Elixir namespace. This is enabled by default.") 
@@ -74,8 +73,16 @@ message(STATUS "Tiny Shading Langauge version: ${TSL_VERSION}")
 include_directories("${TSL_INCLUDE_DIR}")
 link_directories("${TSL_LIBRARY_DIR}")
 
+if (WIN32)
+    # Copy TSL dll to bin folder
+    tsl_runtime_copy("${EXR_SOURCE_DIR}/bin/debug")
+    tsl_runtime_copy("${EXR_SOURCE_DIR}/bin/release")
+    tsl_runtime_copy("${EXR_SOURCE_DIR}/bin/relwithdebinfo")
+    tsl_runtime_copy("${EXR_SOURCE_DIR}/bin/minsizerel")
+endif()
+
 # =========================================================================== #
-#                     PLATFORM DEFINITIONS & PROPERTIES                       #
+#                            PLATFORM DEFINITIONS                             #
 # =========================================================================== #
 
 if (WIN32)
@@ -95,21 +102,9 @@ elseif (UNIX)
     set (EXR_PLATFORM_NAME "\"Linux\"") 
 endif ()
 
-# Windows specific flags
-if (EXR_PLATFORM_WIN)
-    # Enable multi-thread compiling on Windows.
-    include(ProcessorCount)
-    ProcessorCount(N)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N}")
-
-    # Copy TSL dll to bin folder
-    tsl_runtime_copy("${EXR_SOURCE_DIR}/bin/debug")
-    tsl_runtime_copy("${EXR_SOURCE_DIR}/bin/release")
-
-    # /MD needs to be set for TSL to work
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MD")
-endif ()
+# =========================================================================== #
+#                           PLATFORM FEATURE QUERY                            #
+# =========================================================================== #
 
 # Check if aligned memory allocators available
 include (CheckCXXSourceCompiles)
@@ -187,8 +182,10 @@ source_group_by_dir(all_files)
 add_executable (Elixir ${all_files})
 
 # Set output name for different configs
-set_target_properties (Elixir PROPERTIES RELEASE_OUTPUT_NAME "elixir_r")
-set_target_properties (Elixir PROPERTIES DEBUG_OUTPUT_NAME "elixir_d")
+set_target_properties (Elixir PROPERTIES RUNTIME_OUTPUT_NAME_RELEASE "elixir_r")
+set_target_properties (Elixir PROPERTIES RUNTIME_OUTPUT_NAME_DEBUG "elixir_d")
+set_target_properties (Elixir PROPERTIES RUNTIME_OUTPUT_NAME_RELWITHDEBINFO "elixir_rx")
+set_target_properties (Elixir PROPERTIES RUNTIME_OUTPUT_NAME_MINSIZEREL "elixir_rm")
 
 # =========================================================================== #
 #                       SET COMPILATION/LINKER FLAGS                          #
@@ -205,6 +202,15 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     if (EXR_USE_FASTMATH)
         set_target_properties(Elixir PROPERTIES COMPILE_FLAGS "/fp:fast")
     endif (EXR_USE_FASTMATH)
+
+    # Enable multi-thread compiling on Windows.
+    include(ProcessorCount)
+    ProcessorCount(N)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N}")
+
+    # /MD needs to be set for TSL to work
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MD")
+
 else ()
 	set_source_files_properties(${all_files} PROPERTIES COMPILE_FLAGS -w)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
