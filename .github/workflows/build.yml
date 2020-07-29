@@ -3,9 +3,7 @@ name: Build Elixir
 on: [push, pull_request]
 
 jobs:
-  
   Windows:
-    
     runs-on: windows-latest
     steps:
       - name: Checkout Latest
@@ -16,17 +14,8 @@ jobs:
         uses: warrenbuckley/Setup-MSBuild@v1
       - name: Build Dependencies (TSL)
         run: |
-             cd extern/tsl
+             cmake -B build
+             cmake --build ./build/
              make update_dep
-             make install
-             cd ..
-             dir
-        shell: cmd
       - name: Generate & Build Project
         uses: lukka/run-cmake@v2.5
-      - name: Test execute Elixir Binary
-        run: |
-             cd bin/release
-             elixir_r.exe --debug
-        shell: cmd
-        

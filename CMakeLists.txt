@@ -21,6 +21,12 @@
 # Sets the minimum required CMake version. We need 3.6 for VS_STARTUP_PROJECT support
 cmake_minimum_required (VERSION "3.14.4")
 
+# Include the "ExternalProject" CMake module for building dependencies
+include(ExternalProject)
+
+# We need the make command for building TSL. Find the binary, its one of these names
+find_program(MAKE_EXE NAMES gmake nmake make mingw32-make mingw-make)
+
 # =========================================================================== #
 #                     PROJECT DEFINITIONS & PROPERTIES                        #
 # =========================================================================== #
@@ -48,6 +54,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${EXR_SOURCE_DIR}/bin")
 set(EXR_USE_NAMESPACE "YES" CACHE BOOL "Enable generating Elixir namespace. This is enabled by default.") 
 set(EXR_USE_FASTMATH "NO" CACHE BOOL "Enable fast math. May introduce arithmetic error. This is disabled by default")
 set(EXR_USE_WHOLE_PROGRAMME_OPTIMIZATION "YES" CACHE BOOL "Enable whole programme optimizations. This is enabled by default.")
+set(TSL_UPDATE_SUBMODULE_OVERRIDE "NO" CACHE BOOL "Blocks updating TSL submodule.")
+set(TSL_UPDATE_DEP_OVERRIDE "NO" CACHE BOOL "Blocks download TSL dependencies. This is a hack explained below")
+set(TSL_BUILD_OVERRIDE "NO" CACHE BOOL "Blocks building of TSL. This is a hack explained below")
 
 # Options to choose configuration type
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -57,17 +66,62 @@ if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
 endif ()
 
+
 # =========================================================================== #
 #                   SETUP THIRD PARTY/EXTERN DEPENDENCIES                     #
 # =========================================================================== #
 
-# TSL
+if (NOT TSL_UPDATE_SUBMODULE_OVERRIDE)
+# Clone TSL submodule if it has not already been. This is executed during configure
+    message(STATUS "Fetching TSL Submodule")
+    execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                    RESULT_VARIABLE GIT_SUBMOD_RESULT)
+    if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+        message(FATAL_ERROR "git submodule update --init failed with '${GIT_SUBMOD_RESULT}'.")
+    endif()
+endif()
+
+# ================================== TSL ==================================== #
+
 set(TSL_DIR ${EXR_SOURCE_DIR}/extern/tsl/)
 
-# find llvm library
-find_package(TSL REQUIRED CONFIG)
+if (WIN32)
+    set(TSL_MAKE make.bat)
+else()
+    set(TSL_MAKE ${MAKE_EXE})
+endif()
 
-# output tsl library version
+# TEMP - TSL's Update Dep will download TSL's dependencies every single time.
+# Ideally, it should only download once and subsequent calls to 'make update_dep'
+# should not be called again. If this were the case then the following can be
+# combined into ExternalProject_Add, such that 'make update_dep' can be ran during
+# build step. Since it is not the case, we will hack a call to 'make update_dep'\
+# during CMake configure time.
+
+if (NOT TSL_UPDATE_DEP_OVERRIDE)
+    message(STATUS "Fetching TSL's Dependencies")
+    execute_process(COMMAND ${TSL_MAKE} update_dep
+                    WORKING_DIRECTORY ${TSL_DIR}
+                    RESULT_VARIABLE UPDATE_DEP_RESULT)
+    if(NOT UPDATE_DEP_RESULT EQUAL "0")
+        message(FATAL_ERROR "make update_dep failed with '${UPDATE_DEP_RESULT}'.")
+    endif()
+endif()
+
+if (NOT TSL_BUILD_OVERRIDE)
+    message(STATUS "Build TSL")
+    execute_process(COMMAND ${TSL_MAKE} install
+                    WORKING_DIRECTORY ${TSL_DIR}
+                    RESULT_VARIABLE BUILD_RESULT)
+    if(NOT BUILD_RESULT EQUAL "0")
+        message(FATAL_ERROR "make failed with '${BUILD_RESULT}'.")
+    endif()
+endif()
+
+find_package(TSL REQUIRED CONFIG PATHS ${TSL_DIR})
+
+# # output tsl library version
 message(STATUS "Tiny Shading Langauge version: ${TSL_VERSION}")
 
 include_directories("${TSL_INCLUDE_DIR}")
@@ -153,6 +207,7 @@ configure_file (
 
 include_directories("${EXR_SOURCE_DIR}/src")
 include_directories("${EXR_SOURCE_DIR}/extern")
+include_directories("${EXR_SOURCE_DIR}/include")
 
 # Find all source files and group them by directory
 # I have no clue how this actually works, this macro was taken from SORT
@@ -229,4 +284,7 @@ endif()
 # =========================================================================== #
 
 target_link_libraries(Elixir ${TSL_LIBS})
+
+# Mark TSL as an Elixir dependency so that the above commands are ran first
+# add_dependencies(Elixir TSL)
 
