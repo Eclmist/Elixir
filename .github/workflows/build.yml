@@ -10,6 +10,11 @@ jobs:
           submodules: 'recursive'
       - name: Setup MSBuild.exe
         uses: warrenbuckley/Setup-MSBuild@v1
+      - name: Build Dependencies (TSL)
+        run: |
+             cd extern/tsl
+             make update_dep
+             make
       - name: Generate & Build Project
         uses: lukka/run-cmake@v2.5
   MacOS:
@@ -18,7 +23,13 @@ jobs:
       - name: Checkout Latest
         uses: actions/checkout@v2.3.1
         with: 
-          submodules: 'recursive'
+          submodules: 'recursive'  
+      - run: |
+           brew install flex
+           brew install bison
+           echo 'export PATH="/usr/local/opt/bison/bin:$PATH"' >> ~/.bash_profile
+           source ~/.bash_profile
+           bison -V
       - name: Generate & Build Project
         uses: lukka/run-cmake@v2.5
   Ubuntu:
