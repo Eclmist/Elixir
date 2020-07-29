@@ -19,6 +19,8 @@ jobs:
              cd extern/tsl
              make update_dep
              make
+             cd ..
+             dir
       - name: Generate & Build Project
         uses: lukka/run-cmake@v2.5
       - name: Test execute Elixir Binary
