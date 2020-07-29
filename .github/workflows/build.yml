@@ -1,0 +1,22 @@
+name: Build Elixir
+
+on: [push, pull_request]
+
+jobs:
+  
+  Windows:
+    
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Latest
+        uses: actions/checkout@v2
+      - name: Setup MSBuild.exe
+        uses: warrenbuckley/Setup-MSBuild@v1
+      - name: Generate & Build Project
+        uses: lukka/run-cmake@v2.5
+      - name: Test execute Elixir Binary
+        run: |
+             cd bin/release
+             elixir_r.exe --debug
+        shell: cmd
+        
