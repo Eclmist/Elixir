@@ -19,6 +19,8 @@ jobs:
              cd extern/tsl
              make update_dep
              make install
+             cd ..
+             dir
         shell: cmd
       - name: Generate & Build Project
         uses: lukka/run-cmake@v2.5
