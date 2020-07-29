@@ -24,6 +24,9 @@ cmake_minimum_required (VERSION "3.14.4")
 # Include the "ExternalProject" CMake module for building dependencies
 include(ExternalProject)
 
+# For using CMake to automatically update submodule
+find_package(Git QUIET)
+
 # We need the make command for building TSL. Find the binary, its one of these names
 find_program(MAKE_EXE NAMES gmake nmake make mingw32-make mingw-make)
 

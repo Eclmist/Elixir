@@ -14,7 +14,7 @@ jobs:
         uses: warrenbuckley/Setup-MSBuild@v1
       - name: Build Dependencies (TSL)
         run: |
-             cmake -B build
+             cmake -B build -DTSL_UPDATE_SUBMODULE_OVERRIDE=1
              cmake --build ./build/
              make update_dep
       - name: Generate & Build Project
