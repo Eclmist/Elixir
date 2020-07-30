@@ -43,7 +43,7 @@ void PrintUsage(const exrChar* msg = nullptr)
     cout << "   -h, --help              Display this help page" << endl;
     cout << "   -t, --numthreads        Specify the number of rendering threads to use" << endl;
     cout << "   -o, --out <fname>       Write the output image to a specified filename" << endl;
-	cout << "   -s, --stamp             Stamp output filename with metadata" << endl;
+    cout << "   -s, --stamp             Stamp output filename with metadata" << endl;
     cout << "   -q, --quick             Reduce output quality for quick render" << endl;
     cout << "   -d, --debug             Render debug scene defined in code. To be deprecated." << endl;
     cout << "Logging Options: " << endl;
