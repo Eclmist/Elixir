@@ -41,6 +41,8 @@ Elixir is open-sourced, licensed under the [GNU General Public License v3](https
 
 > Note: Elixir is currently a WIP and is considered unstable. Proceed with caution at your own risk.
 
+### Building
+
 Elixir uses CMake to build it's binaries. If you would like to build Elixir yourselves, run the following CMake commands to generate project files and compile with your favourite C++ compiler.
 
 
@@ -54,7 +56,7 @@ $ cmake --build ./build/
 
 This will generate OS specific project in the `/build/` folder, and will build the Elixir binaries into `/bin/`.
 
-## Rendering
+### Rendering
 
 Elixir currently only supports .obj inputs. A .obj model can be rendered by running Elixir in the command line.
 
