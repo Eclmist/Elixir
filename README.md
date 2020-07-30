@@ -54,6 +54,16 @@ $ cmake --build ./build/
 
 This will generate OS specific project in the `/build/` folder, and will build the Elixir binaries into `/bin/`.
 
+## Rendering
+
+Elixir currently only supports .obj inputs. A .obj model can be rendered by running Elixir in the command line.
+
+```
+$ elixir model.obj
+```
+
+Some settings such as the number of threads to use can also be configured. These options will be listed by running Elixir with --help.
+
 ## Screenshots
 
 <p align="center">
