@@ -25,13 +25,6 @@
 
 exrBEGIN_NAMESPACE
 
-using namespace Tsl_Namespace;
-
-extern struct TslGlobal;
-
-// The raw function pointer of all surface shaders.
-using shader_raw_func = void(*)(Tsl_Namespace::ClosureTreeNodeBase**, TslGlobal*);
-
 //! A representation of a surface shader unique to each primitive in the scene.
 //! This encompasses all the shading related properties of a *primitive*.
 //! Not to be confused with the BSDF class, which will be different for every

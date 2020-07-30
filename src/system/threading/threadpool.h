@@ -24,6 +24,7 @@
 #include <mutex>
 #include <future>
 #include <queue>
+#include <functional>
 
 exrBEGIN_NAMESPACE
 
