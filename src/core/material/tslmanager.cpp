@@ -36,11 +36,6 @@ IMPLEMENT_TSLGLOBAL_VAR(Tsl_float3, position)
 IMPLEMENT_TSLGLOBAL_VAR(Tsl_float,  roughness)
 IMPLEMENT_TSLGLOBAL_END()
 
-IMPLEMENT_CLOSURE_TYPE_BEGIN(ClosureTypeOrenNayar)
-IMPLEMENT_CLOSURE_TYPE_VAR(ClosureTypeOrenNayar, Tsl_float3, albedo)
-IMPLEMENT_CLOSURE_TYPE_VAR(ClosureTypeOrenNayar, Tsl_float, roughness)
-IMPLEMENT_CLOSURE_TYPE_END(ClosureTypeOrenNayar)
-
 // Although it is possible to have different tsl global registered for different material types, this sample only uses one.
 static TslGlobal g_tsl_global;
 

@@ -25,6 +25,11 @@
 
 exrBEGIN_NAMESPACE
 
+IMPLEMENT_CLOSURE_TYPE_BEGIN(ClosureTypeOrenNayar)
+IMPLEMENT_CLOSURE_TYPE_VAR(ClosureTypeOrenNayar, Tsl_float3, albedo)
+IMPLEMENT_CLOSURE_TYPE_VAR(ClosureTypeOrenNayar, Tsl_float, roughness)
+IMPLEMENT_CLOSURE_TYPE_END(ClosureTypeOrenNayar)
+
 exrSpectrum OrenNayar::f(const exrVector3& wo, const exrVector3& wi) const
 {
     exrFloat sinThetaI = SinTheta(wi);
