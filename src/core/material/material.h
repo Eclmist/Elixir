@@ -25,6 +25,16 @@
 
 exrBEGIN_NAMESPACE
 
+DECLARE_TSLGLOBAL_BEGIN(TslGlobal)
+DECLARE_TSLGLOBAL_VAR(Tsl_float3,   albedo)         // base color of the material
+DECLARE_TSLGLOBAL_VAR(Tsl_float3,   specular)       // specular color of the material
+DECLARE_TSLGLOBAL_VAR(Tsl_float3,   position)       // fragment position in world space
+DECLARE_TSLGLOBAL_VAR(Tsl_float,    roughness)      // roughness of the material
+DECLARE_TSLGLOBAL_END()
+
+// The raw function pointer of all surface shaders.
+using shader_raw_func = void(*)(Tsl_Namespace::ClosureTreeNodeBase**, TslGlobal*);
+
 //! A representation of a surface shader unique to each primitive in the scene.
 //! This encompasses all the shading related properties of a *primitive*.
 //! Not to be confused with the BSDF class, which will be different for every

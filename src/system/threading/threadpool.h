@@ -21,10 +21,10 @@
 #pragma once
 
 #include <condition_variable>
-#include <mutex>
 #include <future>
-#include <queue>
 #include <functional>
+#include <mutex>
+#include <queue>
 
 exrBEGIN_NAMESPACE
 
