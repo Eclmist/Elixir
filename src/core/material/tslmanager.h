@@ -42,6 +42,9 @@ DECLARE_TSLGLOBAL_VAR(Tsl_float3,   position)       // fragment position in worl
 DECLARE_TSLGLOBAL_VAR(Tsl_float,    roughness)      // roughness of the material
 DECLARE_TSLGLOBAL_END()
 
+// The raw function pointer of all surface shaders.
+using shader_raw_func = void(*)(Tsl_Namespace::ClosureTreeNodeBase**, TslGlobal*);
+
 // Initialize tiny shading language system
 // It basically takes the chances to initialize all necessary data structure, like registering callback,
 // closure type, tsl global data structure.
