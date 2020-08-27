@@ -104,6 +104,7 @@ void Exporter::WriteImage(exrFloat splatScale)
     filename += ".png";
 
     stbi_write_png(filename.c_str(), m_Resolution.x, m_Resolution.y, 3, ppmOut, m_Resolution.x * 3);
+    stbi_image_free(ppmOut);
 
 #ifdef EXR_PLATFORM_WIN
     system(filename.c_str());
