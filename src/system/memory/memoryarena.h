@@ -2,7 +2,7 @@
     This file is part of Elixir, an open-source cross platform physically
     based renderer.
 
-    Copyright (c) 2019 Samuel Van Allen - All rights reserved.
+    Copyright (c) 2019-2020 Samuel Van Allen - All rights reserved.
 
     Elixir is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
